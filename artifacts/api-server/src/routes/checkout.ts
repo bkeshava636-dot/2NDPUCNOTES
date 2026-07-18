@@ -169,11 +169,13 @@ router.post("/checkout/free-download", async (req, res) => {
       status: "paid",
       paidAt: new Date(),
     });
-    res.json({
-      orderId,
-      downloadUrl: `/api/purchases/${orderId}/download/${card.id}`,
-      filename: `${card.title.replace(/[^a-z0-9]/gi, "_")}.pdf`,
-    });
+    const baseUrl = process.env.PUBLIC_API_URL!;
+
+res.json({
+  orderId,
+  downloadUrl: `${baseUrl}/api/purchases/${orderId}/download/${card.id}`,
+  filename: `${card.title.replace(/[^a-z0-9]/gi, "_")}.pdf`,
+});
   } catch (err) {
     req.log.error(err);
     res.status(500).json({ error: "Failed to process free download" });
