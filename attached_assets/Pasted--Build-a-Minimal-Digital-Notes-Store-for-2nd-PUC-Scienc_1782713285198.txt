@@ -1,0 +1,328 @@
+# Build a Minimal Digital Notes Store for 2nd PUC Science (Karnataka)
+
+## Objective
+
+Build a clean, minimal, mobile-first website for selling **2nd PUC Science (Karnataka Board)** digital notes and study resources.
+
+The website should allow students to browse resources, purchase them securely, and instantly download PDFs after successful payment.
+
+The project should be scalable so I can later add Engineering notes and other educational resources without redesigning the website.
+
+---
+
+# Technology Stack
+
+Use:
+
+* HTML5
+* CSS3
+* JavaScript (Vanilla)
+* Supabase (Database, Storage, Authentication)
+* Razorpay (Payment Gateway)
+* Netlify or Vercel (Hosting)
+
+Do NOT use React or any frontend framework.
+
+Keep the project lightweight and beginner-friendly.
+
+---
+
+# Design Requirements
+
+* Minimal UI
+* Modern look
+* White background
+* Blue accent color
+* Mobile-first
+* Responsive on all devices
+* Fast loading
+* Clean typography
+* No unnecessary animations
+* Professional student-focused design
+
+---
+
+# Homepage
+
+Display:
+
+* Website title
+* Short tagline
+* Search bar
+* Dynamic sections
+* Contact on Telegram button
+* FAQ
+* Footer
+
+---
+
+# Dynamic Homepage
+
+Do NOT hardcode any cards or sections.
+
+The homepage should load all sections dynamically from the database.
+
+Examples of sections:
+
+* Physics
+* Chemistry
+* Mathematics
+* Biology
+* Computer Science
+* Important Questions
+* Chapter-wise Notes
+* Subject-wise Notes
+* Previous Year Question Papers
+* Model Papers
+* Formula Sheets
+* One Shot Revision
+* Practical Records
+* Free Resources
+* Premium Resources
+* Latest Updates
+
+I should be able to create unlimited new sections from the Admin Panel.
+
+---
+
+# Dynamic Cards
+
+Each section supports unlimited cards.
+
+Each card should contain:
+
+* Thumbnail
+* Title
+* Short Description
+* Subject
+* Chapter (optional)
+* Semester/Class
+* Resource Type
+* Price (Free or Paid)
+* Preview Image
+* PDF File
+* Buy Now button
+* Download button (after purchase)
+
+---
+
+# Resource Types
+
+Support different resource types including:
+
+* Notes
+* Important Questions
+* Previous Year Papers
+* Question Banks
+* Formula Sheets
+* Model Papers
+* Assignments
+* Lab Manuals
+* Practical Records
+* Sample Papers
+* Revision Notes
+* Study Materials
+
+I should also be able to create custom resource types.
+
+---
+
+# Product Page
+
+When a user opens a card, show:
+
+* Thumbnail
+* Title
+* Description
+* Subject
+* Chapter
+* Number of Pages
+* File Size
+* Preview Images
+* Price
+* Buy Now Button
+
+---
+
+# Checkout
+
+Collect only:
+
+* Full Name
+* Phone Number
+* Email (Optional)
+
+Integrate Razorpay Checkout.
+
+---
+
+# After Successful Payment
+
+* Verify payment securely.
+* Save the order in Supabase.
+* Generate Order ID.
+* Show Payment Successful page.
+* Allow instant PDF download.
+* Allow re-download from purchase history.
+* Prevent unauthorized downloads.
+
+---
+
+# Admin Panel
+
+Create a password-protected Admin Dashboard.
+
+No coding should be required to manage the website.
+
+Admin should be able to:
+
+## Homepage
+
+* Create new sections
+* Rename sections
+* Delete sections
+* Hide sections
+* Reorder sections using drag-and-drop
+
+## Cards
+
+* Add new cards
+* Edit cards
+* Delete cards
+* Move cards between sections
+* Reorder cards
+* Mark Featured
+* Hide/Publish cards
+
+## Uploads
+
+* Upload PDF
+* Replace PDF
+* Upload Thumbnail
+* Upload Preview Images
+
+## Pricing
+
+* Set price
+* Mark Free
+* Mark Paid
+* Apply Discount
+
+## Orders
+
+* View Orders
+* View Customers
+* View Revenue
+* View Downloads
+
+---
+
+# Database
+
+Create tables for:
+
+* Sections
+* Cards
+* Customers
+* Orders
+* Payments
+* Downloads
+
+---
+
+# Storage
+
+Use Supabase Storage.
+
+Store:
+
+* PDFs
+* Preview Images
+* Thumbnails
+
+PDFs must NOT be publicly accessible.
+
+Only purchased users should receive download access.
+
+---
+
+# Search
+
+Students should be able to search by:
+
+* Subject
+* Chapter
+* Resource Type
+* Title
+
+---
+
+# Filters
+
+Include filters for:
+
+* Subject
+* Free/Paid
+* Resource Type
+* Latest
+* Price
+
+---
+
+# Security
+
+Implement:
+
+* Secure Razorpay payment verification
+* Protected downloads
+* Secure admin authentication
+* Input validation
+* Payment logging
+* Order tracking
+
+---
+
+# Folder Structure
+
+frontend/
+
+* HTML
+* CSS
+* JavaScript
+
+admin/
+
+* Login
+* Dashboard
+
+supabase/
+
+* Database Schema
+* Storage Configuration
+
+---
+
+# Deployment
+
+The project should be deployment-ready for:
+
+* Netlify or Vercel (Frontend)
+* Supabase (Backend)
+
+---
+
+# Code Requirements
+
+* Clean code
+* Well commented
+* Modular
+* Easy to maintain
+* Responsive
+* Beginner-friendly
+* Production-ready
+
+#
+
+without changing the website structure.
+
+The Admin Panel should handle everything through the dashboard, so I never need to edit the code to add new sections, cards, notes, or study resources.

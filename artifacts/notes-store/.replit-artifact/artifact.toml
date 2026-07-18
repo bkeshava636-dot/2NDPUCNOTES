@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "2PUC Notes Store"
+version = "1.0.0"
+id = "artifacts/notes-store"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 25035
+
+[services.development]
+run = "pnpm --filter @workspace/notes-store run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/notes-store", "run", "build" ]
+publicDir = "artifacts/notes-store/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "25035"
+BASE_PATH = "/"

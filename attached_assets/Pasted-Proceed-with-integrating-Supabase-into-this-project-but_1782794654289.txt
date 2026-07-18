@@ -1,0 +1,92 @@
+Proceed with integrating Supabase into this project, but first improve the database schema with the following changes:
+
+### Database Changes
+
+1. Keep the existing tables:
+
+* sections
+* cards
+* orders
+
+2. Add a new `customers` table:
+
+* id
+* full_name
+* phone (unique)
+* email
+* created_at
+
+3. Add a new `downloads` table:
+
+* id
+* order_id
+* card_id
+* downloaded_at
+* ip_address (optional)
+
+4. In the `cards` table:
+
+* Replace `price_type` with `is_free BOOLEAN`.
+* Keep `price_paise`.
+* Add:
+
+  * discount_price_paise
+  * telegram_link
+  * is_new BOOLEAN DEFAULT false
+
+5. Keep the existing storage buckets:
+
+* notes (private)
+* images (public)
+
+---
+
+### Integration Requirements
+
+* Connect the project to Supabase using the existing environment variables:
+
+  * SUPABASE_URL
+  * SUPABASE_ANON_KEY
+  * SUPABASE_SERVICE_ROLE_KEY
+
+* Do NOT change the current UI or design.
+
+* Replace all mock/local data with Supabase.
+
+* Keep the existing project structure intact.
+
+* Make the homepage and resource cards load dynamically from Supabase.
+
+* Prepare the project for an Admin Panel where I can upload PDFs, images, create sections, add/edit/delete cards, and manage prices without modifying the code.
+
+---
+
+### Before Making Database Changes
+
+Show me the complete SQL schema that will be executed.
+
+Do NOT execute it until I approve it.
+
+---
+
+### After Completing the Integration
+
+Provide a detailed report including:
+
+1. Which files were created.
+2. Which files were modified.
+3. What changes were made in each file.
+4. Whether the database schema was created successfully.
+5. Whether Supabase Storage is connected.
+6. Whether the website is now fetching data from Supabase.
+7. Whether any mock data still exists.
+8. Any manual steps I still need to complete.
+9. Any environment variables or Supabase settings I need to configure.
+10. Whether the project is ready for:
+
+* Admin Panel
+* PDF Upload
+* Razorpay Integration
+* Secure Downloads
+
+Finally, give me a checklist of the remaining tasks in the correct order until the website is fully production-ready.

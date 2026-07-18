@@ -1,0 +1,922 @@
+openapi: 3.1.0
+info:
+  # Do not change the title, if the title changes, the import paths will be broken
+  title: Api
+  version: 0.2.0
+  description: 2PUC Notes Store API
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: store
+    description: Public store operations
+  - name: sections
+    description: Section management
+  - name: cards
+    description: Card/resource management
+  - name: checkout
+    description: Checkout and payments
+  - name: purchases
+    description: Purchase history and downloads
+  - name: admin
+    description: Admin panel operations
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  # ── Public Store ───────────────────────────────────────────────────────────
+
+  /store/stats:
+    get:
+      operationId: getStoreStats
+      tags: [store]
+      summary: Get store summary stats
+      responses:
+        "200":
+          description: Store stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StoreStats"
+
+  /sections:
+    get:
+      operationId: listSections
+      tags: [sections]
+      summary: List all visible sections
+      responses:
+        "200":
+          description: List of sections
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Section"
+
+  /sections/{id}/cards:
+    get:
+      operationId: listSectionCards
+      tags: [sections]
+      summary: List visible cards in a section
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of cards
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Card"
+
+  /cards:
+    get:
+      operationId: listCards
+      tags: [cards]
+      summary: List/search/filter cards
+      parameters:
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: subject
+          in: query
+          schema:
+            type: string
+        - name: resourceType
+          in: query
+          schema:
+            type: string
+        - name: isFree
+          in: query
+          schema:
+            type: boolean
+        - name: sectionId
+          in: query
+          schema:
+            type: integer
+        - name: featured
+          in: query
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: List of cards
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Card"
+
+  /cards/{id}:
+    get:
+      operationId: getCard
+      tags: [cards]
+      summary: Get a card by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Card detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Card"
+        "404":
+          description: Not found
+
+  /cards/resource-types:
+    get:
+      operationId: listResourceTypes
+      tags: [cards]
+      summary: List available resource types
+      responses:
+        "200":
+          description: Resource types
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+
+  # ── Checkout ───────────────────────────────────────────────────────────────
+
+  /checkout/create-razorpay-order:
+    post:
+      operationId: createRazorpayOrder
+      tags: [checkout]
+      summary: Create a Razorpay order for a paid card
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RazorpayOrderInput"
+      responses:
+        "200":
+          description: Razorpay order details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RazorpayOrderResult"
+        "400":
+          description: Bad request
+
+  /checkout/verify:
+    post:
+      operationId: verifyCheckout
+      tags: [checkout]
+      summary: Verify Razorpay payment signature and mark order paid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VerifyCheckoutInput"
+      responses:
+        "200":
+          description: Order confirmed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+        "400":
+          description: Invalid signature
+
+  /checkout/free-download:
+    post:
+      operationId: freeDownload
+      tags: [checkout]
+      summary: Create a free-download order and return a download URL
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FreeDownloadInput"
+      responses:
+        "200":
+          description: Download URL
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FreeDownloadResult"
+        "400":
+          description: Bad request
+
+  # ── Purchases ──────────────────────────────────────────────────────────────
+
+  /purchases:
+    get:
+      operationId: getPurchases
+      tags: [purchases]
+      summary: Get purchases by phone number
+      parameters:
+        - name: phone
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of purchases
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Order"
+
+  /purchases/{orderId}/download/{cardId}:
+    get:
+      operationId: downloadPdf
+      tags: [purchases]
+      summary: Redirect to a 1-hour signed Supabase download URL
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: cardId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "302":
+          description: Redirect to signed URL
+        "403":
+          description: Not authorized
+
+  # ── Admin ──────────────────────────────────────────────────────────────────
+
+  /admin/login:
+    post:
+      operationId: adminLogin
+      tags: [admin]
+      summary: Admin login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminLoginInput"
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminLoginResult"
+        "401":
+          description: Invalid credentials
+
+  /admin/logout:
+    post:
+      operationId: adminLogout
+      tags: [admin]
+      summary: Admin logout
+      responses:
+        "200":
+          description: Logged out
+
+  /admin/me:
+    get:
+      operationId: adminMe
+      tags: [admin]
+      summary: Check admin session
+      responses:
+        "200":
+          description: Admin session valid
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminSession"
+        "401":
+          description: Not authenticated
+
+  /admin/stats:
+    get:
+      operationId: getAdminStats
+      tags: [admin]
+      summary: Get admin dashboard stats
+      responses:
+        "200":
+          description: Admin stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminStats"
+
+  /admin/sections:
+    get:
+      operationId: adminListSections
+      tags: [admin]
+      summary: List all sections (including hidden)
+      responses:
+        "200":
+          description: All sections
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Section"
+    post:
+      operationId: adminCreateSection
+      tags: [admin]
+      summary: Create a new section
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SectionInput"
+      responses:
+        "201":
+          description: Created section
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Section"
+
+  /admin/sections/{id}:
+    patch:
+      operationId: adminUpdateSection
+      tags: [admin]
+      summary: Update a section
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SectionUpdate"
+      responses:
+        "200":
+          description: Updated section
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Section"
+    delete:
+      operationId: adminDeleteSection
+      tags: [admin]
+      summary: Delete a section
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /admin/sections/reorder:
+    post:
+      operationId: adminReorderSections
+      tags: [admin]
+      summary: Reorder sections
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReorderInput"
+      responses:
+        "200":
+          description: OK
+
+  /admin/cards:
+    get:
+      operationId: adminListCards
+      tags: [admin]
+      summary: List all non-deleted cards (admin view)
+      parameters:
+        - name: sectionId
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: All cards
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Card"
+    post:
+      operationId: adminCreateCard
+      tags: [admin]
+      summary: Create a new card
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CardInput"
+      responses:
+        "201":
+          description: Created card
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Card"
+
+  /admin/cards/{id}:
+    patch:
+      operationId: adminUpdateCard
+      tags: [admin]
+      summary: Update a card
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CardUpdate"
+      responses:
+        "200":
+          description: Updated card
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Card"
+    delete:
+      operationId: adminDeleteCard
+      tags: [admin]
+      summary: Soft-delete a card (sets is_deleted=true, removes PDF from storage)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /admin/orders:
+    get:
+      operationId: adminListOrders
+      tags: [admin]
+      summary: List all orders (paginated)
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Orders
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderList"
+
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required: [status]
+
+    StoreStats:
+      type: object
+      properties:
+        totalResources:
+          type: integer
+        freeResources:
+          type: integer
+        paidResources:
+          type: integer
+        totalSections:
+          type: integer
+        totalOrders:
+          type: integer
+      required: [totalResources, freeResources, paidResources, totalSections, totalOrders]
+
+    Section:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        slug:
+          type: string
+        description:
+          type: ["string", "null"]
+        isVisible:
+          type: boolean
+        sortOrder:
+          type: integer
+        cardCount:
+          type: integer
+        createdAt:
+          type: string
+      required: [id, name, slug, isVisible, sortOrder, cardCount, createdAt]
+
+    SectionInput:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+        description:
+          type: string
+        isVisible:
+          type: boolean
+      required: [name]
+
+    SectionUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+        description:
+          type: ["string", "null"]
+        isVisible:
+          type: boolean
+        sortOrder:
+          type: integer
+
+    ReorderInput:
+      type: object
+      properties:
+        ids:
+          type: array
+          items:
+            type: integer
+      required: [ids]
+
+    Card:
+      type: object
+      properties:
+        id:
+          type: integer
+        sectionId:
+          type: integer
+        sectionName:
+          type: ["string", "null"]
+        title:
+          type: string
+        description:
+          type: ["string", "null"]
+        subject:
+          type: ["string", "null"]
+        chapter:
+          type: ["string", "null"]
+        semester:
+          type: ["string", "null"]
+        board:
+          type: string
+        classLevel:
+          type: string
+        resourceType:
+          type: string
+        isFree:
+          type: boolean
+        pricePaise:
+          type: integer
+        discountPricePaise:
+          type: ["integer", "null"]
+        telegramLink:
+          type: ["string", "null"]
+        isNew:
+          type: boolean
+        thumbnailUrl:
+          type: ["string", "null"]
+        previewImageUrls:
+          type: array
+          items:
+            type: string
+        pdfFileKey:
+          type: ["string", "null"]
+        pageCount:
+          type: ["integer", "null"]
+        fileSizeKb:
+          type: ["integer", "null"]
+        isFeatured:
+          type: boolean
+        isVisible:
+          type: boolean
+        isDeleted:
+          type: boolean
+        sortOrder:
+          type: integer
+        createdAt:
+          type: string
+      required: [id, sectionId, title, board, classLevel, resourceType, isFree, pricePaise, isNew, isFeatured, isVisible, isDeleted, sortOrder, previewImageUrls, createdAt]
+
+    CardInput:
+      type: object
+      properties:
+        sectionId:
+          type: integer
+        title:
+          type: string
+          minLength: 1
+        description:
+          type: string
+        subject:
+          type: string
+        chapter:
+          type: string
+        semester:
+          type: string
+        board:
+          type: string
+        classLevel:
+          type: string
+        resourceType:
+          type: string
+        isFree:
+          type: boolean
+        pricePaise:
+          type: integer
+        discountPricePaise:
+          type: integer
+        telegramLink:
+          type: string
+        isNew:
+          type: boolean
+        thumbnailUrl:
+          type: string
+        previewImageUrls:
+          type: array
+          items:
+            type: string
+        pdfFileKey:
+          type: string
+        pageCount:
+          type: integer
+        fileSizeKb:
+          type: integer
+        isFeatured:
+          type: boolean
+        isVisible:
+          type: boolean
+      required: [sectionId, title, isFree, pricePaise]
+
+    CardUpdate:
+      type: object
+      properties:
+        sectionId:
+          type: integer
+        title:
+          type: string
+        description:
+          type: ["string", "null"]
+        subject:
+          type: ["string", "null"]
+        chapter:
+          type: ["string", "null"]
+        semester:
+          type: ["string", "null"]
+        board:
+          type: string
+        classLevel:
+          type: string
+        resourceType:
+          type: string
+        isFree:
+          type: boolean
+        pricePaise:
+          type: integer
+        discountPricePaise:
+          type: ["integer", "null"]
+        telegramLink:
+          type: ["string", "null"]
+        isNew:
+          type: boolean
+        thumbnailUrl:
+          type: ["string", "null"]
+        previewImageUrls:
+          type: array
+          items:
+            type: string
+        pdfFileKey:
+          type: ["string", "null"]
+        pageCount:
+          type: ["integer", "null"]
+        fileSizeKb:
+          type: ["integer", "null"]
+        isFeatured:
+          type: boolean
+        isVisible:
+          type: boolean
+        sortOrder:
+          type: integer
+
+    RazorpayOrderInput:
+      type: object
+      properties:
+        cardId:
+          type: integer
+        customerName:
+          type: string
+        customerPhone:
+          type: string
+        customerEmail:
+          type: ["string", "null"]
+      required: [cardId, customerName, customerPhone]
+
+    RazorpayOrderResult:
+      type: object
+      properties:
+        razorpayOrderId:
+          type: string
+        orderId:
+          type: string
+        amountPaise:
+          type: integer
+        currency:
+          type: string
+        keyId:
+          type: string
+        cardTitle:
+          type: string
+        customerName:
+          type: string
+        customerEmail:
+          type: string
+        customerPhone:
+          type: string
+      required: [razorpayOrderId, orderId, amountPaise, currency, keyId, cardTitle, customerName, customerPhone]
+
+    VerifyCheckoutInput:
+      type: object
+      properties:
+        razorpayOrderId:
+          type: string
+        razorpayPaymentId:
+          type: string
+        razorpaySignature:
+          type: string
+      required: [razorpayOrderId, razorpayPaymentId, razorpaySignature]
+
+    FreeDownloadInput:
+      type: object
+      properties:
+        cardId:
+          type: integer
+        customerName:
+          type: string
+        customerPhone:
+          type: string
+        customerEmail:
+          type: ["string", "null"]
+      required: [cardId, customerName, customerPhone]
+
+    FreeDownloadResult:
+      type: object
+      properties:
+        orderId:
+          type: string
+        downloadUrl:
+          type: string
+        filename:
+          type: string
+      required: [orderId, downloadUrl, filename]
+
+    Order:
+      type: object
+      properties:
+        id:
+          type: string
+        cardId:
+          type: integer
+        cardTitle:
+          type: string
+        customerId:
+          type: ["integer", "null"]
+        customerName:
+          type: string
+        customerPhone:
+          type: string
+        customerEmail:
+          type: ["string", "null"]
+        amountPaise:
+          type: integer
+        status:
+          type: string
+        razorpayOrderId:
+          type: ["string", "null"]
+        paidAt:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+      required: [id, cardId, cardTitle, customerName, customerPhone, amountPaise, status, createdAt]
+
+    OrderList:
+      type: object
+      properties:
+        orders:
+          type: array
+          items:
+            $ref: "#/components/schemas/Order"
+        total:
+          type: integer
+        page:
+          type: integer
+      required: [orders, total, page]
+
+    AdminLoginInput:
+  type: object
+  required:
+    - username
+    - password
+  properties:
+    username:
+      type: string
+      minLength: 1
+    password:
+      type: string
+      minLength: 1
+
+    AdminLoginResult:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        token:
+          type: string
+      required: [success, message]
+
+    AdminSession:
+      type: object
+      properties:
+        isAdmin:
+          type: boolean
+      required: [isAdmin]
+
+    AdminStats:
+      type: object
+      properties:
+        totalRevenuePaise:
+          type: integer
+        totalOrders:
+          type: integer
+        totalCards:
+          type: integer
+        totalSections:
+          type: integer
+        totalCustomers:
+          type: integer
+        recentOrders:
+          type: array
+          items:
+            $ref: "#/components/schemas/Order"
+      required: [totalRevenuePaise, totalOrders, totalCards, totalSections, totalCustomers, recentOrders]
+
+    UploadResult:
+      type: object
+      properties:
+        url:
+          type: string
+        key:
+          type: string
+      required: [url, key]
