@@ -3,6 +3,7 @@ import { useGetCard } from "@workspace/api-client-react";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, Download, ShoppingBag, Home } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+const API_URL = import.meta.env.VITE_API_URL;
 
 export default function PaymentSuccess() {
   const search = useSearch();
@@ -13,7 +14,7 @@ export default function PaymentSuccess() {
 
   const { data: card, isLoading } = useGetCard(cardId, { query: { enabled: !!cardId, queryKey: ["card", cardId] } });
 
-  const downloadUrl = `/api/purchases/${orderId}/download/${cardId}`;
+  const downloadUrl = `${API_URL}/api/purchases/${orderId}/download/${cardId}`;
 
   return (
     <div className="max-w-md mx-auto w-full px-4 py-16 text-center">

@@ -60,7 +60,14 @@ export default function Checkout() {
         });
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || "Failed");
-        setLocation(`/payment-success?orderId=${data.orderId}&cardId=${cardId}&free=true`);
+        const link = document.createElement("a");
+link.href = data.downloadUrl;
+link.download = data.filename;
+document.body.appendChild(link);
+link.click();
+link.remove();
+
+setLocation(`/payment-success?orderId=${data.orderId}&cardId=${cardId}&free=true`);
         return;
       }
 
@@ -89,7 +96,7 @@ export default function Checkout() {
         prefill: { name: orderData.customerName, email: orderData.customerEmail, contact: orderData.customerPhone },
         theme: { color: "#2563eb" },
         handler: async (response: any) => {
-          const verifyRes = await fetch("${API_URL}/api/checkout/verify", {
+          const verifyRes = await fetch(`${API_URL}/api/checkout/verify`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
