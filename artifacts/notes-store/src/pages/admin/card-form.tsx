@@ -73,7 +73,9 @@ export default function CardForm({ initialData, cardId }: { initialData?: Partia
       const fd = new FormData();
       fd.append("file", file);
       const token = getAdminToken();
-      const res = await fetch(`/api/admin/upload/${type}`, {
+      const API_URL = import.meta.env.VITE_API_URL;
+
+        const res = await fetch(`${API_URL}/api/admin/upload/${type}`, {
         method: "POST",
         headers: token ? { "x-admin-token": token } : {},
         body: fd,
