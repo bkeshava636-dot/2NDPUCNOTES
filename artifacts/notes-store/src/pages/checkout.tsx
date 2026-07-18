@@ -53,7 +53,7 @@ export default function Checkout() {
 
     try {
       if (isFree || card?.isFree) {
-        const res = await fetch("/api/checkout/free-download", {
+        const res = await fetch(`${API_URL}/api/checkout/free-download`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ cardId, customerName: name, customerPhone: phone }),
@@ -71,7 +71,7 @@ export default function Checkout() {
         return;
       }
 
-      const res = await fetch("/api/checkout/create-razorpay-order", {
+      const res = await fetch(`${API_URL}/api/checkout/create-razorpay-order`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ cardId, customerName: name, customerPhone: phone, customerEmail: email || undefined }),
@@ -89,7 +89,7 @@ export default function Checkout() {
         prefill: { name: orderData.customerName, email: orderData.customerEmail, contact: orderData.customerPhone },
         theme: { color: "#2563eb" },
         handler: async (response: any) => {
-          const verifyRes = await fetch("/api/checkout/verify", {
+          const verifyRes = await fetch("${API_URL}/api/checkout/verify", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
