@@ -10,6 +10,7 @@ import { Link } from "wouter";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatRupees } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
+const API_URL = import.meta.env.VITE_API_URL;
 
 declare global {
   interface Window { Razorpay: any; }
