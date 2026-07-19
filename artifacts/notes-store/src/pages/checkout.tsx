@@ -66,6 +66,7 @@ link.download = data.filename;
 document.body.appendChild(link);
 link.click();
 link.remove();
+setLoading(false);
 
 setLocation(`/payment-success?orderId=${data.orderId}&cardId=${cardId}&free=true`);
         return;
@@ -86,37 +87,60 @@ setLocation(`/payment-success?orderId=${data.orderId}&cardId=${cardId}&free=true
       const orderData = await res.json();
       if (!res.ok) throw new Error(orderData.error || "Failed to create order");
 
-      const options = {
-        key: orderData.keyId,
-        amount: orderData.amountPaise,
-        currency: "INR",
-        name: "2PUC Notes Store",
-        description: orderData.cardTitle,
-        order_id: orderData.razorpayOrderId,
-        prefill: { name: orderData.customerName, email: orderData.customerEmail, contact: orderData.customerPhone },
-        theme: { color: "#2563eb" },
-        handler: async (response: any) => {
-          const verifyRes = await fetch(`${API_URL}/api/checkout/verify`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              razorpayOrderId: response.razorpay_order_id,
-              razorpayPaymentId: response.razorpay_payment_id,
-              razorpaySignature: response.razorpay_signature,
-            }),
-          });
-          const data = await res.json();
+     const options = {
+  key: orderData.keyId,
+  amount: orderData.amountPaise,
+  currency: "INR",
+  name: "2PUC Notes Store",
+  description: orderData.cardTitle,
+  order_id: orderData.razorpayOrderId,
+  prefill: {
+    name: orderData.customerName,
+    email: orderData.customerEmail,
+    contact: orderData.customerPhone,
+  },
+  theme: {
+    color: "#2563eb",
+  },
 
-if (!res.ok) throw new Error(data.error || "Failed");
-
-// Start the download immediately
-window.open(data.downloadUrl, "_blank");
-
-// Then navigate to the success page
-setLocation(`/payment-success?orderId=${data.orderId}&cardId=${cardId}&free=true`);
+  handler: async (response: any) => {
+    try {
+      const verifyRes = await fetch(`${API_URL}/api/checkout/verify`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-        modal: { ondismiss: () => setLoading(false) },
-      };
+        body: JSON.stringify({
+          razorpayOrderId: response.razorpay_order_id,
+          razorpayPaymentId: response.razorpay_payment_id,
+          razorpaySignature: response.razorpay_signature,
+        }),
+      });
+
+      const order = await verifyRes.json();
+
+      if (!verifyRes.ok) {
+        throw new Error(order.error || "Verification failed");
+      }
+
+      setLoading(false);
+
+      window.location.href = `/payment-success?orderId=${order.id}&cardId=${cardId}`;
+    } catch (err: any) {
+      setLoading(false);
+
+      toast({
+        title: "Payment Verification Failed",
+        description: err.message,
+        variant: "destructive",
+      });
+    }
+  },
+
+  modal: {
+    ondismiss: () => setLoading(false),
+  },
+};
 
       const rzp = new window.Razorpay(options);
       rzp.open();
@@ -154,7 +178,7 @@ setLocation(`/payment-success?orderId=${data.orderId}&cardId=${cardId}&free=true
         <div className="flex items-center justify-between mt-2">
           <span className="text-sm text-gray-500">{card.resourceType}</span>
           <span className="font-bold text-primary text-lg flex items-center gap-1">
-            {card.isFree ? "Free" : formatRupees(card.pricePaise)}
+            {card.isFree ? "Free" : formatRupees(card.discountPricePaise ?? card.pricePaise)}
           </span>
         </div>
       </div>
@@ -183,7 +207,7 @@ setLocation(`/payment-success?orderId=${data.orderId}&cardId=${cardId}&free=true
               {loading ? "Processing..." : (
                 <>
                   <Lock className="h-4 w-4" />
-                  {isFree || card.isFree ? "Get Free Download" : `Pay ${formatRupees(card.pricePaise)} Securely`}
+                  {isFree || card.isFree ? "Get Free Download" : `Pay ${formatRupees(card.discountPricePaise ?? card.pricePaise)} Securely`}
                 </>
               )}
             </Button>
