@@ -67,7 +67,7 @@ const featuredCards = featuredQuery.data;
             <h1 className="text-3xl font-bold">2PUC Notes Store</h1>
           </div>
           <p className="text-primary-foreground/80 text-lg mb-8 max-w-xl mx-auto">
-            High-quality study materials for Karnataka 2nd PUC Science students. Download PDFs instantly after purchase.
+            Discover high-quality 2nd PUC Science notes and study materials, organized to help you prepare with confidence.
           </p>
           <form onSubmit={handleSearch} className="flex max-w-md mx-auto gap-2">
             <Input

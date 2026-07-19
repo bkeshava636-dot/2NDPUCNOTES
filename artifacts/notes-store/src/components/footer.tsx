@@ -12,7 +12,7 @@ export function Footer() {
   return (
     <footer className="mt-auto border-t bg-white py-8">
       <div className="container mx-auto flex max-w-5xl flex-col items-center justify-between gap-4 px-4 text-center text-sm text-gray-500 md:flex-row md:text-left">
-        <p>&copy; 2026 Notes Vault. All rights reserved.</p>
+        <p>&copy; 2026 2nd PUC Notes. All rights reserved.</p>
         <nav aria-label="Footer navigation" className="flex flex-wrap justify-center gap-x-4 gap-y-2">
           {footerLinks.map((link) => (
             <Link key={link.href} href={link.href} className="transition-colors hover:text-primary">
