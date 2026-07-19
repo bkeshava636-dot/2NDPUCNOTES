@@ -105,9 +105,15 @@ setLocation(`/payment-success?orderId=${data.orderId}&cardId=${cardId}&free=true
               razorpaySignature: response.razorpay_signature,
             }),
           });
-          const order = await verifyRes.json();
-          if (!verifyRes.ok) throw new Error(order.error || "Verification failed");
-          setLocation(`/payment-success?orderId=${order.id}&cardId=${cardId}`);
+          const data = await res.json();
+
+if (!res.ok) throw new Error(data.error || "Failed");
+
+// Start the download immediately
+window.open(data.downloadUrl, "_blank");
+
+// Then navigate to the success page
+setLocation(`/payment-success?orderId=${data.orderId}&cardId=${cardId}&free=true`);
         },
         modal: { ondismiss: () => setLoading(false) },
       };

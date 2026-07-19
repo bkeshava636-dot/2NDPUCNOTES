@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 import { db } from "@workspace/db";
 import { cardsTable, ordersTable, customersTable } from "@workspace/db";
 import { eq, and } from "drizzle-orm";
+import { supabase, BUCKET_NOTES } from "../supabase.js";
 
 const router = Router();
 
@@ -169,11 +170,19 @@ router.post("/checkout/free-download", async (req, res) => {
       status: "paid",
       paidAt: new Date(),
     });
-    const baseUrl = process.env.PUBLIC_API_URL!;
+   const { data, error } = await supabase.storage
+  .from(BUCKET_NOTES)
+  .createSignedUrl(card.pdfFileKey, 3600);
+
+if (error || !data?.signedUrl) {
+  req.log.error(error);
+  res.status(500).json({ error: "Could not generate download link" });
+  return;
+}
 
 res.json({
   orderId,
-  downloadUrl: `${baseUrl}/api/purchases/${orderId}/download/${card.id}`,
+  downloadUrl: data.signedUrl,
   filename: `${card.title.replace(/[^a-z0-9]/gi, "_")}.pdf`,
 });
   } catch (err) {
