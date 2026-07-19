@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Download, ShoppingBag, Search } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatRupees } from "@/lib/utils";
+const API_URL = import.meta.env.VITE_API_URL;
 
 export default function MyPurchases() {
   const [phone, setPhone] = useState("");
@@ -93,7 +94,7 @@ export default function MyPurchases() {
                         {new Date(order.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
                       </TableCell>
                       <TableCell className="text-right">
-                        <a href={`/api/purchases/${order.id}/download/${order.cardId}`} download>
+                        <a href={`${API_URL}/api/purchases/${order.id}/download/${order.cardId}`} download>
                           <Button variant="outline" size="sm" className="gap-1.5">
                             <Download className="h-3.5 w-3.5" /> PDF
                           </Button>
