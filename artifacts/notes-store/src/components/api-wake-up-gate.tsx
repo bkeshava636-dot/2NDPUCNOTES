@@ -129,7 +129,7 @@ export function ApiWakeUpGate({ children }: { children: ReactNode }) {
           </p>
 
           <p className="text-xs text-gray-500 max-w-xs">
-            This may take a few seconds the first time you visit.
+            This may take a 15 seconds.
           </p>
         </div>
       </div>
