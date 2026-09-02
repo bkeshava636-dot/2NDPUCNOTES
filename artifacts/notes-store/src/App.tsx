@@ -9,26 +9,31 @@ import { AdminLayout } from "@/components/layout/admin-layout";
 import { AdminGuard } from "@/components/admin-guard";
 import { ApiWakeUpGate } from "@/components/api-wake-up-gate";
 
-// Public Pages
+import { lazy, Suspense } from "react";
+import { Spinner } from "@/components/ui/spinner";
+
+// Core Public Pages (bundled for fast student browsing)
 import Home from "@/pages/home";
 import SectionPage from "@/pages/section";
 import CardPage from "@/pages/card";
 import Checkout from "@/pages/checkout";
 import PaymentSuccess from "@/pages/payment-success";
 import MyPurchases from "@/pages/my-purchases";
-import PrivacyPolicy from "@/pages/privacy-policy";
-import TermsAndConditions from "@/pages/terms-and-conditions";
-import RefundPolicy from "@/pages/refund-policy";
-import ContactUs from "@/pages/contact-us";
 
-// Admin Pages
-import AdminLogin from "@/pages/admin/login";
-import AdminDashboard from "@/pages/admin/dashboard";
-import AdminSections from "@/pages/admin/sections";
-import AdminCards from "@/pages/admin/cards";
-import AdminCardNew from "@/pages/admin/card-new";
-import AdminCardEdit from "@/pages/admin/card-edit";
-import AdminOrders from "@/pages/admin/orders";
+// Code-split Legal Pages
+const PrivacyPolicy = lazy(() => import("@/pages/privacy-policy"));
+const TermsAndConditions = lazy(() => import("@/pages/terms-and-conditions"));
+const RefundPolicy = lazy(() => import("@/pages/refund-policy"));
+const ContactUs = lazy(() => import("@/pages/contact-us"));
+
+// Code-split Admin Pages (keeps admin bundles separate from public store)
+const AdminLogin = lazy(() => import("@/pages/admin/login"));
+const AdminDashboard = lazy(() => import("@/pages/admin/dashboard"));
+const AdminSections = lazy(() => import("@/pages/admin/sections"));
+const AdminCards = lazy(() => import("@/pages/admin/cards"));
+const AdminCardNew = lazy(() => import("@/pages/admin/card-new"));
+const AdminCardEdit = lazy(() => import("@/pages/admin/card-edit"));
+const AdminOrders = lazy(() => import("@/pages/admin/orders"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -39,20 +44,30 @@ const queryClient = new QueryClient({
   },
 });
 
+function RouteLoadingFallback() {
+  return (
+    <div className="min-h-[50dvh] flex items-center justify-center p-8">
+      <Spinner className="size-8 text-primary" />
+    </div>
+  );
+}
+
 function AdminRoutes() {
   return (
     <AdminGuard>
       <AdminLayout>
-        <Switch>
-          <Route path="/admin" component={() => <Redirect to="/admin/dashboard" />} />
-          <Route path="/admin/dashboard" component={AdminDashboard} />
-          <Route path="/admin/sections" component={AdminSections} />
-          <Route path="/admin/cards" component={AdminCards} />
-          <Route path="/admin/cards/new" component={AdminCardNew} />
-          <Route path="/admin/cards/:id/edit" component={AdminCardEdit} />
-          <Route path="/admin/orders" component={AdminOrders} />
-          <Route component={NotFound} />
-        </Switch>
+        <Suspense fallback={<RouteLoadingFallback />}>
+          <Switch>
+            <Route path="/admin" component={() => <Redirect to="/admin/dashboard" />} />
+            <Route path="/admin/dashboard" component={AdminDashboard} />
+            <Route path="/admin/sections" component={AdminSections} />
+            <Route path="/admin/cards" component={AdminCards} />
+            <Route path="/admin/cards/new" component={AdminCardNew} />
+            <Route path="/admin/cards/:id/edit" component={AdminCardEdit} />
+            <Route path="/admin/orders" component={AdminOrders} />
+            <Route component={NotFound} />
+          </Switch>
+        </Suspense>
       </AdminLayout>
     </AdminGuard>
   );
@@ -61,19 +76,21 @@ function AdminRoutes() {
 function PublicRoutes() {
   return (
     <PublicLayout>
-      <Switch>
-        <Route path="/" component={Home} />
-        <Route path="/section/:id" component={SectionPage} />
-        <Route path="/card/:id" component={CardPage} />
-        <Route path="/checkout" component={Checkout} />
-        <Route path="/payment-success" component={PaymentSuccess} />
-        <Route path="/my-purchases" component={MyPurchases} />
-        <Route path="/privacy-policy" component={PrivacyPolicy} />
-        <Route path="/terms" component={TermsAndConditions} />
-        <Route path="/refund-policy" component={RefundPolicy} />
-        <Route path="/contact" component={ContactUs} />
-        <Route component={NotFound} />
-      </Switch>
+      <Suspense fallback={<RouteLoadingFallback />}>
+        <Switch>
+          <Route path="/" component={Home} />
+          <Route path="/section/:id" component={SectionPage} />
+          <Route path="/card/:id" component={CardPage} />
+          <Route path="/checkout" component={Checkout} />
+          <Route path="/payment-success" component={PaymentSuccess} />
+          <Route path="/my-purchases" component={MyPurchases} />
+          <Route path="/privacy-policy" component={PrivacyPolicy} />
+          <Route path="/terms" component={TermsAndConditions} />
+          <Route path="/refund-policy" component={RefundPolicy} />
+          <Route path="/contact" component={ContactUs} />
+          <Route component={NotFound} />
+        </Switch>
+      </Suspense>
     </PublicLayout>
   );
 }
@@ -81,7 +98,11 @@ function PublicRoutes() {
 function Router() {
   return (
     <Switch>
-      <Route path="/admin/login" component={AdminLogin} />
+      <Route path="/admin/login">
+        <Suspense fallback={<RouteLoadingFallback />}>
+          <AdminLogin />
+        </Suspense>
+      </Route>
       <Route path="/admin/*" component={AdminRoutes} />
       <Route path="/*" component={PublicRoutes} />
     </Switch>
