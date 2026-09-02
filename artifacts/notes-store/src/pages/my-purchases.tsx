@@ -30,21 +30,21 @@ export default function MyPurchases() {
     <div className="max-w-3xl mx-auto w-full px-4 py-8 sm:py-10">
       {/* Page Title */}
       <div className="flex items-center gap-3 mb-6">
-        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-50 text-primary border border-blue-100 shrink-0">
+        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#ebf3ff] text-[#1856b8] border border-[#dce8fa] shrink-0">
           <ShoppingBag className="h-4 w-4" />
         </div>
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight">My Purchases</h1>
-          <p className="text-gray-500 text-xs sm:text-sm mt-0.5">Enter your phone number to access your purchases</p>
+          <h1 className="text-xl sm:text-2xl font-bold text-[#112542] tracking-tight">My Purchases</h1>
+          <p className="text-[#5a6b82] text-xs sm:text-sm mt-0.5">Enter your phone number to access your purchases</p>
         </div>
       </div>
 
       {/* Lookup Form Card */}
-      <div className="bg-white border border-gray-200 rounded-xl p-4 sm:p-5 mb-6">
+      <div className="bg-white border border-[#e2e8f0] rounded-xl p-4 sm:p-5 mb-6">
         <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 items-end">
           <div className="w-full sm:flex-1 space-y-1.5">
-            <Label htmlFor="phone" className="text-xs font-semibold text-gray-700 flex items-center gap-1.5">
-              <Phone className="h-3.5 w-3.5 text-gray-400" />
+            <Label htmlFor="phone" className="text-xs font-semibold text-[#334155] flex items-center gap-1.5">
+              <Phone className="h-3.5 w-3.5 text-[#94a3b8]" />
               <span>Phone Number</span>
             </Label>
             <Input
@@ -54,10 +54,13 @@ export default function MyPurchases() {
               value={phone}
               onChange={e => setPhone(e.target.value)}
               maxLength={10}
-              className="h-10 text-sm bg-gray-50/50"
+              className="h-10 text-sm bg-[#f8fafc] border-[#e2e8f0] text-[#112542]"
             />
           </div>
-          <Button type="submit" className="w-full sm:w-auto gap-2 h-10 px-5 font-medium text-sm rounded-lg">
+          <Button
+            type="submit"
+            className="w-full sm:w-auto gap-2 h-10 px-5 font-medium text-sm rounded-lg bg-[#2f74de] hover:bg-[#1f63c8] text-white shadow-none transition-colors"
+          >
             <Search className="h-4 w-4" />
             <span>Find</span>
           </Button>
@@ -72,19 +75,19 @@ export default function MyPurchases() {
               {[1, 2, 3].map(i => <Skeleton key={i} className="h-20 w-full rounded-xl" />)}
             </div>
           ) : orders?.length === 0 ? (
-            <div className="text-center py-16 bg-white border border-gray-200/80 rounded-2xl p-8">
-              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gray-100 text-gray-400 mx-auto mb-4">
-                <ShoppingBag className="h-7 w-7 opacity-40" />
+            <div className="text-center py-16 bg-white border border-[#e2e8f0] rounded-xl p-8">
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#f8fafc] text-[#94a3b8] mx-auto mb-4 border border-[#e2e8f0]">
+                <ShoppingBag className="h-7 w-7 opacity-60" />
               </div>
-              <p className="font-bold text-gray-900 text-base">No purchases found for this number.</p>
-              <p className="text-sm text-gray-500 mt-1 max-w-sm mx-auto">
+              <p className="font-bold text-[#112542] text-base">No purchases found for this number.</p>
+              <p className="text-sm text-[#5a6b82] mt-1 max-w-sm mx-auto">
                 Make sure you're using the same number you used at checkout.
               </p>
             </div>
           ) : (
             <div className="space-y-4">
               <div className="flex items-center justify-between px-1">
-                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                <p className="text-xs font-semibold text-[#64748b] uppercase tracking-wider">
                   Purchased Resources ({orders?.length})
                 </p>
               </div>
@@ -94,34 +97,34 @@ export default function MyPurchases() {
                 {orders?.map(order => (
                   <div
                     key={order.id}
-                    className="bg-white border border-gray-200/80 rounded-xl p-4 shadow-xs space-y-3"
+                    className="bg-white border border-[#e2e8f0] rounded-xl p-4 space-y-3"
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex items-start gap-2.5 min-w-0">
-                        <FileText className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                        <FileText className="h-5 w-5 text-[#1856b8] shrink-0 mt-0.5" />
                         <div>
-                          <p className="font-bold text-gray-900 text-sm leading-snug">{order.cardTitle}</p>
-                          <p className="text-[11px] font-mono text-gray-400 mt-0.5">ID: {order.id.slice(0, 8)}...</p>
+                          <p className="font-bold text-[#112542] text-sm leading-snug">{order.cardTitle}</p>
+                          <p className="text-[11px] font-mono text-[#94a3b8] mt-0.5">ID: {order.id.slice(0, 8)}...</p>
                         </div>
                       </div>
                       {order.amountPaise === 0 ? (
-                        <Badge className="bg-emerald-100 text-emerald-800 border-0 text-xs font-semibold shrink-0">
+                        <span className="bg-[#eaf5ec] text-[#167035] border border-[#d7ecdc] text-xs font-semibold px-2 py-0.5 rounded shrink-0">
                           Free
-                        </Badge>
+                        </span>
                       ) : (
-                        <span className="text-sm font-bold text-gray-900 shrink-0">
+                        <span className="text-sm font-bold text-[#112542] shrink-0">
                           {formatRupees(order.amountPaise)}
                         </span>
                       )}
                     </div>
 
-                    <div className="flex items-center justify-between pt-2 border-t border-gray-100 text-xs text-gray-500">
+                    <div className="flex items-center justify-between pt-2 border-t border-[#eef2f6] text-xs text-[#5a6b82]">
                       <span className="flex items-center gap-1">
                         <Calendar className="h-3 w-3" />
                         {new Date(order.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
                       </span>
                       <a href={`${API_URL}/api/purchases/${order.id}/download/${order.cardId}`} download>
-                        <Button size="sm" className="gap-1.5 h-8 px-3 text-xs font-semibold rounded-lg shadow-xs">
+                        <Button size="sm" className="gap-1.5 h-8 px-3 text-xs font-semibold rounded-lg bg-[#2f74de] hover:bg-[#1f63c8] text-white shadow-none transition-colors">
                           <Download className="h-3.5 w-3.5" />
                           <span>Download PDF</span>
                         </Button>
@@ -132,36 +135,38 @@ export default function MyPurchases() {
               </div>
 
               {/* Desktop Table View (Hidden on mobile) */}
-              <div className="hidden md:block bg-white border border-gray-200/80 rounded-2xl overflow-hidden shadow-xs">
+              <div className="hidden md:block bg-white border border-[#e2e8f0] rounded-xl overflow-hidden">
                 <Table>
-                  <TableHeader className="bg-gray-50/80">
-                    <TableRow className="border-gray-100 hover:bg-transparent">
-                      <TableHead className="font-semibold text-xs text-gray-600 uppercase tracking-wider py-3.5">Resource</TableHead>
-                      <TableHead className="font-semibold text-xs text-gray-600 uppercase tracking-wider py-3.5">Amount</TableHead>
-                      <TableHead className="font-semibold text-xs text-gray-600 uppercase tracking-wider py-3.5">Date</TableHead>
-                      <TableHead className="font-semibold text-xs text-gray-600 uppercase tracking-wider py-3.5 text-right">Action</TableHead>
+                  <TableHeader className="bg-[#f8fafc]">
+                    <TableRow className="border-[#eef2f6] hover:bg-transparent">
+                      <TableHead className="font-semibold text-xs text-[#64748b] uppercase tracking-wider py-3.5">Resource</TableHead>
+                      <TableHead className="font-semibold text-xs text-[#64748b] uppercase tracking-wider py-3.5">Amount</TableHead>
+                      <TableHead className="font-semibold text-xs text-[#64748b] uppercase tracking-wider py-3.5">Date</TableHead>
+                      <TableHead className="font-semibold text-xs text-[#64748b] uppercase tracking-wider py-3.5 text-right">Action</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {orders?.map(order => (
-                      <TableRow key={order.id} className="border-gray-100 hover:bg-gray-50/50 transition-colors">
+                      <TableRow key={order.id} className="border-[#eef2f6] hover:bg-[#f8fafc]/60 transition-colors">
                         <TableCell className="py-4">
-                          <div className="font-semibold text-gray-900 leading-snug">{order.cardTitle}</div>
-                          <div className="text-[11px] text-gray-400 font-mono mt-0.5">Order: {order.id}</div>
+                          <div className="font-semibold text-[#112542] leading-snug">{order.cardTitle}</div>
+                          <div className="text-[11px] text-[#94a3b8] font-mono mt-0.5">Order: {order.id}</div>
                         </TableCell>
                         <TableCell className="py-4">
                           {order.amountPaise === 0 ? (
-                            <Badge className="bg-emerald-100 text-emerald-800 border-0 text-xs font-semibold">Free</Badge>
+                            <span className="bg-[#eaf5ec] text-[#167035] border border-[#d7ecdc] text-xs font-semibold px-2 py-0.5 rounded">
+                              Free
+                            </span>
                           ) : (
-                            <span className="text-gray-900 font-bold text-sm">{formatRupees(order.amountPaise)}</span>
+                            <span className="text-[#112542] font-bold text-sm">{formatRupees(order.amountPaise)}</span>
                           )}
                         </TableCell>
-                        <TableCell className="py-4 text-sm text-gray-500">
+                        <TableCell className="py-4 text-sm text-[#5a6b82]">
                           {new Date(order.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
                         </TableCell>
                         <TableCell className="py-4 text-right">
                           <a href={`${API_URL}/api/purchases/${order.id}/download/${order.cardId}`} download>
-                            <Button variant="default" size="sm" className="gap-1.5 rounded-lg shadow-xs font-medium">
+                            <Button variant="default" size="sm" className="gap-1.5 rounded-lg font-medium bg-[#2f74de] hover:bg-[#1f63c8] text-white shadow-none transition-colors">
                               <Download className="h-3.5 w-3.5" />
                               <span>Download PDF</span>
                             </Button>

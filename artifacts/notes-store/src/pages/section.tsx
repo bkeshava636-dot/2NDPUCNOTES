@@ -38,31 +38,31 @@ export default function SectionPage() {
     <div className="max-w-5xl mx-auto w-full px-4 py-8 sm:py-10">
       <div className="mb-6">
         <Link href="/">
-          <Button variant="ghost" size="sm" className="gap-2 text-gray-600 hover:text-gray-900 -ml-2 mb-4">
+          <Button variant="ghost" size="sm" className="gap-2 text-[#5a6b82] hover:text-[#112542] -ml-2 mb-4">
             <ArrowLeft className="h-4 w-4" />
             <span>Back to Home</span>
           </Button>
         </Link>
 
         {/* Section Header */}
-        <div className="bg-white border border-gray-200 rounded-xl p-5 sm:p-7 mb-6">
+        <div className="bg-white border border-[#e2e8f0] rounded-xl p-5 sm:p-7 mb-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
               <div className="flex items-center gap-2.5 mb-2">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-50 text-primary border border-blue-100">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#ebf3ff] text-[#1856b8] border border-[#dce8fa]">
                   <BookOpen className="h-4 w-4" />
                 </div>
-                <h1 className="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight">
+                <h1 className="text-xl sm:text-2xl font-bold text-[#112542] tracking-tight">
                   {section?.name ?? "Section"}
                 </h1>
                 {cards && (
-                  <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-0.5 rounded-md">
+                  <span className="text-xs font-medium text-[#64748b] bg-[#f0f4f9] px-2 py-0.5 rounded-md border border-[#e2e8f0]">
                     {cards.length} {cards.length === 1 ? "resource" : "resources"}
                   </span>
                 )}
               </div>
               {section?.description && (
-                <p className="text-gray-600 text-sm leading-relaxed max-w-2xl mt-1">
+                <p className="text-[#5a6b82] text-sm leading-relaxed max-w-2xl mt-1">
                   {section.description}
                 </p>
               )}
@@ -72,15 +72,15 @@ export default function SectionPage() {
       </div>
 
       {/* Filters Toolbar */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3.5 mb-8 bg-slate-50 border border-gray-200 rounded-xl p-3 sm:px-4">
-        <div className="flex items-center gap-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3.5 mb-8 bg-[#f8fafc] border border-[#e2e8f0] rounded-xl p-3 sm:px-4">
+        <div className="flex items-center gap-2 text-xs font-semibold text-[#64748b] uppercase tracking-wider">
           <SlidersHorizontal className="h-3.5 w-3.5" />
           <span>Filters</span>
         </div>
 
         <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
           <Select value={priceFilter} onValueChange={v => setPriceFilter(v as "all" | "free" | "paid")}>
-            <SelectTrigger className="w-full sm:w-36 bg-gray-50/50 border-gray-200 text-sm h-9">
+            <SelectTrigger className="w-full sm:w-36 bg-white border-[#e2e8f0] text-sm h-9 text-[#112542]">
               <SelectValue placeholder="Price" />
             </SelectTrigger>
             <SelectContent>
@@ -91,7 +91,7 @@ export default function SectionPage() {
           </Select>
 
           <Select value={typeFilter} onValueChange={setTypeFilter}>
-            <SelectTrigger className="w-full sm:w-44 bg-gray-50/50 border-gray-200 text-sm h-9">
+            <SelectTrigger className="w-full sm:w-44 bg-white border-[#e2e8f0] text-sm h-9 text-[#112542]">
               <SelectValue placeholder="Resource Type" />
             </SelectTrigger>
             <SelectContent>
@@ -105,7 +105,7 @@ export default function SectionPage() {
               variant="ghost"
               size="sm"
               onClick={handleResetFilters}
-              className="gap-1.5 text-xs text-gray-500 hover:text-gray-900 h-9"
+              className="gap-1.5 text-xs text-[#5a6b82] hover:text-[#112542] h-9"
             >
               <RotateCcw className="h-3.5 w-3.5" />
               <span>Clear Filters</span>
@@ -120,11 +120,11 @@ export default function SectionPage() {
           {[1, 2, 3, 4, 5, 6].map(i => <Skeleton key={i} className="h-72 rounded-xl" />)}
         </div>
       ) : filtered?.length === 0 ? (
-        <div className="text-center py-20 bg-white border border-gray-200/80 rounded-2xl p-8">
-          <BookOpen className="h-10 w-10 text-gray-300 mx-auto mb-3" />
-          <p className="text-gray-600 font-medium">No resources match the current filters.</p>
+        <div className="text-center py-20 bg-white border border-[#e2e8f0] rounded-xl p-8">
+          <BookOpen className="h-10 w-10 text-[#94a3b8] mx-auto mb-3" />
+          <p className="text-[#5a6b82] font-medium">No resources match the current filters.</p>
           {hasActiveFilters && (
-            <Button variant="outline" size="sm" onClick={handleResetFilters} className="mt-4 gap-2">
+            <Button variant="outline" size="sm" onClick={handleResetFilters} className="mt-4 gap-2 border-[#e2e8f0] text-[#5a6b82] hover:text-[#112542]">
               <RotateCcw className="h-3.5 w-3.5" />
               Clear Filters
             </Button>

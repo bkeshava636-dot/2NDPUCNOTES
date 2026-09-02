@@ -170,72 +170,72 @@ export default function Checkout() {
   return (
     <div className="max-w-lg mx-auto w-full px-4 py-8 sm:py-10">
       <Link href={`/card/${cardId}`}>
-        <Button variant="ghost" size="sm" className="gap-2 text-gray-600 hover:text-gray-900 -ml-2 mb-6">
+        <Button variant="ghost" size="sm" className="gap-2 text-[#5a6b82] hover:text-[#112542] -ml-2 mb-6">
           <ArrowLeft className="h-4 w-4" />
           <span>Back</span>
         </Button>
       </Link>
 
       {/* Order Summary Card */}
-      <div className="bg-white border border-gray-200 rounded-xl p-4 sm:p-5 mb-5">
-        <div className="flex items-center justify-between border-b border-gray-100 pb-2.5 mb-3">
-          <span className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider">Order Summary</span>
-          <span className="text-xs font-medium text-primary bg-blue-50 border border-blue-100 px-2 py-0.5 rounded">
+      <div className="bg-white border border-[#e2e8f0] rounded-xl p-4 sm:p-5 mb-5">
+        <div className="flex items-center justify-between border-b border-[#eef2f6] pb-2.5 mb-3">
+          <span className="text-[11px] font-semibold text-[#64748b] uppercase tracking-wider">Order Summary</span>
+          <span className="text-xs font-medium text-[#1856b8] bg-[#ebf3ff] border border-[#dce8fa] px-2 py-0.5 rounded">
             {card.resourceType}
           </span>
         </div>
 
         <div className="flex items-start gap-3">
-          <div className="h-12 w-12 rounded-lg bg-gray-50 border border-gray-200 overflow-hidden shrink-0 flex items-center justify-center">
+          <div className="h-12 w-12 rounded-lg bg-[#f8fafc] border border-[#eef2f6] overflow-hidden shrink-0 flex items-center justify-center">
             {card.thumbnailUrl ? (
               <img src={card.thumbnailUrl} alt={card.title} className="w-full h-full object-cover" />
             ) : (
-              <FileText className="h-5 w-5 text-gray-400" />
+              <FileText className="h-5 w-5 text-[#94a3b8]" />
             )}
           </div>
           <div className="flex-1 min-w-0">
-            <h2 className="font-bold text-gray-900 text-sm leading-snug line-clamp-2">
+            <h2 className="font-bold text-[#112542] text-sm leading-snug line-clamp-2">
               {card.title}
             </h2>
             {card.chapter && (
-              <p className="text-xs text-gray-500 mt-0.5 truncate">{card.chapter}</p>
+              <p className="text-xs text-[#5a6b82] mt-0.5 truncate">{card.chapter}</p>
             )}
           </div>
         </div>
 
         {/* Price Row */}
-        <div className="flex items-center justify-between border-t border-gray-100 pt-3 mt-3.5">
-          <span className="text-sm font-medium text-gray-600">Total</span>
+        <div className="flex items-center justify-between border-t border-[#eef2f6] pt-3 mt-3.5">
+          <span className="text-sm font-medium text-[#5a6b82]">Total</span>
           <div className="text-right">
             {isCardFree ? (
-              <span className="text-lg font-bold text-emerald-600">Free</span>
+              <span className="text-lg font-bold text-[#16a34a]">Free</span>
             ) : card.discountPricePaise && card.discountPricePaise < card.pricePaise ? (
               <div className="flex items-baseline gap-2">
-                <span className="text-xs text-gray-400 line-through">{formatRupees(card.pricePaise)}</span>
-                <span className="text-lg font-bold text-gray-900">{formatRupees(effectivePrice)}</span>
+                <span className="text-xs text-[#94a3b8] line-through">{formatRupees(card.pricePaise)}</span>
+                <span className="text-lg font-bold text-[#112542]">{formatRupees(effectivePrice)}</span>
               </div>
             ) : (
-              <span className="text-lg font-bold text-gray-900">{formatRupees(effectivePrice)}</span>
+              <span className="text-lg font-bold text-[#112542]">{formatRupees(effectivePrice)}</span>
             )}
           </div>
         </div>
       </div>
 
       {/* Customer Form Card */}
-      <Card className="rounded-xl border-gray-200 shadow-none">
+      <Card className="rounded-xl border-[#e2e8f0] shadow-none">
         <CardHeader className="pb-3 pt-5 px-5">
-          <CardTitle className="text-base sm:text-lg font-bold text-gray-900">
+          <CardTitle className="text-base sm:text-lg font-bold text-[#112542]">
             {isCardFree ? "Get Free Download" : "Complete Purchase"}
           </CardTitle>
-          <CardDescription className="text-xs text-gray-500">
+          <CardDescription className="text-xs text-[#5a6b82]">
             We need a few details to send you your resource
           </CardDescription>
         </CardHeader>
         <CardContent className="px-5 pb-5">
           <form onSubmit={handleSubmit} className="space-y-3.5">
             <div className="space-y-1.5">
-              <Label htmlFor="name" className="text-xs font-semibold text-gray-700 flex items-center gap-1.5">
-                <User className="h-3.5 w-3.5 text-gray-400" />
+              <Label htmlFor="name" className="text-xs font-semibold text-[#334155] flex items-center gap-1.5">
+                <User className="h-3.5 w-3.5 text-[#94a3b8]" />
                 <span>Full Name *</span>
               </Label>
               <Input
@@ -244,13 +244,13 @@ export default function Checkout() {
                 value={name}
                 onChange={e => setName(e.target.value)}
                 required
-                className="h-10 text-sm bg-gray-50/50"
+                className="h-10 text-sm bg-[#f8fafc] border-[#e2e8f0] text-[#112542] focus-visible:border-[#1856b8]"
               />
             </div>
 
             <div className="space-y-1.5">
-              <Label htmlFor="phone" className="text-xs font-semibold text-gray-700 flex items-center gap-1.5">
-                <Phone className="h-3.5 w-3.5 text-gray-400" />
+              <Label htmlFor="phone" className="text-xs font-semibold text-[#334155] flex items-center gap-1.5">
+                <Phone className="h-3.5 w-3.5 text-[#94a3b8]" />
                 <span>Phone Number *</span>
               </Label>
               <Input
@@ -261,14 +261,14 @@ export default function Checkout() {
                 onChange={e => setPhone(e.target.value)}
                 required
                 maxLength={10}
-                className="h-10 text-sm bg-gray-50/50"
+                className="h-10 text-sm bg-[#f8fafc] border-[#e2e8f0] text-[#112542] focus-visible:border-[#1856b8]"
               />
-              <p className="text-[11px] text-gray-500">Used to retrieve your purchases later</p>
+              <p className="text-[11px] text-[#94a3b8]">Used to retrieve your purchases later</p>
             </div>
 
             <div className="space-y-1.5">
-              <Label htmlFor="email" className="text-xs font-semibold text-gray-700 flex items-center gap-1.5">
-                <Mail className="h-3.5 w-3.5 text-gray-400" />
+              <Label htmlFor="email" className="text-xs font-semibold text-[#334155] flex items-center gap-1.5">
+                <Mail className="h-3.5 w-3.5 text-[#94a3b8]" />
                 <span>Email (optional)</span>
               </Label>
               <Input
@@ -277,12 +277,16 @@ export default function Checkout() {
                 placeholder="your@email.com"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
-                className="h-10 text-sm bg-gray-50/50"
+                className="h-10 text-sm bg-[#f8fafc] border-[#e2e8f0] text-[#112542] focus-visible:border-[#1856b8]"
               />
             </div>
 
             <div className="pt-1">
-              <Button type="submit" className="w-full gap-2 h-11 font-semibold text-sm rounded-lg" disabled={loading}>
+              <Button
+                type="submit"
+                className="w-full gap-2 h-11 font-semibold text-sm rounded-lg bg-[#2f74de] hover:bg-[#1f63c8] text-white shadow-none transition-colors"
+                disabled={loading}
+              >
                 {loading ? "Processing..." : (
                   <>
                     <Lock className="h-4 w-4" />
@@ -293,14 +297,14 @@ export default function Checkout() {
             </div>
 
             {/* Trust and security badges */}
-            <div className="pt-3 border-t border-gray-100 flex items-center justify-center gap-4 text-xs text-gray-500">
-              <div className="flex items-center gap-1 text-gray-500">
-                <ShieldCheck className="h-3.5 w-3.5 text-emerald-600" />
+            <div className="pt-3 border-t border-[#eef2f6] flex items-center justify-center gap-4 text-xs text-[#5a6b82]">
+              <div className="flex items-center gap-1">
+                <ShieldCheck className="h-3.5 w-3.5 text-[#16a34a]" />
                 <span>256-bit Encryption</span>
               </div>
               {!isCardFree && (
-                <div className="flex items-center gap-1 text-gray-500">
-                  <Lock className="h-3.5 w-3.5 text-primary" />
+                <div className="flex items-center gap-1">
+                  <Lock className="h-3.5 w-3.5 text-[#1856b8]" />
                   <span>Secured by Razorpay</span>
                 </div>
               )}
