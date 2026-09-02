@@ -5,34 +5,9 @@ import { CardItem } from "@/components/card-item";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Search, BookOpen, Download, MessageCircle, ChevronDown, ChevronUp } from "lucide-react";
+import { Search, BookOpen, Download, MessageCircle } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { TELEGRAM_LINK } from "@/lib/site-config";
-
-const FAQ_ITEMS = [
-  { q: "Are these notes suitable for Karnataka 2nd PUC Science?", a: "Yes, all notes are specifically designed for the Karnataka Board 2nd PUC Science curriculum, following the latest syllabus." },
-  { q: "How do I download after purchasing?", a: "After a successful payment, you will be shown a download button immediately. You can also access your downloads anytime from 'My Purchases' using your phone number." },
-  { q: "What subjects are available?", a: "We cover Physics, Chemistry, Mathematics, Biology, and Computer Science — all core 2nd PUC Science subjects." },
-  { q: "Are there any free resources?", a: "Yes! We offer several free resources including formula sheets and sample papers. Look for the 'Free' badge on any card." },
-  { q: "What formats are the notes in?", a: "All resources are provided as high-quality PDF files, optimized for both mobile and desktop viewing." },
-  { q: "How do I contact support?", a: "You can reach us on Telegram for any questions, refunds, or issues. Click the 'Contact on Telegram' button." },
-];
-
-function FaqItem({ q, a }: { q: string; a: string }) {
-  const [open, setOpen] = useState(false);
-  return (
-    <div className="border-b border-gray-200 last:border-0">
-      <button
-        className="w-full flex items-center justify-between py-4 text-left font-medium text-gray-900 hover:text-primary transition-colors"
-        onClick={() => setOpen(!open)}
-      >
-        <span>{q}</span>
-        {open ? <ChevronUp className="h-4 w-4 flex-shrink-0 ml-2" /> : <ChevronDown className="h-4 w-4 flex-shrink-0 ml-2" />}
-      </button>
-      {open && <p className="pb-4 text-gray-600 text-sm leading-relaxed">{a}</p>}
-    </div>
-  );
-}
 
 export default function Home() {
   const [search, setSearch] = useState("");
@@ -182,14 +157,6 @@ const featuredCards = featuredQuery.data;
               Contact on Telegram
             </Button>
           </a>
-        </section>
-
-        {/* FAQ */}
-        <section>
-          <h2 className="text-xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h2>
-          <div className="bg-white rounded-xl border border-gray-200 px-4">
-            {FAQ_ITEMS.map((item, i) => <FaqItem key={i} q={item.q} a={item.a} />)}
-          </div>
         </section>
       </div>
     </div>
