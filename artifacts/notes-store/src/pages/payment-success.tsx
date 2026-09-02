@@ -31,41 +31,41 @@ export default function PaymentSuccess() {
   return (
     <div className="max-w-md mx-auto w-full px-4 py-12 sm:py-16 text-center">
       {/* Success Badge Icon */}
-      <div className="relative mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-emerald-50 text-emerald-600 ring-8 ring-emerald-50/50">
-        <CheckCircle2 className="h-10 w-10 text-emerald-600" />
+      <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-50 text-emerald-600 border border-emerald-100">
+        <CheckCircle2 className="h-8 w-8 text-emerald-600" />
       </div>
 
-      <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight mb-2">
+      <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight mb-2">
         {isFree ? "Ready to Download!" : "Payment Successful!"}
       </h1>
 
-      <p className="text-sm sm:text-base text-gray-600 mb-8 max-w-sm mx-auto leading-relaxed">
+      <p className="text-sm text-gray-600 mb-7 max-w-sm mx-auto leading-relaxed">
         {isFree ? "Your free resource is ready." : "Your purchase is confirmed and your resource is ready to download."}
       </p>
 
       {/* Order Info Card */}
       {isLoading ? (
-        <div className="bg-white border border-gray-200/80 rounded-2xl p-5 mb-6 shadow-xs text-left space-y-3">
+        <div className="bg-white border border-gray-200 rounded-xl p-4 sm:p-5 mb-5 text-left space-y-3">
           <Skeleton className="h-4 w-20" />
           <Skeleton className="h-6 w-full" />
           <Skeleton className="h-4 w-32" />
         </div>
       ) : (
-        <div className="bg-white border border-gray-200/80 rounded-2xl p-5 mb-6 shadow-xs text-left">
+        <div className="bg-white border border-gray-200 rounded-xl p-4 sm:p-5 mb-5 text-left">
           <div className="flex items-start gap-3">
-            <div className="h-10 w-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0 mt-0.5">
-              <FileText className="h-5 w-5" />
+            <div className="h-9 w-9 rounded-lg bg-blue-50 text-primary border border-blue-100 flex items-center justify-center shrink-0 mt-0.5">
+              <FileText className="h-4 w-4" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-0.5">Resource</p>
-              <p className="font-bold text-gray-900 text-sm sm:text-base leading-snug">{card?.title}</p>
+              <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-0.5">Resource</p>
+              <p className="font-bold text-gray-900 text-sm leading-snug">{card?.title}</p>
             </div>
           </div>
 
           {orderId && (
-            <div className="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between">
+            <div className="mt-3.5 pt-3 border-t border-gray-100 flex items-center justify-between">
               <div>
-                <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-0.5">Order ID</p>
+                <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-0.5">Order ID</p>
                 <p className="font-mono text-xs text-gray-600 break-all">{orderId}</p>
               </div>
               <button
@@ -89,28 +89,28 @@ export default function PaymentSuccess() {
       )}
 
       {/* Primary Download CTA */}
-      <a href={downloadUrl} download className="block mb-4">
-        <Button size="lg" className="w-full gap-2 py-6 rounded-xl text-base font-semibold shadow-md">
-          <Download className="h-5 w-5" />
+      <a href={downloadUrl} download className="block mb-3">
+        <Button size="lg" className="w-full gap-2 h-11 rounded-lg text-sm font-semibold">
+          <Download className="h-4 w-4" />
           <span>Download PDF</span>
         </Button>
       </a>
 
-      <p className="text-xs text-gray-400 mb-8">
+      <p className="text-xs text-gray-400 mb-7">
         You can re-download this resource anytime using your phone number in My Purchases.
       </p>
 
       {/* Secondary Actions */}
-      <div className="flex gap-3">
+      <div className="flex gap-2.5">
         <Link href="/my-purchases" className="flex-1">
-          <Button variant="outline" className="w-full gap-2 rounded-xl text-sm border-gray-200">
-            <ShoppingBag className="h-4 w-4" />
+          <Button variant="outline" className="w-full gap-2 rounded-lg text-xs font-medium h-9 border-gray-200">
+            <ShoppingBag className="h-3.5 w-3.5" />
             <span>My Purchases</span>
           </Button>
         </Link>
         <Link href="/" className="flex-1">
-          <Button variant="ghost" className="w-full gap-2 rounded-xl text-sm text-gray-600 hover:text-gray-900">
-            <Home className="h-4 w-4" />
+          <Button variant="ghost" className="w-full gap-2 rounded-lg text-xs font-medium h-9 text-gray-600 hover:text-gray-900">
+            <Home className="h-3.5 w-3.5" />
             <span>Home</span>
           </Button>
         </Link>

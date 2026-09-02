@@ -29,18 +29,18 @@ export default function MyPurchases() {
   return (
     <div className="max-w-3xl mx-auto w-full px-4 py-8 sm:py-10">
       {/* Page Title */}
-      <div className="flex items-center gap-3.5 mb-8">
-        <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary shrink-0">
-          <ShoppingBag className="h-6 w-6" />
+      <div className="flex items-center gap-3 mb-6">
+        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-50 text-primary border border-blue-100 shrink-0">
+          <ShoppingBag className="h-4 w-4" />
         </div>
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">My Purchases</h1>
-          <p className="text-gray-500 text-sm mt-0.5">Enter your phone number to access your purchases</p>
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight">My Purchases</h1>
+          <p className="text-gray-500 text-xs sm:text-sm mt-0.5">Enter your phone number to access your purchases</p>
         </div>
       </div>
 
       {/* Lookup Form Card */}
-      <div className="bg-white border border-gray-200/80 rounded-2xl p-5 sm:p-6 mb-8 shadow-xs">
+      <div className="bg-white border border-gray-200 rounded-xl p-4 sm:p-5 mb-6">
         <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 items-end">
           <div className="w-full sm:flex-1 space-y-1.5">
             <Label htmlFor="phone" className="text-xs font-semibold text-gray-700 flex items-center gap-1.5">
@@ -57,7 +57,7 @@ export default function MyPurchases() {
               className="h-10 text-sm bg-gray-50/50"
             />
           </div>
-          <Button type="submit" className="w-full sm:w-auto gap-2 h-10 px-6 font-semibold shadow-xs">
+          <Button type="submit" className="w-full sm:w-auto gap-2 h-10 px-5 font-medium text-sm rounded-lg">
             <Search className="h-4 w-4" />
             <span>Find</span>
           </Button>

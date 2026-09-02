@@ -177,24 +177,24 @@ export default function Checkout() {
       </Link>
 
       {/* Order Summary Card */}
-      <div className="bg-white border border-gray-200/80 rounded-2xl p-5 mb-6 shadow-xs">
-        <div className="flex items-center justify-between border-b border-gray-100 pb-3 mb-3">
-          <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Order Summary</span>
-          <span className="text-xs font-medium text-primary bg-primary/10 px-2 py-0.5 rounded-md">
+      <div className="bg-white border border-gray-200 rounded-xl p-4 sm:p-5 mb-5">
+        <div className="flex items-center justify-between border-b border-gray-100 pb-2.5 mb-3">
+          <span className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider">Order Summary</span>
+          <span className="text-xs font-medium text-primary bg-blue-50 border border-blue-100 px-2 py-0.5 rounded">
             {card.resourceType}
           </span>
         </div>
 
         <div className="flex items-start gap-3">
-          <div className="h-14 w-14 rounded-xl bg-gray-50 border border-gray-100 overflow-hidden shrink-0 flex items-center justify-center">
+          <div className="h-12 w-12 rounded-lg bg-gray-50 border border-gray-200 overflow-hidden shrink-0 flex items-center justify-center">
             {card.thumbnailUrl ? (
               <img src={card.thumbnailUrl} alt={card.title} className="w-full h-full object-cover" />
             ) : (
-              <FileText className="h-6 w-6 text-gray-400" />
+              <FileText className="h-5 w-5 text-gray-400" />
             )}
           </div>
           <div className="flex-1 min-w-0">
-            <h2 className="font-bold text-gray-900 text-sm sm:text-base leading-snug line-clamp-2">
+            <h2 className="font-bold text-gray-900 text-sm leading-snug line-clamp-2">
               {card.title}
             </h2>
             {card.chapter && (
@@ -204,35 +204,35 @@ export default function Checkout() {
         </div>
 
         {/* Price Row */}
-        <div className="flex items-center justify-between border-t border-gray-100 pt-3 mt-4">
+        <div className="flex items-center justify-between border-t border-gray-100 pt-3 mt-3.5">
           <span className="text-sm font-medium text-gray-600">Total</span>
           <div className="text-right">
             {isCardFree ? (
-              <span className="text-xl font-extrabold text-emerald-600">Free</span>
+              <span className="text-lg font-bold text-emerald-600">Free</span>
             ) : card.discountPricePaise && card.discountPricePaise < card.pricePaise ? (
               <div className="flex items-baseline gap-2">
                 <span className="text-xs text-gray-400 line-through">{formatRupees(card.pricePaise)}</span>
-                <span className="text-xl font-extrabold text-gray-900">{formatRupees(effectivePrice)}</span>
+                <span className="text-lg font-bold text-gray-900">{formatRupees(effectivePrice)}</span>
               </div>
             ) : (
-              <span className="text-xl font-extrabold text-gray-900">{formatRupees(effectivePrice)}</span>
+              <span className="text-lg font-bold text-gray-900">{formatRupees(effectivePrice)}</span>
             )}
           </div>
         </div>
       </div>
 
       {/* Customer Form Card */}
-      <Card className="rounded-2xl border-gray-200/80 shadow-xs">
-        <CardHeader className="pb-4">
-          <CardTitle className="text-lg sm:text-xl font-extrabold text-gray-900">
+      <Card className="rounded-xl border-gray-200 shadow-none">
+        <CardHeader className="pb-3 pt-5 px-5">
+          <CardTitle className="text-base sm:text-lg font-bold text-gray-900">
             {isCardFree ? "Get Free Download" : "Complete Purchase"}
           </CardTitle>
-          <CardDescription className="text-xs sm:text-sm text-gray-500">
+          <CardDescription className="text-xs text-gray-500">
             We need a few details to send you your resource
           </CardDescription>
         </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
+        <CardContent className="px-5 pb-5">
+          <form onSubmit={handleSubmit} className="space-y-3.5">
             <div className="space-y-1.5">
               <Label htmlFor="name" className="text-xs font-semibold text-gray-700 flex items-center gap-1.5">
                 <User className="h-3.5 w-3.5 text-gray-400" />
@@ -281,8 +281,8 @@ export default function Checkout() {
               />
             </div>
 
-            <div className="pt-2">
-              <Button type="submit" className="w-full gap-2 py-5 font-semibold text-sm rounded-xl shadow-sm" disabled={loading}>
+            <div className="pt-1">
+              <Button type="submit" className="w-full gap-2 h-11 font-semibold text-sm rounded-lg" disabled={loading}>
                 {loading ? "Processing..." : (
                   <>
                     <Lock className="h-4 w-4" />

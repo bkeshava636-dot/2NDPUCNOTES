@@ -45,24 +45,24 @@ export default function SectionPage() {
         </Link>
 
         {/* Section Header */}
-        <div className="bg-white border border-gray-200/80 rounded-2xl p-6 sm:p-8 shadow-xs mb-8">
+        <div className="bg-white border border-gray-200 rounded-xl p-5 sm:p-7 mb-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
               <div className="flex items-center gap-2.5 mb-2">
-                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                  <BookOpen className="h-5 w-5" />
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-50 text-primary border border-blue-100">
+                  <BookOpen className="h-4 w-4" />
                 </div>
-                <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">
+                <h1 className="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight">
                   {section?.name ?? "Section"}
                 </h1>
                 {cards && (
-                  <Badge variant="secondary" className="font-semibold text-xs bg-gray-100 text-gray-700">
+                  <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-0.5 rounded-md">
                     {cards.length} {cards.length === 1 ? "resource" : "resources"}
-                  </Badge>
+                  </span>
                 )}
               </div>
               {section?.description && (
-                <p className="text-gray-600 text-sm sm:text-base leading-relaxed max-w-2xl mt-1">
+                <p className="text-gray-600 text-sm leading-relaxed max-w-2xl mt-1">
                   {section.description}
                 </p>
               )}
@@ -72,7 +72,7 @@ export default function SectionPage() {
       </div>
 
       {/* Filters Toolbar */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8 bg-white border border-gray-200/80 rounded-xl p-3.5 sm:px-4 shadow-xs">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3.5 mb-8 bg-slate-50 border border-gray-200 rounded-xl p-3 sm:px-4">
         <div className="flex items-center gap-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
           <SlidersHorizontal className="h-3.5 w-3.5" />
           <span>Filters</span>

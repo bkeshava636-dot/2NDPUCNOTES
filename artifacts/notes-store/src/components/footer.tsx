@@ -4,18 +4,18 @@ import { TELEGRAM_LINK } from "@/lib/site-config";
 
 export function Footer() {
   return (
-    <footer className="mt-auto border-t border-gray-200/80 bg-white text-gray-600">
+    <footer className="mt-auto border-t border-gray-200 bg-slate-50/80 text-gray-600">
       <div className="container mx-auto max-w-5xl px-4 py-12">
-        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-4 lg:gap-12">
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-4 lg:gap-10">
           {/* Brand & Mission */}
           <div className="space-y-3 sm:col-span-2 md:col-span-1">
-            <Link href="/" className="inline-flex items-center gap-2 font-bold text-lg text-primary">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                <BookOpen className="h-4 w-4" />
+            <Link href="/" className="inline-flex items-center gap-2 font-bold text-base text-gray-900">
+              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-50 text-primary border border-blue-100">
+                <BookOpen className="h-3.5 w-3.5" />
               </div>
               <span className="tracking-tight text-gray-900">2PUC Notes</span>
             </Link>
-            <p className="text-sm text-gray-500 leading-relaxed max-w-xs">
+            <p className="text-xs sm:text-sm text-gray-500 leading-relaxed max-w-xs">
               High-quality 2nd PUC Science notes and study materials, organized to help you prepare with confidence.
             </p>
           </div>

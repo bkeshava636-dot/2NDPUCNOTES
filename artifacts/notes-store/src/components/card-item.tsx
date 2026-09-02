@@ -15,20 +15,20 @@ export function CardItem({ card }: { card: CardType }) {
 
   return (
     <Link href={`/card/${card.id}`} className="block h-full group focus-visible:outline-none">
-      <Card className="h-full flex flex-col overflow-hidden rounded-xl border border-gray-200/80 bg-white transition-all duration-200 hover:border-primary/40 hover:shadow-md active:scale-[0.99] focus-within:ring-2 focus-within:ring-primary/30">
+      <Card className="h-full flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white transition-all duration-150 hover:border-primary/50 hover:shadow-xs focus-within:ring-2 focus-within:ring-primary/20">
         {/* Preview image */}
-        <div className="aspect-[16/10] bg-gray-100 relative overflow-hidden flex items-center justify-center border-b border-gray-100">
+        <div className="aspect-[16/10] bg-gray-50 relative overflow-hidden flex items-center justify-center border-b border-gray-100">
           {card.thumbnailUrl ? (
             <img
               src={card.thumbnailUrl}
               alt={card.title}
               loading="lazy"
-              className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
+              className="object-cover w-full h-full transition-transform duration-200 group-hover:scale-102"
             />
           ) : (
-            <div className="text-gray-400 flex flex-col items-center gap-1">
-              <FileText className="h-9 w-9 opacity-40" />
-              <span className="text-xs font-medium">No Preview</span>
+            <div className="text-gray-300 flex flex-col items-center gap-1">
+              <FileText className="h-8 w-8" />
+              <span className="text-[11px] font-medium text-gray-400">No Preview</span>
             </div>
           )}
 
@@ -36,24 +36,25 @@ export function CardItem({ card }: { card: CardType }) {
           <div className="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between pointer-events-none">
             <div className="flex gap-1.5 flex-wrap">
               {card.isNew && (
-                <Badge className="bg-blue-600 text-white font-semibold text-[11px] px-2 py-0.5 shadow-xs border-0">
+                <span className="bg-primary text-white font-semibold text-[10px] px-2 py-0.5 rounded-md">
                   New
-                </Badge>
+                </span>
               )}
               {card.isFeatured && (
-                <Badge className="bg-amber-500 text-white font-semibold text-[11px] px-2 py-0.5 shadow-xs border-0">
+                <span className="bg-amber-500 text-white font-semibold text-[10px] px-2 py-0.5 rounded-md">
                   Popular
-                </Badge>
+                </span>
               )}
             </div>
 
             {card.isFree && (
-              <Badge className="bg-emerald-600 text-white font-semibold text-[11px] px-2 py-0.5 shadow-xs border-0 ml-auto">
+              <span className="bg-emerald-600 text-white font-semibold text-[10px] px-2 py-0.5 rounded-md ml-auto">
                 Free
-              </Badge>
+              </span>
             )}
           </div>
         </div>
+
 
         {/* Content */}
         <CardContent className="flex-1 p-4 flex flex-col">
