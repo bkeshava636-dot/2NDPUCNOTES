@@ -7,6 +7,7 @@ import NotFound from "@/pages/not-found";
 import { PublicLayout } from "@/components/layout/public-layout";
 import { AdminLayout } from "@/components/layout/admin-layout";
 import { AdminGuard } from "@/components/admin-guard";
+import { ApiWakeUpGate } from "@/components/api-wake-up-gate";
 
 // Public Pages
 import Home from "@/pages/home";
@@ -91,10 +92,12 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
-          <Router />
-        </WouterRouter>
-        <Toaster />
+        <ApiWakeUpGate>
+          <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
+            <Router />
+          </WouterRouter>
+          <Toaster />
+        </ApiWakeUpGate>
       </TooltipProvider>
     </QueryClientProvider>
   );
