@@ -130,6 +130,7 @@ export default function CategoryPage() {
     {
       query: {
         queryKey: ["category-cards", activeSubject],
+        placeholderData: (prev) => prev,
       },
     }
   );

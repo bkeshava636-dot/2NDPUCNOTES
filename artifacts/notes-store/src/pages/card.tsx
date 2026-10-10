@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useParams, Link, useLocation } from "wouter";
 import { useGetCard } from "@workspace/api-client-react";
+import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -25,7 +26,23 @@ export default function CardPage() {
   const [, setLocation] = useLocation();
   const [previewIdx, setPreviewIdx] = useState(0);
 
-  const { data: card, isLoading } = useGetCard(id, { query: { enabled: !!id, queryKey: ["card", id] } });
+  const queryClient = useQueryClient();
+  const { data: card, isLoading } = useGetCard(id, {
+    query: {
+      enabled: !!id,
+      queryKey: ["card", id],
+      initialData: () => {
+        // Instant 0ms render if this card exists anywhere in React Query cache
+        for (const [, cache] of queryClient.getQueriesData<any>({})) {
+          if (Array.isArray(cache)) {
+            const match = cache.find((c) => c && typeof c === "object" && c.id === id);
+            if (match && match.title) return match;
+          }
+        }
+        return undefined;
+      },
+    },
+  });
 
   if (isLoading) {
     return (

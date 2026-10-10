@@ -8,22 +8,22 @@ type GateStatus = "loading" | "ready" | "error";
 const TIMEOUT_MS = 6000;
 
 export function ApiWakeUpGate({ children }: { children: ReactNode }) {
-  // If navigating directly to admin, bypass the public store wake-up gate immediately
-  const isAdminPath = typeof window !== "undefined" && window.location.pathname.startsWith("/admin");
-  const isAlreadyAwake = typeof window !== "undefined" && (sessionStorage.getItem("api_awake") === "true" || isAdminPath);
-  const [status, setStatus] = useState<GateStatus>(isAlreadyAwake ? "ready" : "loading");
+  // Always render children immediately — never block the student with a full-screen loading spinner
+  const [status, setStatus] = useState<GateStatus>("ready");
   const abortControllerRef = useRef<AbortController | null>(null);
 
   const checkHealth = useCallback(async () => {
+    // If already confirmed awake previously in this browser, no need to re-verify
+    if (typeof window !== "undefined" && (localStorage.getItem("api_awake") === "true" || sessionStorage.getItem("api_awake") === "true")) {
+      return;
+    }
+
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
     }
 
     const controller = new AbortController();
     abortControllerRef.current = controller;
-    if (!isAlreadyAwake) {
-      setStatus("loading");
-    }
 
     const timeoutId = setTimeout(() => {
       controller.abort();
@@ -48,17 +48,12 @@ export function ApiWakeUpGate({ children }: { children: ReactNode }) {
 
       clearTimeout(timeoutId);
       sessionStorage.setItem("api_awake", "true");
-      setStatus("ready");
+      localStorage.setItem("api_awake", "true");
     } catch {
       clearTimeout(timeoutId);
-      if (controller.signal.aborted && abortControllerRef.current !== controller) {
-        return;
-      }
-      if (!isAlreadyAwake) {
-        setStatus("error");
-      }
+      // Fail silently without blocking — regular query errors handle individual offline states
     }
-  }, [isAlreadyAwake]);
+  }, []);
 
   useEffect(() => {
     checkHealth();

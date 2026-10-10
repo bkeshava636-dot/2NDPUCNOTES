@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "wouter";
-import { useListSections, useGetStoreStats, useListCards } from "@workspace/api-client-react";
+import { useListSections, useGetStoreStats, useListCards, listCards } from "@workspace/api-client-react";
+import { useQueryClient } from "@tanstack/react-query";
 import { CardItem } from "@/components/card-item";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -220,18 +221,48 @@ const CATEGORY_ITEMS = [
 export default function Home() {
   const [search, setSearch] = useState("");
   const [submitted, setSubmitted] = useState("");
+  const queryClient = useQueryClient();
+
   const { data: sections, isLoading: sectionsLoading } = useListSections();
   const { data: stats } = useGetStoreStats();
   const { data: searchResults, isLoading: searchLoading } = useListCards(
     submitted ? { search: submitted } : undefined,
-    { query: { enabled: !!submitted, queryKey: ["cards-search", submitted] } }
+    {
+      query: {
+        enabled: !!submitted,
+        queryKey: ["cards-search", submitted],
+        placeholderData: (prev) => prev,
+      },
+    }
   );
   const featuredQuery = useListCards(
     { featured: true },
-    { query: { enabled: !submitted, queryKey: ["cards-featured"] } }
+    {
+      query: {
+        enabled: !submitted,
+        queryKey: ["cards-featured"],
+        placeholderData: (prev) => prev,
+      },
+    }
   );
 
   const featuredCards = featuredQuery.data;
+
+  const prefetchSubject = (name: string) => {
+    queryClient.prefetchQuery({
+      queryKey: ["subject-cards", name],
+      queryFn: () => listCards({ subject: name }),
+      staleTime: 5 * 60 * 1000,
+    });
+  };
+
+  const prefetchCategory = () => {
+    queryClient.prefetchQuery({
+      queryKey: ["category-cards", "all"],
+      queryFn: () => listCards({}),
+      staleTime: 5 * 60 * 1000,
+    });
+  };
 
   function handleSearch(e: React.FormEvent) {
     e.preventDefault();
@@ -400,7 +431,12 @@ export default function Home() {
                     const Icon = subj.icon;
                     const theme = subj.theme;
                     return (
-                      <Link key={subj.name} href={`/subject/${subj.slug}`}>
+                      <Link 
+                        key={subj.name} 
+                        href={`/subject/${subj.slug}`}
+                        onPointerEnter={() => prefetchSubject(subj.name)}
+                        onFocus={() => prefetchSubject(subj.name)}
+                      >
                         <div className={`group h-full ${theme.bg} border ${theme.border} ${theme.hoverBorder} rounded-xl p-4 transition-all cursor-pointer flex items-center justify-between shadow-2xs hover:shadow-xs`}>
                           <div className="flex items-center gap-3">
                             <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${theme.iconBg} ${theme.iconColor} shadow-2xs`}>
@@ -443,7 +479,12 @@ export default function Home() {
                     const Icon = subj.icon;
                     const theme = subj.theme;
                     return (
-                      <Link key={subj.name} href={`/subject/${subj.slug}`}>
+                      <Link 
+                        key={subj.name} 
+                        href={`/subject/${subj.slug}`}
+                        onPointerEnter={() => prefetchSubject(subj.name)}
+                        onFocus={() => prefetchSubject(subj.name)}
+                      >
                         <div className={`group h-full ${theme.bg} border ${theme.border} ${theme.hoverBorder} rounded-xl p-4 transition-all cursor-pointer flex items-center justify-between shadow-2xs hover:shadow-xs`}>
                           <div className="flex items-center gap-3">
                             <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${theme.iconBg} ${theme.iconColor} shadow-2xs`}>
@@ -486,7 +527,12 @@ export default function Home() {
               {CATEGORY_ITEMS.map((cat) => {
                 const Icon = cat.icon;
                 return (
-                  <Link key={cat.slug} href={`/category/${cat.slug}`}>
+                  <Link 
+                    key={cat.slug} 
+                    href={`/category/${cat.slug}`}
+                    onPointerEnter={prefetchCategory}
+                    onFocus={prefetchCategory}
+                  >
                     <div className="group h-full bg-white border border-[#e2e8f0] hover:border-[#1856b8]/40 hover:bg-[#fafcff] rounded-xl p-4 transition-all cursor-pointer flex flex-col justify-between shadow-2xs hover:shadow-xs">
                       <div>
                         <div className="flex items-center justify-between mb-3">

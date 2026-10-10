@@ -6,6 +6,14 @@ import { ensureDefaultSections, DEFAULT_CORE_SECTIONS } from "../lib/ensure-sect
 
 const router = Router();
 
+// Enable fast browser caching for public storefront reads
+router.use((req, res, next) => {
+  if (req.method === "GET") {
+    res.setHeader("Cache-Control", "public, max-age=30, stale-while-revalidate=120");
+  }
+  next();
+});
+
 router.get("/store/stats", async (req, res) => {
   try {
     const base = and(eq(cardsTable.isVisible, true), eq(cardsTable.isDeleted, false));

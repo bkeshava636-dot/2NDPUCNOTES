@@ -67,6 +67,18 @@ function getSubjectIcon(name: string) {
   return BookOpen;
 }
 
+const SLUG_TO_NAME: Record<string, string> = {
+  physics: "Physics",
+  chemistry: "Chemistry",
+  "computer-science": "Computer Science",
+  biology: "Biology",
+  mathematics: "Mathematics",
+  kannada: "Kannada",
+  english: "English",
+  hindi: "Hindi",
+  sanskrit: "Sanskrit",
+};
+
 export default function SubjectPage() {
   const params = useParams<{ slug: string }>();
   const slug = params.slug?.toLowerCase() || "";
@@ -86,20 +98,25 @@ export default function SubjectPage() {
     );
   }, [sections, slug]);
 
-  const subjectName = section?.name || "";
+  const subjectName =
+    section?.name ||
+    SLUG_TO_NAME[slug] ||
+    (slug ? slug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()) : "");
+
   const isCoreSubject = CORE_SUBJECT_NAMES.some(
     (c) => c.toLowerCase() === subjectName.toLowerCase()
   );
 
   const supportedTypes = isCoreSubject ? CORE_RESOURCE_TYPES : LANGUAGE_RESOURCE_TYPES;
 
-  // Query cards for this subject / section
+  // Query cards for this subject / section immediately in parallel with zero waterfall!
   const { data: cards, isLoading: cardsLoading } = useListCards(
-    section ? { sectionId: section.id } : { subject: subjectName || undefined },
+    section?.id ? { sectionId: section.id } : { subject: subjectName || undefined },
     {
       query: {
         enabled: Boolean(section?.id || subjectName),
         queryKey: ["subject-cards", section?.id || subjectName],
+        placeholderData: (prev) => prev,
       },
     }
   );
@@ -146,7 +163,7 @@ export default function SubjectPage() {
 
   const Icon = getSubjectIcon(subjectName);
 
-  if (sectionsLoading) {
+  if (sectionsLoading && !section && !SLUG_TO_NAME[slug]) {
     return (
       <div className="max-w-6xl mx-auto w-full px-4 py-8 sm:py-10 space-y-6">
         <Skeleton className="h-8 w-32" />
@@ -160,7 +177,7 @@ export default function SubjectPage() {
     );
   }
 
-  if (!section) {
+  if (!section && !SLUG_TO_NAME[slug] && !sectionsLoading) {
     return (
       <div className="max-w-md mx-auto px-4 py-20 text-center">
         <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gray-100 text-gray-400 mx-auto mb-4">
@@ -206,7 +223,7 @@ export default function SubjectPage() {
             <div>
               <div className="flex items-center gap-2.5 flex-wrap">
                 <h1 className="text-2xl sm:text-3xl font-bold text-[#112542] tracking-tight">
-                  {section.name}
+                  {section?.name || subjectName}
                 </h1>
                 <Badge
                   variant="outline"
@@ -225,13 +242,13 @@ export default function SubjectPage() {
                 )}
               </div>
               <p className="text-[#5a6b82] text-sm leading-relaxed max-w-2xl mt-1.5">
-                {section.description ||
-                  `Explore curriculum-aligned 2nd PUC ${section.name} study materials, notes, and question papers.`}
+                {section?.description ||
+                  `Explore curriculum-aligned 2nd PUC ${section?.name || subjectName} study materials, notes, and question papers.`}
               </p>
             </div>
           </div>
 
-          {section.officialSourceUrl && (
+          {section?.officialSourceUrl && (
             <div className="shrink-0">
               <a
                 href={section.officialSourceUrl}
@@ -384,7 +401,7 @@ export default function SubjectPage() {
           <p className="text-xs sm:text-sm text-[#5a6b82] max-w-sm mx-auto">
             {activeType !== "all" || activeSubtype !== "all" || priceFilter !== "all"
               ? "No resources match the selected filters. Try choosing a different tab or resetting filters."
-              : `Notes for ${section.name} will be uploaded soon. Check back shortly!`}
+              : `Notes for ${section?.name || subjectName} will be uploaded soon. Check back shortly!`}
           </p>
           {(activeType !== "all" || activeSubtype !== "all" || priceFilter !== "all") && (
             <Button

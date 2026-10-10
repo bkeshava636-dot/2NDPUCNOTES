@@ -1,5 +1,6 @@
 import { Link } from "wouter";
 import { Card as CardType } from "@workspace/api-client-react";
+import { useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -22,14 +23,24 @@ function getSubjectBadgeStyle(subject?: string) {
 }
 
 export function CardItem({ card }: { card: CardType }) {
+  const queryClient = useQueryClient();
   const hasDiscount = Boolean(
     !card.isFree &&
     card.discountPricePaise &&
     card.discountPricePaise < card.pricePaise
   );
 
+  const prefetchCard = () => {
+    queryClient.setQueryData(["card", card.id], card);
+  };
+
   return (
-    <Link href={`/card/${card.id}`} className="block h-full group focus-visible:outline-none">
+    <Link 
+      href={`/card/${card.id}`} 
+      onPointerEnter={prefetchCard}
+      onFocus={prefetchCard}
+      className="block h-full group focus-visible:outline-none"
+    >
       <Card className="h-full flex flex-col overflow-hidden rounded-xl border border-[#e2e8f0] bg-white transition-all duration-150 hover:border-[#b8d4f8] hover:shadow-xs focus-within:ring-2 focus-within:ring-[#1856b8]/20">
         {/* Preview image */}
         <div className="aspect-[16/10] bg-[#f8fafc] relative overflow-hidden flex items-center justify-center border-b border-[#eef2f6]">

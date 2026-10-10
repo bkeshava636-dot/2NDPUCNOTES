@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { useAdminLogout } from "@workspace/api-client-react";
 import { Button } from "@/components/ui/button";
@@ -22,9 +22,27 @@ const NAV_ITEMS = [
   { href: "/admin/orders", label: "Orders", icon: ShoppingCart },
 ];
 
+function preloadAdminRoute(href: string) {
+  if (href === "/admin/dashboard") import("@/pages/admin/dashboard");
+  else if (href === "/admin/cards") import("@/pages/admin/cards");
+  else if (href === "/admin/sections") import("@/pages/admin/sections");
+  else if (href === "/admin/orders") import("@/pages/admin/orders");
+}
+
 export function AdminLayout({ children }: { children: ReactNode }) {
   const [location] = useLocation();
   const logout = useAdminLogout();
+
+  useEffect(() => {
+    // Warm up all admin route chunks quietly in the background
+    const timer = setTimeout(() => {
+      import("@/pages/admin/dashboard");
+      import("@/pages/admin/cards");
+      import("@/pages/admin/sections");
+      import("@/pages/admin/orders");
+    }, 150);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleLogout = () => {
     logout.mutate(undefined, {
@@ -49,7 +67,7 @@ export function AdminLayout({ children }: { children: ReactNode }) {
         const Icon = item.icon;
         const isActive = location === item.href || (item.href !== "/admin/dashboard" && location.startsWith(item.href));
         return (
-          <Link key={item.href} href={item.href} onClick={onItemClick}>
+          <Link key={item.href} href={item.href} onClick={onItemClick} onMouseEnter={() => preloadAdminRoute(item.href)}>
             <div
               className={`flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-colors cursor-pointer ${
                 isActive
