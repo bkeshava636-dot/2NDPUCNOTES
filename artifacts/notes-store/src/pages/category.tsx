@@ -14,7 +14,8 @@ import {
   FlaskConical,
   History,
   CheckCircle2,
-  BookMarked
+  BookMarked,
+  Calendar
 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -105,6 +106,7 @@ export default function CategoryPage() {
 
   const [activeSubject, setActiveSubject] = useState<string>("all");
   const [activeSubtype, setActiveSubtype] = useState<string>("all");
+  const [activeYear, setActiveYear] = useState<string>("all");
   const [priceFilter, setPriceFilter] = useState<"all" | "free" | "paid">("all");
 
   const { data: sections } = useListSections();
@@ -134,6 +136,24 @@ export default function CategoryPage() {
       },
     }
   );
+
+  // Dynamically extract all examination years present in cards for PYQs
+  const availableYears = useMemo(() => {
+    if (slug !== "pyq") return [];
+    const yearSet = new Set<string>();
+    if (allCards) {
+      allCards.forEach((card) => {
+        const text = `${card.title || ""} ${card.semester || ""} ${card.chapter || ""} ${card.subtype || ""}`;
+        const matches = text.match(/\b(20[12]\d)\b/g);
+        if (matches) {
+          matches.forEach((y) => yearSet.add(y));
+        }
+      });
+    }
+    const defaultYears = ["2025", "2024", "2023", "2022", "2021", "2020", "2019", "2018"];
+    defaultYears.forEach((y) => yearSet.add(y));
+    return Array.from(yearSet).sort((a, b) => b.localeCompare(a));
+  }, [allCards, slug]);
 
   const filteredCards = useMemo(() => {
     if (!allCards || !meta) return [];
@@ -192,13 +212,21 @@ export default function CategoryPage() {
         }
       }
 
-      // 5. Price filter
+      // 5. Year-wise filter (for PYQs)
+      if (slug === "pyq" && activeYear !== "all") {
+        const text = `${card.title || ""} ${card.semester || ""} ${card.chapter || ""} ${card.subtype || ""} ${card.description || ""}`.toLowerCase();
+        if (!text.includes(activeYear.toLowerCase())) {
+          return false;
+        }
+      }
+
+      // 6. Price filter
       if (priceFilter === "free" && !card.isFree) return false;
       if (priceFilter === "paid" && card.isFree) return false;
 
       return true;
     });
-  }, [allCards, meta, slug, activeSubject, activeSubtype, priceFilter]);
+  }, [allCards, meta, slug, activeSubject, activeSubtype, activeYear, priceFilter]);
 
   if (!meta) {
     return (
@@ -346,6 +374,41 @@ export default function CategoryPage() {
                 }`}
               >
                 {sub}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* Year-Wise Filter Pills (Only for PYQs) */}
+        {isPyq && (
+          <div className="bg-[#f0fdf4] border border-[#bbf7d0] rounded-xl p-3 flex flex-wrap items-center gap-2">
+            <div className="flex items-center gap-1.5 mr-1 text-[#15803d]">
+              <Calendar className="h-3.5 w-3.5" />
+              <span className="text-xs font-semibold">Exam Year:</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => setActiveYear("all")}
+              className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors ${
+                activeYear === "all"
+                  ? "bg-[#16a34a] text-white shadow-2xs font-semibold"
+                  : "bg-white text-[#15803d] border border-[#86efac] hover:bg-[#dcfce7]"
+              }`}
+            >
+              All Years
+            </button>
+            {availableYears.map((yr) => (
+              <button
+                key={yr}
+                type="button"
+                onClick={() => setActiveYear(yr)}
+                className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors ${
+                  activeYear === yr
+                    ? "bg-[#16a34a] text-white shadow-2xs font-semibold"
+                    : "bg-white text-[#15803d] border border-[#86efac] hover:bg-[#dcfce7]"
+                }`}
+              >
+                {yr}
               </button>
             ))}
           </div>

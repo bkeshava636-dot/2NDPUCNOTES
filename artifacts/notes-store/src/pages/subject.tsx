@@ -20,7 +20,8 @@ import {
   ExternalLink,
   SlidersHorizontal,
   FileQuestion,
-  Layers
+  Layers,
+  Calendar
 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -85,6 +86,7 @@ export default function SubjectPage() {
 
   const [activeType, setActiveType] = useState<string>("all");
   const [activeSubtype, setActiveSubtype] = useState<string>("all");
+  const [activeYear, setActiveYear] = useState<string>("all");
   const [priceFilter, setPriceFilter] = useState<"all" | "free" | "paid">("all");
 
   const { data: sections, isLoading: sectionsLoading } = useListSections();
@@ -121,7 +123,30 @@ export default function SubjectPage() {
     }
   );
 
-  // Filter cards by active type, active subtype, and price
+  const isPracticalActive = activeType.toLowerCase().includes("practical");
+  const isPyqActive =
+    activeType.toLowerCase().includes("previous") ||
+    activeType.toLowerCase().includes("pyq");
+
+  // Extract years from cards for PYQs
+  const availableYears = useMemo(() => {
+    if (!isPyqActive) return [];
+    const yearSet = new Set<string>();
+    if (cards) {
+      cards.forEach((card) => {
+        const text = `${card.title || ""} ${card.semester || ""} ${card.chapter || ""} ${card.subtype || ""}`;
+        const matches = text.match(/\b(20[12]\d)\b/g);
+        if (matches) {
+          matches.forEach((y) => yearSet.add(y));
+        }
+      });
+    }
+    const defaultYears = ["2025", "2024", "2023", "2022", "2021", "2020", "2019", "2018"];
+    defaultYears.forEach((y) => yearSet.add(y));
+    return Array.from(yearSet).sort((a, b) => b.localeCompare(a));
+  }, [cards, isPyqActive]);
+
+  // Filter cards by active type, active subtype, active year, and price
   const filteredCards = useMemo(() => {
     if (!cards) return [];
     return cards.filter((card) => {
@@ -153,13 +178,21 @@ export default function SubjectPage() {
         }
       }
 
+      // Year matching (for PYQ)
+      if (isPyqActive && activeYear !== "all") {
+        const text = `${card.title || ""} ${card.semester || ""} ${card.chapter || ""} ${card.subtype || ""} ${card.description || ""}`.toLowerCase();
+        if (!text.includes(activeYear.toLowerCase())) {
+          return false;
+        }
+      }
+
       // Price filter
       if (priceFilter === "free" && !card.isFree) return false;
       if (priceFilter === "paid" && card.isFree) return false;
 
       return true;
     });
-  }, [cards, activeType, activeSubtype, priceFilter]);
+  }, [cards, activeType, activeSubtype, activeYear, isPyqActive, priceFilter]);
 
   const Icon = getSubjectIcon(subjectName);
 
@@ -193,11 +226,6 @@ export default function SubjectPage() {
       </div>
     );
   }
-
-  const isPracticalActive = activeType.toLowerCase().includes("practical");
-  const isPyqActive =
-    activeType.toLowerCase().includes("previous") ||
-    activeType.toLowerCase().includes("pyq");
 
   return (
     <div className="max-w-6xl mx-auto w-full px-4 py-8 sm:py-10">
@@ -337,6 +365,41 @@ export default function SubjectPage() {
                 }`}
               >
                 {sub}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* Year-Wise Filter Pills (Only when PYQs is active) */}
+        {isPyqActive && (
+          <div className="bg-[#f0fdf4] border border-[#bbf7d0] rounded-xl p-3 flex flex-wrap items-center gap-2">
+            <div className="flex items-center gap-1.5 mr-1 text-[#15803d]">
+              <Calendar className="h-3.5 w-3.5" />
+              <span className="text-xs font-semibold">Exam Year:</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => setActiveYear("all")}
+              className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors ${
+                activeYear === "all"
+                  ? "bg-[#16a34a] text-white shadow-2xs font-semibold"
+                  : "bg-white text-[#15803d] border border-[#86efac] hover:bg-[#dcfce7]"
+              }`}
+            >
+              All Years
+            </button>
+            {availableYears.map((yr) => (
+              <button
+                key={yr}
+                type="button"
+                onClick={() => setActiveYear(yr)}
+                className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors ${
+                  activeYear === yr
+                    ? "bg-[#16a34a] text-white shadow-2xs font-semibold"
+                    : "bg-white text-[#15803d] border border-[#86efac] hover:bg-[#dcfce7]"
+                }`}
+              >
+                {yr}
               </button>
             ))}
           </div>

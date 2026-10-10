@@ -555,18 +555,37 @@ export default function CardForm({ initialData, cardId }: { initialData?: Partia
                 <Input 
                   value={form.chapter} 
                   onChange={e => set("chapter", e.target.value)} 
-                  placeholder="e.g. Chapter 1" 
+                  placeholder="e.g. Chapter 1 or Complete Syllabus" 
                   className="h-9 text-xs bg-[#f8fafc] border-[#e2e8f0] text-[#112542]"
                 />
               </div>
               <div className="space-y-1.5">
-                <Label className="text-xs font-semibold text-[#334155]">Class / Board</Label>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-[#334155]">Examination / Academic Year</Label>
+                  <span className="text-[10px] text-[#64748b]">e.g. 2025, 2024</span>
+                </div>
                 <Input 
                   value={form.semester} 
                   onChange={e => set("semester", e.target.value)} 
-                  placeholder="e.g. 2nd PUC" 
+                  placeholder="e.g. 2025, 2024, or 2nd PUC" 
                   className="h-9 text-xs bg-[#f8fafc] border-[#e2e8f0] text-[#112542]"
                 />
+                <div className="flex items-center gap-1 flex-wrap pt-0.5">
+                  {["2025", "2024", "2023", "2022", "2021", "2020", "2019"].map((yr) => (
+                    <button
+                      key={yr}
+                      type="button"
+                      onClick={() => set("semester", yr)}
+                      className={`px-1.5 py-0.5 rounded text-[10px] border transition-colors ${
+                        form.semester === yr
+                          ? "bg-[#1856b8] text-white border-[#1856b8]"
+                          : "bg-white text-[#64748b] border-[#e2e8f0] hover:border-[#1856b8] hover:text-[#1856b8]"
+                      }`}
+                    >
+                      {yr}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
 

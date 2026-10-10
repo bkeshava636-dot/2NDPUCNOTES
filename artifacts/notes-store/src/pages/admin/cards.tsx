@@ -160,6 +160,7 @@ export default function AdminCards() {
         card.title.toLowerCase().includes(q) ||
         (card.subject && card.subject.toLowerCase().includes(q)) ||
         (card.chapter && card.chapter.toLowerCase().includes(q)) ||
+        (card.semester && card.semester.toLowerCase().includes(q)) ||
         (card.resourceType && card.resourceType.toLowerCase().includes(q)) ||
         (card.subtype && card.subtype.toLowerCase().includes(q))
       );
