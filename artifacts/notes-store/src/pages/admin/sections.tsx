@@ -21,6 +21,13 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 type SectionForm = { name: string; description: string; isVisible: boolean };
 
+const STANDARD_CATEGORIES = [
+  { name: "English", description: "2nd PUC English literature notes, summaries, grammar, and model answers" },
+  { name: "Hindi", description: "Sahitya, kavita, nibandh, and grammar notes for 2nd PUC Hindi" },
+  { name: "Kannada", description: "Kannada sahitya, gadya, padya, and grammar study materials" },
+  { name: "Sanskrit", description: "Sanskrit slokas, vyakarana, translation, and chapter notes" },
+];
+
 export default function AdminSections() {
   const { data: sections, isLoading } = useAdminListSections();
   const createSection = useAdminCreateSection();
@@ -37,9 +44,9 @@ export default function AdminSections() {
   const [draggingId, setDraggingId] = useState<number | null>(null);
   const [dragOverId, setDragOverId] = useState<number | null>(null);
 
-  function openCreate() {
+  function openCreate(prefill?: { name: string; description?: string }) {
     setEditId(null);
-    setForm({ name: "", description: "", isVisible: true });
+    setForm({ name: prefill?.name || "", description: prefill?.description || "", isVisible: true });
     setShowDialog(true);
   }
 
@@ -157,13 +164,38 @@ export default function AdminSections() {
           </p>
         </div>
         <Button 
-          onClick={openCreate} 
+          onClick={() => openCreate()} 
           className="h-9 gap-1.5 text-xs font-semibold bg-[#2f74de] hover:bg-[#1f63c8] text-white shadow-none transition-colors"
         >
           <Plus className="h-4 w-4" />
           <span>New Category</span>
         </Button>
       </div>
+
+      {/* Suggested Standard Categories Quick Add */}
+      {(() => {
+        const existingNames = new Set((sections || []).map(s => s.name.toLowerCase()));
+        const missing = STANDARD_CATEGORIES.filter(c => !existingNames.has(c.name.toLowerCase()));
+        if (missing.length === 0) return null;
+        return (
+          <div className="flex flex-wrap items-center gap-2 p-3 bg-[#f8fafc] border border-[#e2e8f0] rounded-xl text-xs text-[#5a6b82]">
+            <span className="font-semibold text-[#112542]">Quick Add Standard Categories:</span>
+            {missing.map(cat => (
+              <Button
+                key={cat.name}
+                type="button"
+                variant="outline"
+                size="sm"
+                className="h-7 text-xs gap-1 bg-white border-[#dce8fa] text-[#1856b8] hover:bg-[#ebf3ff]"
+                onClick={() => openCreate(cat)}
+              >
+                <Plus className="h-3 w-3" />
+                <span>Add {cat.name}</span>
+              </Button>
+            ))}
+          </div>
+        );
+      })()}
 
       {/* Desktop Table */}
       <div className="hidden md:block bg-white rounded-xl border border-[#e2e8f0] overflow-hidden shadow-none">

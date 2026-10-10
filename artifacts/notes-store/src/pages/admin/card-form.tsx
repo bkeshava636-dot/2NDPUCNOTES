@@ -24,11 +24,23 @@ import {
   AlertCircle,
   Loader2,
   ExternalLink,
-  Sparkles
+  Sparkles,
+  Link2
 } from "lucide-react";
 import { Link } from "wouter";
 import { useToast } from "@/hooks/use-toast";
 import { getAdminToken } from "@/lib/utils";
+
+const SUGGESTED_SUBJECTS = [
+  "Physics",
+  "Chemistry",
+  "Mathematics",
+  "Biology",
+  "English",
+  "Hindi",
+  "Kannada",
+  "Sanskrit"
+];
 
 const RESOURCE_TYPES = [
   "Notes", 
@@ -99,11 +111,30 @@ export default function CardForm({ initialData, cardId }: { initialData?: Partia
 
   const [form, setForm] = useState<CardFormData>({ ...defaultForm, ...initialData });
   const [uploading, setUploading] = useState<"pdf" | "image" | null>(null);
+  const [uploadMethod, setUploadMethod] = useState<"file" | "drive">(
+    initialData?.pdfFileKey?.startsWith("http") ? "drive" : "file"
+  );
+  const [driveUrlInput, setDriveUrlInput] = useState("");
   const pdfRef = useRef<HTMLInputElement>(null);
   const imageRef = useRef<HTMLInputElement>(null);
 
   function set(key: keyof CardFormData, value: any) {
     setForm(f => ({ ...f, [key]: value }));
+  }
+
+  function handleAttachDriveLink() {
+    const trimmed = driveUrlInput.trim();
+    if (!trimmed) {
+      toast({ title: "Link required", description: "Please enter a valid Google Drive or cloud resource URL", variant: "destructive" });
+      return;
+    }
+    if (!trimmed.startsWith("http://") && !trimmed.startsWith("https://")) {
+      toast({ title: "Invalid URL", description: "URL must start with https:// or http://", variant: "destructive" });
+      return;
+    }
+    set("pdfFileKey", trimmed);
+    setDriveUrlInput("");
+    toast({ title: "Drive Link Attached", description: "Google Drive resource link successfully linked to this note." });
   }
 
   async function uploadFile(file: File, type: "pdf" | "image") {
@@ -292,6 +323,22 @@ export default function CardForm({ initialData, cardId }: { initialData?: Partia
                   placeholder="e.g. Physics" 
                   className="h-9 text-xs bg-[#f8fafc] border-[#e2e8f0] text-[#112542]"
                 />
+                <div className="flex flex-wrap gap-1 pt-0.5">
+                  {SUGGESTED_SUBJECTS.map((subj) => (
+                    <button
+                      key={subj}
+                      type="button"
+                      onClick={() => set("subject", subj)}
+                      className={`text-[10px] px-1.5 py-0.5 rounded border transition-colors ${
+                        form.subject.toLowerCase() === subj.toLowerCase()
+                          ? "bg-[#ebf3ff] text-[#1856b8] border-[#dce8fa] font-semibold"
+                          : "bg-[#f8fafc] text-[#5a6b82] border-[#e2e8f0] hover:bg-white hover:text-[#112542]"
+                      }`}
+                    >
+                      {subj}
+                    </button>
+                  ))}
+                </div>
               </div>
               <div className="space-y-1.5">
                 <Label className="text-xs font-semibold text-[#334155]">Chapter / Topic</Label>
@@ -417,28 +464,124 @@ export default function CardForm({ initialData, cardId }: { initialData?: Partia
             <CardDescription className="text-xs text-[#64748b]">Upload downloadable note PDF and preview visual</CardDescription>
           </CardHeader>
           <CardContent className="p-5 space-y-4">
-            {/* PDF File Upload */}
+            {/* Resource Document Attachment */}
             <div className="space-y-2">
-              <Label className="text-xs font-semibold text-[#334155]">Downloadable PDF Document</Label>
+              <div className="flex items-center justify-between">
+                <Label className="text-xs font-semibold text-[#334155]">Downloadable Resource (PDF or Drive Link)</Label>
+                {!form.pdfFileKey && (
+                  <div className="inline-flex rounded-lg border border-[#e2e8f0] p-0.5 bg-[#f8fafc]">
+                    <button
+                      type="button"
+                      onClick={() => setUploadMethod("file")}
+                      className={`px-2.5 py-1 text-[11px] font-semibold rounded transition-all ${
+                        uploadMethod === "file"
+                          ? "bg-white text-[#1856b8] shadow-2xs border border-[#dce8fa]"
+                          : "text-[#5a6b82] hover:text-[#112542]"
+                      }`}
+                    >
+                      Upload PDF
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setUploadMethod("drive")}
+                      className={`px-2.5 py-1 text-[11px] font-semibold rounded transition-all ${
+                        uploadMethod === "drive"
+                          ? "bg-white text-[#1856b8] shadow-2xs border border-[#dce8fa]"
+                          : "text-[#5a6b82] hover:text-[#112542]"
+                      }`}
+                    >
+                      Google Drive Link
+                    </button>
+                  </div>
+                )}
+              </div>
+
               {form.pdfFileKey ? (
-                <div className="flex items-center justify-between p-3 border rounded-lg bg-[#eaf5ec] border-[#d7ecdc]">
-                  <div className="flex items-center gap-2.5 min-w-0">
-                    <FileText className="h-5 w-5 text-[#167035] shrink-0" />
-                    <div className="min-w-0">
-                      <p className="text-xs font-semibold text-[#167035] truncate">{form.pdfFileKey}</p>
-                      <p className="text-[10px] text-[#588366]">Secured in Supabase Storage</p>
+                form.pdfFileKey.startsWith("http") ? (
+                  <div className="flex items-center justify-between p-3 border rounded-lg bg-[#ebf3ff] border-[#dce8fa]">
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white text-[#1856b8] border border-[#dce8fa] shrink-0">
+                        <Link2 className="h-4 w-4" />
+                      </div>
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-1.5">
+                          <p className="text-xs font-semibold text-[#1856b8]">Google Drive Resource Attached</p>
+                          <span className="bg-[#16a34a] text-white text-[9px] font-bold px-1.5 py-0.2 rounded">Cloud</span>
+                        </div>
+                        <p className="text-[11px] text-[#5a6b82] truncate max-w-xs sm:max-w-md font-mono mt-0.5">{form.pdfFileKey}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-1 shrink-0 ml-2">
+                      <a
+                        href={form.pdfFileKey}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="p-1.5 text-[#1856b8] hover:text-[#0b57d0] hover:bg-white rounded transition-colors"
+                        title="Test Link in new tab"
+                      >
+                        <ExternalLink className="h-4 w-4" />
+                      </a>
+                      <Button 
+                        type="button" 
+                        variant="ghost" 
+                        size="sm" 
+                        className="h-7 w-7 p-0 text-[#9e5d56] hover:bg-white hover:text-red-600 rounded" 
+                        onClick={() => set("pdfFileKey", "")}
+                        title="Remove Link"
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
                     </div>
                   </div>
-                  <Button 
-                    type="button" 
-                    variant="ghost" 
-                    size="sm" 
-                    className="h-7 w-7 p-0 text-[#9e5d56] hover:bg-white hover:text-red-600 rounded" 
-                    onClick={() => set("pdfFileKey", "")}
-                    title="Remove PDF"
-                  >
-                    <X className="h-4 w-4" />
-                  </Button>
+                ) : (
+                  <div className="flex items-center justify-between p-3 border rounded-lg bg-[#eaf5ec] border-[#d7ecdc]">
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <FileText className="h-5 w-5 text-[#167035] shrink-0" />
+                      <div className="min-w-0">
+                        <p className="text-xs font-semibold text-[#167035] truncate">{form.pdfFileKey}</p>
+                        <p className="text-[10px] text-[#588366]">Secured in Supabase Storage</p>
+                      </div>
+                    </div>
+                    <Button 
+                      type="button" 
+                      variant="ghost" 
+                      size="sm" 
+                      className="h-7 w-7 p-0 text-[#9e5d56] hover:bg-white hover:text-red-600 rounded" 
+                      onClick={() => set("pdfFileKey", "")}
+                      title="Remove PDF"
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                )
+              ) : uploadMethod === "drive" ? (
+                <div className="space-y-2 p-3.5 border rounded-lg bg-[#f8fafc] border-[#e2e8f0]">
+                  <Label className="text-[11px] font-semibold text-[#475569]">Google Drive / Cloud Shareable URL</Label>
+                  <div className="flex gap-2">
+                    <Input
+                      placeholder="https://drive.google.com/file/d/.../view?usp=sharing"
+                      value={driveUrlInput}
+                      onChange={e => setDriveUrlInput(e.target.value)}
+                      className="h-9 text-xs bg-white border-[#cbd5e1] text-[#112542] focus-visible:border-[#1856b8]"
+                      onKeyDown={e => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          handleAttachDriveLink();
+                        }
+                      }}
+                    />
+                    <Button
+                      type="button"
+                      size="sm"
+                      onClick={handleAttachDriveLink}
+                      className="h-9 px-4 text-xs font-semibold bg-[#2f74de] hover:bg-[#1f63c8] text-white shrink-0"
+                    >
+                      Attach Link
+                    </Button>
+                  </div>
+                  <p className="text-[11px] text-[#64748b]">
+                    Paste any Google Drive shareable link. Ensure the file permissions are set to <span className="font-semibold text-[#112542]">"Anyone with the link can view"</span>.
+                  </p>
                 </div>
               ) : (
                 <div>

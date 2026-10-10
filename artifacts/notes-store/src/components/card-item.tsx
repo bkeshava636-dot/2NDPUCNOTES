@@ -13,6 +13,10 @@ function getSubjectBadgeStyle(subject?: string) {
   if (lower.includes("chem")) return "bg-[#fdece9] text-[#b83226] border-[#f9dcd7]";
   if (lower.includes("math")) return "bg-[#eaf5ec] text-[#167035] border-[#d7ecdc]";
   if (lower.includes("bio")) return "bg-[#fdf5e2] text-[#9e5e00] border-[#f9ecc8]";
+  if (lower.includes("eng")) return "bg-[#f5f3ff] text-[#6d28d9] border-[#ede9fe]";
+  if (lower.includes("hin")) return "bg-[#fff7ed] text-[#c2410c] border-[#ffedd5]";
+  if (lower.includes("kan")) return "bg-[#f0fdf4] text-[#15803d] border-[#dcfce7]";
+  if (lower.includes("san")) return "bg-[#fffbeb] text-[#b45309] border-[#fef3c7]";
   return "bg-[#f0f4f9] text-[#475569] border-[#e2e8f0]";
 }
 

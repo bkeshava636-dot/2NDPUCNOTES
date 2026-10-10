@@ -25,7 +25,8 @@ import {
   AlertCircle,
   ExternalLink,
   X,
-  Sparkles
+  Sparkles,
+  Link2
 } from "lucide-react";
 import { formatRupees } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
@@ -117,6 +118,8 @@ export default function AdminCards() {
       else if (selectedStatus === "free") matchesStatus = card.isFree;
       else if (selectedStatus === "paid") matchesStatus = !card.isFree;
       else if (selectedStatus === "pdf-missing") matchesStatus = !card.pdfFileKey;
+      else if (selectedStatus === "drive-link") matchesStatus = Boolean(card.pdfFileKey && card.pdfFileKey.startsWith("http"));
+      else if (selectedStatus === "pdf-attached") matchesStatus = Boolean(card.pdfFileKey && !card.pdfFileKey.startsWith("http"));
 
       return matchesSearch && matchesSection && matchesStatus;
     });
@@ -218,6 +221,8 @@ export default function AdminCards() {
                 <SelectItem value="featured">Featured Only</SelectItem>
                 <SelectItem value="free">Free Only</SelectItem>
                 <SelectItem value="paid">Paid Only</SelectItem>
+                <SelectItem value="drive-link">Google Drive Links</SelectItem>
+                <SelectItem value="pdf-attached">Uploaded PDFs</SelectItem>
                 <SelectItem value="pdf-missing">PDF Missing</SelectItem>
               </SelectContent>
             </Select>
@@ -334,10 +339,23 @@ export default function AdminCards() {
                   {/* PDF Column */}
                   <TableCell className="py-3.5">
                     {card.pdfFileKey ? (
-                      <span className="inline-flex items-center gap-1 text-[11px] font-medium text-[#167035] bg-[#eaf5ec] border border-[#d7ecdc] px-2 py-0.5 rounded">
-                        <CheckCircle2 className="h-3 w-3 text-[#167035]" />
-                        Attached
-                      </span>
+                      card.pdfFileKey.startsWith("http") ? (
+                        <a
+                          href={card.pdfFileKey}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#1856b8] bg-[#ebf3ff] border border-[#dce8fa] px-2 py-0.5 rounded hover:bg-[#dce8fa] transition-colors"
+                          title="Open Drive link"
+                        >
+                          <Link2 className="h-3 w-3 text-[#1856b8]" />
+                          Drive Link
+                        </a>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 text-[11px] font-medium text-[#167035] bg-[#eaf5ec] border border-[#d7ecdc] px-2 py-0.5 rounded">
+                          <CheckCircle2 className="h-3 w-3 text-[#167035]" />
+                          Attached
+                        </span>
+                      )
                     ) : (
                       <span className="inline-flex items-center gap-1 text-[11px] font-medium text-[#b83226] bg-[#fdece9] border border-[#f9dcd7] px-2 py-0.5 rounded">
                         <AlertCircle className="h-3 w-3 text-[#b83226]" />
@@ -478,9 +496,15 @@ export default function AdminCards() {
                 </div>
                 <div>
                   {card.pdfFileKey ? (
-                    <span className="inline-flex items-center gap-1 text-[11px] font-medium text-[#167035]">
-                      <CheckCircle2 className="h-3 w-3" /> PDF Ready
-                    </span>
+                    card.pdfFileKey.startsWith("http") ? (
+                      <a href={card.pdfFileKey} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#1856b8] hover:underline">
+                        <Link2 className="h-3 w-3" /> Drive Link
+                      </a>
+                    ) : (
+                      <span className="inline-flex items-center gap-1 text-[11px] font-medium text-[#167035]">
+                        <CheckCircle2 className="h-3 w-3" /> PDF Ready
+                      </span>
+                    )
                   ) : (
                     <span className="inline-flex items-center gap-1 text-[11px] font-medium text-[#b83226]">
                       <AlertCircle className="h-3 w-3" /> PDF Missing

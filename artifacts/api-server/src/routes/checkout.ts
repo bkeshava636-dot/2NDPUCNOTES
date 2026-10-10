@@ -170,21 +170,27 @@ router.post("/checkout/free-download", async (req, res) => {
       status: "paid",
       paidAt: new Date(),
     });
-   const { data, error } = await supabase.storage
-  .from(BUCKET_NOTES)
-  .createSignedUrl(card.pdfFileKey, 3600);
+    let downloadUrl: string;
+    if (card.pdfFileKey.startsWith("http://") || card.pdfFileKey.startsWith("https://")) {
+      downloadUrl = card.pdfFileKey;
+    } else {
+      const { data, error } = await supabase.storage
+        .from(BUCKET_NOTES)
+        .createSignedUrl(card.pdfFileKey, 3600);
 
-if (error || !data?.signedUrl) {
-  req.log.error(error);
-  res.status(500).json({ error: "Could not generate download link" });
-  return;
-}
+      if (error || !data?.signedUrl) {
+        req.log.error(error);
+        res.status(500).json({ error: "Could not generate download link" });
+        return;
+      }
+      downloadUrl = data.signedUrl;
+    }
 
-res.json({
-  orderId,
-  downloadUrl: data.signedUrl,
-  filename: `${card.title.replace(/[^a-z0-9]/gi, "_")}.pdf`,
-});
+    res.json({
+      orderId,
+      downloadUrl,
+      filename: `${card.title.replace(/[^a-z0-9]/gi, "_")}.pdf`,
+    });
   } catch (err) {
     req.log.error(err);
     res.status(500).json({ error: "Failed to process free download" });

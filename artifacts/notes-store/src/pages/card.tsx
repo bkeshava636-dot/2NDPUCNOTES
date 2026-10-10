@@ -203,12 +203,17 @@ export default function CardPage() {
                   <span className="font-medium">{card.pageCount} pages</span>
                 </div>
               )}
-              {card.fileSizeKb && (
+              {card.fileSizeKb ? (
                 <div className="flex items-center gap-2 p-2 rounded-lg bg-[#f8fafc] border border-[#e2e8f0] text-xs text-[#334155]">
                   <FileDown className="h-3.5 w-3.5 text-[#1856b8] shrink-0" />
                   <span className="font-medium">{(card.fileSizeKb / 1024).toFixed(1)} MB PDF</span>
                 </div>
-              )}
+              ) : card.pdfFileKey?.startsWith("http") ? (
+                <div className="flex items-center gap-2 p-2 rounded-lg bg-[#ebf3ff] border border-[#dce8fa] text-xs text-[#1856b8]">
+                  <FileText className="h-3.5 w-3.5 text-[#1856b8] shrink-0" />
+                  <span className="font-medium">Google Drive Document</span>
+                </div>
+              ) : null}
             </div>
 
             {/* Pricing Section */}

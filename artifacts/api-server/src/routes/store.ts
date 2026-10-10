@@ -2,6 +2,7 @@ import { Router } from "express";
 import { db } from "@workspace/db";
 import { sectionsTable, cardsTable, ordersTable } from "@workspace/db";
 import { eq, and, ilike, or, sql, asc } from "drizzle-orm";
+import { ensureDefaultSections, DEFAULT_CORE_SECTIONS } from "../lib/ensure-sections.js";
 
 const router = Router();
 
@@ -28,6 +29,7 @@ router.get("/store/stats", async (req, res) => {
 
 router.get("/sections", async (req, res) => {
   try {
+    await ensureDefaultSections();
     const sections = await db.select().from(sectionsTable).where(eq(sectionsTable.isVisible, true)).orderBy(asc(sectionsTable.sortOrder));
     const cardCounts = await db
       .select({ sectionId: cardsTable.sectionId, count: sql<number>`count(*)::int` })
@@ -35,10 +37,26 @@ router.get("/sections", async (req, res) => {
       .where(and(eq(cardsTable.isVisible, true), eq(cardsTable.isDeleted, false)))
       .groupBy(cardsTable.sectionId);
     const countMap = Object.fromEntries(cardCounts.map((r) => [r.sectionId, r.count]));
+    
+    if (sections.length === 0) {
+      res.json(DEFAULT_CORE_SECTIONS.map((s, idx) => ({
+        id: idx + 1,
+        ...s,
+        isVisible: true,
+        cardCount: 0,
+      })));
+      return;
+    }
+    
     res.json(sections.map((s) => ({ ...s, cardCount: countMap[s.id] ?? 0 })));
   } catch (err) {
     req.log.error(err);
-    res.status(500).json({ error: "Failed to fetch sections" });
+    res.json(DEFAULT_CORE_SECTIONS.map((s, idx) => ({
+      id: idx + 1,
+      ...s,
+      isVisible: true,
+      cardCount: 0,
+    })));
   }
 });
 

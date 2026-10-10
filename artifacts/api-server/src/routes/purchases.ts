@@ -64,6 +64,19 @@ router.get("/purchases/:orderId/download/:cardId", async (req, res) => {
       res.status(404).json({ error: "No file available" });
       return;
     }
+
+    // If resource is hosted on Google Drive or external cloud storage
+    if (card.pdfFileKey.startsWith("http://") || card.pdfFileKey.startsWith("https://")) {
+      await db.insert(downloadsTable).values({
+        orderId,
+        cardId: cardIdNum,
+        ipAddress: (req.headers["x-forwarded-for"] as string)?.split(",")[0]?.trim() || req.ip || null,
+        deviceInfo: (req.headers["user-agent"] as string) || null,
+      }).catch((e) => req.log.error(e));
+      res.redirect(302, card.pdfFileKey);
+      return;
+    }
+
     const { data, error } = await supabase.storage
       .from(BUCKET_NOTES)
       .createSignedUrl(card.pdfFileKey, 3600);
@@ -89,6 +102,10 @@ router.get("/purchases/:orderId/download/:cardId", async (req, res) => {
 router.get("/purchases/sign/:key", async (req, res) => {
   try {
     const key = decodeURIComponent(req.params.key);
+    if (key.startsWith("http://") || key.startsWith("https://")) {
+      res.redirect(302, key);
+      return;
+    }
     const { data, error } = await supabase.storage
       .from(BUCKET_NOTES)
       .createSignedUrl(key, 300);

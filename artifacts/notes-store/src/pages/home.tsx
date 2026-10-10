@@ -15,7 +15,11 @@ import {
   Atom,
   FlaskConical,
   Calculator,
-  Dna
+  Dna,
+  BookA,
+  Scroll,
+  GraduationCap,
+  Languages
 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { TELEGRAM_LINK } from "@/lib/site-config";
@@ -25,6 +29,10 @@ const CORE_SUBJECTS = [
   { name: "Chemistry", icon: FlaskConical },
   { name: "Mathematics", icon: Calculator },
   { name: "Biology", icon: Dna },
+  { name: "English", icon: BookA },
+  { name: "Hindi", icon: Scroll },
+  { name: "Kannada", icon: GraduationCap },
+  { name: "Sanskrit", icon: Languages },
 ];
 
 function getSubjectIcon(name: string) {
@@ -33,6 +41,10 @@ function getSubjectIcon(name: string) {
   if (lower.includes("chem")) return FlaskConical;
   if (lower.includes("math")) return Calculator;
   if (lower.includes("bio")) return Dna;
+  if (lower.includes("eng")) return BookA;
+  if (lower.includes("hin")) return Scroll;
+  if (lower.includes("kan")) return GraduationCap;
+  if (lower.includes("san")) return Languages;
   return BookOpen;
 }
 
@@ -83,6 +95,42 @@ const SUBJECT_THEMES: Record<string, SubjectTheme> = {
     titleColor: "text-[#9e5e00]",
     countColor: "text-[#94784e]",
   },
+  english: {
+    bg: "bg-[#f5f3ff]",
+    border: "border-[#ede9fe]",
+    hoverBorder: "hover:border-[#ddd6fe]",
+    iconBg: "bg-white",
+    iconColor: "text-[#7c3aed]",
+    titleColor: "text-[#6d28d9]",
+    countColor: "text-[#8b5cf6]",
+  },
+  hindi: {
+    bg: "bg-[#fff7ed]",
+    border: "border-[#ffedd5]",
+    hoverBorder: "hover:border-[#fed7aa]",
+    iconBg: "bg-white",
+    iconColor: "text-[#ea580c]",
+    titleColor: "text-[#c2410c]",
+    countColor: "text-[#f97316]",
+  },
+  kannada: {
+    bg: "bg-[#f0fdf4]",
+    border: "border-[#dcfce7]",
+    hoverBorder: "hover:border-[#bbf7d0]",
+    iconBg: "bg-white",
+    iconColor: "text-[#16a34a]",
+    titleColor: "text-[#15803d]",
+    countColor: "text-[#22c55e]",
+  },
+  sanskrit: {
+    bg: "bg-[#fffbeb]",
+    border: "border-[#fef3c7]",
+    hoverBorder: "hover:border-[#fde68a]",
+    iconBg: "bg-white",
+    iconColor: "text-[#d97706]",
+    titleColor: "text-[#b45309]",
+    countColor: "text-[#f59e0b]",
+  },
 };
 
 function getSubjectTheme(name: string): SubjectTheme {
@@ -91,6 +139,10 @@ function getSubjectTheme(name: string): SubjectTheme {
   if (lower.includes("chem")) return SUBJECT_THEMES.chemistry;
   if (lower.includes("math")) return SUBJECT_THEMES.math;
   if (lower.includes("bio")) return SUBJECT_THEMES.biology;
+  if (lower.includes("eng")) return SUBJECT_THEMES.english;
+  if (lower.includes("hin")) return SUBJECT_THEMES.hindi;
+  if (lower.includes("kan")) return SUBJECT_THEMES.kannada;
+  if (lower.includes("san")) return SUBJECT_THEMES.sanskrit;
   return {
     bg: "bg-[#f0f4f9]",
     border: "border-[#e2e8f0]",

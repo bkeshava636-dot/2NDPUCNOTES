@@ -5,6 +5,7 @@ import { db } from "@workspace/db";
 import { sectionsTable, cardsTable, ordersTable } from "@workspace/db";
 import { eq, sql, asc, desc, and } from "drizzle-orm";
 import { supabase, BUCKET_NOTES, BUCKET_IMAGES } from "../supabase.js";
+import { ensureDefaultSections, DEFAULT_CORE_SECTIONS } from "../lib/ensure-sections.js";
 
 const router = Router();
 
@@ -126,6 +127,7 @@ router.get("/admin/stats", requireAdmin, async (req, res) => {
 
 router.get("/admin/sections", requireAdmin, async (req, res) => {
   try {
+    await ensureDefaultSections();
     const sects = await db.select().from(sectionsTable).orderBy(asc(sectionsTable.sortOrder));
     const cardCounts = await db
       .select({ sectionId: cardsTable.sectionId, count: sql<number>`count(*)::int` })
@@ -133,10 +135,26 @@ router.get("/admin/sections", requireAdmin, async (req, res) => {
       .where(eq(cardsTable.isDeleted, false))
       .groupBy(cardsTable.sectionId);
     const countMap = Object.fromEntries(cardCounts.map((r) => [r.sectionId, r.count]));
+
+    if (sects.length === 0) {
+      res.json(DEFAULT_CORE_SECTIONS.map((s, idx) => ({
+        id: idx + 1,
+        ...s,
+        isVisible: true,
+        cardCount: 0,
+      })));
+      return;
+    }
+
     res.json(sects.map((s) => ({ ...s, cardCount: countMap[s.id] ?? 0 })));
   } catch (err) {
     req.log.error(err);
-    res.status(500).json({ error: "Failed to fetch sections" });
+    res.json(DEFAULT_CORE_SECTIONS.map((s, idx) => ({
+      id: idx + 1,
+      ...s,
+      isVisible: true,
+      cardCount: 0,
+    })));
   }
 });
 
@@ -303,8 +321,8 @@ router.delete("/admin/cards/:id", requireAdmin, async (req, res) => {
     const id = parseInt(req.params.id);
     if (isNaN(id)) { res.status(400).json({ error: "Invalid id" }); return; }
     const [card] = await db.select().from(cardsTable).where(eq(cardsTable.id, id));
-    if (card?.pdfFileKey) {
-      await supabase.storage.from(BUCKET_NOTES).remove([card.pdfFileKey]);
+    if (card?.pdfFileKey && !card.pdfFileKey.startsWith("http://") && !card.pdfFileKey.startsWith("https://")) {
+      await supabase.storage.from(BUCKET_NOTES).remove([card.pdfFileKey]).catch(() => {});
     }
     // Soft-delete — keeps order history intact
     await db.update(cardsTable).set({ isDeleted: true }).where(eq(cardsTable.id, id));

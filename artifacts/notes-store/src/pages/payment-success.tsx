@@ -1,7 +1,7 @@
 import { useSearch, Link } from "wouter";
 import { useGetCard } from "@workspace/api-client-react";
 import { Button } from "@/components/ui/button";
-import { CheckCircle2, Download, ShoppingBag, Home, FileText, Check } from "lucide-react";
+import { CheckCircle2, Download, ShoppingBag, Home, FileText, Check, ExternalLink } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useState } from "react";
 
@@ -27,6 +27,8 @@ export default function PaymentSuccess() {
       setTimeout(() => setCopied(false), 2000);
     }
   }
+
+  const isDriveLink = Boolean(card?.pdfFileKey?.startsWith("http"));
 
   return (
     <div className="max-w-md mx-auto w-full px-4 py-12 sm:py-16 text-center">
@@ -89,10 +91,25 @@ export default function PaymentSuccess() {
       )}
 
       {/* Primary Download CTA */}
-      <a href={downloadUrl} download className="block mb-3">
+      <a 
+        href={downloadUrl} 
+        target={isDriveLink ? "_blank" : undefined}
+        rel={isDriveLink ? "noopener noreferrer" : undefined}
+        download={!isDriveLink} 
+        className="block mb-3"
+      >
         <Button size="lg" className="w-full gap-2 h-11 rounded-lg text-sm font-semibold bg-[#2f74de] hover:bg-[#1f63c8] text-white shadow-none transition-colors">
-          <Download className="h-4 w-4" />
-          <span>Download PDF</span>
+          {isDriveLink ? (
+            <>
+              <ExternalLink className="h-4 w-4" />
+              <span>Open on Google Drive</span>
+            </>
+          ) : (
+            <>
+              <Download className="h-4 w-4" />
+              <span>Download PDF</span>
+            </>
+          )}
         </Button>
       </a>
 
