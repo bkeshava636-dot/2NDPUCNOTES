@@ -15,5 +15,7 @@ export interface Section {
   isVisible: boolean;
   sortOrder: number;
   cardCount: number;
+  /** @nullable */
+  officialSourceUrl?: string | null;
   createdAt: string;
 }

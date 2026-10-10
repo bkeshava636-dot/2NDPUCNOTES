@@ -117,6 +117,14 @@ paths:
           in: query
           schema:
             type: boolean
+        - name: subtype
+          in: query
+          schema:
+            type: string
+        - name: isRecommended
+          in: query
+          schema:
+            type: boolean
       responses:
         "200":
           description: List of cards
@@ -428,6 +436,22 @@ paths:
           in: query
           schema:
             type: integer
+        - name: subject
+          in: query
+          schema:
+            type: string
+        - name: resourceType
+          in: query
+          schema:
+            type: string
+        - name: subtype
+          in: query
+          schema:
+            type: string
+        - name: isFree
+          in: query
+          schema:
+            type: boolean
       responses:
         "200":
           description: All cards
@@ -552,6 +576,8 @@ components:
           type: integer
         cardCount:
           type: integer
+        officialSourceUrl:
+          type: ["string", "null"]
         createdAt:
           type: string
       required: [id, name, slug, isVisible, sortOrder, cardCount, createdAt]
@@ -564,6 +590,8 @@ components:
           minLength: 1
         description:
           type: string
+        officialSourceUrl:
+          type: string
         isVisible:
           type: boolean
       required: [name]
@@ -575,6 +603,8 @@ components:
           type: string
           minLength: 1
         description:
+          type: ["string", "null"]
+        officialSourceUrl:
           type: ["string", "null"]
         isVisible:
           type: boolean
@@ -639,6 +669,14 @@ components:
           type: ["integer", "null"]
         isFeatured:
           type: boolean
+        isRecommended:
+          type: boolean
+        subtype:
+          type: ["string", "null"]
+        answerKeyUrl:
+          type: ["string", "null"]
+        officialSourceUrl:
+          type: ["string", "null"]
         isVisible:
           type: boolean
         isDeleted:
@@ -647,7 +685,7 @@ components:
           type: integer
         createdAt:
           type: string
-      required: [id, sectionId, title, board, classLevel, resourceType, isFree, pricePaise, isNew, isFeatured, isVisible, isDeleted, sortOrder, previewImageUrls, createdAt]
+      required: [id, sectionId, title, board, classLevel, resourceType, isFree, pricePaise, isNew, isFeatured, isRecommended, isVisible, isDeleted, sortOrder, previewImageUrls, createdAt]
 
     CardInput:
       type: object
@@ -670,6 +708,14 @@ components:
         classLevel:
           type: string
         resourceType:
+          type: string
+        subtype:
+          type: string
+        isRecommended:
+          type: boolean
+        answerKeyUrl:
+          type: string
+        officialSourceUrl:
           type: string
         isFree:
           type: boolean
@@ -720,6 +766,14 @@ components:
           type: string
         resourceType:
           type: string
+        subtype:
+          type: ["string", "null"]
+        isRecommended:
+          type: boolean
+        answerKeyUrl:
+          type: ["string", "null"]
+        officialSourceUrl:
+          type: ["string", "null"]
         isFree:
           type: boolean
         pricePaise:
@@ -863,17 +917,17 @@ components:
       required: [orders, total, page]
 
     AdminLoginInput:
-  type: object
-  required:
-    - username
-    - password
-  properties:
-    username:
-      type: string
-      minLength: 1
-    password:
-      type: string
-      minLength: 1
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+          minLength: 1
+        password:
+          type: string
+          minLength: 1
 
     AdminLoginResult:
       type: object

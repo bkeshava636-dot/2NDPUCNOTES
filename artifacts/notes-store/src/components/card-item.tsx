@@ -11,6 +11,7 @@ function getSubjectBadgeStyle(subject?: string) {
   const lower = subject.toLowerCase();
   if (lower.includes("phys")) return "bg-[#ebf3ff] text-[#1856b8] border-[#dce8fa]";
   if (lower.includes("chem")) return "bg-[#fdece9] text-[#b83226] border-[#f9dcd7]";
+  if (lower.includes("comp")) return "bg-[#ecfeff] text-[#0e7490] border-[#cffafe]";
   if (lower.includes("math")) return "bg-[#eaf5ec] text-[#167035] border-[#d7ecdc]";
   if (lower.includes("bio")) return "bg-[#fdf5e2] text-[#9e5e00] border-[#f9ecc8]";
   if (lower.includes("eng")) return "bg-[#f5f3ff] text-[#6d28d9] border-[#ede9fe]";
@@ -49,6 +50,11 @@ export function CardItem({ card }: { card: CardType }) {
           {/* Top badges */}
           <div className="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between pointer-events-none">
             <div className="flex gap-1.5 flex-wrap">
+              {card.isRecommended && (
+                <span className="bg-[#0284c7] text-white font-semibold text-[10px] px-2 py-0.5 rounded-md shadow-2xs">
+                  Recommended
+                </span>
+              )}
               {card.isNew && (
                 <span className="bg-[#dc2626] text-white font-semibold text-[10px] px-2 py-0.5 rounded-md shadow-2xs">
                   New
@@ -80,6 +86,23 @@ export function CardItem({ card }: { card: CardType }) {
             <Badge variant="outline" className="text-[11px] font-medium text-[#64748b] border-[#e2e8f0] bg-[#f8fafc]">
               {card.resourceType}
             </Badge>
+            {card.subtype && (
+              <Badge variant="outline" className="text-[10px] font-medium text-[#0369a1] border-[#bae6fd] bg-[#f0f9ff]">
+                {card.subtype}
+              </Badge>
+            )}
+            {card.answerKeyUrl && (
+              <a
+                href={card.answerKeyUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                className="inline-flex items-center gap-1 text-[10px] font-semibold text-[#0284c7] bg-[#e0f2fe] hover:bg-[#bae6fd] border border-[#bae6fd] px-1.5 py-0.5 rounded transition-colors"
+                title="View Answer Key"
+              >
+                Answer Key
+              </a>
+            )}
           </div>
 
           <h3 className="font-bold text-base leading-snug text-[#112542] group-hover:text-[#1856b8] transition-colors line-clamp-2">

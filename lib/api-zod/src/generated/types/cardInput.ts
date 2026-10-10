@@ -17,6 +17,10 @@ export interface CardInput {
   board?: string;
   classLevel?: string;
   resourceType?: string;
+  subtype?: string;
+  isRecommended?: boolean;
+  answerKeyUrl?: string;
+  officialSourceUrl?: string;
   isFree: boolean;
   pricePaise: number;
   discountPricePaise?: number;

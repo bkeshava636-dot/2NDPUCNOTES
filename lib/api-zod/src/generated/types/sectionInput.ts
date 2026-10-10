@@ -10,5 +10,6 @@ export interface SectionInput {
   /** @minLength 1 */
   name: string;
   description?: string;
+  officialSourceUrl?: string;
   isVisible?: boolean;
 }

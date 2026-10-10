@@ -10,7 +10,6 @@ import {
   BookOpen,
   MessageCircle,
   ArrowRight,
-  Sparkles,
   X,
   Atom,
   FlaskConical,
@@ -19,26 +18,28 @@ import {
   BookA,
   Scroll,
   GraduationCap,
-  Languages
+  Languages,
+  Laptop,
+  FileText,
+  HelpCircle,
+  BookMarked,
+  History,
+  CheckCircle2,
+  Layers,
+  Sparkles
 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { TELEGRAM_LINK } from "@/lib/site-config";
 
-const CORE_SUBJECTS = [
-  { name: "Physics", icon: Atom },
-  { name: "Chemistry", icon: FlaskConical },
-  { name: "Mathematics", icon: Calculator },
-  { name: "Biology", icon: Dna },
-  { name: "English", icon: BookA },
-  { name: "Hindi", icon: Scroll },
-  { name: "Kannada", icon: GraduationCap },
-  { name: "Sanskrit", icon: Languages },
-];
+// Defined lists for Core vs Language subjects
+const CORE_SUBJECT_NAMES = ["Physics", "Chemistry", "Computer Science", "Biology"];
+const LANGUAGE_OTHER_NAMES = ["Mathematics", "English", "Hindi", "Kannada", "Sanskrit"];
 
 function getSubjectIcon(name: string) {
   const lower = name.toLowerCase();
   if (lower.includes("phys")) return Atom;
   if (lower.includes("chem")) return FlaskConical;
+  if (lower.includes("comp")) return Laptop;
   if (lower.includes("math")) return Calculator;
   if (lower.includes("bio")) return Dna;
   if (lower.includes("eng")) return BookA;
@@ -77,14 +78,14 @@ const SUBJECT_THEMES: Record<string, SubjectTheme> = {
     titleColor: "text-[#b83226]",
     countColor: "text-[#9e5d56]",
   },
-  math: {
-    bg: "bg-[#eaf5ec]",
-    border: "border-[#d7ecdc]",
-    hoverBorder: "hover:border-[#b8e0c1]",
+  "computer-science": {
+    bg: "bg-[#ecfeff]",
+    border: "border-[#cffafe]",
+    hoverBorder: "hover:border-[#a5f3fc]",
     iconBg: "bg-white",
-    iconColor: "text-[#197d3b]",
-    titleColor: "text-[#167035]",
-    countColor: "text-[#588366]",
+    iconColor: "text-[#0891b2]",
+    titleColor: "text-[#0e7490]",
+    countColor: "text-[#155e75]",
   },
   biology: {
     bg: "bg-[#fdf5e2]",
@@ -94,6 +95,15 @@ const SUBJECT_THEMES: Record<string, SubjectTheme> = {
     iconColor: "text-[#b26a00]",
     titleColor: "text-[#9e5e00]",
     countColor: "text-[#94784e]",
+  },
+  math: {
+    bg: "bg-[#eaf5ec]",
+    border: "border-[#d7ecdc]",
+    hoverBorder: "hover:border-[#b8e0c1]",
+    iconBg: "bg-white",
+    iconColor: "text-[#197d3b]",
+    titleColor: "text-[#167035]",
+    countColor: "text-[#588366]",
   },
   english: {
     bg: "bg-[#f5f3ff]",
@@ -137,6 +147,7 @@ function getSubjectTheme(name: string): SubjectTheme {
   const lower = name.toLowerCase();
   if (lower.includes("phys")) return SUBJECT_THEMES.physics;
   if (lower.includes("chem")) return SUBJECT_THEMES.chemistry;
+  if (lower.includes("comp")) return SUBJECT_THEMES["computer-science"];
   if (lower.includes("math")) return SUBJECT_THEMES.math;
   if (lower.includes("bio")) return SUBJECT_THEMES.biology;
   if (lower.includes("eng")) return SUBJECT_THEMES.english;
@@ -153,6 +164,58 @@ function getSubjectTheme(name: string): SubjectTheme {
     countColor: "text-[#64748b]",
   };
 }
+
+const CATEGORY_ITEMS = [
+  {
+    title: "Model Question Papers (MQP)",
+    slug: "mqp",
+    desc: "Official model papers with answer keys",
+    icon: FileText,
+    badge: "Official",
+  },
+  {
+    title: "MCQ",
+    slug: "mcq",
+    desc: "Chapterwise multiple choice practice",
+    icon: HelpCircle,
+    badge: "Practice",
+  },
+  {
+    title: "Question Bank",
+    slug: "question-bank",
+    desc: "Board repeated questions & solutions",
+    icon: BookMarked,
+    badge: "Curated",
+  },
+  {
+    title: "Practical",
+    slug: "practical",
+    desc: "Schemes, lab manuals & viva questions",
+    icon: FlaskConical,
+    badge: "Core Science",
+  },
+  {
+    title: "Previous Year Question Papers (PYQs)",
+    slug: "pyq",
+    desc: "Midterm, preparatory & annual papers",
+    icon: History,
+    badge: "Past Papers",
+  },
+  {
+    title: "Passing Package",
+    slug: "passing-package",
+    desc: "Guaranteed scoring high-yield notes",
+    icon: CheckCircle2,
+    badge: "Essential",
+  },
+  {
+    title: "Publication Books",
+    slug: "publication-books",
+    desc: "Reference books and workbook solutions",
+    icon: BookOpen,
+    badge: "Reference",
+  },
+];
 
 export default function Home() {
   const [search, setSearch] = useState("");
@@ -180,29 +243,32 @@ export default function Home() {
     setSubmitted("");
   }
 
-  // Build category cards: use backend sections if available, or fallback to CORE_SUBJECTS
-  const categoryCards = sections && sections.length > 0
-    ? sections.map(s => ({
-        name: s.name,
-        icon: getSubjectIcon(s.name),
-        theme: getSubjectTheme(s.name),
-        href: `/section/${s.id}`,
-        cardCount: (s as any).cardCount,
-      }))
-    : CORE_SUBJECTS.map(subj => {
-        const matchingSection = sections?.find(s => s.name.toLowerCase().includes(subj.name.toLowerCase()));
-        return {
-          name: subj.name,
-          icon: subj.icon,
-          theme: getSubjectTheme(subj.name),
-          href: matchingSection ? `/section/${matchingSection.id}` : "#",
-          cardCount: matchingSection ? (matchingSection as any).cardCount : undefined,
-        };
-      });
+  // Split sections into Core Subjects and Languages/Other Subjects
+  const coreSections = CORE_SUBJECT_NAMES.map((name) => {
+    const s = sections?.find((sec) => sec.name.toLowerCase().includes(name.toLowerCase()));
+    return {
+      name,
+      slug: s?.slug || name.toLowerCase().replace(/\s+/g, "-"),
+      cardCount: s ? (s as any).cardCount : undefined,
+      icon: getSubjectIcon(name),
+      theme: getSubjectTheme(name),
+    };
+  });
+
+  const languageSections = LANGUAGE_OTHER_NAMES.map((name) => {
+    const s = sections?.find((sec) => sec.name.toLowerCase().includes(name.toLowerCase()));
+    return {
+      name,
+      slug: s?.slug || name.toLowerCase().replace(/\s+/g, "-"),
+      cardCount: s ? (s as any).cardCount : undefined,
+      icon: getSubjectIcon(name),
+      theme: getSubjectTheme(name),
+    };
+  });
 
   return (
     <div className="flex flex-col bg-white">
-      {/* Hero Section with soft ambient glow */}
+      {/* Hero Section */}
       <section className="bg-gradient-to-b from-[#f2f7fd] via-[#f8fbff] to-white border-b border-[#e8eff7] py-12 sm:py-16 px-4">
         <div className="max-w-3xl mx-auto text-center">
           {/* Badge */}
@@ -307,81 +373,169 @@ export default function Home() {
           </section>
         )}
 
-        {/* Browse by Category (Using Stitch subject cards color palette) */}
+        {/* PART 1: Browse by Subject */}
         {!submitted && (
-          <section>
-            <div className="mb-5">
-              <h2 className="text-xl sm:text-2xl font-bold text-[#112542] tracking-tight">Browse by Category</h2>
+          <section className="space-y-8">
+            <div>
+              <h2 className="text-xl sm:text-2xl font-bold text-[#112542] tracking-tight">Browse by Subject</h2>
               <p className="text-sm text-[#5a6b82] mt-0.5">Explore curriculum-aligned notes by subject and topic</p>
             </div>
 
-            {sectionsLoading ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 mb-10">
-                {[1, 2, 3, 4].map(i => <Skeleton key={i} className="h-20 rounded-xl" />)}
+            {/* A. Core Subjects */}
+            <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold uppercase tracking-wider text-[#1856b8] bg-[#ebf3ff] px-2.5 py-0.5 rounded border border-[#dce8fa]">
+                  Core Subjects
+                </span>
+                <span className="text-xs text-[#64748b]">Includes Practicals, Lab Manuals, Schemes & Notes</span>
               </div>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 mb-10">
-                {categoryCards.map(cat => {
-                  const Icon = cat.icon;
-                  const theme = cat.theme;
-                  return (
-                    <Link key={cat.name} href={cat.href}>
-                      <div className={`group h-full ${theme.bg} border ${theme.border} ${theme.hoverBorder} rounded-xl p-4 transition-all cursor-pointer flex items-center justify-between`}>
-                        <div className="flex items-center gap-3">
-                          <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${theme.iconBg} ${theme.iconColor} shadow-2xs`}>
-                            <Icon className="h-4 w-4" />
-                          </div>
-                          <div>
-                            <h3 className={`font-semibold text-sm ${theme.titleColor}`}>
-                              {cat.name}
-                            </h3>
-                            <p className={`text-xs ${theme.countColor} mt-0.5`}>
-                              {cat.cardCount !== undefined ? `${cat.cardCount} notes` : "View notes"}
-                            </p>
-                          </div>
-                        </div>
-                        <ArrowRight className={`h-4 w-4 ${theme.countColor} group-hover:translate-x-0.5 transition-transform shrink-0`} />
-                      </div>
-                    </Link>
-                  );
-                })}
-              </div>
-            )}
 
-            {/* Section notes previews */}
-            {sections && sections.length > 0 && (
-              <div className="flex flex-col gap-10">
-                {sections.map(section => (
-                  <SectionPreview key={section.id} sectionId={section.id} sectionName={section.name} />
-                ))}
+              {sectionsLoading ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+                  {[1, 2, 3, 4].map(i => <Skeleton key={i} className="h-20 rounded-xl" />)}
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+                  {coreSections.map(subj => {
+                    const Icon = subj.icon;
+                    const theme = subj.theme;
+                    return (
+                      <Link key={subj.name} href={`/subject/${subj.slug}`}>
+                        <div className={`group h-full ${theme.bg} border ${theme.border} ${theme.hoverBorder} rounded-xl p-4 transition-all cursor-pointer flex items-center justify-between shadow-2xs hover:shadow-xs`}>
+                          <div className="flex items-center gap-3">
+                            <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${theme.iconBg} ${theme.iconColor} shadow-2xs`}>
+                              <Icon className="h-4 w-4" />
+                            </div>
+                            <div>
+                              <h3 className={`font-semibold text-sm ${theme.titleColor}`}>
+                                {subj.name}
+                              </h3>
+                              <p className={`text-xs ${theme.countColor} mt-0.5`}>
+                                {subj.cardCount !== undefined ? `${subj.cardCount} resources` : "View notes"}
+                              </p>
+                            </div>
+                          </div>
+                          <ArrowRight className={`h-4 w-4 ${theme.countColor} group-hover:translate-x-0.5 transition-transform shrink-0`} />
+                        </div>
+                      </Link>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
+            {/* B. Languages and Other Subjects */}
+            <div className="space-y-3 pt-2">
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold uppercase tracking-wider text-[#6d28d9] bg-[#f5f3ff] px-2.5 py-0.5 rounded border border-[#ede9fe]">
+                  Languages & Other Subjects
+                </span>
+                <span className="text-xs text-[#64748b]">Literature, Grammars, Question Banks & Model Papers</span>
               </div>
-            )}
+
+              {sectionsLoading ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
+                  {[1, 2, 3].map(i => <Skeleton key={i} className="h-20 rounded-xl" />)}
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
+                  {languageSections.map(subj => {
+                    const Icon = subj.icon;
+                    const theme = subj.theme;
+                    return (
+                      <Link key={subj.name} href={`/subject/${subj.slug}`}>
+                        <div className={`group h-full ${theme.bg} border ${theme.border} ${theme.hoverBorder} rounded-xl p-4 transition-all cursor-pointer flex items-center justify-between shadow-2xs hover:shadow-xs`}>
+                          <div className="flex items-center gap-3">
+                            <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${theme.iconBg} ${theme.iconColor} shadow-2xs`}>
+                              <Icon className="h-4 w-4" />
+                            </div>
+                            <div>
+                              <h3 className={`font-semibold text-sm ${theme.titleColor}`}>
+                                {subj.name}
+                              </h3>
+                              <p className={`text-xs ${theme.countColor} mt-0.5`}>
+                                {subj.cardCount !== undefined ? `${subj.cardCount} resources` : "View notes"}
+                              </p>
+                            </div>
+                          </div>
+                          <ArrowRight className={`h-4 w-4 ${theme.countColor} group-hover:translate-x-0.5 transition-transform shrink-0`} />
+                        </div>
+                      </Link>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
           </section>
         )}
 
-        {/* Featured */}
-        {!submitted &&
-          Array.isArray(featuredCards) &&
-          featuredCards.length > 0 && (
-            <section>
-              <div className="flex items-center gap-2.5 mb-5">
-                <h2 className="text-xl sm:text-2xl font-bold text-[#112542] tracking-tight">
-                  Featured Resources
-                </h2>
-                <span className="bg-[#fef3c7] text-[#92400e] border border-[#fde68a] text-xs font-semibold px-2 py-0.5 rounded-md">
-                  Popular
+        {/* PART 2: Browse by Category */}
+        {!submitted && (
+          <section className="space-y-5">
+            <div>
+              <div className="flex items-center gap-2">
+                <h2 className="text-xl sm:text-2xl font-bold text-[#112542] tracking-tight">Browse by Category</h2>
+                <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-[#f0f9ff] text-[#0284c7] border border-[#bae6fd]">
+                  Resource Types
                 </span>
               </div>
+              <p className="text-sm text-[#5a6b82] mt-0.5">Filter all study materials by format, exam type, or question bank</p>
+            </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                {featuredCards.slice(0, 6).map((card) => (
-                  <CardItem key={card.id} card={card} />
-                ))}
-              </div>
-            </section>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {CATEGORY_ITEMS.map((cat) => {
+                const Icon = cat.icon;
+                return (
+                  <Link key={cat.slug} href={`/category/${cat.slug}`}>
+                    <div className="group h-full bg-white border border-[#e2e8f0] hover:border-[#1856b8]/40 hover:bg-[#fafcff] rounded-xl p-4 transition-all cursor-pointer flex flex-col justify-between shadow-2xs hover:shadow-xs">
+                      <div>
+                        <div className="flex items-center justify-between mb-3">
+                          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#ebf3ff] text-[#1856b8] border border-[#dce8fa]">
+                            <Icon className="h-4 w-4" />
+                          </div>
+                          <span className="text-[10px] font-semibold text-[#0284c7] bg-[#f0f9ff] px-2 py-0.5 rounded border border-[#bae6fd]">
+                            {cat.badge}
+                          </span>
+                        </div>
+                        <h3 className="font-bold text-sm text-[#112542] group-hover:text-[#1856b8] transition-colors">
+                          {cat.title}
+                        </h3>
+                        <p className="text-xs text-[#5a6b82] mt-1 leading-relaxed">
+                          {cat.desc}
+                        </p>
+                      </div>
+                      <div className="flex items-center justify-end pt-3 mt-3 border-t border-[#f1f5f9] text-xs font-semibold text-[#1856b8] group-hover:translate-x-0.5 transition-transform">
+                        <span>Browse resources &rarr;</span>
+                      </div>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </section>
         )}
 
-        {/* Telegram Contact Card (Stitch soft sky blue banner) */}
+        {/* Featured Resources */}
+        {!submitted && Array.isArray(featuredCards) && featuredCards.length > 0 && (
+          <section>
+            <div className="flex items-center gap-2.5 mb-5">
+              <h2 className="text-xl sm:text-2xl font-bold text-[#112542] tracking-tight">
+                Featured Resources
+              </h2>
+              <span className="bg-[#fef3c7] text-[#92400e] border border-[#fde68a] text-xs font-semibold px-2 py-0.5 rounded-md">
+                Popular
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {featuredCards.slice(0, 6).map((card) => (
+                <CardItem key={card.id} card={card} />
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Telegram Contact Banner */}
         <section className="bg-[#eaf2fd] border border-[#dce7f7] rounded-xl p-6 sm:p-7">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-5 text-center sm:text-left">
             <div className="flex items-center gap-3.5">
@@ -405,32 +559,3 @@ export default function Home() {
     </div>
   );
 }
-
-function SectionPreview({ sectionId, sectionName }: { sectionId: number; sectionName: string }) {
-  const { data: cards, isLoading } = useListCards(
-    { sectionId },
-    { query: { queryKey: ["section-preview", sectionId] } }
-  );
-
-  if (isLoading) return <Skeleton className="h-60 rounded-xl" />;
-  if (!cards || cards.length === 0) return null;
-
-  return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between border-b border-[#eef2f6] pb-2">
-        <h3 className="font-bold text-base sm:text-lg text-[#112542]">{sectionName}</h3>
-        <Link href={`/section/${sectionId}`}>
-          <Button variant="ghost" size="sm" className="gap-1 text-[#1856b8] hover:text-[#0b57d0] font-medium text-xs hover:bg-[#ebf3ff]">
-            <span>View all ({cards.length})</span>
-            <ArrowRight className="h-3.5 w-3.5" />
-          </Button>
-        </Link>
-      </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-        {cards.slice(0, 3).map(card => <CardItem key={card.id} card={card} />)}
-      </div>
-    </div>
-  );
-}
-
-

@@ -1,7 +1,8 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useMemo } from "react";
 import { useLocation } from "wouter";
 import { 
   useAdminListSections, 
+  useAdminListCards,
   useAdminCreateCard, 
   useAdminUpdateCard, 
   getAdminListCardsQueryKey 
@@ -25,39 +26,61 @@ import {
   Loader2,
   ExternalLink,
   Sparkles,
-  Link2
+  Link2,
+  FolderOpen,
+  Search
 } from "lucide-react";
 import { Link } from "wouter";
 import { useToast } from "@/hooks/use-toast";
 import { getAdminToken } from "@/lib/utils";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
-const SUGGESTED_SUBJECTS = [
+const CORE_SUBJECT_NAMES = ["Physics", "Chemistry", "Computer Science", "Biology"];
+
+const ALL_SUBJECT_OPTIONS = [
   "Physics",
   "Chemistry",
-  "Mathematics",
+  "Computer Science",
   "Biology",
+  "Mathematics",
   "English",
   "Hindi",
   "Kannada",
   "Sanskrit"
 ];
 
-const RESOURCE_TYPES = [
+const CORE_RESOURCE_TYPES = [
   "Notes", 
-  "Important Questions", 
-  "Previous Year Papers", 
-  "Question Banks",
-  "Formula Sheets", 
-  "Model Papers", 
-  "Assignments", 
-  "Lab Manuals",
-  "Practical Records", 
-  "Sample Papers", 
-  "Revision Notes", 
-  "Study Materials",
+  "Model Question Papers (MQP)", 
+  "MCQ", 
+  "Question Bank",
+  "Practical", 
+  "Previous Year Question Papers (PYQs)", 
+  "Passing Package", 
+  "Publication Books"
 ];
 
-type CardFormData = {
+const LANGUAGE_RESOURCE_TYPES = [
+  "Notes", 
+  "Model Question Papers (MQP)", 
+  "Question Bank", 
+  "Previous Year Question Papers (PYQs)", 
+  "Passing Package", 
+  "Publication Books",
+  "MCQ"
+];
+
+const PRACTICAL_SUBTYPES = ["Scheme", "Resources", "Lab Manual", "Viva Questions"];
+const PYQ_SUBTYPES = ["Midterm", "Preparatory", "Annual"];
+
+export type CardFormData = {
   sectionId: string;
   title: string;
   description: string;
@@ -65,6 +88,10 @@ type CardFormData = {
   chapter: string;
   semester: string;
   resourceType: string;
+  subtype: string;
+  isRecommended: boolean;
+  answerKeyUrl: string;
+  officialSourceUrl: string;
   isFree: boolean;
   priceRupees: string;
   discountPriceRupees: string;
@@ -83,10 +110,14 @@ const defaultForm: CardFormData = {
   sectionId: "", 
   title: "", 
   description: "", 
-  subject: "", 
+  subject: "Physics", 
   chapter: "",
   semester: "2nd PUC", 
   resourceType: "Notes", 
+  subtype: "",
+  isRecommended: false,
+  answerKeyUrl: "",
+  officialSourceUrl: "",
   isFree: true, 
   priceRupees: "",
   discountPriceRupees: "", 
@@ -104,6 +135,7 @@ const defaultForm: CardFormData = {
 export default function CardForm({ initialData, cardId }: { initialData?: Partial<CardFormData>; cardId?: number }) {
   const [, setLocation] = useLocation();
   const { data: sections } = useAdminListSections();
+  const { data: allCards } = useAdminListCards();
   const createCard = useAdminCreateCard();
   const updateCard = useAdminUpdateCard();
   const queryClient = useQueryClient();
@@ -111,15 +143,51 @@ export default function CardForm({ initialData, cardId }: { initialData?: Partia
 
   const [form, setForm] = useState<CardFormData>({ ...defaultForm, ...initialData });
   const [uploading, setUploading] = useState<"pdf" | "image" | null>(null);
-  const [uploadMethod, setUploadMethod] = useState<"file" | "drive">(
+  const [uploadMethod, setUploadMethod] = useState<"file" | "drive" | "existing">(
     initialData?.pdfFileKey?.startsWith("http") ? "drive" : "file"
   );
   const [driveUrlInput, setDriveUrlInput] = useState("");
+  const [existingSearch, setExistingSearch] = useState("");
+  const [pickerOpen, setPickerOpen] = useState(false);
+
   const pdfRef = useRef<HTMLInputElement>(null);
   const imageRef = useRef<HTMLInputElement>(null);
 
   function set(key: keyof CardFormData, value: any) {
     setForm(f => ({ ...f, [key]: value }));
+  }
+
+  // Determine if selected subject is a Core Subject
+  const isCoreSubject = useMemo(() => {
+    return CORE_SUBJECT_NAMES.some(
+      c => c.toLowerCase() === (form.subject || "").toLowerCase()
+    );
+  }, [form.subject]);
+
+  // Dynamic resource types based on subject
+  const availableResourceTypes = isCoreSubject ? CORE_RESOURCE_TYPES : LANGUAGE_RESOURCE_TYPES;
+
+  // Handle subject change: if switching away from core subject and practical was selected, reset resource type
+  function handleSubjectChange(subj: string) {
+    const isNewCore = CORE_SUBJECT_NAMES.some(c => c.toLowerCase() === subj.toLowerCase());
+    set("subject", subj);
+    // Find matching section if possible
+    if (sections) {
+      const match = sections.find(s => s.name.toLowerCase() === subj.toLowerCase());
+      if (match) set("sectionId", String(match.id));
+    }
+    if (!isNewCore && form.resourceType.toLowerCase().includes("practical")) {
+      set("resourceType", "Notes");
+      set("subtype", "");
+    }
+  }
+
+  // Handle resource type change
+  function handleResourceTypeChange(rType: string) {
+    set("resourceType", rType);
+    if (!rType.toLowerCase().includes("practical") && !rType.toLowerCase().includes("previous") && !rType.toLowerCase().includes("pyq")) {
+      set("subtype", "");
+    }
   }
 
   function handleAttachDriveLink() {
@@ -135,6 +203,43 @@ export default function CardForm({ initialData, cardId }: { initialData?: Partia
     set("pdfFileKey", trimmed);
     setDriveUrlInput("");
     toast({ title: "Drive Link Attached", description: "Google Drive resource link successfully linked to this note." });
+  }
+
+  // Unique existing files to choose from
+  const existingFiles = useMemo(() => {
+    if (!allCards) return [];
+    const seen = new Set<string>();
+    const list: typeof allCards = [];
+    for (const c of allCards) {
+      if (c.pdfFileKey && !seen.has(c.pdfFileKey)) {
+        seen.add(c.pdfFileKey);
+        list.push(c);
+      }
+    }
+    return list;
+  }, [allCards]);
+
+  const filteredExistingFiles = useMemo(() => {
+    if (!existingSearch.trim()) return existingFiles;
+    const q = existingSearch.toLowerCase().trim();
+    return existingFiles.filter(
+      c =>
+        c.title.toLowerCase().includes(q) ||
+        (c.subject && c.subject.toLowerCase().includes(q)) ||
+        (c.pdfFileKey && c.pdfFileKey.toLowerCase().includes(q))
+    );
+  }, [existingFiles, existingSearch]);
+
+  function handleLinkExistingCard(c: (typeof existingFiles)[0]) {
+    set("pdfFileKey", c.pdfFileKey || "");
+    if (c.pageCount && !form.pageCount) set("pageCount", String(c.pageCount));
+    if (c.fileSizeKb && !form.fileSizeKb) set("fileSizeKb", String(c.fileSizeKb));
+    if (c.thumbnailUrl && !form.thumbnailUrl) set("thumbnailUrl", c.thumbnailUrl);
+    setPickerOpen(false);
+    toast({
+      title: "Existing File Linked",
+      description: `Linked resource file from: ${c.title}`,
+    });
   }
 
   async function uploadFile(file: File, type: "pdf" | "image") {
@@ -169,7 +274,6 @@ export default function CardForm({ initialData, cardId }: { initialData?: Partia
       
       if (type === "pdf") {
         set("pdfFileKey", data.key);
-        // Automatically populate file size in KB if empty
         if (!form.fileSizeKb) {
           set("fileSizeKb", String(Math.round(file.size / 1024)));
         }
@@ -188,7 +292,7 @@ export default function CardForm({ initialData, cardId }: { initialData?: Partia
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!form.sectionId || !form.title.trim()) {
-      toast({ title: "Missing fields", description: "Category and Title are required.", variant: "destructive" });
+      toast({ title: "Missing fields", description: "Subject/Category and Title are required.", variant: "destructive" });
       return;
     }
 
@@ -200,6 +304,10 @@ export default function CardForm({ initialData, cardId }: { initialData?: Partia
       chapter: form.chapter?.trim() || undefined,
       semester: form.semester?.trim() || undefined,
       resourceType: form.resourceType,
+      subtype: form.subtype?.trim() || undefined,
+      isRecommended: form.isRecommended,
+      answerKeyUrl: form.answerKeyUrl?.trim() || undefined,
+      officialSourceUrl: form.officialSourceUrl?.trim() || undefined,
       isFree: form.isFree,
       pricePaise: form.isFree ? 0 : Math.round(parseFloat(form.priceRupees || "0") * 100),
       discountPricePaise: !form.isFree && form.discountPriceRupees
@@ -246,6 +354,10 @@ export default function CardForm({ initialData, cardId }: { initialData?: Partia
   }
 
   const isPending = createCard.isPending || updateCard.isPending;
+  const isPractical = form.resourceType.toLowerCase().includes("practical");
+  const isPyq = form.resourceType.toLowerCase().includes("previous") || form.resourceType.toLowerCase().includes("pyq");
+  const isNotes = form.resourceType.toLowerCase() === "notes";
+  const isMqpOrQBank = form.resourceType.toLowerCase().includes("model") || form.resourceType.toLowerCase().includes("bank");
 
   return (
     <div className="space-y-6 max-w-3xl">
@@ -261,24 +373,54 @@ export default function CardForm({ initialData, cardId }: { initialData?: Partia
           {cardId ? "Edit Study Resource" : "Create New Study Resource"}
         </h1>
         <p className="text-[#5a6b82] text-xs sm:text-sm mt-0.5">
-          Configure details, pricing, study material category, and downloadable files
+          Configure details, dynamic resource types, pricing, and link downloadable files without duplication
         </p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-5">
-        {/* Section 1: Basic Information */}
+        {/* Section 1: Basic Information & Dynamic Subject/Type Selection */}
         <Card className="rounded-xl border-[#e2e8f0] shadow-none bg-white">
           <CardHeader className="pb-3 pt-5 px-5 border-b border-[#eef2f6]">
-            <CardTitle className="text-sm font-bold text-[#112542]">1. Basic Information</CardTitle>
-            <CardDescription className="text-xs text-[#64748b]">Core title and curriculum metadata</CardDescription>
+            <CardTitle className="text-sm font-bold text-[#112542]">1. Subject & Classification</CardTitle>
+            <CardDescription className="text-xs text-[#64748b]">Select subject to dynamically unlock compatible resource types</CardDescription>
           </CardHeader>
           <CardContent className="p-5 space-y-4">
+            {/* Subject Selector */}
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between">
+                <Label className="text-xs font-semibold text-[#334155]">Subject *</Label>
+                <span className={`text-[10px] font-semibold px-2 py-0.5 rounded border ${
+                  isCoreSubject 
+                    ? "bg-[#ebf3ff] text-[#1856b8] border-[#dce8fa]" 
+                    : "bg-[#f5f3ff] text-[#6d28d9] border-[#ede9fe]"
+                }`}>
+                  {isCoreSubject ? "Core Subject (Practicals Supported)" : "Language / Other Subject (No Practicals)"}
+                </span>
+              </div>
+              <div className="flex flex-wrap gap-1.5 pt-0.5">
+                {ALL_SUBJECT_OPTIONS.map((subj) => (
+                  <button
+                    key={subj}
+                    type="button"
+                    onClick={() => handleSubjectChange(subj)}
+                    className={`text-xs px-2.5 py-1 rounded-lg border transition-all ${
+                      form.subject.toLowerCase() === subj.toLowerCase()
+                        ? "bg-[#1856b8] text-white border-[#1856b8] font-semibold shadow-2xs"
+                        : "bg-[#f8fafc] text-[#5a6b82] border-[#e2e8f0] hover:bg-white hover:text-[#112542]"
+                    }`}
+                  >
+                    {subj}
+                  </button>
+                ))}
+              </div>
+            </div>
+
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1.5">
-                <Label className="text-xs font-semibold text-[#334155]">Category / Section *</Label>
+                <Label className="text-xs font-semibold text-[#334155]">Store Category / Section *</Label>
                 <Select value={form.sectionId} onValueChange={v => set("sectionId", v)}>
                   <SelectTrigger className="h-9 text-xs bg-[#f8fafc] border-[#e2e8f0] text-[#112542]">
-                    <SelectValue placeholder="Select category..." />
+                    <SelectValue placeholder="Select section..." />
                   </SelectTrigger>
                   <SelectContent>
                     {sections?.map(s => (
@@ -288,14 +430,15 @@ export default function CardForm({ initialData, cardId }: { initialData?: Partia
                 </Select>
               </div>
 
+              {/* Dynamic Resource Type */}
               <div className="space-y-1.5">
                 <Label className="text-xs font-semibold text-[#334155]">Resource Type *</Label>
-                <Select value={form.resourceType} onValueChange={v => set("resourceType", v)}>
+                <Select value={form.resourceType} onValueChange={handleResourceTypeChange}>
                   <SelectTrigger className="h-9 text-xs bg-[#f8fafc] border-[#e2e8f0] text-[#112542]">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    {RESOURCE_TYPES.map(t => (
+                    {availableResourceTypes.map(t => (
                       <SelectItem key={t} value={t}>{t}</SelectItem>
                     ))}
                   </SelectContent>
@@ -303,6 +446,89 @@ export default function CardForm({ initialData, cardId }: { initialData?: Partia
               </div>
             </div>
 
+            {/* Subtypes: Practical or PYQ */}
+            {isPractical && (
+              <div className="bg-[#f0f7ff] border border-[#dce8fa] rounded-xl p-3.5 space-y-1.5">
+                <Label className="text-xs font-semibold text-[#1856b8]">Practical Subtype *</Label>
+                <div className="flex flex-wrap gap-1.5">
+                  {PRACTICAL_SUBTYPES.map((st) => (
+                    <button
+                      key={st}
+                      type="button"
+                      onClick={() => set("subtype", st)}
+                      className={`text-xs px-2.5 py-1 rounded-md transition-colors ${
+                        form.subtype.toLowerCase() === st.toLowerCase()
+                          ? "bg-[#1856b8] text-white font-semibold"
+                          : "bg-white text-[#1856b8] border border-[#bae6fd] hover:bg-[#e0f2fe]"
+                      }`}
+                    >
+                      {st}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {isPyq && (
+              <div className="bg-[#f0f7ff] border border-[#dce8fa] rounded-xl p-3.5 space-y-1.5">
+                <Label className="text-xs font-semibold text-[#1856b8]">PYQ Exam Category *</Label>
+                <div className="flex flex-wrap gap-1.5">
+                  {PYQ_SUBTYPES.map((st) => (
+                    <button
+                      key={st}
+                      type="button"
+                      onClick={() => set("subtype", st)}
+                      className={`text-xs px-2.5 py-1 rounded-md transition-colors ${
+                        form.subtype.toLowerCase() === st.toLowerCase()
+                          ? "bg-[#1856b8] text-white font-semibold"
+                          : "bg-white text-[#1856b8] border border-[#bae6fd] hover:bg-[#e0f2fe]"
+                      }`}
+                    >
+                      {st}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Notes: Recommended Toggle */}
+            {isNotes && (
+              <div className="flex items-center justify-between p-3 rounded-xl bg-[#f0fdf4] border border-[#dcfce7]">
+                <div>
+                  <Label className="text-xs font-semibold text-[#15803d] block">Recommended Note</Label>
+                  <p className="text-[11px] text-[#588366]">Highlights this note with a prominent "Recommended" badge on the subject page</p>
+                </div>
+                <Switch checked={form.isRecommended} onCheckedChange={v => set("isRecommended", v)} />
+              </div>
+            )}
+
+            {/* MQP & Question Bank: Answer Key URL */}
+            {isMqpOrQBank && (
+              <div className="space-y-1.5 p-3 rounded-xl bg-[#f8fafc] border border-[#e2e8f0]">
+                <Label className="text-xs font-semibold text-[#334155]">Linked Answer Key URL (Optional)</Label>
+                <Input
+                  value={form.answerKeyUrl}
+                  onChange={e => set("answerKeyUrl", e.target.value)}
+                  placeholder="https://drive.google.com/... or download URL"
+                  className="h-9 text-xs bg-white border-[#cbd5e1] text-[#112542]"
+                />
+                <p className="text-[11px] text-[#64748b]">If provided, an "[Answer Key]" button will be rendered next to this question paper for students</p>
+              </div>
+            )}
+
+            {/* Official Source Link */}
+            <div className="space-y-1.5">
+              <Label className="text-xs font-semibold text-[#334155]">Official Government Source URL (Optional)</Label>
+              <Input
+                value={form.officialSourceUrl}
+                onChange={e => set("officialSourceUrl", e.target.value)}
+                placeholder="https://kseab.karnataka.gov.in/..."
+                className="h-9 text-xs bg-[#f8fafc] border-[#e2e8f0] text-[#112542]"
+              />
+              <p className="text-[11px] text-[#94a3b8]">Used to display official reference link at the top of category & subject pages</p>
+            </div>
+
+            {/* Title */}
             <div className="space-y-1.5">
               <Label className="text-xs font-semibold text-[#334155]">Resource Title *</Label>
               <Input 
@@ -314,32 +540,7 @@ export default function CardForm({ initialData, cardId }: { initialData?: Partia
               />
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              <div className="space-y-1.5">
-                <Label className="text-xs font-semibold text-[#334155]">Subject</Label>
-                <Input 
-                  value={form.subject} 
-                  onChange={e => set("subject", e.target.value)} 
-                  placeholder="e.g. Physics" 
-                  className="h-9 text-xs bg-[#f8fafc] border-[#e2e8f0] text-[#112542]"
-                />
-                <div className="flex flex-wrap gap-1 pt-0.5">
-                  {SUGGESTED_SUBJECTS.map((subj) => (
-                    <button
-                      key={subj}
-                      type="button"
-                      onClick={() => set("subject", subj)}
-                      className={`text-[10px] px-1.5 py-0.5 rounded border transition-colors ${
-                        form.subject.toLowerCase() === subj.toLowerCase()
-                          ? "bg-[#ebf3ff] text-[#1856b8] border-[#dce8fa] font-semibold"
-                          : "bg-[#f8fafc] text-[#5a6b82] border-[#e2e8f0] hover:bg-white hover:text-[#112542]"
-                      }`}
-                    >
-                      {subj}
-                    </button>
-                  ))}
-                </div>
-              </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="space-y-1.5">
                 <Label className="text-xs font-semibold text-[#334155]">Chapter / Topic</Label>
                 <Input 
@@ -380,7 +581,6 @@ export default function CardForm({ initialData, cardId }: { initialData?: Partia
             <CardDescription className="text-xs text-[#64748b]">Set whether this resource is free or paid</CardDescription>
           </CardHeader>
           <CardContent className="p-5 space-y-4">
-            {/* Free vs Paid Toggle Buttons */}
             <div className="inline-flex rounded-lg border border-[#e2e8f0] p-1 bg-[#f8fafc]">
               <button
                 type="button"
@@ -457,45 +657,58 @@ export default function CardForm({ initialData, cardId }: { initialData?: Partia
           </CardContent>
         </Card>
 
-        {/* Section 3: Files & Uploads */}
+        {/* Section 3: Files & Resource Linking (Avoid Duplicate Uploads!) */}
         <Card className="rounded-xl border-[#e2e8f0] shadow-none bg-white">
           <CardHeader className="pb-3 pt-5 px-5 border-b border-[#eef2f6]">
-            <CardTitle className="text-sm font-bold text-[#112542]">3. PDF File & Thumbnail</CardTitle>
-            <CardDescription className="text-xs text-[#64748b]">Upload downloadable note PDF and preview visual</CardDescription>
+            <CardTitle className="text-sm font-bold text-[#112542]">3. Resource Document & Linking</CardTitle>
+            <CardDescription className="text-xs text-[#64748b]">Upload a new PDF, paste a Drive URL, or link an already-uploaded file to prevent duplication</CardDescription>
           </CardHeader>
           <CardContent className="p-5 space-y-4">
-            {/* Resource Document Attachment */}
             <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Label className="text-xs font-semibold text-[#334155]">Downloadable Resource (PDF or Drive Link)</Label>
-                {!form.pdfFileKey && (
-                  <div className="inline-flex rounded-lg border border-[#e2e8f0] p-0.5 bg-[#f8fafc]">
-                    <button
-                      type="button"
-                      onClick={() => setUploadMethod("file")}
-                      className={`px-2.5 py-1 text-[11px] font-semibold rounded transition-all ${
-                        uploadMethod === "file"
-                          ? "bg-white text-[#1856b8] shadow-2xs border border-[#dce8fa]"
-                          : "text-[#5a6b82] hover:text-[#112542]"
-                      }`}
-                    >
-                      Upload PDF
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setUploadMethod("drive")}
-                      className={`px-2.5 py-1 text-[11px] font-semibold rounded transition-all ${
-                        uploadMethod === "drive"
-                          ? "bg-white text-[#1856b8] shadow-2xs border border-[#dce8fa]"
-                          : "text-[#5a6b82] hover:text-[#112542]"
-                      }`}
-                    >
-                      Google Drive Link
-                    </button>
-                  </div>
-                )}
+              <div className="flex items-center justify-between flex-wrap gap-2">
+                <Label className="text-xs font-semibold text-[#334155]">Document Attachment</Label>
+                <div className="inline-flex rounded-lg border border-[#e2e8f0] p-0.5 bg-[#f8fafc]">
+                  <button
+                    type="button"
+                    onClick={() => setUploadMethod("file")}
+                    className={`px-2.5 py-1 text-[11px] font-semibold rounded transition-all ${
+                      uploadMethod === "file"
+                        ? "bg-white text-[#1856b8] shadow-2xs border border-[#dce8fa]"
+                        : "text-[#5a6b82] hover:text-[#112542]"
+                    }`}
+                  >
+                    Upload PDF
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setUploadMethod("drive")}
+                    className={`px-2.5 py-1 text-[11px] font-semibold rounded transition-all ${
+                      uploadMethod === "drive"
+                        ? "bg-white text-[#1856b8] shadow-2xs border border-[#dce8fa]"
+                        : "text-[#5a6b82] hover:text-[#112542]"
+                    }`}
+                  >
+                    Google Drive Link
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setUploadMethod("existing");
+                      setPickerOpen(true);
+                    }}
+                    className={`px-2.5 py-1 text-[11px] font-semibold rounded transition-all flex items-center gap-1 ${
+                      uploadMethod === "existing"
+                        ? "bg-white text-[#1856b8] shadow-2xs border border-[#dce8fa]"
+                        : "text-[#5a6b82] hover:text-[#112542]"
+                    }`}
+                  >
+                    <FolderOpen className="h-3 w-3" />
+                    <span>Link Existing File</span>
+                  </button>
+                </div>
               </div>
 
+              {/* Display currently attached file or link */}
               {form.pdfFileKey ? (
                 form.pdfFileKey.startsWith("http") ? (
                   <div className="flex items-center justify-between p-3 border rounded-lg bg-[#ebf3ff] border-[#dce8fa]">
@@ -539,7 +752,7 @@ export default function CardForm({ initialData, cardId }: { initialData?: Partia
                       <FileText className="h-5 w-5 text-[#167035] shrink-0" />
                       <div className="min-w-0">
                         <p className="text-xs font-semibold text-[#167035] truncate">{form.pdfFileKey}</p>
-                        <p className="text-[10px] text-[#588366]">Secured in Supabase Storage</p>
+                        <p className="text-[10px] text-[#588366]">Linked PDF in Supabase Storage (No duplication)</p>
                       </div>
                     </div>
                     <Button 
@@ -579,9 +792,22 @@ export default function CardForm({ initialData, cardId }: { initialData?: Partia
                       Attach Link
                     </Button>
                   </div>
-                  <p className="text-[11px] text-[#64748b]">
-                    Paste any Google Drive shareable link. Ensure the file permissions are set to <span className="font-semibold text-[#112542]">"Anyone with the link can view"</span>.
+                </div>
+              ) : uploadMethod === "existing" ? (
+                <div className="p-4 border rounded-lg bg-[#f8fafc] border-[#e2e8f0] text-center space-y-2">
+                  <p className="text-xs text-[#5a6b82]">
+                    Link to any previously uploaded PDF without re-uploading the file.
                   </p>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setPickerOpen(true)}
+                    className="gap-2 text-xs border-[#1856b8] text-[#1856b8] hover:bg-[#ebf3ff]"
+                  >
+                    <FolderOpen className="h-3.5 w-3.5" />
+                    <span>Browse Existing Uploaded Files ({existingFiles.length})</span>
+                  </Button>
                 </div>
               ) : (
                 <div>
@@ -615,6 +841,59 @@ export default function CardForm({ initialData, cardId }: { initialData?: Partia
               )}
             </div>
 
+            {/* Existing File Picker Dialog */}
+            <Dialog open={pickerOpen} onOpenChange={setPickerOpen}>
+              <DialogContent className="max-w-xl max-h-[85vh] flex flex-col">
+                <DialogHeader>
+                  <DialogTitle className="text-base font-bold text-[#112542]">
+                    Select Existing Uploaded File
+                  </DialogTitle>
+                  <DialogDescription className="text-xs text-[#64748b]">
+                    Re-use an already uploaded PDF key. This saves storage and avoids uploading the same document twice.
+                  </DialogDescription>
+                </DialogHeader>
+
+                <div className="relative my-2">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-[#94a3b8]" />
+                  <Input
+                    placeholder="Search by title, subject, or filename..."
+                    value={existingSearch}
+                    onChange={e => setExistingSearch(e.target.value)}
+                    className="pl-8 h-9 text-xs bg-[#f8fafc]"
+                  />
+                </div>
+
+                <div className="overflow-y-auto max-h-[50vh] space-y-2 pr-1">
+                  {filteredExistingFiles.length === 0 ? (
+                    <div className="text-center py-8 text-xs text-[#64748b]">
+                      No matching uploaded files found.
+                    </div>
+                  ) : (
+                    filteredExistingFiles.map(c => (
+                      <div
+                        key={c.id}
+                        onClick={() => handleLinkExistingCard(c)}
+                        className="p-3 rounded-lg border border-[#e2e8f0] hover:border-[#1856b8] hover:bg-[#f8fbff] transition-all cursor-pointer flex items-center justify-between"
+                      >
+                        <div className="min-w-0 pr-3">
+                          <p className="text-xs font-semibold text-[#112542] truncate">{c.title}</p>
+                          <div className="flex items-center gap-2 mt-0.5 text-[10px] text-[#64748b]">
+                            {c.subject && <span className="font-medium text-[#1856b8]">{c.subject}</span>}
+                            <span>&bull;</span>
+                            <span className="font-mono truncate max-w-[200px]">{c.pdfFileKey}</span>
+                            {c.fileSizeKb && <span>({(c.fileSizeKb / 1024).toFixed(1)} MB)</span>}
+                          </div>
+                        </div>
+                        <Button size="sm" variant="outline" className="text-xs h-7 shrink-0 text-[#1856b8] border-[#bae6fd]">
+                          Link File
+                        </Button>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </DialogContent>
+            </Dialog>
+
             {/* Thumbnail Image Upload */}
             <div className="space-y-2">
               <Label className="text-xs font-semibold text-[#334155]">Resource Cover / Thumbnail</Label>
@@ -623,7 +902,7 @@ export default function CardForm({ initialData, cardId }: { initialData?: Partia
                   <div className="flex items-center gap-3 min-w-0">
                     <img src={form.thumbnailUrl} alt="Thumbnail preview" className="h-10 w-10 object-cover rounded border border-[#dce8fa] shrink-0" />
                     <div className="min-w-0">
-                      <p className="text-xs font-semibold text-[#1856b8] truncate">Thumbnail uploaded</p>
+                      <p className="text-xs font-semibold text-[#1856b8] truncate">Thumbnail attached</p>
                       <a href={form.thumbnailUrl} target="_blank" rel="noreferrer" className="text-[10px] text-[#5a7da8] hover:underline flex items-center gap-1">
                         <span>Preview image</span>
                         <ExternalLink className="h-2.5 w-2.5" />
@@ -711,7 +990,7 @@ export default function CardForm({ initialData, cardId }: { initialData?: Partia
             <div className="flex items-center justify-between p-2.5 rounded-lg bg-[#f8fafc] border border-[#eef2f6]">
               <div>
                 <Label className="text-xs font-semibold text-[#112542] block">Published to Storefront</Label>
-                <p className="text-[11px] text-[#64748b]">When active, students can discover and purchase this note</p>
+                <p className="text-[11px] text-[#64748b]">When active, students can discover and access this resource</p>
               </div>
               <Switch checked={form.isVisible} onCheckedChange={v => set("isVisible", v)} />
             </div>

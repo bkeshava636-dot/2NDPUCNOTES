@@ -40,6 +40,13 @@ export interface Card {
   /** @nullable */
   fileSizeKb?: number | null;
   isFeatured: boolean;
+  isRecommended: boolean;
+  /** @nullable */
+  subtype?: string | null;
+  /** @nullable */
+  answerKeyUrl?: string | null;
+  /** @nullable */
+  officialSourceUrl?: string | null;
   isVisible: boolean;
   isDeleted: boolean;
   sortOrder: number;

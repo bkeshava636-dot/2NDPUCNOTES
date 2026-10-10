@@ -26,6 +26,8 @@ export interface Section {
   isVisible: boolean;
   sortOrder: number;
   cardCount: number;
+  /** @nullable */
+  officialSourceUrl?: string | null;
   createdAt: string;
 }
 
@@ -33,6 +35,7 @@ export interface SectionInput {
   /** @minLength 1 */
   name: string;
   description?: string;
+  officialSourceUrl?: string;
   isVisible?: boolean;
 }
 
@@ -41,6 +44,8 @@ export interface SectionUpdate {
   name?: string;
   /** @nullable */
   description?: string | null;
+  /** @nullable */
+  officialSourceUrl?: string | null;
   isVisible?: boolean;
   sortOrder?: number;
 }
@@ -83,6 +88,13 @@ export interface Card {
   /** @nullable */
   fileSizeKb?: number | null;
   isFeatured: boolean;
+  isRecommended: boolean;
+  /** @nullable */
+  subtype?: string | null;
+  /** @nullable */
+  answerKeyUrl?: string | null;
+  /** @nullable */
+  officialSourceUrl?: string | null;
   isVisible: boolean;
   isDeleted: boolean;
   sortOrder: number;
@@ -100,6 +112,10 @@ export interface CardInput {
   board?: string;
   classLevel?: string;
   resourceType?: string;
+  subtype?: string;
+  isRecommended?: boolean;
+  answerKeyUrl?: string;
+  officialSourceUrl?: string;
   isFree: boolean;
   pricePaise: number;
   discountPricePaise?: number;
@@ -128,6 +144,13 @@ export interface CardUpdate {
   board?: string;
   classLevel?: string;
   resourceType?: string;
+  /** @nullable */
+  subtype?: string | null;
+  isRecommended?: boolean;
+  /** @nullable */
+  answerKeyUrl?: string | null;
+  /** @nullable */
+  officialSourceUrl?: string | null;
   isFree?: boolean;
   pricePaise?: number;
   /** @nullable */
@@ -215,7 +238,9 @@ export interface OrderList {
 }
 
 export interface AdminLoginInput {
+  /** @minLength 1 */
   username: string;
+  /** @minLength 1 */
   password: string;
 }
 
@@ -250,6 +275,8 @@ resourceType?: string;
 isFree?: boolean;
 sectionId?: number;
 featured?: boolean;
+subtype?: string;
+isRecommended?: boolean;
 };
 
 export type GetPurchasesParams = {
@@ -258,6 +285,10 @@ phone: string;
 
 export type AdminListCardsParams = {
 sectionId?: number;
+subject?: string;
+resourceType?: string;
+subtype?: string;
+isFree?: boolean;
 };
 
 export type AdminListOrdersParams = {

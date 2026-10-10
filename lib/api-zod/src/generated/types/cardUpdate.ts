@@ -20,6 +20,13 @@ export interface CardUpdate {
   board?: string;
   classLevel?: string;
   resourceType?: string;
+  /** @nullable */
+  subtype?: string | null;
+  isRecommended?: boolean;
+  /** @nullable */
+  answerKeyUrl?: string | null;
+  /** @nullable */
+  officialSourceUrl?: string | null;
   isFree?: boolean;
   pricePaise?: number;
   /** @nullable */

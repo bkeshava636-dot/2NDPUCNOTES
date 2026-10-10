@@ -157,6 +157,11 @@ export default function CardPage() {
             {/* Subject and tags */}
             <div className="space-y-2.5">
               <div className="flex flex-wrap items-center gap-2">
+                {card.isRecommended && (
+                  <Badge className="font-semibold text-xs bg-[#0284c7] text-white border-0">
+                    Recommended
+                  </Badge>
+                )}
                 {card.subject && (
                   <Badge variant="secondary" className="font-semibold text-xs bg-[#ebf3ff] text-[#1856b8] border border-[#dce8fa]">
                     {card.subject}
@@ -165,6 +170,11 @@ export default function CardPage() {
                 <Badge variant="outline" className="text-xs font-medium text-[#64748b] border-[#e2e8f0] bg-[#f8fafc]">
                   {card.resourceType}
                 </Badge>
+                {card.subtype && (
+                  <Badge variant="outline" className="text-xs font-medium text-[#0369a1] border-[#bae6fd] bg-[#f0f9ff]">
+                    {card.subtype}
+                  </Badge>
+                )}
                 {card.classLevel && (
                   <Badge variant="outline" className="text-xs font-medium text-[#64748b] border-[#e2e8f0] bg-[#f8fafc]">
                     {card.classLevel}
@@ -175,6 +185,32 @@ export default function CardPage() {
               <h1 className="text-xl sm:text-2xl font-bold text-[#112542] leading-snug tracking-tight">
                 {card.title}
               </h1>
+
+              {(card.answerKeyUrl || card.officialSourceUrl) && (
+                <div className="flex flex-wrap items-center gap-2 pt-1">
+                  {card.answerKeyUrl && (
+                    <a
+                      href={card.answerKeyUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#0284c7] bg-[#e0f2fe] hover:bg-[#bae6fd] border border-[#bae6fd] px-2.5 py-1 rounded-md transition-colors"
+                    >
+                      <CheckCircle2 className="h-3.5 w-3.5" />
+                      View Linked Answer Key
+                    </a>
+                  )}
+                  {card.officialSourceUrl && (
+                    <a
+                      href={card.officialSourceUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 text-xs font-medium text-[#475569] hover:text-[#0b57d0] bg-[#f1f5f9] hover:bg-[#e2e8f0] border border-[#e2e8f0] px-2.5 py-1 rounded-md transition-colors"
+                    >
+                      Official Source Link &rarr;
+                    </a>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* Structured Metadata Chips Grid */}

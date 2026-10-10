@@ -52,6 +52,10 @@ export default function AdminCards() {
   
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedSection, setSelectedSection] = useState<string>("all");
+  const [selectedSubject, setSelectedSubject] = useState<string>("all");
+  const [selectedResourceType, setSelectedResourceType] = useState<string>("all");
+  const [selectedSubtype, setSelectedSubtype] = useState<string>("all");
+  const [selectedPrice, setSelectedPrice] = useState<string>("all");
   const [selectedStatus, setSelectedStatus] = useState<string>("all");
   const [deleteId, setDeleteId] = useState<number | null>(null);
 
@@ -104,32 +108,59 @@ export default function AdminCards() {
         card.title.toLowerCase().includes(q) ||
         (card.subject && card.subject.toLowerCase().includes(q)) ||
         (card.chapter && card.chapter.toLowerCase().includes(q)) ||
-        (card.resourceType && card.resourceType.toLowerCase().includes(q))
+        (card.resourceType && card.resourceType.toLowerCase().includes(q)) ||
+        (card.subtype && card.subtype.toLowerCase().includes(q))
       );
 
       // Section filter
       const matchesSection = selectedSection === "all" || String(card.sectionId) === selectedSection;
+
+      // Subject filter
+      const matchesSubject = selectedSubject === "all" || (card.subject && card.subject.toLowerCase() === selectedSubject.toLowerCase());
+
+      // Resource Type filter
+      const matchesResourceType = selectedResourceType === "all" || (card.resourceType && card.resourceType.toLowerCase() === selectedResourceType.toLowerCase());
+
+      // Subtype filter
+      const matchesSubtype = selectedSubtype === "all" || (card.subtype && card.subtype.toLowerCase() === selectedSubtype.toLowerCase());
+
+      // Price filter
+      let matchesPrice = true;
+      if (selectedPrice === "free") matchesPrice = card.isFree;
+      else if (selectedPrice === "paid") matchesPrice = !card.isFree;
 
       // Status filter
       let matchesStatus = true;
       if (selectedStatus === "visible") matchesStatus = card.isVisible;
       else if (selectedStatus === "hidden") matchesStatus = !card.isVisible;
       else if (selectedStatus === "featured") matchesStatus = card.isFeatured;
+      else if (selectedStatus === "recommended") matchesStatus = Boolean(card.isRecommended);
       else if (selectedStatus === "free") matchesStatus = card.isFree;
       else if (selectedStatus === "paid") matchesStatus = !card.isFree;
-      else if (selectedStatus === "pdf-missing") matchesStatus = !card.pdfFileKey;
       else if (selectedStatus === "drive-link") matchesStatus = Boolean(card.pdfFileKey && card.pdfFileKey.startsWith("http"));
       else if (selectedStatus === "pdf-attached") matchesStatus = Boolean(card.pdfFileKey && !card.pdfFileKey.startsWith("http"));
+      else if (selectedStatus === "pdf-missing") matchesStatus = !card.pdfFileKey;
 
-      return matchesSearch && matchesSection && matchesStatus;
+      return matchesSearch && matchesSection && matchesSubject && matchesResourceType && matchesSubtype && matchesPrice && matchesStatus;
     });
-  }, [cards, searchQuery, selectedSection, selectedStatus]);
+  }, [cards, searchQuery, selectedSection, selectedSubject, selectedResourceType, selectedSubtype, selectedPrice, selectedStatus]);
 
-  const hasActiveFilters = searchQuery !== "" || selectedSection !== "all" || selectedStatus !== "all";
+  const hasActiveFilters = 
+    searchQuery !== "" || 
+    selectedSection !== "all" || 
+    selectedSubject !== "all" ||
+    selectedResourceType !== "all" ||
+    selectedSubtype !== "all" ||
+    selectedPrice !== "all" ||
+    selectedStatus !== "all";
 
   const clearFilters = () => {
     setSearchQuery("");
     setSelectedSection("all");
+    setSelectedSubject("all");
+    setSelectedResourceType("all");
+    setSelectedSubtype("all");
+    setSelectedPrice("all");
     setSelectedStatus("all");
   };
 
@@ -219,8 +250,7 @@ export default function AdminCards() {
                 <SelectItem value="visible">Visible Only</SelectItem>
                 <SelectItem value="hidden">Hidden Only</SelectItem>
                 <SelectItem value="featured">Featured Only</SelectItem>
-                <SelectItem value="free">Free Only</SelectItem>
-                <SelectItem value="paid">Paid Only</SelectItem>
+                <SelectItem value="recommended">Recommended</SelectItem>
                 <SelectItem value="drive-link">Google Drive Links</SelectItem>
                 <SelectItem value="pdf-attached">Uploaded PDFs</SelectItem>
                 <SelectItem value="pdf-missing">PDF Missing</SelectItem>
@@ -235,9 +265,78 @@ export default function AdminCards() {
               onClick={clearFilters}
               className="h-9 text-xs text-[#5a6b82] hover:text-[#112542] shrink-0"
             >
-              Clear
+              Clear All
             </Button>
           )}
+        </div>
+
+        {/* Secondary Filter Row: Subject, Resource Type, Subtype, Free/Paid */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-1 border-t border-[#f1f5f9]">
+          {/* Subject Filter */}
+          <Select value={selectedSubject} onValueChange={setSelectedSubject}>
+            <SelectTrigger className="h-8 text-xs bg-[#f8fafc] border-[#e2e8f0] text-[#112542]">
+              <SelectValue placeholder="Subject: All" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Subjects</SelectItem>
+              <SelectItem value="Physics">Physics</SelectItem>
+              <SelectItem value="Chemistry">Chemistry</SelectItem>
+              <SelectItem value="Computer Science">Computer Science</SelectItem>
+              <SelectItem value="Biology">Biology</SelectItem>
+              <SelectItem value="Mathematics">Mathematics</SelectItem>
+              <SelectItem value="English">English</SelectItem>
+              <SelectItem value="Hindi">Hindi</SelectItem>
+              <SelectItem value="Kannada">Kannada</SelectItem>
+              <SelectItem value="Sanskrit">Sanskrit</SelectItem>
+            </SelectContent>
+          </Select>
+
+          {/* Resource Type Filter */}
+          <Select value={selectedResourceType} onValueChange={setSelectedResourceType}>
+            <SelectTrigger className="h-8 text-xs bg-[#f8fafc] border-[#e2e8f0] text-[#112542]">
+              <SelectValue placeholder="Type: All" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Resource Types</SelectItem>
+              <SelectItem value="Notes">Notes</SelectItem>
+              <SelectItem value="Model Question Papers (MQP)">Model Question Papers (MQP)</SelectItem>
+              <SelectItem value="MCQ">MCQ</SelectItem>
+              <SelectItem value="Question Bank">Question Bank</SelectItem>
+              <SelectItem value="Practical">Practical</SelectItem>
+              <SelectItem value="Previous Year Question Papers (PYQs)">PYQs</SelectItem>
+              <SelectItem value="Passing Package">Passing Package</SelectItem>
+              <SelectItem value="Publication Books">Publication Books</SelectItem>
+            </SelectContent>
+          </Select>
+
+          {/* Subtype Filter */}
+          <Select value={selectedSubtype} onValueChange={setSelectedSubtype}>
+            <SelectTrigger className="h-8 text-xs bg-[#f8fafc] border-[#e2e8f0] text-[#112542]">
+              <SelectValue placeholder="Subtype: All" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Subtypes</SelectItem>
+              <SelectItem value="Midterm">Midterm (PYQ)</SelectItem>
+              <SelectItem value="Preparatory">Preparatory (PYQ)</SelectItem>
+              <SelectItem value="Annual">Annual (PYQ)</SelectItem>
+              <SelectItem value="Scheme">Scheme (Practical)</SelectItem>
+              <SelectItem value="Resources">Resources (Practical)</SelectItem>
+              <SelectItem value="Lab Manual">Lab Manual (Practical)</SelectItem>
+              <SelectItem value="Viva Questions">Viva Questions (Practical)</SelectItem>
+            </SelectContent>
+          </Select>
+
+          {/* Price Filter */}
+          <Select value={selectedPrice} onValueChange={setSelectedPrice}>
+            <SelectTrigger className="h-8 text-xs bg-[#f8fafc] border-[#e2e8f0] text-[#112542]">
+              <SelectValue placeholder="Price: All" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Prices</SelectItem>
+              <SelectItem value="free">Free Only</SelectItem>
+              <SelectItem value="paid">Paid Only</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
 
         {/* Counter Info Row */}
@@ -291,9 +390,19 @@ export default function AdminCards() {
                           {card.title}
                         </p>
                         <div className="flex items-center gap-1.5 mt-1 flex-wrap">
+                          {card.isRecommended && (
+                            <span className="text-[9px] font-bold bg-[#0284c7] text-white px-1.5 py-0.2 rounded">
+                              Recommended
+                            </span>
+                          )}
                           {card.subject && (
                             <span className="text-[10px] font-medium bg-[#ebf3ff] text-[#1856b8] border border-[#dce8fa] px-1.5 py-0.2 rounded">
                               {card.subject}
+                            </span>
+                          )}
+                          {card.subtype && (
+                            <span className="text-[10px] font-semibold bg-[#f0f9ff] text-[#0369a1] border border-[#bae6fd] px-1.5 py-0.2 rounded">
+                              {card.subtype}
                             </span>
                           )}
                           {card.chapter && (
@@ -304,6 +413,11 @@ export default function AdminCards() {
                           <span className="text-[10px] text-[#94a3b8] border border-[#e2e8f0] px-1.5 py-0.2 rounded">
                             {card.resourceType}
                           </span>
+                          {card.answerKeyUrl && (
+                            <span className="text-[9px] font-semibold bg-[#e0f2fe] text-[#0284c7] border border-[#bae6fd] px-1 py-0.2 rounded" title="Answer key linked">
+                              Key Linked
+                            </span>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -470,14 +584,29 @@ export default function AdminCards() {
                     {card.title}
                   </h3>
                   <div className="flex items-center gap-1.5 mt-1 flex-wrap">
+                    {card.isRecommended && (
+                      <span className="text-[9px] font-bold bg-[#0284c7] text-white px-1.5 py-0.2 rounded">
+                        Recommended
+                      </span>
+                    )}
                     {card.subject && (
                       <span className="text-[10px] font-medium bg-[#ebf3ff] text-[#1856b8] border border-[#dce8fa] px-1.5 py-0.2 rounded">
                         {card.subject}
                       </span>
                     )}
+                    {card.subtype && (
+                      <span className="text-[10px] font-semibold bg-[#f0f9ff] text-[#0369a1] border border-[#bae6fd] px-1.5 py-0.2 rounded">
+                        {card.subtype}
+                      </span>
+                    )}
                     <span className="text-[10px] text-[#64748b] bg-[#f8fafc] border border-[#e2e8f0] px-1.5 py-0.2 rounded">
                       {card.sectionName || "Unassigned"}
                     </span>
+                    {card.answerKeyUrl && (
+                      <span className="text-[9px] font-semibold bg-[#e0f2fe] text-[#0284c7] border border-[#bae6fd] px-1 py-0.2 rounded">
+                        Key Linked
+                      </span>
+                    )}
                   </div>
                 </div>
               </div>

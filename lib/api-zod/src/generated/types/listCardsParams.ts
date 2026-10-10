@@ -13,4 +13,6 @@ resourceType?: string;
 isFree?: boolean;
 sectionId?: number;
 featured?: boolean;
+subtype?: string;
+isRecommended?: boolean;
 };

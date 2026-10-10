@@ -82,7 +82,7 @@ router.get("/sections/:id/cards", async (req, res) => {
 
 router.get("/cards", async (req, res) => {
   try {
-    const { search, subject, resourceType, isFree, sectionId, featured } = req.query as Record<string, string>;
+    const { search, subject, resourceType, isFree, sectionId, featured, subtype, isRecommended } = req.query as Record<string, string>;
     const conditions: ReturnType<typeof eq>[] = [
       eq(cardsTable.isVisible, true),
       eq(cardsTable.isDeleted, false),
@@ -97,6 +97,8 @@ router.get("/cards", async (req, res) => {
     }
     if (subject) conditions.push(eq(cardsTable.subject, subject));
     if (resourceType) conditions.push(eq(cardsTable.resourceType, resourceType));
+    if (subtype) conditions.push(eq(cardsTable.subtype, subtype));
+    if (isRecommended === "true") conditions.push(eq(cardsTable.isRecommended, true));
     if (isFree === "true") conditions.push(eq(cardsTable.isFree, true));
     if (isFree === "false") conditions.push(eq(cardsTable.isFree, false));
     if (sectionId) conditions.push(eq(cardsTable.sectionId, parseInt(sectionId)));

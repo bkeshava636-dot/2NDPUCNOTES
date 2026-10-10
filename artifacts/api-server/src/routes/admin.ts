@@ -160,7 +160,7 @@ router.get("/admin/sections", requireAdmin, async (req, res) => {
 
 router.post("/admin/sections", requireAdmin, async (req, res) => {
   try {
-    const { name, description, isVisible } = req.body;
+    const { name, description, isVisible, officialSourceUrl } = req.body;
     if (!name) {
       res.status(400).json({ error: "name is required" });
       return;
@@ -168,7 +168,14 @@ router.post("/admin/sections", requireAdmin, async (req, res) => {
     const [maxOrder] = await db.select({ max: sql<number>`coalesce(max(sort_order),0)::int` }).from(sectionsTable);
     const [section] = await db
       .insert(sectionsTable)
-      .values({ name, slug: slugify(name), description: description || null, isVisible: isVisible ?? true, sortOrder: maxOrder.max + 1 })
+      .values({
+        name,
+        slug: slugify(name),
+        description: description || null,
+        officialSourceUrl: officialSourceUrl || null,
+        isVisible: isVisible ?? true,
+        sortOrder: maxOrder.max + 1,
+      })
       .returning();
     res.status(201).json({ ...section, cardCount: 0 });
   } catch (err) {
@@ -181,10 +188,11 @@ router.patch("/admin/sections/:id", requireAdmin, async (req, res) => {
   try {
     const id = parseInt(req.params.id);
     if (isNaN(id)) { res.status(400).json({ error: "Invalid id" }); return; }
-    const { name, description, isVisible, sortOrder } = req.body;
+    const { name, description, isVisible, sortOrder, officialSourceUrl } = req.body;
     const updates: Record<string, unknown> = {};
     if (name !== undefined) { updates.name = name; updates.slug = slugify(name); }
     if (description !== undefined) updates.description = description;
+    if (officialSourceUrl !== undefined) updates.officialSourceUrl = officialSourceUrl;
     if (isVisible !== undefined) updates.isVisible = isVisible;
     if (sortOrder !== undefined) updates.sortOrder = sortOrder;
     const [updated] = await db.update(sectionsTable).set(updates).where(eq(sectionsTable.id, id)).returning();
@@ -225,16 +233,20 @@ router.post("/admin/sections/reorder", requireAdmin, async (req, res) => {
 
 router.get("/admin/cards", requireAdmin, async (req, res) => {
   try {
-    const { sectionId } = req.query as Record<string, string>;
+    const { sectionId, subject, resourceType, subtype, isFree } = req.query as Record<string, string>;
+    const conditions = [eq(cardsTable.isDeleted, false)];
+    if (sectionId) conditions.push(eq(cardsTable.sectionId, parseInt(sectionId)));
+    if (subject) conditions.push(eq(cardsTable.subject, subject));
+    if (resourceType) conditions.push(eq(cardsTable.resourceType, resourceType));
+    if (subtype) conditions.push(eq(cardsTable.subtype, subtype));
+    if (isFree === "true") conditions.push(eq(cardsTable.isFree, true));
+    if (isFree === "false") conditions.push(eq(cardsTable.isFree, false));
+
     const rows = await db
       .select({ card: cardsTable, sectionName: sectionsTable.name })
       .from(cardsTable)
       .leftJoin(sectionsTable, eq(cardsTable.sectionId, sectionsTable.id))
-      .where(
-        sectionId
-          ? and(eq(cardsTable.sectionId, parseInt(sectionId)), eq(cardsTable.isDeleted, false))
-          : eq(cardsTable.isDeleted, false)
-      )
+      .where(and(...conditions))
       .orderBy(asc(cardsTable.sortOrder));
     res.json(rows.map(({ card, sectionName }) => ({ ...card, sectionName })));
   } catch (err) {
@@ -247,8 +259,8 @@ router.post("/admin/cards", requireAdmin, async (req, res) => {
   try {
     const {
       sectionId, title, description, subject, chapter, semester,
-      board, classLevel, resourceType, isFree, pricePaise,
-      discountPricePaise, telegramLink, isNew,
+      board, classLevel, resourceType, subtype, isRecommended, answerKeyUrl, officialSourceUrl,
+      isFree, pricePaise, discountPricePaise, telegramLink, isNew,
       thumbnailUrl, previewImageUrls, pdfFileKey,
       pageCount, fileSizeKb, isFeatured, isVisible,
     } = req.body;
@@ -268,6 +280,10 @@ router.post("/admin/cards", requireAdmin, async (req, res) => {
         board: board || "Karnataka",
         classLevel: classLevel || "2nd PUC",
         resourceType: resourceType || "Notes",
+        subtype: subtype || null,
+        isRecommended: isRecommended ?? false,
+        answerKeyUrl: answerKeyUrl || null,
+        officialSourceUrl: officialSourceUrl || null,
         isFree: isFree ?? false,
         pricePaise: pricePaise || 0,
         discountPricePaise: discountPricePaise || null,
@@ -297,8 +313,8 @@ router.patch("/admin/cards/:id", requireAdmin, async (req, res) => {
     if (isNaN(id)) { res.status(400).json({ error: "Invalid id" }); return; }
     const fields = [
       "sectionId", "title", "description", "subject", "chapter", "semester",
-      "board", "classLevel", "resourceType", "isFree", "pricePaise",
-      "discountPricePaise", "telegramLink", "isNew",
+      "board", "classLevel", "resourceType", "subtype", "isRecommended", "answerKeyUrl", "officialSourceUrl",
+      "isFree", "pricePaise", "discountPricePaise", "telegramLink", "isNew",
       "thumbnailUrl", "previewImageUrls", "pdfFileKey",
       "pageCount", "fileSizeKb", "isFeatured", "isVisible", "sortOrder",
     ];

@@ -14,6 +14,8 @@ import { Spinner } from "@/components/ui/spinner";
 
 // Core Public Pages (bundled for fast student browsing)
 import Home from "@/pages/home";
+import SubjectPage from "@/pages/subject";
+import CategoryPage from "@/pages/category";
 import SectionPage from "@/pages/section";
 import CardPage from "@/pages/card";
 import Checkout from "@/pages/checkout";
@@ -40,6 +42,8 @@ const queryClient = new QueryClient({
     queries: {
       retry: 1,
       refetchOnWindowFocus: false,
+      staleTime: 60 * 1000,
+      gcTime: 5 * 60 * 1000,
     },
   },
 });
@@ -79,7 +83,9 @@ function PublicRoutes() {
       <Suspense fallback={<RouteLoadingFallback />}>
         <Switch>
           <Route path="/" component={Home} />
-          <Route path="/section/:id" component={SectionPage} />
+          <Route path="/subject/:slug" component={SubjectPage} />
+          <Route path="/category/:slug" component={CategoryPage} />
+          <Route path="/section/:id" component={SubjectPage} />
           <Route path="/card/:id" component={CardPage} />
           <Route path="/checkout" component={Checkout} />
           <Route path="/payment-success" component={PaymentSuccess} />

@@ -7,6 +7,7 @@ export const sectionsTable = pgTable("sections", {
   name: text("name").notNull(),
   slug: text("slug").notNull().unique(),
   description: text("description"),
+  officialSourceUrl: text("official_source_url"),
   isVisible: boolean("is_visible").notNull().default(true),
   sortOrder: integer("sort_order").notNull().default(0),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),

@@ -8,4 +8,8 @@
 
 export type AdminListCardsParams = {
 sectionId?: number;
+subject?: string;
+resourceType?: string;
+subtype?: string;
+isFree?: boolean;
 };

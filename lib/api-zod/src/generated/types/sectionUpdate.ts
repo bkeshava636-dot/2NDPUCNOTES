@@ -11,6 +11,8 @@ export interface SectionUpdate {
   name?: string;
   /** @nullable */
   description?: string | null;
+  /** @nullable */
+  officialSourceUrl?: string | null;
   isVisible?: boolean;
   sortOrder?: number;
 }

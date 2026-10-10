@@ -19,9 +19,10 @@ import { Plus, Edit, Trash2, GripVertical, FolderTree, Eye, EyeOff, Loader2 } fr
 import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
 
-type SectionForm = { name: string; description: string; isVisible: boolean };
+type SectionForm = { name: string; description: string; officialSourceUrl: string; isVisible: boolean };
 
 const STANDARD_CATEGORIES = [
+  { name: "Computer Science", description: "2nd PUC Computer Science notes, programs, question banks, and practicals" },
   { name: "English", description: "2nd PUC English literature notes, summaries, grammar, and model answers" },
   { name: "Hindi", description: "Sahitya, kavita, nibandh, and grammar notes for 2nd PUC Hindi" },
   { name: "Kannada", description: "Kannada sahitya, gadya, padya, and grammar study materials" },
@@ -40,19 +41,19 @@ export default function AdminSections() {
   const [showDialog, setShowDialog] = useState(false);
   const [editId, setEditId] = useState<number | null>(null);
   const [deleteId, setDeleteId] = useState<number | null>(null);
-  const [form, setForm] = useState<SectionForm>({ name: "", description: "", isVisible: true });
+  const [form, setForm] = useState<SectionForm>({ name: "", description: "", officialSourceUrl: "", isVisible: true });
   const [draggingId, setDraggingId] = useState<number | null>(null);
   const [dragOverId, setDragOverId] = useState<number | null>(null);
 
   function openCreate(prefill?: { name: string; description?: string }) {
     setEditId(null);
-    setForm({ name: prefill?.name || "", description: prefill?.description || "", isVisible: true });
+    setForm({ name: prefill?.name || "", description: prefill?.description || "", officialSourceUrl: "", isVisible: true });
     setShowDialog(true);
   }
 
   function openEdit(s: any) {
     setEditId(s.id);
-    setForm({ name: s.name, description: s.description || "", isVisible: s.isVisible });
+    setForm({ name: s.name, description: s.description || "", officialSourceUrl: s.officialSourceUrl || "", isVisible: s.isVisible });
     setShowDialog(true);
   }
 
@@ -64,7 +65,15 @@ export default function AdminSections() {
     if (!form.name.trim()) return;
     if (editId) {
       updateSection.mutate(
-        { id: editId, data: { name: form.name.trim(), description: form.description?.trim() || null, isVisible: form.isVisible } },
+        { 
+          id: editId, 
+          data: { 
+            name: form.name.trim(), 
+            description: form.description?.trim() || null, 
+            officialSourceUrl: form.officialSourceUrl?.trim() || null,
+            isVisible: form.isVisible 
+          } 
+        },
         {
           onSuccess: () => { 
             toast({ title: "Category updated successfully" }); 
@@ -76,7 +85,14 @@ export default function AdminSections() {
       );
     } else {
       createSection.mutate(
-        { data: { name: form.name.trim(), description: form.description?.trim() || undefined, isVisible: form.isVisible } },
+        { 
+          data: { 
+            name: form.name.trim(), 
+            description: form.description?.trim() || undefined, 
+            officialSourceUrl: form.officialSourceUrl?.trim() || undefined,
+            isVisible: form.isVisible 
+          } 
+        },
         {
           onSuccess: () => { 
             toast({ title: "Category created successfully" }); 
@@ -349,6 +365,15 @@ export default function AdminSections() {
                 value={form.description} 
                 onChange={e => setForm(f => ({ ...f, description: e.target.value }))} 
                 placeholder="Short tagline or student guidance..." 
+                className="h-9 text-xs sm:text-sm bg-[#f8fafc] border-[#e2e8f0] text-[#112542]"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs font-semibold text-[#334155]">Official Source URL (Optional)</Label>
+              <Input 
+                value={form.officialSourceUrl} 
+                onChange={e => setForm(f => ({ ...f, officialSourceUrl: e.target.value }))} 
+                placeholder="https://kseab.karnataka.gov.in/..." 
                 className="h-9 text-xs sm:text-sm bg-[#f8fafc] border-[#e2e8f0] text-[#112542]"
               />
             </div>

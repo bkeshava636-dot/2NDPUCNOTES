@@ -5,10 +5,11 @@ import { Spinner } from "@/components/ui/spinner";
 
 type GateStatus = "loading" | "ready" | "error";
 
-const TIMEOUT_MS = 45000;
+const TIMEOUT_MS = 6000;
 
 export function ApiWakeUpGate({ children }: { children: ReactNode }) {
-  const [status, setStatus] = useState<GateStatus>("loading");
+  const isAlreadyAwake = typeof window !== "undefined" && sessionStorage.getItem("api_awake") === "true";
+  const [status, setStatus] = useState<GateStatus>(isAlreadyAwake ? "ready" : "loading");
   const abortControllerRef = useRef<AbortController | null>(null);
 
   const checkHealth = useCallback(async () => {
@@ -18,7 +19,9 @@ export function ApiWakeUpGate({ children }: { children: ReactNode }) {
 
     const controller = new AbortController();
     abortControllerRef.current = controller;
-    setStatus("loading");
+    if (!isAlreadyAwake) {
+      setStatus("loading");
+    }
 
     const timeoutId = setTimeout(() => {
       controller.abort();
@@ -42,15 +45,18 @@ export function ApiWakeUpGate({ children }: { children: ReactNode }) {
       }
 
       clearTimeout(timeoutId);
+      sessionStorage.setItem("api_awake", "true");
       setStatus("ready");
     } catch {
       clearTimeout(timeoutId);
       if (controller.signal.aborted && abortControllerRef.current !== controller) {
         return;
       }
-      setStatus("error");
+      if (!isAlreadyAwake) {
+        setStatus("error");
+      }
     }
-  }, []);
+  }, [isAlreadyAwake]);
 
   useEffect(() => {
     checkHealth();

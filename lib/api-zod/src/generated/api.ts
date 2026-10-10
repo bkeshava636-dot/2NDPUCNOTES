@@ -39,6 +39,7 @@ export const ListSectionsResponseItem = zod.object({
   "isVisible": zod.boolean(),
   "sortOrder": zod.number(),
   "cardCount": zod.number(),
+  "officialSourceUrl": zod.string().nullish(),
   "createdAt": zod.string()
 })
 export const ListSectionsResponse = zod.array(ListSectionsResponseItem)
@@ -74,6 +75,10 @@ export const ListSectionCardsResponseItem = zod.object({
   "pageCount": zod.number().nullish(),
   "fileSizeKb": zod.number().nullish(),
   "isFeatured": zod.boolean(),
+  "isRecommended": zod.boolean(),
+  "subtype": zod.string().nullish(),
+  "answerKeyUrl": zod.string().nullish(),
+  "officialSourceUrl": zod.string().nullish(),
   "isVisible": zod.boolean(),
   "isDeleted": zod.boolean(),
   "sortOrder": zod.number(),
@@ -91,7 +96,9 @@ export const ListCardsQueryParams = zod.object({
   "resourceType": zod.coerce.string().optional(),
   "isFree": zod.coerce.boolean().optional(),
   "sectionId": zod.coerce.number().optional(),
-  "featured": zod.coerce.boolean().optional()
+  "featured": zod.coerce.boolean().optional(),
+  "subtype": zod.coerce.string().optional(),
+  "isRecommended": zod.coerce.boolean().optional()
 })
 
 export const ListCardsResponseItem = zod.object({
@@ -117,6 +124,10 @@ export const ListCardsResponseItem = zod.object({
   "pageCount": zod.number().nullish(),
   "fileSizeKb": zod.number().nullish(),
   "isFeatured": zod.boolean(),
+  "isRecommended": zod.boolean(),
+  "subtype": zod.string().nullish(),
+  "answerKeyUrl": zod.string().nullish(),
+  "officialSourceUrl": zod.string().nullish(),
   "isVisible": zod.boolean(),
   "isDeleted": zod.boolean(),
   "sortOrder": zod.number(),
@@ -155,6 +166,10 @@ export const GetCardResponse = zod.object({
   "pageCount": zod.number().nullish(),
   "fileSizeKb": zod.number().nullish(),
   "isFeatured": zod.boolean(),
+  "isRecommended": zod.boolean(),
+  "subtype": zod.string().nullish(),
+  "answerKeyUrl": zod.string().nullish(),
+  "officialSourceUrl": zod.string().nullish(),
   "isVisible": zod.boolean(),
   "isDeleted": zod.boolean(),
   "sortOrder": zod.number(),
@@ -272,8 +287,13 @@ export const DownloadPdfResponse = zod.void()
 /**
  * @summary Admin login
  */
+
+
+
+
 export const AdminLoginBody = zod.object({
-  "password": zod.string()
+  "username": zod.string().min(1),
+  "password": zod.string().min(1)
 })
 
 export const AdminLoginResponse = zod.object({
@@ -334,6 +354,7 @@ export const AdminListSectionsResponseItem = zod.object({
   "isVisible": zod.boolean(),
   "sortOrder": zod.number(),
   "cardCount": zod.number(),
+  "officialSourceUrl": zod.string().nullish(),
   "createdAt": zod.string()
 })
 export const AdminListSectionsResponse = zod.array(AdminListSectionsResponseItem)
@@ -348,6 +369,7 @@ export const AdminListSectionsResponse = zod.array(AdminListSectionsResponseItem
 export const AdminCreateSectionBody = zod.object({
   "name": zod.string().min(1),
   "description": zod.string().optional(),
+  "officialSourceUrl": zod.string().optional(),
   "isVisible": zod.boolean().optional()
 })
 
@@ -359,6 +381,7 @@ export const AdminCreateSectionResponse = zod.object({
   "isVisible": zod.boolean(),
   "sortOrder": zod.number(),
   "cardCount": zod.number(),
+  "officialSourceUrl": zod.string().nullish(),
   "createdAt": zod.string()
 })
 
@@ -376,6 +399,7 @@ export const AdminUpdateSectionParams = zod.object({
 export const AdminUpdateSectionBody = zod.object({
   "name": zod.string().min(1).optional(),
   "description": zod.string().nullish(),
+  "officialSourceUrl": zod.string().nullish(),
   "isVisible": zod.boolean().optional(),
   "sortOrder": zod.number().optional()
 })
@@ -388,6 +412,7 @@ export const AdminUpdateSectionResponse = zod.object({
   "isVisible": zod.boolean(),
   "sortOrder": zod.number(),
   "cardCount": zod.number(),
+  "officialSourceUrl": zod.string().nullish(),
   "createdAt": zod.string()
 })
 
@@ -416,7 +441,11 @@ export const AdminReorderSectionsResponse = zod.unknown()
  * @summary List all non-deleted cards (admin view)
  */
 export const AdminListCardsQueryParams = zod.object({
-  "sectionId": zod.coerce.number().optional()
+  "sectionId": zod.coerce.number().optional(),
+  "subject": zod.coerce.string().optional(),
+  "resourceType": zod.coerce.string().optional(),
+  "subtype": zod.coerce.string().optional(),
+  "isFree": zod.coerce.boolean().optional()
 })
 
 export const AdminListCardsResponseItem = zod.object({
@@ -442,6 +471,10 @@ export const AdminListCardsResponseItem = zod.object({
   "pageCount": zod.number().nullish(),
   "fileSizeKb": zod.number().nullish(),
   "isFeatured": zod.boolean(),
+  "isRecommended": zod.boolean(),
+  "subtype": zod.string().nullish(),
+  "answerKeyUrl": zod.string().nullish(),
+  "officialSourceUrl": zod.string().nullish(),
   "isVisible": zod.boolean(),
   "isDeleted": zod.boolean(),
   "sortOrder": zod.number(),
@@ -466,6 +499,10 @@ export const AdminCreateCardBody = zod.object({
   "board": zod.string().optional(),
   "classLevel": zod.string().optional(),
   "resourceType": zod.string().optional(),
+  "subtype": zod.string().optional(),
+  "isRecommended": zod.boolean().optional(),
+  "answerKeyUrl": zod.string().optional(),
+  "officialSourceUrl": zod.string().optional(),
   "isFree": zod.boolean(),
   "pricePaise": zod.number(),
   "discountPricePaise": zod.number().optional(),
@@ -503,6 +540,10 @@ export const AdminCreateCardResponse = zod.object({
   "pageCount": zod.number().nullish(),
   "fileSizeKb": zod.number().nullish(),
   "isFeatured": zod.boolean(),
+  "isRecommended": zod.boolean(),
+  "subtype": zod.string().nullish(),
+  "answerKeyUrl": zod.string().nullish(),
+  "officialSourceUrl": zod.string().nullish(),
   "isVisible": zod.boolean(),
   "isDeleted": zod.boolean(),
   "sortOrder": zod.number(),
@@ -527,6 +568,10 @@ export const AdminUpdateCardBody = zod.object({
   "board": zod.string().optional(),
   "classLevel": zod.string().optional(),
   "resourceType": zod.string().optional(),
+  "subtype": zod.string().nullish(),
+  "isRecommended": zod.boolean().optional(),
+  "answerKeyUrl": zod.string().nullish(),
+  "officialSourceUrl": zod.string().nullish(),
   "isFree": zod.boolean().optional(),
   "pricePaise": zod.number().optional(),
   "discountPricePaise": zod.number().nullish(),
@@ -565,6 +610,10 @@ export const AdminUpdateCardResponse = zod.object({
   "pageCount": zod.number().nullish(),
   "fileSizeKb": zod.number().nullish(),
   "isFeatured": zod.boolean(),
+  "isRecommended": zod.boolean(),
+  "subtype": zod.string().nullish(),
+  "answerKeyUrl": zod.string().nullish(),
+  "officialSourceUrl": zod.string().nullish(),
   "isVisible": zod.boolean(),
   "isDeleted": zod.boolean(),
   "sortOrder": zod.number(),
