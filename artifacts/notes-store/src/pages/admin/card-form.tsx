@@ -325,7 +325,16 @@ export default function CardForm({ initialData, cardId }: { initialData?: Partia
     };
 
     if (cardId) {
-      updateCard.mutate({ id: cardId, data: payload }, {
+      updateCard.mutate(
+        {
+          id: cardId,
+          data: {
+            ...payload,
+            answerKeyUrl: form.answerKeyUrl?.trim() || null,
+            officialSourceUrl: form.officialSourceUrl?.trim() || null,
+          },
+        },
+        {
         onSuccess: () => {
           toast({ title: "Resource updated successfully" });
           queryClient.invalidateQueries({ queryKey: getAdminListCardsQueryKey() });

@@ -15,7 +15,7 @@ import { Switch } from "@/components/ui/switch";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
-import { Plus, Edit, Trash2, GripVertical, FolderTree, Eye, EyeOff, Loader2 } from "lucide-react";
+import { Plus, Edit, Trash2, GripVertical, FolderTree, Eye, EyeOff, Loader2, ExternalLink } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -259,6 +259,7 @@ export default function AdminSections() {
               <TableHead className="w-10 pl-4"></TableHead>
               <TableHead className="text-xs font-semibold text-[#64748b] py-3">Category Name</TableHead>
               <TableHead className="text-xs font-semibold text-[#64748b] py-3">Description</TableHead>
+              <TableHead className="text-xs font-semibold text-[#64748b] py-3">Official Link</TableHead>
               <TableHead className="text-xs font-semibold text-[#64748b] py-3 text-center">Resources</TableHead>
               <TableHead className="text-xs font-semibold text-[#64748b] py-3 text-center">Visible</TableHead>
               <TableHead className="text-xs font-semibold text-[#64748b] py-3 pr-5 text-right">Actions</TableHead>
@@ -293,6 +294,38 @@ export default function AdminSections() {
                   </TableCell>
                   <TableCell className="py-3.5 text-xs text-[#64748b] max-w-[260px] truncate">
                     {s.description || "—"}
+                  </TableCell>
+                  <TableCell className="py-3.5 max-w-[180px]">
+                    {s.officialSourceUrl ? (
+                      <div className="flex items-center gap-1">
+                        <a
+                          href={s.officialSourceUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#0284c7] bg-[#e0f2fe] border border-[#bae6fd] px-2 py-0.5 rounded hover:bg-[#bae6fd] transition-colors truncate max-w-[140px]"
+                          title={s.officialSourceUrl}
+                        >
+                          <ExternalLink className="h-3 w-3 shrink-0" />
+                          <span className="truncate">{s.officialSourceUrl.replace(/^https?:\/\//, "")}</span>
+                        </a>
+                        <button
+                          type="button"
+                          onClick={() => openEdit(s)}
+                          className="text-[#94a3b8] hover:text-[#1856b8] p-0.5 rounded hover:bg-[#f1f5f9]"
+                          title="Change official link"
+                        >
+                          <Edit className="h-3 w-3" />
+                        </button>
+                      </div>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => openEdit(s)}
+                        className="text-[11px] text-[#94a3b8] hover:text-[#1856b8] hover:underline"
+                      >
+                        + Add official link
+                      </button>
+                    )}
                   </TableCell>
                   <TableCell className="py-3.5 text-center">
                     <span className="inline-block text-xs font-semibold px-2 py-0.5 rounded bg-[#f1f5f9] text-[#475569] border border-[#e2e8f0]">
@@ -351,6 +384,17 @@ export default function AdminSections() {
                 <div>
                   <h3 className="font-bold text-xs sm:text-sm text-[#112542]">{s.name}</h3>
                   <p className="text-[11px] text-[#64748b] mt-0.5">{s.description || "No description"}</p>
+                  {s.officialSourceUrl && (
+                    <a
+                      href={s.officialSourceUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-1 text-[10px] font-semibold text-[#0284c7] bg-[#e0f2fe] border border-[#bae6fd] px-2 py-0.5 rounded hover:bg-[#bae6fd] transition-colors mt-1.5"
+                    >
+                      <ExternalLink className="h-2.5 w-2.5" />
+                      <span>Official Source Link</span>
+                    </a>
+                  )}
                 </div>
                 <span className="text-xs font-semibold px-2 py-0.5 rounded bg-[#f1f5f9] text-[#475569] border border-[#e2e8f0]">
                   {s.cardCount ?? 0} items

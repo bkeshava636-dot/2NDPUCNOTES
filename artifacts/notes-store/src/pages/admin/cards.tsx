@@ -27,11 +27,21 @@ import {
   X,
   Sparkles,
   Link2,
-  RefreshCw
+  RefreshCw,
+  Loader2
 } from "lucide-react";
 import { formatRupees } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Label } from "@/components/ui/label";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -64,6 +74,42 @@ export default function AdminCards() {
   const [selectedPrice, setSelectedPrice] = useState<string>("all");
   const [selectedStatus, setSelectedStatus] = useState<string>("all");
   const [deleteId, setDeleteId] = useState<number | null>(null);
+
+  // Official Source Link Quick Edit state
+  const [editingOfficialLink, setEditingOfficialLink] = useState<{ id: number; title: string; url: string } | null>(null);
+  const [isSavingOfficialLink, setIsSavingOfficialLink] = useState(false);
+
+  const handleSaveOfficialLink = () => {
+    if (!editingOfficialLink) return;
+    setIsSavingOfficialLink(true);
+    updateCard.mutate(
+      {
+        id: editingOfficialLink.id,
+        data: {
+          officialSourceUrl: editingOfficialLink.url.trim() || null,
+        },
+      },
+      {
+        onSuccess: () => {
+          toast({
+            title: editingOfficialLink.url.trim() ? "Official link saved" : "Official link removed",
+            description: "Resource official source URL has been updated.",
+          });
+          queryClient.invalidateQueries({ queryKey: getAdminListCardsQueryKey() });
+          setEditingOfficialLink(null);
+          setIsSavingOfficialLink(false);
+        },
+        onError: () => {
+          toast({
+            title: "Error",
+            description: "Failed to update official source link",
+            variant: "destructive",
+          });
+          setIsSavingOfficialLink(false);
+        },
+      }
+    );
+  };
 
   const handleDelete = () => {
     if (!deleteId) return;
@@ -457,6 +503,27 @@ export default function AdminCards() {
                               Key Linked
                             </span>
                           )}
+                          {card.officialSourceUrl ? (
+                            <button
+                              type="button"
+                              onClick={() => setEditingOfficialLink({ id: card.id, title: card.title, url: card.officialSourceUrl || "" })}
+                              className="inline-flex items-center gap-1 text-[9px] font-semibold text-[#0284c7] bg-[#e0f2fe] hover:bg-[#bae6fd] border border-[#bae6fd] px-1.5 py-0.2 rounded transition-colors group"
+                              title={`Official Source: ${card.officialSourceUrl} (Click to change)`}
+                            >
+                              <ExternalLink className="h-2.5 w-2.5" />
+                              <span className="truncate max-w-[100px]">{card.officialSourceUrl.replace(/^https?:\/\//, "")}</span>
+                              <Edit className="h-2.5 w-2.5 opacity-60 group-hover:opacity-100 ml-0.5" />
+                            </button>
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={() => setEditingOfficialLink({ id: card.id, title: card.title, url: "" })}
+                              className="inline-flex items-center gap-0.5 text-[9px] text-[#94a3b8] hover:text-[#0284c7] border border-dashed border-[#cbd5e1] hover:border-[#0284c7] px-1.5 py-0.2 rounded transition-colors"
+                              title="Add official source link"
+                            >
+                              <span>+ Official Link</span>
+                            </button>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -567,6 +634,30 @@ export default function AdminCards() {
                       >
                         <ExternalLink className="h-3.5 w-3.5" />
                       </a>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className={`h-7 w-7 ${
+                          card.officialSourceUrl
+                            ? "text-[#0284c7] hover:bg-[#e0f2fe]"
+                            : "text-[#64748b] hover:text-[#0284c7] hover:bg-[#f1f5f9]"
+                        }`}
+                        onClick={() =>
+                          setEditingOfficialLink({
+                            id: card.id,
+                            title: card.title,
+                            url: card.officialSourceUrl || "",
+                          })
+                        }
+                        title={
+                          card.officialSourceUrl
+                            ? `Official Link: ${card.officialSourceUrl} (Click to edit)`
+                            : "Add Official Source Link"
+                        }
+                        aria-label="Edit Official Link"
+                      >
+                        <Link2 className="h-3.5 w-3.5" />
+                      </Button>
                       <Link href={`/admin/cards/${card.id}/edit`}>
                         <Button
                           variant="ghost"
@@ -646,6 +737,25 @@ export default function AdminCards() {
                         Key Linked
                       </span>
                     )}
+                    {card.officialSourceUrl ? (
+                      <button
+                        type="button"
+                        onClick={() => setEditingOfficialLink({ id: card.id, title: card.title, url: card.officialSourceUrl || "" })}
+                        className="inline-flex items-center gap-1 text-[9px] font-semibold text-[#0284c7] bg-[#e0f2fe] border border-[#bae6fd] px-1.5 py-0.2 rounded"
+                      >
+                        <ExternalLink className="h-2.5 w-2.5" />
+                        <span>Official Link</span>
+                        <Edit className="h-2.5 w-2.5 ml-0.5" />
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => setEditingOfficialLink({ id: card.id, title: card.title, url: "" })}
+                        className="text-[9px] text-[#94a3b8] hover:text-[#0284c7] border border-dashed border-[#cbd5e1] px-1.5 py-0.2 rounded"
+                      >
+                        + Official Link
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>
@@ -709,6 +819,23 @@ export default function AdminCards() {
                 </div>
 
                 <div className="flex items-center gap-1.5">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className={`h-8 px-2 text-xs border-[#e2e8f0] ${
+                      card.officialSourceUrl ? "text-[#0284c7] bg-[#e0f2fe]" : "text-[#64748b]"
+                    }`}
+                    onClick={() =>
+                      setEditingOfficialLink({
+                        id: card.id,
+                        title: card.title,
+                        url: card.officialSourceUrl || "",
+                      })
+                    }
+                    title="Edit Official Link"
+                  >
+                    <Link2 className="h-3.5 w-3.5" />
+                  </Button>
                   <Link href={`/admin/cards/${card.id}/edit`}>
                     <Button variant="outline" size="sm" className="h-8 px-3 text-xs gap-1 border-[#e2e8f0] text-[#112542]">
                       <Edit className="h-3 w-3" />
@@ -730,6 +857,76 @@ export default function AdminCards() {
           ))
         )}
       </div>
+
+      {/* Quick Edit Official Link Dialog */}
+      <Dialog open={!!editingOfficialLink} onOpenChange={(open) => !open && setEditingOfficialLink(null)}>
+        <DialogContent className="border-[#e2e8f0] rounded-xl max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-base font-bold text-[#112542] flex items-center gap-2">
+              <Link2 className="h-4 w-4 text-[#0284c7]" />
+              <span>Edit Official Source Link</span>
+            </DialogTitle>
+            <DialogDescription className="text-xs text-[#64748b] truncate max-w-[380px]">
+              {editingOfficialLink?.title}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3 py-2">
+            <div className="space-y-1.5">
+              <Label className="text-xs font-semibold text-[#334155]">Official Government / Board URL</Label>
+              <Input
+                value={editingOfficialLink?.url || ""}
+                onChange={(e) =>
+                  setEditingOfficialLink((prev) => (prev ? { ...prev, url: e.target.value } : null))
+                }
+                placeholder="https://kseab.karnataka.gov.in/..."
+                className="h-9 text-xs sm:text-sm bg-[#f8fafc] border-[#e2e8f0] text-[#112542] focus-visible:border-[#0284c7]"
+                autoFocus
+              />
+              <p className="text-[11px] text-[#64748b]">
+                Link to official government/board resource page. Leave empty and save to remove the link.
+              </p>
+            </div>
+          </div>
+          <DialogFooter className="gap-2 pt-2">
+            {editingOfficialLink?.url && (
+              <Button
+                variant="ghost"
+                size="sm"
+                type="button"
+                disabled={isSavingOfficialLink}
+                onClick={() => setEditingOfficialLink((prev) => (prev ? { ...prev, url: "" } : null))}
+                className="h-9 text-xs text-red-600 hover:bg-red-50 hover:text-red-700 mr-auto"
+              >
+                Clear Link
+              </Button>
+            )}
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={isSavingOfficialLink}
+              onClick={() => setEditingOfficialLink(null)}
+              className="h-9 text-xs border-[#e2e8f0]"
+            >
+              Cancel
+            </Button>
+            <Button
+              size="sm"
+              onClick={handleSaveOfficialLink}
+              disabled={isSavingOfficialLink}
+              className="h-9 text-xs font-semibold bg-[#0284c7] hover:bg-[#0369a1] text-white shadow-none"
+            >
+              {isSavingOfficialLink ? (
+                <span className="flex items-center gap-1.5">
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  <span>Saving...</span>
+                </span>
+              ) : (
+                "Save Official Link"
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Delete Confirmation Alert Dialog */}
       <AlertDialog open={!!deleteId} onOpenChange={(open) => !open && setDeleteId(null)}>

@@ -109,8 +109,17 @@ export default function CategoryPage() {
 
   const { data: sections } = useListSections();
 
-  // If category has officialSourceUrl in metadata or from sections matching
-  const officialSourceUrl = meta?.officialSourceUrl;
+  // If category has officialSourceUrl in matching section from DB or from metadata
+  const matchingSection = sections?.find(
+    (s) =>
+      s.slug?.toLowerCase() === slug ||
+      s.name?.toLowerCase() === meta?.title?.toLowerCase() ||
+      s.name?.toLowerCase() === slug.replace(/-/g, " ") ||
+      (slug === "mqp" && s.name?.toLowerCase().includes("model")) ||
+      (slug === "question-bank" && s.name?.toLowerCase().includes("question bank")) ||
+      (slug === "pyq" && (s.name?.toLowerCase().includes("previous") || s.name?.toLowerCase().includes("pyq")))
+  );
+  const officialSourceUrl = matchingSection?.officialSourceUrl?.trim() || meta?.officialSourceUrl;
 
   // Subjects to show for this category
   const subjectList = meta?.isPracticalOnly ? PRACTICAL_CORE_SUBJECTS : ALL_SUBJECTS;
