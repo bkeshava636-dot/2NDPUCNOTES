@@ -86,24 +86,86 @@ router.get("/admin/me", (req, res) => {
 
 router.get("/admin/stats", requireAdmin, async (req, res) => {
   try {
-    const [revenue] = await db.select({ total: sql<number>`coalesce(sum(amount_paise),0)::int` }).from(ordersTable).where(eq(ordersTable.status, "paid"));
-    const [orders] = await db.select({ count: sql<number>`count(*)::int` }).from(ordersTable).where(eq(ordersTable.status, "paid"));
-    const [cards] = await db.select({ count: sql<number>`count(*)::int` }).from(cardsTable).where(eq(cardsTable.isDeleted, false));
-    const [sections] = await db.select({ count: sql<number>`count(*)::int` }).from(sectionsTable);
-    const [customers] = await db.select({ count: sql<number>`count(distinct customer_phone)::int` }).from(ordersTable).where(eq(ordersTable.status, "paid"));
-    const recentOrders = await db
+    await ensureDefaultSections();
+
+    // Query each metric with safe fallbacks so one missing or empty table doesn't cause a 500
+    const revenuePromise = db
+      .select({ total: sql<number>`coalesce(sum(amount_paise), 0)::int` })
+      .from(ordersTable)
+      .where(eq(ordersTable.status, "paid"))
+      .then((rows) => rows[0]?.total ?? 0)
+      .catch((err) => {
+        req.log?.error?.(err, "Failed to query total revenue");
+        return 0;
+      });
+
+    const ordersPromise = db
+      .select({ count: sql<number>`count(*)::int` })
+      .from(ordersTable)
+      .where(eq(ordersTable.status, "paid"))
+      .then((rows) => rows[0]?.count ?? 0)
+      .catch((err) => {
+        req.log?.error?.(err, "Failed to query orders count");
+        return 0;
+      });
+
+    const cardsPromise = db
+      .select({ count: sql<number>`count(*)::int` })
+      .from(cardsTable)
+      .where(eq(cardsTable.isDeleted, false))
+      .then((rows) => rows[0]?.count ?? 0)
+      .catch((err) => {
+        req.log?.error?.(err, "Failed to query cards count");
+        return 0;
+      });
+
+    const sectionsPromise = db
+      .select({ count: sql<number>`count(*)::int` })
+      .from(sectionsTable)
+      .then((rows) => rows[0]?.count ?? 0)
+      .catch((err) => {
+        req.log?.error?.(err, "Failed to query sections count");
+        return 0;
+      });
+
+    const customersPromise = db
+      .select({ count: sql<number>`count(distinct customer_phone)::int` })
+      .from(ordersTable)
+      .where(eq(ordersTable.status, "paid"))
+      .then((rows) => rows[0]?.count ?? 0)
+      .catch((err) => {
+        req.log?.error?.(err, "Failed to query customers count");
+        return 0;
+      });
+
+    const recentOrdersPromise = db
       .select({ order: ordersTable, cardTitle: cardsTable.title })
       .from(ordersTable)
       .leftJoin(cardsTable, eq(ordersTable.cardId, cardsTable.id))
       .orderBy(desc(ordersTable.createdAt))
-      .limit(10);
+      .limit(10)
+      .catch((err) => {
+        req.log?.error?.(err, "Failed to query recent orders");
+        return [];
+      });
+
+    const [totalRevenuePaise, totalOrders, totalCards, totalSections, totalCustomers, recentOrders] =
+      await Promise.all([
+        revenuePromise,
+        ordersPromise,
+        cardsPromise,
+        sectionsPromise,
+        customersPromise,
+        recentOrdersPromise,
+      ]);
+
     res.json({
-      totalRevenuePaise: revenue.total,
-      totalOrders: orders.count,
-      totalCards: cards.count,
-      totalSections: sections.count,
-      totalCustomers: customers.count,
-      recentOrders: recentOrders.map(({ order, cardTitle }) => ({
+      totalRevenuePaise,
+      totalOrders,
+      totalCards,
+      totalSections,
+      totalCustomers,
+      recentOrders: (recentOrders || []).map(({ order, cardTitle }: any) => ({
         id: order.id,
         cardId: order.cardId,
         cardTitle: cardTitle ?? "",
@@ -117,9 +179,12 @@ router.get("/admin/stats", requireAdmin, async (req, res) => {
         createdAt: order.createdAt,
       })),
     });
-  } catch (err) {
-    req.log.error(err);
-    res.status(500).json({ error: "Failed to fetch stats" });
+  } catch (err: any) {
+    req.log?.error?.(err, "Unexpected error in /admin/stats");
+    res.status(500).json({ 
+      error: "Failed to fetch stats", 
+      detail: err?.message || String(err) 
+    });
   }
 });
 
