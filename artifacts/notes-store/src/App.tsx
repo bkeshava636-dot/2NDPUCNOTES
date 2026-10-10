@@ -58,8 +58,8 @@ function RouteLoadingFallback() {
 
 function AdminRoutes() {
   return (
-    <AdminGuard>
-      <AdminLayout>
+    <AdminLayout>
+      <AdminGuard>
         <Suspense fallback={<RouteLoadingFallback />}>
           <Switch>
             <Route path="/admin" component={() => <Redirect to="/admin/dashboard" />} />
@@ -72,8 +72,8 @@ function AdminRoutes() {
             <Route component={NotFound} />
           </Switch>
         </Suspense>
-      </AdminLayout>
-    </AdminGuard>
+      </AdminGuard>
+    </AdminLayout>
   );
 }
 

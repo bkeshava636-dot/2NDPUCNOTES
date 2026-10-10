@@ -14,34 +14,43 @@ export const DEFAULT_CORE_SECTIONS = [
 ];
 
 let seeded = false;
+let seedingPromise: Promise<void> | null = null;
 
 export async function ensureDefaultSections(): Promise<void> {
   if (seeded) return;
-  try {
-    await db.execute(sql`
-      ALTER TABLE cards ADD COLUMN IF NOT EXISTS subtype text;
-      ALTER TABLE cards ADD COLUMN IF NOT EXISTS is_recommended boolean NOT NULL DEFAULT false;
-      ALTER TABLE cards ADD COLUMN IF NOT EXISTS answer_key_url text;
-      ALTER TABLE cards ADD COLUMN IF NOT EXISTS official_source_url text;
-      ALTER TABLE sections ADD COLUMN IF NOT EXISTS official_source_url text;
-    `).catch(() => {});
+  if (seedingPromise) return seedingPromise;
 
-    const existing = await db.select().from(sectionsTable);
-    const existingSlugs = new Set(existing.map((s) => s.slug.toLowerCase()));
+  seedingPromise = (async () => {
+    try {
+      await db.execute(sql`
+        ALTER TABLE cards ADD COLUMN IF NOT EXISTS subtype text;
+        ALTER TABLE cards ADD COLUMN IF NOT EXISTS is_recommended boolean NOT NULL DEFAULT false;
+        ALTER TABLE cards ADD COLUMN IF NOT EXISTS answer_key_url text;
+        ALTER TABLE cards ADD COLUMN IF NOT EXISTS official_source_url text;
+        ALTER TABLE sections ADD COLUMN IF NOT EXISTS official_source_url text;
+      `).catch(() => {});
 
-    for (const def of DEFAULT_CORE_SECTIONS) {
-      if (!existingSlugs.has(def.slug.toLowerCase())) {
-        await db.insert(sectionsTable).values({
-          name: def.name,
-          slug: def.slug,
-          description: def.description,
-          sortOrder: def.sortOrder,
-          isVisible: true,
-        }).catch(() => {});
+      const existing = await db.select().from(sectionsTable);
+      const existingSlugs = new Set(existing.map((s) => s.slug.toLowerCase()));
+
+      for (const def of DEFAULT_CORE_SECTIONS) {
+        if (!existingSlugs.has(def.slug.toLowerCase())) {
+          await db.insert(sectionsTable).values({
+            name: def.name,
+            slug: def.slug,
+            description: def.description,
+            sortOrder: def.sortOrder,
+            isVisible: true,
+          }).catch(() => {});
+        }
       }
+      seeded = true;
+    } catch (_err) {
+      // Graceful fallback if database is not reachable
+    } finally {
+      seedingPromise = null;
     }
-    seeded = true;
-  } catch (_err) {
-    // Graceful fallback if database is not reachable
-  }
+  })();
+
+  return seedingPromise;
 }

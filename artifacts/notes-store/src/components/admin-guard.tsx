@@ -21,6 +21,8 @@ export function AdminGuard({ children }: { children: ReactNode }) {
     query: {
       queryKey: getAdminMeQueryKey(),
       enabled: Boolean(token),
+      staleTime: 5 * 60 * 1000, // Reuse verified session for 5 minutes during navigation
+      gcTime: 10 * 60 * 1000,
       retry: 1,
     },
   });
@@ -39,12 +41,12 @@ export function AdminGuard({ children }: { children: ReactNode }) {
 
   if (isLoading) {
     return (
-      <div className="min-h-[100dvh] flex flex-col items-center justify-center bg-[#f8fafc] p-4">
-        <div className="bg-white p-6 rounded-xl border border-[#e2e8f0] flex flex-col items-center gap-3 shadow-xs max-w-sm w-full text-center">
-          <Spinner className="size-8 text-[#1856b8]" />
+      <div className="py-12 flex flex-col items-center justify-center">
+        <div className="bg-white p-6 rounded-xl border border-[#e2e8f0] flex flex-col items-center gap-3 shadow-2xs max-w-sm w-full text-center">
+          <Spinner className="size-6 text-[#1856b8]" />
           <div>
-            <h3 className="text-sm font-semibold text-[#112542]">Verifying session</h3>
-            <p className="text-xs text-[#64748b] mt-0.5">Checking your administrative privileges...</p>
+            <h3 className="text-xs font-semibold text-[#112542]">Verifying session</h3>
+            <p className="text-[11px] text-[#64748b] mt-0.5">Checking your administrative privileges...</p>
           </div>
         </div>
       </div>
@@ -53,8 +55,8 @@ export function AdminGuard({ children }: { children: ReactNode }) {
 
   if (isError && (error as any)?.status !== 401) {
     return (
-      <div className="min-h-[100dvh] flex flex-col items-center justify-center bg-[#f8fafc] p-4">
-        <div className="bg-white p-6 rounded-xl border border-[#e2e8f0] flex flex-col items-center gap-4 shadow-xs max-w-md w-full text-center">
+      <div className="py-12 flex flex-col items-center justify-center">
+        <div className="bg-white p-6 rounded-xl border border-[#e2e8f0] flex flex-col items-center gap-4 shadow-2xs max-w-md w-full text-center">
           <div className="h-10 w-10 rounded-full bg-amber-50 text-amber-600 border border-amber-200 flex items-center justify-center">
             <AlertCircle className="h-5 w-5" />
           </div>

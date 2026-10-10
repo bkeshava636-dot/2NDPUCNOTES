@@ -8,7 +8,9 @@ type GateStatus = "loading" | "ready" | "error";
 const TIMEOUT_MS = 6000;
 
 export function ApiWakeUpGate({ children }: { children: ReactNode }) {
-  const isAlreadyAwake = typeof window !== "undefined" && sessionStorage.getItem("api_awake") === "true";
+  // If navigating directly to admin, bypass the public store wake-up gate immediately
+  const isAdminPath = typeof window !== "undefined" && window.location.pathname.startsWith("/admin");
+  const isAlreadyAwake = typeof window !== "undefined" && (sessionStorage.getItem("api_awake") === "true" || isAdminPath);
   const [status, setStatus] = useState<GateStatus>(isAlreadyAwake ? "ready" : "loading");
   const abortControllerRef = useRef<AbortController | null>(null);
 
