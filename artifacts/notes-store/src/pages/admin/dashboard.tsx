@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Link } from "wouter";
-import { useQuery } from "@tanstack/react-query";
-import { fetchAdminStats, AdminStatsResponse } from "@/lib/admin-api";
+import { useGetAdminStats, getGetAdminStatsQueryKey } from "@workspace/api-client-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { formatRupees } from "@/lib/utils";
 import { 
@@ -28,10 +27,11 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function AdminDashboard() {
-  const { data: stats, isLoading, isError, error, isFetching, refetch } = useQuery<AdminStatsResponse>({
-    queryKey: ["admin", "stats"],
-    queryFn: fetchAdminStats,
-    staleTime: 60 * 1000, // 1 minute
+  const { data: stats, isLoading, isError, error, isFetching, refetch } = useGetAdminStats({
+    query: {
+      queryKey: getGetAdminStatsQueryKey(),
+      retry: 1,
+    },
   });
 
   const [copiedId, setCopiedId] = useState<string | null>(null);
@@ -85,7 +85,7 @@ export default function AdminDashboard() {
     },
     {
       title: "Total Downloads",
-      value: stats?.totalDownloads !== undefined ? stats.totalDownloads.toLocaleString() : "0",
+      value: (stats as any)?.totalDownloads !== undefined ? (stats as any).totalDownloads.toLocaleString() : "0",
       description: "Audited material accesses",
       icon: DownloadCloud,
       color: "text-teal-600 bg-teal-50 border-teal-100",

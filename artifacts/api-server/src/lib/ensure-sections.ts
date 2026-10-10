@@ -1,7 +1,8 @@
 import { db, sectionsTable } from "@workspace/db";
-import { sql } from "drizzle-orm";
+import { sql, eq } from "drizzle-orm";
 
 export const DEFAULT_CORE_SECTIONS = [
+  // Core Subjects (Browse by Subject)
   { name: "Physics", slug: "physics", description: "Comprehensive 2nd PUC Physics notes, derivations, and question banks", sortOrder: 1 },
   { name: "Chemistry", slug: "chemistry", description: "Organic, inorganic, and physical chemistry notes and reactions", sortOrder: 2 },
   { name: "Computer Science", slug: "computer-science", description: "2nd PUC Computer Science notes, programs, question banks, and practicals", sortOrder: 3 },
@@ -11,6 +12,52 @@ export const DEFAULT_CORE_SECTIONS = [
   { name: "Hindi", slug: "hindi", description: "Sahitya, kavita, nibandh, and grammar notes for 2nd PUC Hindi", sortOrder: 7 },
   { name: "Kannada", slug: "kannada", description: "Kannada sahitya, gadya, padya, and grammar study materials", sortOrder: 8 },
   { name: "Sanskrit", slug: "sanskrit", description: "Sanskrit slokas, vyakarana, translation, and chapter notes", sortOrder: 9 },
+
+  // Resource Categories (Browse by Category)
+  { 
+    name: "Model Question Papers (MQP)", 
+    slug: "mqp", 
+    description: "Official Karnataka Board model question papers and blueprint-based sample tests with answer keys", 
+    officialSourceUrl: "https://kseab.karnataka.gov.in/", 
+    sortOrder: 10 
+  },
+  { 
+    name: "Multiple Choice Questions (MCQ)", 
+    slug: "mcq", 
+    description: "Chapterwise multiple choice questions, assertion-reasoning, and objective practice sets", 
+    sortOrder: 11 
+  },
+  { 
+    name: "Question Bank", 
+    slug: "question-bank", 
+    description: "Curated question banks, important derivations, repeated board questions, and model answers", 
+    officialSourceUrl: "https://kseab.karnataka.gov.in/", 
+    sortOrder: 12 
+  },
+  { 
+    name: "Practical", 
+    slug: "practical", 
+    description: "Practical marking schemes, lab manuals, viva questions, and procedural guides for Core Science subjects", 
+    sortOrder: 13 
+  },
+  { 
+    name: "Previous Year Question Papers (PYQs)", 
+    slug: "pyq", 
+    description: "Past Karnataka 2nd PUC examination question papers categorized by Midterm, Preparatory, and Annual exams", 
+    sortOrder: 14 
+  },
+  { 
+    name: "Passing Package", 
+    slug: "passing-package", 
+    description: "High-yield guaranteed scoring questions and simplified notes tailored for scoring passing and first-class marks", 
+    sortOrder: 15 
+  },
+  { 
+    name: "Publication Books", 
+    slug: "publication-books", 
+    description: "Reference material, workbook guides, and renowned publisher study packages", 
+    sortOrder: 16 
+  },
 ];
 
 let seeded = false;
@@ -40,6 +87,7 @@ export async function ensureDefaultSections(): Promise<void> {
             slug: def.slug,
             description: def.description,
             sortOrder: def.sortOrder,
+            officialSourceUrl: (def as any).officialSourceUrl || null,
             isVisible: true,
           }).catch(() => {});
         }

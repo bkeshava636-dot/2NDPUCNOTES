@@ -58,35 +58,48 @@ export interface AdminDownloadsResponse {
   limit: number;
 }
 
+async function safeParseJson<T>(res: Response): Promise<T> {
+  const text = await res.text();
+  if (!res.ok) {
+    if (text.trim().startsWith("<")) {
+      throw new Error(`Server returned HTTP ${res.status} HTML error page. Check backend API URL configuration.`);
+    }
+    try {
+      const errObj = JSON.parse(text);
+      throw new Error(errObj.detail || errObj.error || `HTTP ${res.status}`);
+    } catch {
+      throw new Error(`Server request failed (HTTP ${res.status})`);
+    }
+  }
+
+  if (text.trim().startsWith("<")) {
+    throw new Error(`Received HTML instead of JSON. Ensure backend server is reachable at configured API URL.`);
+  }
+
+  try {
+    return JSON.parse(text) as T;
+  } catch (err: any) {
+    throw new Error(`Invalid JSON response: ${err.message || String(err)}`);
+  }
+}
+
 export async function fetchAdminStats(): Promise<AdminStatsResponse> {
   const res = await apiFetch("/api/admin/stats");
-  if (!res.ok) {
-    const errorBody = await res.json().catch(() => ({}));
-    throw new Error(errorBody.detail || errorBody.error || `HTTP ${res.status}`);
-  }
-  return res.json();
+  return safeParseJson<AdminStatsResponse>(res);
 }
 
 export async function fetchAdminCustomers(page = 1, search = ""): Promise<AdminCustomersResponse> {
   const params = new URLSearchParams({ page: String(page), limit: "20" });
   if (search.trim()) params.append("search", search.trim());
   const res = await apiFetch(`/api/admin/customers?${params.toString()}`);
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error(err.error || `HTTP ${res.status}`);
-  }
-  return res.json();
+  return safeParseJson<AdminCustomersResponse>(res);
 }
 
 export async function fetchAdminDownloads(page = 1, search = ""): Promise<AdminDownloadsResponse> {
   const params = new URLSearchParams({ page: String(page), limit: "20" });
   if (search.trim()) params.append("search", search.trim());
   const res = await apiFetch(`/api/admin/downloads?${params.toString()}`);
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error(err.error || `HTTP ${res.status}`);
-  }
-  return res.json();
+  return safeParseJson<AdminDownloadsResponse>(res);
 }
 
 export async function updateCardOfficialLink(id: number, officialSourceUrl: string, isOfficial?: boolean) {
@@ -95,24 +108,16 @@ export async function updateCardOfficialLink(id: number, officialSourceUrl: stri
     payload.isOfficial = isOfficial;
   }
   const res = await apiFetch(`/api/admin/cards/${id}`, {
-    method: "PUT",
+    method: "PATCH",
     body: JSON.stringify(payload),
   });
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error(err.error || `Failed to update resource link (HTTP ${res.status})`);
-  }
-  return res.json();
+  return safeParseJson<any>(res);
 }
 
 export async function updateSectionOfficialLink(id: number, officialSourceUrl: string) {
   const res = await apiFetch(`/api/admin/sections/${id}`, {
-    method: "PUT",
+    method: "PATCH",
     body: JSON.stringify({ officialSourceUrl }),
   });
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error(err.error || `Failed to update section link (HTTP ${res.status})`);
-  }
-  return res.json();
+  return safeParseJson<any>(res);
 }

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { 
   useAdminListSections, 
   useAdminCreateSection, 
@@ -15,18 +15,85 @@ import { Switch } from "@/components/ui/switch";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
-import { Plus, Edit, Trash2, GripVertical, FolderTree, Eye, EyeOff, Loader2, ExternalLink } from "lucide-react";
+import { 
+  Plus, 
+  Edit, 
+  Trash2, 
+  GripVertical, 
+  FolderTree, 
+  Eye, 
+  EyeOff, 
+  Loader2, 
+  ExternalLink,
+  Link2,
+  Sparkles,
+  BookOpen,
+  Layers,
+  Search,
+  CheckCircle2,
+  AlertCircle,
+  RefreshCw
+} from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
 
 type SectionForm = { name: string; description: string; officialSourceUrl: string; isVisible: boolean };
 
-const STANDARD_CATEGORIES = [
-  { name: "Computer Science", description: "2nd PUC Computer Science notes, programs, question banks, and practicals" },
-  { name: "English", description: "2nd PUC English literature notes, summaries, grammar, and model answers" },
-  { name: "Hindi", description: "Sahitya, kavita, nibandh, and grammar notes for 2nd PUC Hindi" },
-  { name: "Kannada", description: "Kannada sahitya, gadya, padya, and grammar study materials" },
-  { name: "Sanskrit", description: "Sanskrit slokas, vyakarana, translation, and chapter notes" },
+const STANDARD_CURRICULUM_SUBJECTS = [
+  { name: "Physics", slug: "physics", description: "Comprehensive 2nd PUC Physics notes, derivations, and question banks" },
+  { name: "Chemistry", slug: "chemistry", description: "Organic, inorganic, and physical chemistry notes and reactions" },
+  { name: "Computer Science", slug: "computer-science", description: "2nd PUC Computer Science notes, programs, question banks, and practicals" },
+  { name: "Biology", slug: "biology", description: "Botany and zoology diagrams, summaries, and key concepts" },
+  { name: "Mathematics", slug: "mathematics", description: "Calculus, vectors, probability, and algebra solutions" },
+  { name: "English", slug: "english", description: "2nd PUC English literature notes, summaries, grammar, and model answers" },
+  { name: "Hindi", slug: "hindi", description: "Sahitya, kavita, nibandh, and grammar notes for 2nd PUC Hindi" },
+  { name: "Kannada", slug: "kannada", description: "Kannada sahitya, gadya, padya, and grammar study materials" },
+  { name: "Sanskrit", slug: "sanskrit", description: "Sanskrit slokas, vyakarana, translation, and chapter notes" },
+];
+
+const STANDARD_RESOURCE_CATEGORIES = [
+  { 
+    name: "Model Question Papers (MQP)", 
+    slug: "mqp", 
+    description: "Official Karnataka Board model question papers and blueprint-based sample tests with answer keys",
+    officialSourceUrl: "https://kseab.karnataka.gov.in/"
+  },
+  { 
+    name: "Multiple Choice Questions (MCQ)", 
+    slug: "mcq", 
+    description: "Chapterwise multiple choice questions, assertion-reasoning, and objective practice sets",
+    officialSourceUrl: ""
+  },
+  { 
+    name: "Question Bank", 
+    slug: "question-bank", 
+    description: "Curated question banks, important derivations, repeated board questions, and model answers",
+    officialSourceUrl: "https://kseab.karnataka.gov.in/"
+  },
+  { 
+    name: "Practical", 
+    slug: "practical", 
+    description: "Practical marking schemes, lab manuals, viva questions, and procedural guides for Core Science subjects",
+    officialSourceUrl: ""
+  },
+  { 
+    name: "Previous Year Question Papers (PYQs)", 
+    slug: "pyq", 
+    description: "Past Karnataka 2nd PUC examination question papers categorized by Midterm, Preparatory, and Annual exams",
+    officialSourceUrl: ""
+  },
+  { 
+    name: "Passing Package", 
+    slug: "passing-package", 
+    description: "High-yield guaranteed scoring questions and simplified notes tailored for scoring passing and first-class marks",
+    officialSourceUrl: ""
+  },
+  { 
+    name: "Publication Books", 
+    slug: "publication-books", 
+    description: "Reference material, workbook guides, and renowned publisher study packages",
+    officialSourceUrl: ""
+  },
 ];
 
 export default function AdminSections() {
@@ -43,6 +110,8 @@ export default function AdminSections() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
+  const [activeTab, setActiveTab] = useState<"all" | "subjects" | "categories">("all");
+  const [searchQuery, setSearchQuery] = useState("");
   const [showDialog, setShowDialog] = useState(false);
   const [editId, setEditId] = useState<number | null>(null);
   const [deleteId, setDeleteId] = useState<number | null>(null);
@@ -50,15 +119,74 @@ export default function AdminSections() {
   const [draggingId, setDraggingId] = useState<number | null>(null);
   const [dragOverId, setDragOverId] = useState<number | null>(null);
 
-  function openCreate(prefill?: { name: string; description?: string }) {
+  // Quick edit official link modal state
+  const [quickLinkEdit, setQuickLinkEdit] = useState<{ id: number; name: string; url: string } | null>(null);
+  const [isSavingQuickLink, setIsSavingQuickLink] = useState(false);
+
+  function isCategorySection(item: any): boolean {
+    const slug = (item.slug || "").toLowerCase();
+    const name = (item.name || "").toLowerCase();
+    return (
+      slug === "mqp" || name.includes("model") ||
+      slug === "mcq" || name.includes("multiple choice") ||
+      slug === "question-bank" || name.includes("question bank") ||
+      slug === "practical" || name.includes("practical") ||
+      slug === "pyq" || name.includes("previous") ||
+      slug === "passing-package" || name.includes("passing") ||
+      slug === "publication-books" || name.includes("publication")
+    );
+  }
+
+  const filteredSections = useMemo(() => {
+    if (!sections) return [];
+    return sections.filter((s) => {
+      const isCat = isCategorySection(s);
+      if (activeTab === "subjects" && isCat) return false;
+      if (activeTab === "categories" && !isCat) return false;
+
+      if (searchQuery.trim()) {
+        const q = searchQuery.toLowerCase().trim();
+        const matchesName = s.name.toLowerCase().includes(q);
+        const matchesDesc = (s.description || "").toLowerCase().includes(q);
+        const matchesSlug = (s.slug || "").toLowerCase().includes(q);
+        return matchesName || matchesDesc || matchesSlug;
+      }
+      return true;
+    });
+  }, [sections, activeTab, searchQuery]);
+
+  // Check which standard categories or subjects are missing from the database
+  const missingCategories = useMemo(() => {
+    if (!sections) return [];
+    const existingSlugs = new Set(sections.map((s) => (s.slug || "").toLowerCase()));
+    return STANDARD_RESOURCE_CATEGORIES.filter((c) => !existingSlugs.has(c.slug.toLowerCase()));
+  }, [sections]);
+
+  const missingSubjects = useMemo(() => {
+    if (!sections) return [];
+    const existingSlugs = new Set(sections.map((s) => (s.slug || "").toLowerCase()));
+    return STANDARD_CURRICULUM_SUBJECTS.filter((s) => !existingSlugs.has(s.slug.toLowerCase()));
+  }, [sections]);
+
+  function openCreate(prefill?: { name: string; description?: string; officialSourceUrl?: string }) {
     setEditId(null);
-    setForm({ name: prefill?.name || "", description: prefill?.description || "", officialSourceUrl: "", isVisible: true });
+    setForm({ 
+      name: prefill?.name || "", 
+      description: prefill?.description || "", 
+      officialSourceUrl: prefill?.officialSourceUrl || "", 
+      isVisible: true 
+    });
     setShowDialog(true);
   }
 
   function openEdit(s: any) {
     setEditId(s.id);
-    setForm({ name: s.name, description: s.description || "", officialSourceUrl: s.officialSourceUrl || "", isVisible: s.isVisible });
+    setForm({ 
+      name: s.name, 
+      description: s.description || "", 
+      officialSourceUrl: s.officialSourceUrl || "", 
+      isVisible: s.isVisible 
+    });
     setShowDialog(true);
   }
 
@@ -81,11 +209,11 @@ export default function AdminSections() {
         },
         {
           onSuccess: () => { 
-            toast({ title: "Category updated successfully" }); 
+            toast({ title: "Section updated successfully" }); 
             setShowDialog(false); 
             invalidate(); 
           },
-          onError: () => toast({ title: "Error", description: "Failed to update category", variant: "destructive" }),
+          onError: () => toast({ title: "Error", description: "Failed to update section", variant: "destructive" }),
         }
       );
     } else {
@@ -100,14 +228,68 @@ export default function AdminSections() {
         },
         {
           onSuccess: () => { 
-            toast({ title: "Category created successfully" }); 
+            toast({ title: "Section created successfully" }); 
             setShowDialog(false); 
             invalidate(); 
           },
-          onError: () => toast({ title: "Error", description: "Failed to create category", variant: "destructive" }),
+          onError: () => toast({ title: "Error", description: "Failed to create section", variant: "destructive" }),
         }
       );
     }
+  }
+
+  function handleQuickSaveOfficialLink() {
+    if (!quickLinkEdit) return;
+    setIsSavingQuickLink(true);
+    updateSection.mutate(
+      {
+        id: quickLinkEdit.id,
+        data: {
+          officialSourceUrl: quickLinkEdit.url.trim() || null,
+        },
+      },
+      {
+        onSuccess: () => {
+          toast({
+            title: quickLinkEdit.url.trim() ? "Official link saved" : "Official link cleared",
+            description: `Updated official link for ${quickLinkEdit.name}`,
+          });
+          setQuickLinkEdit(null);
+          setIsSavingQuickLink(false);
+          invalidate();
+        },
+        onError: () => {
+          toast({ title: "Error", description: "Failed to update official link", variant: "destructive" });
+          setIsSavingQuickLink(false);
+        },
+      }
+    );
+  }
+
+  function handleSeedItem(item: { name: string; description?: string; officialSourceUrl?: string }) {
+    createSection.mutate(
+      {
+        data: {
+          name: item.name,
+          description: item.description,
+          officialSourceUrl: item.officialSourceUrl,
+          isVisible: true,
+        },
+      },
+      {
+        onSuccess: () => {
+          toast({ title: `Added "${item.name}" to store` });
+          invalidate();
+        },
+        onError: () => toast({ title: "Error", description: "Failed to create section", variant: "destructive" }),
+      }
+    );
+  }
+
+  function handleSeedAllCategories() {
+    missingCategories.forEach((cat) => {
+      handleSeedItem(cat);
+    });
   }
 
   function handleDelete() {
@@ -116,400 +298,500 @@ export default function AdminSections() {
       { id: deleteId },
       {
         onSuccess: () => { 
-          toast({ title: "Category deleted" }); 
+          toast({ title: "Section deleted" }); 
           setDeleteId(null); 
           invalidate(); 
         },
-        onError: () => { 
-          toast({ title: "Error", description: "Failed to delete category", variant: "destructive" }); 
-          setDeleteId(null); 
-        },
+        onError: () => toast({ title: "Error", description: "Failed to delete section", variant: "destructive" }),
       }
     );
   }
 
-  function handleToggleVisible(id: number, current: boolean) {
-    updateSection.mutate(
-      { id, data: { isVisible: !current } },
-      {
-        onSuccess: () => {
-          toast({ title: current ? "Category hidden from store" : "Category visible on store" });
-          invalidate();
-        },
-      }
-    );
+  function handleDragStart(id: number) {
+    setDraggingId(id);
   }
 
-  function handleDragStart(id: number) { setDraggingId(id); }
-  function handleDragOver(e: React.DragEvent, id: number) { e.preventDefault(); setDragOverId(id); }
-  function handleDrop() {
-    if (!draggingId || !dragOverId || draggingId === dragOverId || !sections) return;
-    const ids = sections.map(s => s.id);
+  function handleDragOver(e: React.DragEvent, id: number) {
+    e.preventDefault();
+    setDragOverId(id);
+  }
+
+  function handleDrop(targetId: number) {
+    if (draggingId === null || draggingId === targetId || !sections) return;
+    const ids = sections.map((s) => s.id);
     const fromIdx = ids.indexOf(draggingId);
-    const toIdx = ids.indexOf(dragOverId);
-    const newIds = [...ids];
-    newIds.splice(fromIdx, 1);
-    newIds.splice(toIdx, 0, draggingId);
-    reorderSections.mutate({ data: { ids: newIds } }, { 
-      onSuccess: () => {
-        toast({ title: "Categories reordered" });
-        invalidate();
+    const toIdx = ids.indexOf(targetId);
+    if (fromIdx === -1 || toIdx === -1) return;
+    const reordered = [...ids];
+    const [moved] = reordered.splice(fromIdx, 1);
+    reordered.splice(toIdx, 0, moved);
+    reorderSections.mutate(
+      { data: { ids: reordered } },
+      {
+        onSuccess: () => { invalidate(); },
+        onError: () => toast({ title: "Error", description: "Failed to reorder sections", variant: "destructive" }),
       }
-    });
+    );
     setDraggingId(null);
     setDragOverId(null);
   }
 
-  if (isLoading) {
-    return (
-      <div className="space-y-6">
-        <div className="flex justify-between items-center">
-          <Skeleton className="h-8 w-44" />
-          <Skeleton className="h-9 w-32" />
-        </div>
-        <Skeleton className="h-64 w-full rounded-xl" />
-      </div>
-    );
-  }
-
-  if (isError) {
-    return (
-      <div className="space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-[#112542] tracking-tight">Categories & Subjects</h1>
-            <p className="text-[#5a6b82] text-xs sm:text-sm mt-0.5">
-              Organize syllabus streams, languages, and custom resource collections
-            </p>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-xl border border-red-200 p-8 text-center max-w-lg mx-auto">
-          <div className="h-12 w-12 rounded-full bg-red-100 text-red-600 mx-auto flex items-center justify-center mb-4">
-            <FolderTree className="h-6 w-6" />
-          </div>
-          <h3 className="text-base font-bold text-[#112542]">Failed to load categories</h3>
-          <p className="text-xs text-[#64748b] mt-1 mb-5">
-            {(error as any)?.message || "A network or database error occurred while retrieving categories."}
-          </p>
-          <Button
-            onClick={() => refetch()}
-            disabled={isFetching}
-            className="gap-2 text-xs bg-[#2f74de] hover:bg-[#1f63c8] text-white"
-          >
-            <Loader2 className={`h-3.5 w-3.5 ${isFetching ? "animate-spin" : ""}`} />
-            <span>Retry Connection</span>
-          </Button>
-        </div>
-      </div>
-    );
-  }
-
-  const isSaving = createSection.isPending || updateSection.isPending;
+  const subjectCount = sections?.filter((s) => !isCategorySection(s)).length ?? 0;
+  const categoryCount = sections?.filter((s) => isCategorySection(s)).length ?? 0;
 
   return (
     <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-[#112542] tracking-tight">Categories & Sections</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-[#112542] tracking-tight">
+            Subjects & Categories
+          </h1>
           <p className="text-[#5a6b82] text-xs sm:text-sm mt-0.5">
-            Organize study materials into subjects and homepage branches (drag rows to reorder)
+            Configure curriculum subjects, resource categories, official government links, and display order
           </p>
         </div>
-        <Button 
-          onClick={() => openCreate()} 
-          className="h-9 gap-1.5 text-xs font-semibold bg-[#2f74de] hover:bg-[#1f63c8] text-white shadow-none transition-colors"
-        >
-          <Plus className="h-4 w-4" />
-          <span>New Category</span>
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => refetch()}
+            disabled={isFetching}
+            className="h-9 gap-1.5 text-xs text-[#5a6b82] border-[#e2e8f0]"
+          >
+            <RefreshCw className={`h-3.5 w-3.5 ${isFetching ? "animate-spin text-[#1856b8]" : ""}`} />
+            <span>Refresh</span>
+          </Button>
+
+          <Button 
+            onClick={() => openCreate()} 
+            size="sm"
+            className="h-9 gap-1.5 text-xs font-semibold bg-[#1856b8] hover:bg-[#124494] text-white shadow-2xs"
+          >
+            <Plus className="h-4 w-4" />
+            <span>Add Item</span>
+          </Button>
+        </div>
       </div>
 
-      {/* Suggested Standard Categories Quick Add */}
-      {(() => {
-        const existingNames = new Set((sections || []).map(s => s.name.toLowerCase()));
-        const missing = STANDARD_CATEGORIES.filter(c => !existingNames.has(c.name.toLowerCase()));
-        if (missing.length === 0) return null;
-        return (
-          <div className="flex flex-wrap items-center gap-2 p-3 bg-[#f8fafc] border border-[#e2e8f0] rounded-xl text-xs text-[#5a6b82]">
-            <span className="font-semibold text-[#112542]">Quick Add Standard Categories:</span>
-            {missing.map(cat => (
-              <Button
-                key={cat.name}
-                type="button"
-                variant="outline"
-                size="sm"
-                className="h-7 text-xs gap-1 bg-white border-[#dce8fa] text-[#1856b8] hover:bg-[#ebf3ff]"
-                onClick={() => openCreate(cat)}
-              >
-                <Plus className="h-3 w-3" />
-                <span>Add {cat.name}</span>
-              </Button>
-            ))}
-          </div>
-        );
-      })()}
+      {/* Tabs & Search Toolbar */}
+      <div className="bg-white p-3.5 sm:p-4 rounded-xl border border-[#e2e8f0] flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between">
+        {/* Navigation Tabs */}
+        <div className="flex items-center gap-1.5 p-1 bg-[#f1f5f9] rounded-lg">
+          <button
+            type="button"
+            onClick={() => setActiveTab("all")}
+            className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
+              activeTab === "all"
+                ? "bg-white text-[#112542] shadow-2xs"
+                : "text-[#64748b] hover:text-[#112542]"
+            }`}
+          >
+            All Items ({sections?.length ?? 0})
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab("subjects")}
+            className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
+              activeTab === "subjects"
+                ? "bg-white text-[#1856b8] shadow-2xs"
+                : "text-[#64748b] hover:text-[#112542]"
+            }`}
+          >
+            Curriculum Subjects ({subjectCount})
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab("categories")}
+            className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
+              activeTab === "categories"
+                ? "bg-white text-[#0284c7] shadow-2xs"
+                : "text-[#64748b] hover:text-[#112542]"
+            }`}
+          >
+            Browse by Category ({categoryCount})
+          </button>
+        </div>
 
-      {/* Desktop Table */}
-      <div className="hidden md:block bg-white rounded-xl border border-[#e2e8f0] overflow-hidden shadow-none">
-        <Table>
-          <TableHeader className="bg-[#f8fafc]">
-            <TableRow className="border-[#eef2f6] hover:bg-transparent">
-              <TableHead className="w-10 pl-4"></TableHead>
-              <TableHead className="text-xs font-semibold text-[#64748b] py-3">Category Name</TableHead>
-              <TableHead className="text-xs font-semibold text-[#64748b] py-3">Description</TableHead>
-              <TableHead className="text-xs font-semibold text-[#64748b] py-3">Official Link</TableHead>
-              <TableHead className="text-xs font-semibold text-[#64748b] py-3 text-center">Resources</TableHead>
-              <TableHead className="text-xs font-semibold text-[#64748b] py-3 text-center">Visible</TableHead>
-              <TableHead className="text-xs font-semibold text-[#64748b] py-3 pr-5 text-right">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {sections?.length === 0 ? (
+        {/* Search */}
+        <div className="relative w-full sm:w-64">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-[#94a3b8]" />
+          <Input
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search items or links..."
+            className="pl-9 h-8 text-xs bg-[#f8fafc] border-[#e2e8f0]"
+          />
+        </div>
+      </div>
+
+      {/* Missing Categories Quick Seed Alert */}
+      {missingCategories.length > 0 && (
+        <div className="p-4 rounded-xl border border-sky-200 bg-sky-50 text-sky-950 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-start gap-2.5">
+            <Sparkles className="h-4 w-4 text-[#0284c7] shrink-0 mt-0.5" />
+            <div>
+              <p className="text-xs font-bold text-[#0369a1]">
+                {missingCategories.length} "Browse by Category" types not yet in database
+              </p>
+              <p className="text-[11px] text-[#0284c7] mt-0.5">
+                Enable them so you can configure their descriptions and official source links:{" "}
+                <span className="font-semibold">{missingCategories.map((c) => c.name).join(", ")}</span>
+              </p>
+            </div>
+          </div>
+          <Button
+            size="sm"
+            onClick={handleSeedAllCategories}
+            className="h-8 text-xs bg-[#0284c7] hover:bg-[#0369a1] text-white shrink-0 shadow-2xs"
+          >
+            Seed Missing Categories
+          </Button>
+        </div>
+      )}
+
+      {/* Loading Skeleton */}
+      {isLoading ? (
+        <div className="bg-white rounded-xl border border-[#e2e8f0] p-6 space-y-3">
+          {[1, 2, 3, 4, 5].map((i) => (
+            <Skeleton key={i} className="h-14 w-full" />
+          ))}
+        </div>
+      ) : isError ? (
+        <div className="bg-white rounded-xl border border-red-200 p-8 text-center max-w-lg mx-auto">
+          <div className="h-12 w-12 rounded-full bg-red-100 text-red-600 mx-auto flex items-center justify-center mb-4">
+            <AlertCircle className="h-6 w-6" />
+          </div>
+          <h3 className="text-base font-bold text-[#112542]">Failed to load categories</h3>
+          <p className="text-xs text-[#64748b] mt-1 mb-5">
+            {(error as any)?.message || "A network or server error occurred."}
+          </p>
+          <Button onClick={() => refetch()} className="gap-2 text-xs bg-[#1856b8] text-white">
+            <RefreshCw className="h-3.5 w-3.5" />
+            <span>Retry</span>
+          </Button>
+        </div>
+      ) : (
+        /* Data Table */
+        <div className="bg-white rounded-xl border border-[#e2e8f0] overflow-hidden shadow-2xs">
+          <Table>
+            <TableHeader className="bg-[#f8fafc]/80 border-b border-[#e2e8f0]">
               <TableRow>
-                <TableCell colSpan={6} className="text-center py-12 text-[#64748b] text-xs">
-                  <FolderTree className="h-8 w-8 text-[#cbd5e1] mx-auto mb-2" />
-                  No categories created yet. Click "New Category" to get started.
-                </TableCell>
+                <TableHead className="w-10 pl-4"></TableHead>
+                <TableHead className="text-xs font-semibold text-[#64748b] py-3">Type & Name</TableHead>
+                <TableHead className="text-xs font-semibold text-[#64748b] py-3">Slug & Target</TableHead>
+                <TableHead className="text-xs font-semibold text-[#64748b] py-3">Official Source Link</TableHead>
+                <TableHead className="text-xs font-semibold text-[#64748b] py-3 text-center">Resources</TableHead>
+                <TableHead className="text-xs font-semibold text-[#64748b] py-3 text-center">Visibility</TableHead>
+                <TableHead className="text-xs font-semibold text-[#64748b] py-3 pr-5 text-right">Actions</TableHead>
               </TableRow>
-            ) : (
-              sections?.map(s => (
-                <TableRow
-                  key={s.id}
-                  draggable
-                  onDragStart={() => handleDragStart(s.id)}
-                  onDragOver={(e) => handleDragOver(e, s.id)}
-                  onDrop={handleDrop}
-                  className={`border-[#eef2f6] cursor-grab active:cursor-grabbing transition-colors ${
-                    dragOverId === s.id ? "bg-[#ebf3ff]" : "hover:bg-[#f8fafc]/60"
-                  }`}
-                >
-                  <TableCell className="pl-4 py-3.5">
-                    <GripVertical className="h-4 w-4 text-[#cbd5e1] hover:text-[#64748b]" />
-                  </TableCell>
-                  <TableCell className="py-3.5">
-                    <div className="font-bold text-xs text-[#112542]">{s.name}</div>
-                    <div className="text-[10px] text-[#94a3b8] font-mono mt-0.5">{s.slug}</div>
-                  </TableCell>
-                  <TableCell className="py-3.5 text-xs text-[#64748b] max-w-[260px] truncate">
-                    {s.description || "—"}
-                  </TableCell>
-                  <TableCell className="py-3.5 max-w-[180px]">
-                    {s.officialSourceUrl ? (
-                      <div className="flex items-center gap-1">
-                        <a
-                          href={s.officialSourceUrl}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#0284c7] bg-[#e0f2fe] border border-[#bae6fd] px-2 py-0.5 rounded hover:bg-[#bae6fd] transition-colors truncate max-w-[140px]"
-                          title={s.officialSourceUrl}
-                        >
-                          <ExternalLink className="h-3 w-3 shrink-0" />
-                          <span className="truncate">{s.officialSourceUrl.replace(/^https?:\/\//, "")}</span>
-                        </a>
-                        <button
-                          type="button"
-                          onClick={() => openEdit(s)}
-                          className="text-[#94a3b8] hover:text-[#1856b8] p-0.5 rounded hover:bg-[#f1f5f9]"
-                          title="Change official link"
-                        >
-                          <Edit className="h-3 w-3" />
-                        </button>
-                      </div>
-                    ) : (
-                      <button
-                        type="button"
-                        onClick={() => openEdit(s)}
-                        className="text-[11px] text-[#94a3b8] hover:text-[#1856b8] hover:underline"
-                      >
-                        + Add official link
-                      </button>
-                    )}
-                  </TableCell>
-                  <TableCell className="py-3.5 text-center">
-                    <span className="inline-block text-xs font-semibold px-2 py-0.5 rounded bg-[#f1f5f9] text-[#475569] border border-[#e2e8f0]">
-                      {s.cardCount ?? 0}
-                    </span>
-                  </TableCell>
-                  <TableCell className="py-3.5 text-center">
-                    <Switch 
-                      checked={s.isVisible} 
-                      onCheckedChange={() => handleToggleVisible(s.id, s.isVisible)} 
-                      aria-label="Toggle visibility"
-                    />
-                  </TableCell>
-                  <TableCell className="pr-5 py-3.5 text-right">
-                    <div className="flex items-center justify-end gap-1">
-                      <Button 
-                        variant="ghost" 
-                        size="icon" 
-                        className="h-7 w-7 text-[#64748b] hover:text-[#1856b8] hover:bg-[#ebf3ff]" 
-                        onClick={() => openEdit(s)}
-                        title="Edit Category"
-                        aria-label="Edit Category"
-                      >
-                        <Edit className="h-3.5 w-3.5" />
-                      </Button>
-                      <Button 
-                        variant="ghost" 
-                        size="icon" 
-                        className="h-7 w-7 text-[#64748b] hover:text-red-600 hover:bg-red-50" 
-                        onClick={() => setDeleteId(s.id)}
-                        title="Delete Category"
-                        aria-label="Delete Category"
-                      >
-                        <Trash2 className="h-3.5 w-3.5" />
-                      </Button>
-                    </div>
+            </TableHeader>
+            <TableBody>
+              {filteredSections.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={7} className="text-center py-12 text-[#64748b] text-xs">
+                    <FolderTree className="h-8 w-8 text-[#cbd5e1] mx-auto mb-2" />
+                    No items matched your filter or search.
                   </TableCell>
                 </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
-      </div>
+              ) : (
+                filteredSections.map((sec) => {
+                  const isCat = isCategorySection(sec);
+                  const isDragging = draggingId === sec.id;
+                  const isOver = dragOverId === sec.id;
+                  const livePath = isCat ? `/category/${sec.slug}` : `/subject/${sec.slug}`;
 
-      {/* Mobile Category Cards */}
-      <div className="grid grid-cols-1 gap-3 md:hidden">
-        {sections?.length === 0 ? (
-          <div className="text-center py-12 bg-white rounded-xl border border-[#e2e8f0] p-6 text-[#64748b] text-xs">
-            <FolderTree className="h-8 w-8 text-[#cbd5e1] mx-auto mb-2" />
-            No categories created yet.
-          </div>
-        ) : (
-          sections?.map((s) => (
-            <div key={s.id} className="bg-white border border-[#e2e8f0] rounded-xl p-4 space-y-3 shadow-none">
-              <div className="flex items-start justify-between">
-                <div>
-                  <h3 className="font-bold text-xs sm:text-sm text-[#112542]">{s.name}</h3>
-                  <p className="text-[11px] text-[#64748b] mt-0.5">{s.description || "No description"}</p>
-                  {s.officialSourceUrl && (
-                    <a
-                      href={s.officialSourceUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="inline-flex items-center gap-1 text-[10px] font-semibold text-[#0284c7] bg-[#e0f2fe] border border-[#bae6fd] px-2 py-0.5 rounded hover:bg-[#bae6fd] transition-colors mt-1.5"
+                  return (
+                    <TableRow
+                      key={sec.id}
+                      draggable
+                      onDragStart={() => handleDragStart(sec.id)}
+                      onDragOver={(e) => handleDragOver(e, sec.id)}
+                      onDrop={() => handleDrop(sec.id)}
+                      className={`border-[#eef2f6] transition-colors ${
+                        isDragging ? "opacity-30 bg-[#f8fafc]" : isOver ? "bg-[#ebf3ff]/40" : "hover:bg-[#f8fafc]/60"
+                      }`}
                     >
-                      <ExternalLink className="h-2.5 w-2.5" />
-                      <span>Official Source Link</span>
-                    </a>
-                  )}
-                </div>
-                <span className="text-xs font-semibold px-2 py-0.5 rounded bg-[#f1f5f9] text-[#475569] border border-[#e2e8f0]">
-                  {s.cardCount ?? 0} items
-                </span>
-              </div>
+                      {/* Drag Handle */}
+                      <TableCell className="pl-4 py-3.5">
+                        <GripVertical className="h-4 w-4 text-[#94a3b8] cursor-grab active:cursor-grabbing hover:text-[#112542]" />
+                      </TableCell>
 
-              <div className="flex items-center justify-between pt-2 border-t border-[#eef2f6]">
-                <div className="flex items-center gap-2">
-                  <Switch checked={s.isVisible} onCheckedChange={() => handleToggleVisible(s.id, s.isVisible)} />
-                  <span className="text-xs text-[#64748b]">{s.isVisible ? "Visible" : "Hidden"}</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <Button variant="outline" size="sm" className="h-8 px-2.5 text-xs border-[#e2e8f0] text-[#112542]" onClick={() => openEdit(s)}>
-                    <Edit className="h-3.5 w-3.5 mr-1" /> Edit
-                  </Button>
-                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-red-600 hover:bg-red-50" onClick={() => setDeleteId(s.id)}>
-                    <Trash2 className="h-3.5 w-3.5" />
-                  </Button>
-                </div>
-              </div>
-            </div>
-          ))
-        )}
-      </div>
+                      {/* Name & Description */}
+                      <TableCell className="py-3.5">
+                        <div className="flex items-start gap-2.5">
+                          <div className={`h-8 w-8 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${
+                            isCat 
+                              ? "bg-[#f0f9ff] text-[#0284c7] border border-[#bae6fd]"
+                              : "bg-[#ebf3ff] text-[#1856b8] border border-[#dce8fa]"
+                          }`}>
+                            {isCat ? <Layers className="h-4 w-4" /> : <BookOpen className="h-4 w-4" />}
+                          </div>
+                          <div className="min-w-0 max-w-[260px]">
+                            <div className="flex items-center gap-1.5">
+                              <p className="font-bold text-xs text-[#112542]">{sec.name}</p>
+                              <span className={`text-[9px] font-semibold px-1.5 py-0.2 rounded ${
+                                isCat
+                                  ? "bg-[#f0f9ff] text-[#0369a1] border border-[#bae6fd]"
+                                  : "bg-[#f5f3ff] text-[#6d28d9] border border-[#ede9fe]"
+                              }`}>
+                                {isCat ? "Category" : "Subject"}
+                              </span>
+                            </div>
+                            {sec.description && (
+                              <p className="text-[11px] text-[#64748b] truncate mt-0.5" title={sec.description}>
+                                {sec.description}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      </TableCell>
 
-      {/* Create / Edit Dialog */}
-      <Dialog open={showDialog} onOpenChange={setShowDialog}>
-        <DialogContent className="border-[#e2e8f0] rounded-xl max-w-md">
+                      {/* Slug & Target */}
+                      <TableCell className="py-3.5">
+                        <div className="font-mono text-[11px] text-[#5a6b82] flex items-center gap-1">
+                          <span>{sec.slug}</span>
+                          <a
+                            href={livePath}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-[#1856b8] hover:text-[#124494] p-0.5 rounded hover:bg-[#ebf3ff]"
+                            title={`Open live page: ${livePath}`}
+                          >
+                            <ExternalLink className="h-3 w-3" />
+                          </a>
+                        </div>
+                      </TableCell>
+
+                      {/* Official Source Link */}
+                      <TableCell className="py-3.5">
+                        {sec.officialSourceUrl ? (
+                          <div className="flex items-center gap-1.5">
+                            <a
+                              href={sec.officialSourceUrl}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#0284c7] bg-[#e0f2fe] border border-[#bae6fd] px-2 py-0.5 rounded hover:bg-[#bae6fd] transition-colors truncate max-w-[170px]"
+                              title={sec.officialSourceUrl}
+                            >
+                              <Link2 className="h-3 w-3 shrink-0" />
+                              <span className="truncate">{sec.officialSourceUrl.replace(/^https?:\/\//, "")}</span>
+                            </a>
+                            <button
+                              type="button"
+                              onClick={() => setQuickLinkEdit({ id: sec.id, name: sec.name, url: sec.officialSourceUrl || "" })}
+                              className="p-1 text-[#64748b] hover:text-[#0284c7] rounded hover:bg-[#f1f5f9]"
+                              title="Edit Official Link"
+                            >
+                              <Edit className="h-3 w-3" />
+                            </button>
+                          </div>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={() => setQuickLinkEdit({ id: sec.id, name: sec.name, url: "" })}
+                            className="inline-flex items-center gap-1 text-[10px] text-[#94a3b8] hover:text-[#0284c7] border border-dashed border-[#cbd5e1] hover:border-[#0284c7] px-2 py-0.5 rounded transition-colors"
+                          >
+                            <Plus className="h-2.5 w-2.5" />
+                            <span>Add Official Link</span>
+                          </button>
+                        )}
+                      </TableCell>
+
+                      {/* Resource Count */}
+                      <TableCell className="py-3.5 text-center">
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-[#f1f5f9] text-[#475569]">
+                          {sec.cardCount} resources
+                        </span>
+                      </TableCell>
+
+                      {/* Visibility Toggle */}
+                      <TableCell className="py-3.5 text-center">
+                        <Switch
+                          checked={sec.isVisible}
+                          onCheckedChange={(checked) => {
+                            updateSection.mutate(
+                              { id: sec.id, data: { isVisible: checked } },
+                              { onSuccess: () => invalidate() }
+                            );
+                          }}
+                        />
+                      </TableCell>
+
+                      {/* Actions */}
+                      <TableCell className="py-3.5 pr-5 text-right">
+                        <div className="flex items-center justify-end gap-1">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-7 w-7 text-[#64748b] hover:text-[#1856b8] hover:bg-[#ebf3ff]"
+                            onClick={() => openEdit(sec)}
+                            title="Edit Details"
+                          >
+                            <Edit className="h-3.5 w-3.5" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-7 w-7 text-[#64748b] hover:text-red-600 hover:bg-red-50"
+                            onClick={() => setDeleteId(sec.id)}
+                            title="Delete"
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
+              )}
+            </TableBody>
+          </Table>
+        </div>
+      )}
+
+      {/* Quick Edit Official Link Dialog */}
+      <Dialog open={!!quickLinkEdit} onOpenChange={(open) => !open && setQuickLinkEdit(null)}>
+        <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle className="text-base font-bold text-[#112542]">
-              {editId ? "Edit Category" : "New Category"}
+            <DialogTitle className="text-base font-bold text-[#112542] flex items-center gap-2">
+              <Link2 className="h-4 w-4 text-[#0284c7]" />
+              Official Source Link
             </DialogTitle>
             <DialogDescription className="text-xs text-[#64748b]">
-              Categories group notes by subjects or academic themes on the store
+              Attach or change the official Karnataka Board (KSEAB) or government source link for{" "}
+              <strong className="text-[#112542]">{quickLinkEdit?.name}</strong>.
             </DialogDescription>
           </DialogHeader>
-          <div className="space-y-4 py-2">
+
+          <div className="space-y-3 py-2">
             <div className="space-y-1.5">
-              <Label className="text-xs font-semibold text-[#334155]">Category Name *</Label>
-              <Input 
-                value={form.name} 
-                onChange={e => setForm(f => ({ ...f, name: e.target.value }))} 
-                placeholder="e.g. Physics, Mathematics, Model Papers" 
-                className="h-9 text-xs sm:text-sm bg-[#f8fafc] border-[#e2e8f0] text-[#112542]"
+              <Label className="text-xs font-semibold text-[#112542]">Government / Department Source URL</Label>
+              <Input
+                placeholder="https://kseab.karnataka.gov.in/..."
+                value={quickLinkEdit?.url || ""}
+                onChange={(e) => quickLinkEdit && setQuickLinkEdit({ ...quickLinkEdit, url: e.target.value })}
+                className="h-9 text-xs"
               />
             </div>
-            <div className="space-y-1.5">
-              <Label className="text-xs font-semibold text-[#334155]">Description (Optional)</Label>
-              <Input 
-                value={form.description} 
-                onChange={e => setForm(f => ({ ...f, description: e.target.value }))} 
-                placeholder="Short tagline or student guidance..." 
-                className="h-9 text-xs sm:text-sm bg-[#f8fafc] border-[#e2e8f0] text-[#112542]"
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label className="text-xs font-semibold text-[#334155]">Official Source URL (Optional)</Label>
-              <Input 
-                value={form.officialSourceUrl} 
-                onChange={e => setForm(f => ({ ...f, officialSourceUrl: e.target.value }))} 
-                placeholder="https://kseab.karnataka.gov.in/..." 
-                className="h-9 text-xs sm:text-sm bg-[#f8fafc] border-[#e2e8f0] text-[#112542]"
-              />
-            </div>
-            <div className="flex items-center justify-between p-3 rounded-lg bg-[#f8fafc] border border-[#eef2f6]">
-              <div>
-                <Label className="text-xs font-semibold text-[#112542] block">Visible on Storefront</Label>
-                <p className="text-[11px] text-[#64748b]">Students will see this section on the homepage</p>
-              </div>
-              <Switch checked={form.isVisible} onCheckedChange={v => setForm(f => ({ ...f, isVisible: v }))} />
-            </div>
+            <p className="text-[11px] text-[#64748b]">
+              Students viewing this category/subject will see a verified badge pointing directly to this official resource link.
+            </p>
           </div>
-          <DialogFooter className="gap-2 pt-2">
-            <Button variant="outline" size="sm" className="h-9 text-xs border-[#e2e8f0]" onClick={() => setShowDialog(false)}>
+
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setQuickLinkEdit(null)}
+              disabled={isSavingQuickLink}
+              className="text-xs"
+            >
               Cancel
             </Button>
-            <Button 
+            <Button
               size="sm"
-              onClick={handleSave} 
-              disabled={!form.name.trim() || isSaving}
-              className="h-9 text-xs font-semibold bg-[#2f74de] hover:bg-[#1f63c8] text-white shadow-none"
+              onClick={handleQuickSaveOfficialLink}
+              disabled={isSavingQuickLink}
+              className="text-xs bg-[#0284c7] hover:bg-[#0369a1] text-white"
             >
-              {isSaving ? (
-                <span className="flex items-center gap-1.5">
-                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                  <span>Saving...</span>
-                </span>
-              ) : editId ? (
-                "Save Changes"
-              ) : (
-                "Create Category"
-              )}
+              {isSavingQuickLink ? "Saving..." : "Save Link"}
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
-      {/* Delete Confirmation Alert Dialog */}
-      <AlertDialog open={!!deleteId} onOpenChange={open => !open && setDeleteId(null)}>
-        <AlertDialogContent className="border-[#e2e8f0] rounded-xl">
+      {/* Add / Edit Section Modal */}
+      <Dialog open={showDialog} onOpenChange={setShowDialog}>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="text-base font-bold text-[#112542]">
+              {editId ? "Edit Section / Category" : "Add New Subject or Category"}
+            </DialogTitle>
+            <DialogDescription className="text-xs text-[#64748b]">
+              Configure taxonomy item, description, and official verification source
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4 py-2">
+            <div className="space-y-1.5">
+              <Label className="text-xs font-semibold text-[#112542]">Name *</Label>
+              <Input
+                placeholder="e.g. Model Question Papers (MQP) or Physics"
+                value={form.name}
+                onChange={(e) => setForm({ ...form, name: e.target.value })}
+                className="h-9 text-xs"
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <Label className="text-xs font-semibold text-[#112542]">Description</Label>
+              <Input
+                placeholder="Short description for students browsing this section..."
+                value={form.description}
+                onChange={(e) => setForm({ ...form, description: e.target.value })}
+                className="h-9 text-xs"
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <Label className="text-xs font-semibold text-[#112542]">Official Source Link (URL)</Label>
+              <Input
+                placeholder="https://kseab.karnataka.gov.in/..."
+                value={form.officialSourceUrl}
+                onChange={(e) => setForm({ ...form, officialSourceUrl: e.target.value })}
+                className="h-9 text-xs"
+              />
+              <p className="text-[10px] text-[#64748b]">
+                Optional URL linking to official department question bank or board blueprint
+              </p>
+            </div>
+
+            <div className="flex items-center justify-between p-3 rounded-lg bg-[#f8fafc] border border-[#e2e8f0]">
+              <div>
+                <p className="text-xs font-semibold text-[#112542]">Storefront Visibility</p>
+                <p className="text-[10px] text-[#64748b]">Show in navigation and student browse menus</p>
+              </div>
+              <Switch
+                checked={form.isVisible}
+                onCheckedChange={(checked) => setForm({ ...form, isVisible: checked })}
+              />
+            </div>
+          </div>
+
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowDialog(false)}
+              className="text-xs"
+            >
+              Cancel
+            </Button>
+            <Button
+              size="sm"
+              onClick={handleSave}
+              className="text-xs bg-[#1856b8] hover:bg-[#124494] text-white"
+            >
+              {editId ? "Update Item" : "Create Item"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Confirmation */}
+      <AlertDialog open={!!deleteId} onOpenChange={(open) => !open && setDeleteId(null)}>
+        <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle className="text-base font-bold text-[#112542]">
-              Delete this Category?
-            </AlertDialogTitle>
-            <AlertDialogDescription className="text-xs text-[#64748b] leading-relaxed">
-              This will remove the category from the store. Study resources within this category will NOT be deleted, but will become unassigned.
+            <AlertDialogTitle className="text-base text-[#112542]">Delete section?</AlertDialogTitle>
+            <AlertDialogDescription className="text-xs text-[#64748b]">
+              This will remove this taxonomy section from the store. Any study resources currently linked will remain intact.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="text-xs h-9 border-[#e2e8f0]">Cancel</AlertDialogCancel>
-            <AlertDialogAction 
-              onClick={handleDelete} 
-              className="text-xs h-9 bg-red-600 hover:bg-red-700 text-white"
-            >
-              Delete Category
+            <AlertDialogCancel className="text-xs">Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete} className="text-xs bg-red-600 hover:bg-red-700 text-white">
+              Delete
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

@@ -300,7 +300,7 @@ router.post("/admin/sections", requireAdmin, async (req, res) => {
   }
 });
 
-router.patch("/admin/sections/:id", requireAdmin, async (req, res) => {
+const updateSectionHandler = async (req: any, res: any) => {
   try {
     const id = parseInt(req.params.id);
     if (isNaN(id)) { res.status(400).json({ error: "Invalid id" }); return; }
@@ -319,7 +319,10 @@ router.patch("/admin/sections/:id", requireAdmin, async (req, res) => {
     req.log.error(err);
     res.status(500).json({ error: "Failed to update section" });
   }
-});
+};
+
+router.patch("/admin/sections/:id", requireAdmin, updateSectionHandler);
+router.put("/admin/sections/:id", requireAdmin, updateSectionHandler);
 
 router.delete("/admin/sections/:id", requireAdmin, async (req, res) => {
   try {
@@ -424,7 +427,7 @@ router.post("/admin/cards", requireAdmin, async (req, res) => {
   }
 });
 
-router.patch("/admin/cards/:id", requireAdmin, async (req, res) => {
+const updateCardHandler = async (req: any, res: any) => {
   try {
     const id = parseInt(req.params.id);
     if (isNaN(id)) { res.status(400).json({ error: "Invalid id" }); return; }
@@ -447,7 +450,10 @@ router.patch("/admin/cards/:id", requireAdmin, async (req, res) => {
     req.log.error(err);
     res.status(500).json({ error: "Failed to update card" });
   }
-});
+};
+
+router.patch("/admin/cards/:id", requireAdmin, updateCardHandler);
+router.put("/admin/cards/:id", requireAdmin, updateCardHandler);
 
 router.delete("/admin/cards/:id", requireAdmin, async (req, res) => {
   try {
