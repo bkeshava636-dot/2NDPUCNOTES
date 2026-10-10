@@ -36,6 +36,9 @@ const AdminCards = lazy(() => import("@/pages/admin/cards"));
 const AdminCardNew = lazy(() => import("@/pages/admin/card-new"));
 const AdminCardEdit = lazy(() => import("@/pages/admin/card-edit"));
 const AdminOrders = lazy(() => import("@/pages/admin/orders"));
+const AdminCustomers = lazy(() => import("@/pages/admin/customers"));
+const AdminDownloads = lazy(() => import("@/pages/admin/downloads"));
+const AdminSettings = lazy(() => import("@/pages/admin/settings"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -69,6 +72,9 @@ function AdminRoutes() {
             <Route path="/admin/cards/new" component={AdminCardNew} />
             <Route path="/admin/cards/:id/edit" component={AdminCardEdit} />
             <Route path="/admin/orders" component={AdminOrders} />
+            <Route path="/admin/customers" component={AdminCustomers} />
+            <Route path="/admin/downloads" component={AdminDownloads} />
+            <Route path="/admin/settings" component={AdminSettings} />
             <Route component={NotFound} />
           </Switch>
         </Suspense>

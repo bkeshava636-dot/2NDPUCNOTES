@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "wouter";
-import { useGetAdminStats, getGetAdminStatsQueryKey } from "@workspace/api-client-react";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
+import { fetchAdminStats, AdminStatsResponse } from "@/lib/admin-api";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { formatRupees } from "@/lib/utils";
 import { 
@@ -10,24 +10,30 @@ import {
   Files, 
   FolderTree, 
   Users,
-  Plus,
+  DownloadCloud,
+  PlusCircle,
   ArrowRight,
   RefreshCw,
   Copy,
   Check,
-  AlertCircle
+  AlertCircle,
+  ExternalLink,
+  ShieldCheck,
+  Clock,
+  Sparkles,
+  ChevronRight
 } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function AdminDashboard() {
-  const { data: stats, isLoading, isError, error, isFetching, refetch } = useGetAdminStats({
-    query: {
-      queryKey: getGetAdminStatsQueryKey(),
-      retry: 1,
-    },
+  const { data: stats, isLoading, isError, error, isFetching, refetch } = useQuery<AdminStatsResponse>({
+    queryKey: ["admin", "stats"],
+    queryFn: fetchAdminStats,
+    staleTime: 60 * 1000, // 1 minute
   });
+
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
   const handleCopyId = (id: string) => {
@@ -36,255 +42,301 @@ export default function AdminDashboard() {
     setTimeout(() => setCopiedId(null), 2000);
   };
 
-  if (isLoading) {
-    return (
-      <div className="space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="space-y-1">
-            <Skeleton className="h-8 w-48" />
-            <Skeleton className="h-4 w-72" />
-          </div>
-          <div className="flex gap-2">
-            <Skeleton className="h-9 w-28" />
-            <Skeleton className="h-9 w-32" />
-          </div>
-        </div>
-
-        {/* Skeleton Stat Cards */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5">
-          {[1, 2, 3, 4, 5].map((i) => (
-            <Skeleton key={i} className="h-24 rounded-xl" />
-          ))}
-        </div>
-
-        {/* Skeleton Quick Actions */}
-        <Skeleton className="h-20 rounded-xl" />
-
-        {/* Skeleton Table */}
-        <Skeleton className="h-80 rounded-xl" />
-      </div>
-    );
-  }
-
-  if (isError || !stats) {
-    return (
-      <div className="space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-[#112542] tracking-tight">Dashboard Overview</h1>
-            <p className="text-[#5a6b82] text-xs sm:text-sm mt-0.5">Real-time summary of your store's sales and study materials</p>
-          </div>
-        </div>
-
-        <Card className="rounded-xl border border-red-200 bg-red-50/50 p-6 sm:p-8 text-center max-w-lg mx-auto">
-          <div className="h-12 w-12 rounded-full bg-red-100 text-red-600 mx-auto flex items-center justify-center mb-4">
-            <AlertCircle className="h-6 w-6" />
-          </div>
-          <h3 className="text-base font-bold text-[#112542]">Failed to load dashboard metrics</h3>
-          <p className="text-xs text-[#64748b] mt-1.5 mb-5 max-w-sm mx-auto">
-            {(error as any)?.message || "A network or server error occurred while retrieving real-time stats."}
-          </p>
-          <Button
-            onClick={() => refetch()}
-            disabled={isFetching}
-            className="gap-2 text-xs bg-[#2f74de] hover:bg-[#1f63c8] text-white"
-          >
-            <RefreshCw className={`h-3.5 w-3.5 ${isFetching ? "animate-spin" : ""}`} />
-            <span>Retry Connection</span>
-          </Button>
-        </Card>
-      </div>
-    );
-  }
-
   const statCards = [
     {
       title: "Total Revenue",
-      value: formatRupees(stats.totalRevenuePaise),
+      value: stats ? formatRupees(stats.totalRevenuePaise) : "₹0",
+      description: "Successful Razorpay checkouts",
       icon: IndianRupee,
-      iconWrap: "bg-[#eaf5ec] text-[#167035] border-[#d7ecdc]",
+      color: "text-emerald-600 bg-emerald-50 border-emerald-100",
+      accent: "border-l-emerald-500",
     },
     {
-      title: "Total Orders",
-      value: stats.totalOrders.toLocaleString("en-IN"),
+      title: "Paid Orders",
+      value: stats ? stats.totalOrders.toLocaleString() : "0",
+      description: "Delivered digital purchases",
       icon: ShoppingCart,
-      iconWrap: "bg-[#ebf3ff] text-[#1856b8] border-[#dce8fa]",
+      color: "text-blue-600 bg-blue-50 border-blue-100",
+      accent: "border-l-blue-500",
     },
     {
-      title: "Total Resources",
-      value: stats.totalCards.toLocaleString("en-IN"),
+      title: "Study Resources",
+      value: stats ? stats.totalCards.toLocaleString() : "0",
+      description: "Active notes, papers & blueprints",
       icon: Files,
-      iconWrap: "bg-[#fdece9] text-[#b83226] border-[#f9dcd7]",
+      color: "text-indigo-600 bg-indigo-50 border-indigo-100",
+      accent: "border-l-indigo-500",
     },
     {
-      title: "Total Customers",
-      value: stats.totalCustomers.toLocaleString("en-IN"),
-      icon: Users,
-      iconWrap: "bg-[#fdf5e2] text-[#9e5e00] border-[#f9ecc8]",
-    },
-    {
-      title: "Active Sections",
-      value: stats.totalSections.toLocaleString("en-IN"),
+      title: "Categories & Subjects",
+      value: stats ? stats.totalSections.toLocaleString() : "0",
+      description: "Configured store taxonomies",
       icon: FolderTree,
-      iconWrap: "bg-[#eaf2fd] text-[#0284c7] border-[#dce7f7]",
+      color: "text-purple-600 bg-purple-50 border-purple-100",
+      accent: "border-l-purple-500",
+    },
+    {
+      title: "Student Customers",
+      value: stats ? stats.totalCustomers.toLocaleString() : "0",
+      description: "Unique registered buyers",
+      icon: Users,
+      color: "text-amber-600 bg-amber-50 border-amber-100",
+      accent: "border-l-amber-500",
+    },
+    {
+      title: "Total Downloads",
+      value: stats?.totalDownloads !== undefined ? stats.totalDownloads.toLocaleString() : "0",
+      description: "Audited material accesses",
+      icon: DownloadCloud,
+      color: "text-teal-600 bg-teal-50 border-teal-100",
+      accent: "border-l-teal-500",
+    },
+  ];
+
+  const quickActions = [
+    {
+      title: "Create Study Resource",
+      description: "Upload PDF or link external Google Drive files with pricing and subject classification",
+      href: "/admin/cards/new",
+      icon: PlusCircle,
+      btnLabel: "Add Resource",
+      primary: true,
+    },
+    {
+      title: "Manage Resources",
+      description: "Filter notes, update official blueprints, edit prices, and manage answer key links",
+      href: "/admin/cards",
+      icon: Files,
+      btnLabel: "View All",
+    },
+    {
+      title: "Subjects & Categories",
+      description: "Organize curricula, official source links, and reorder display priority",
+      href: "/admin/sections",
+      icon: FolderTree,
+      btnLabel: "Manage",
+    },
+    {
+      title: "Orders & Transactions",
+      description: "View customer details, Razorpay transaction IDs, and order completion receipts",
+      href: "/admin/orders",
+      icon: ShoppingCart,
+      btnLabel: "Orders",
+    },
+    {
+      title: "Students Directory",
+      description: "Search registered students by phone or name and review total spend",
+      href: "/admin/customers",
+      icon: Users,
+      btnLabel: "Students",
+    },
+    {
+      title: "Downloads Audit",
+      description: "Monitor IP logs, timestamps, and device data for security and compliance",
+      href: "/admin/downloads",
+      icon: DownloadCloud,
+      btnLabel: "Audit Log",
     },
   ];
 
   return (
-    <div className="space-y-6">
-      {/* Top Banner Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div className="space-y-7 pb-10">
+      {/* Top Header Banner */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-5 sm:p-6 rounded-2xl border border-[#e2e8f0] shadow-xs">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-[#112542] tracking-tight">Dashboard Overview</h1>
-          <p className="text-[#5a6b82] text-xs sm:text-sm mt-0.5">Real-time summary of your store's sales and study materials</p>
+          <div className="flex items-center gap-2">
+            <h1 className="text-2xl sm:text-3xl font-bold text-[#112542] tracking-tight">
+              Executive Dashboard
+            </h1>
+            <span className="inline-flex items-center gap-1 text-[11px] font-semibold bg-emerald-50 text-emerald-700 px-2.5 py-0.5 rounded-full border border-emerald-200">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+              Live Store
+            </span>
+          </div>
+          <p className="text-[#5a6b82] text-xs sm:text-sm mt-1">
+            Real-time analytics, revenue metrics, and inventory performance for 2nd PUC Notes
+          </p>
         </div>
-        <div className="flex items-center gap-2">
+
+        <div className="flex items-center gap-2.5 flex-wrap">
           <Button
             variant="outline"
             size="sm"
-            className="h-9 gap-1.5 text-xs font-medium border-[#e2e8f0] text-[#5a6b82] hover:text-[#112542] hover:bg-white"
             onClick={() => refetch()}
             disabled={isFetching}
-            title="Refresh metrics"
+            className="h-9 gap-1.5 text-xs text-[#5a6b82] hover:text-[#112542] border-[#e2e8f0]"
           >
-            <RefreshCw className={`h-3.5 w-3.5 ${isFetching ? "animate-spin" : ""}`} />
-            <span>Refresh</span>
+            <RefreshCw className={`h-3.5 w-3.5 ${isFetching ? "animate-spin text-[#1856b8]" : ""}`} />
+            <span>{isFetching ? "Refreshing..." : "Refresh"}</span>
           </Button>
+
           <Link href="/admin/cards/new">
-            <Button
-              size="sm"
-              className="h-9 gap-1.5 text-xs font-semibold bg-[#2f74de] hover:bg-[#1f63c8] text-white shadow-none transition-colors"
-            >
-              <Plus className="h-4 w-4" />
+            <Button size="sm" className="h-9 gap-1.5 text-xs bg-[#1856b8] hover:bg-[#124494] text-white shadow-2xs">
+              <PlusCircle className="h-3.5 w-3.5" />
               <span>Add Resource</span>
             </Button>
           </Link>
         </div>
       </div>
 
-      {/* Compact Stat Cards Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
-        {statCards.map((stat, idx) => {
-          const Icon = stat.icon;
+      {/* Non-blocking Error Banner if stats fail */}
+      {isError && (
+        <div className="flex items-center justify-between p-4 rounded-xl border border-amber-200 bg-amber-50 text-amber-900 text-xs sm:text-sm">
+          <div className="flex items-center gap-2.5">
+            <AlertCircle className="h-5 w-5 text-amber-600 shrink-0" />
+            <div>
+              <p className="font-semibold">Unable to refresh live statistics right now</p>
+              <p className="text-amber-700 text-xs mt-0.5">
+                {(error as any)?.message || "A network or database latency timeout occurred. All dashboard tools remain fully usable."}
+              </p>
+            </div>
+          </div>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => refetch()}
+            className="h-8 text-xs bg-white border-amber-300 text-amber-900 hover:bg-amber-100 shrink-0"
+          >
+            Retry Stats
+          </Button>
+        </div>
+      )}
+
+      {/* Metric KPI Cards */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
+        {statCards.map((card) => {
+          const Icon = card.icon;
           return (
-            <Card key={idx} className="rounded-xl border-[#e2e8f0] shadow-none bg-white hover:border-[#cbd5e1] transition-colors">
-              <CardContent className="p-4">
+            <Card 
+              key={card.title} 
+              className={`rounded-xl border border-[#e2e8f0] bg-white shadow-2xs hover:shadow-xs transition-shadow border-l-4 ${card.accent}`}
+            >
+              <CardContent className="p-4 sm:p-5">
                 <div className="flex items-center justify-between gap-2 mb-2">
-                  <span className="text-xs font-medium text-[#64748b] truncate">{stat.title}</span>
-                  <div className={`h-7 w-7 rounded-lg border flex items-center justify-center shrink-0 ${stat.iconWrap}`}>
+                  <span className="text-[11px] font-semibold text-[#64748b] truncate uppercase tracking-wider">
+                    {card.title}
+                  </span>
+                  <div className={`h-7 w-7 rounded-lg border flex items-center justify-center shrink-0 ${card.color}`}>
                     <Icon className="h-3.5 w-3.5" />
                   </div>
                 </div>
-                <div className="text-xl sm:text-2xl font-bold text-[#112542] tracking-tight truncate">
-                  {stat.value}
-                </div>
+
+                {isLoading ? (
+                  <Skeleton className="h-7 w-20 my-1" />
+                ) : (
+                  <div className="text-xl sm:text-2xl font-bold text-[#112542] tracking-tight">
+                    {card.value}
+                  </div>
+                )}
+
+                <p className="text-[10px] sm:text-[11px] text-[#94a3b8] mt-1 truncate">
+                  {card.description}
+                </p>
               </CardContent>
             </Card>
           );
         })}
       </div>
 
-      {/* Quick Action Hub */}
-      <Card className="rounded-xl border-[#e2e8f0] shadow-none bg-white">
-        <CardHeader className="pb-3 pt-4 px-5 border-b border-[#eef2f6]">
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle className="text-sm font-bold text-[#112542]">Quick Actions</CardTitle>
-              <CardDescription className="text-xs text-[#64748b]">Jump straight into routine administrative tasks</CardDescription>
+      {/* Quick Action Navigation Grid */}
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <h2 className="text-base sm:text-lg font-bold text-[#112542] tracking-tight">
+            Quick Actions & Management
+          </h2>
+          <span className="text-xs text-[#64748b]">Core Administrative Hub</span>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
+          {quickActions.map((action) => {
+            const Icon = action.icon;
+            return (
+              <div 
+                key={action.title}
+                className="group relative flex flex-col justify-between p-4 sm:p-5 rounded-xl border border-[#e2e8f0] bg-white hover:border-[#cbd5e1] hover:shadow-xs transition-all"
+              >
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="h-8 w-8 rounded-lg bg-[#f1f5f9] text-[#1856b8] group-hover:bg-[#ebf3ff] flex items-center justify-center transition-colors">
+                      <Icon className="h-4 w-4" />
+                    </div>
+                    <Link href={action.href}>
+                      <span className="text-xs font-semibold text-[#1856b8] group-hover:underline flex items-center gap-1 cursor-pointer">
+                        {action.btnLabel}
+                        <ChevronRight className="h-3 w-3" />
+                      </span>
+                    </Link>
+                  </div>
+                  <h3 className="font-bold text-sm text-[#112542] group-hover:text-[#1856b8] transition-colors">
+                    {action.title}
+                  </h3>
+                  <p className="text-xs text-[#64748b] mt-1 leading-relaxed">
+                    {action.description}
+                  </p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Recent Orders & Purchases Section */}
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-base sm:text-lg font-bold text-[#112542] tracking-tight">
+              Recent Transactions & Orders
+            </h2>
+            <p className="text-xs text-[#64748b]">Latest student purchases and download access fulfillments</p>
+          </div>
+          <Link href="/admin/orders">
+            <Button variant="ghost" size="sm" className="h-8 text-xs font-semibold text-[#1856b8] hover:text-[#124494] gap-1">
+              <span>View All Orders</span>
+              <ArrowRight className="h-3.5 w-3.5" />
+            </Button>
+          </Link>
+        </div>
+
+        <Card className="rounded-xl border border-[#e2e8f0] bg-white shadow-2xs overflow-hidden">
+          {isLoading ? (
+            <div className="p-6 space-y-3">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <Skeleton key={i} className="h-10 w-full" />
+              ))}
             </div>
-          </div>
-        </CardHeader>
-        <CardContent className="p-4 sm:p-5">
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-            <Link href="/admin/cards/new" className="block">
-              <div className="p-3 rounded-lg border border-[#e2e8f0] bg-[#f8fafc] hover:bg-[#ebf3ff] hover:border-[#dce8fa] hover:text-[#1856b8] transition-all text-left group cursor-pointer">
-                <div className="flex items-center gap-2 mb-1 text-[#1856b8]">
-                  <Plus className="h-4 w-4" />
-                  <span className="text-xs font-bold text-[#112542] group-hover:text-[#1856b8]">New Resource</span>
-                </div>
-                <p className="text-[11px] text-[#64748b] leading-tight">Create & upload study note</p>
-              </div>
-            </Link>
-
-            <Link href="/admin/cards" className="block">
-              <div className="p-3 rounded-lg border border-[#e2e8f0] bg-[#f8fafc] hover:bg-[#ebf3ff] hover:border-[#dce8fa] hover:text-[#1856b8] transition-all text-left group cursor-pointer">
-                <div className="flex items-center gap-2 mb-1 text-[#1856b8]">
-                  <Files className="h-4 w-4" />
-                  <span className="text-xs font-bold text-[#112542] group-hover:text-[#1856b8]">All Resources</span>
-                </div>
-                <p className="text-[11px] text-[#64748b] leading-tight">Edit, search & toggle visibility</p>
-              </div>
-            </Link>
-
-            <Link href="/admin/sections" className="block">
-              <div className="p-3 rounded-lg border border-[#e2e8f0] bg-[#f8fafc] hover:bg-[#ebf3ff] hover:border-[#dce8fa] hover:text-[#1856b8] transition-all text-left group cursor-pointer">
-                <div className="flex items-center gap-2 mb-1 text-[#0284c7]">
-                  <FolderTree className="h-4 w-4" />
-                  <span className="text-xs font-bold text-[#112542] group-hover:text-[#0284c7]">Categories</span>
-                </div>
-                <p className="text-[11px] text-[#64748b] leading-tight">Reorder sections & branches</p>
-              </div>
-            </Link>
-
-            <Link href="/admin/orders" className="block">
-              <div className="p-3 rounded-lg border border-[#e2e8f0] bg-[#f8fafc] hover:bg-[#ebf3ff] hover:border-[#dce8fa] hover:text-[#1856b8] transition-all text-left group cursor-pointer">
-                <div className="flex items-center gap-2 mb-1 text-[#167035]">
-                  <ShoppingCart className="h-4 w-4" />
-                  <span className="text-xs font-bold text-[#112542] group-hover:text-[#167035]">Order History</span>
-                </div>
-                <p className="text-[11px] text-[#64748b] leading-tight">Inspect customer transactions</p>
-              </div>
-            </Link>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Recent Orders Card */}
-      <Card className="rounded-xl border-[#e2e8f0] shadow-none bg-white overflow-hidden">
-        <CardHeader className="pb-3 pt-4 px-5 border-b border-[#eef2f6]">
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle className="text-sm sm:text-base font-bold text-[#112542]">Recent Transactions</CardTitle>
-              <CardDescription className="text-xs text-[#64748b]">Latest 10 orders recorded across the store</CardDescription>
+          ) : !stats || stats.recentOrders.length === 0 ? (
+            <div className="p-12 text-center">
+              <ShoppingCart className="h-10 w-10 text-[#cbd5e1] mx-auto mb-3" />
+              <p className="font-semibold text-sm text-[#112542]">No recent orders yet</p>
+              <p className="text-xs text-[#64748b] mt-1">Paid customer checkouts will automatically appear here.</p>
             </div>
-            <Link href="/admin/orders">
-              <Button variant="ghost" size="sm" className="h-8 gap-1 text-xs text-[#1856b8] hover:text-[#0b57d0] hover:bg-[#ebf3ff]">
-                <span>View All Orders</span>
-                <ArrowRight className="h-3.5 w-3.5" />
-              </Button>
-            </Link>
-          </div>
-        </CardHeader>
-        <CardContent className="p-0">
-          {stats.recentOrders && stats.recentOrders.length > 0 ? (
+          ) : (
             <div className="overflow-x-auto">
               <Table>
-                <TableHeader className="bg-[#f8fafc]">
-                  <TableRow className="border-[#eef2f6] hover:bg-transparent">
-                    <TableHead className="text-xs font-semibold text-[#64748b] py-3 pl-5">Order ID</TableHead>
-                    <TableHead className="text-xs font-semibold text-[#64748b] py-3">Customer</TableHead>
-                    <TableHead className="text-xs font-semibold text-[#64748b] py-3">Resource</TableHead>
-                    <TableHead className="text-xs font-semibold text-[#64748b] py-3">Amount</TableHead>
-                    <TableHead className="text-xs font-semibold text-[#64748b] py-3">Status</TableHead>
-                    <TableHead className="text-xs font-semibold text-[#64748b] py-3 pr-5 text-right">Date</TableHead>
+                <TableHeader className="bg-[#f8fafc]/80 border-b border-[#e2e8f0]">
+                  <TableRow>
+                    <TableHead className="text-xs font-semibold text-[#64748b]">Order ID</TableHead>
+                    <TableHead className="text-xs font-semibold text-[#64748b]">Student / Customer</TableHead>
+                    <TableHead className="text-xs font-semibold text-[#64748b]">Purchased Resource</TableHead>
+                    <TableHead className="text-xs font-semibold text-[#64748b]">Amount</TableHead>
+                    <TableHead className="text-xs font-semibold text-[#64748b]">Status</TableHead>
+                    <TableHead className="text-xs font-semibold text-[#64748b]">Date & Time</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {stats.recentOrders.map((order) => {
-                    const isCopied = copiedId === order.id;
+                    const isPaid = order.status === "paid";
                     return (
-                      <TableRow key={order.id} className="border-[#eef2f6] hover:bg-[#f8fafc]/60 transition-colors">
-                        <TableCell className="pl-5 py-3.5">
+                      <TableRow key={order.id} className="hover:bg-[#f8fafc]/60">
+                        <TableCell className="font-mono text-xs text-[#5a6b82]">
                           <div className="flex items-center gap-1.5">
-                            <span className="font-mono text-xs text-[#64748b]">{order.id.slice(0, 8)}…</span>
+                            <span className="truncate max-w-[100px]">{order.id}</span>
                             <button
-                              type="button"
                               onClick={() => handleCopyId(order.id)}
-                              className="p-1 text-[#94a3b8] hover:text-[#1856b8] rounded hover:bg-[#ebf3ff] transition-colors"
-                              title="Copy full Order ID"
-                              aria-label="Copy Order ID"
+                              className="text-[#94a3b8] hover:text-[#112542] p-1 rounded-sm hover:bg-[#f1f5f9]"
+                              title="Copy Order ID"
                             >
-                              {isCopied ? (
+                              {copiedId === order.id ? (
                                 <Check className="h-3 w-3 text-emerald-600" />
                               ) : (
                                 <Copy className="h-3 w-3" />
@@ -292,49 +344,37 @@ export default function AdminDashboard() {
                             </button>
                           </div>
                         </TableCell>
-                        <TableCell className="py-3.5">
-                          <div className="font-semibold text-xs text-[#112542] leading-tight">{order.customerName}</div>
-                          <div className="text-[11px] text-[#64748b] mt-0.5 flex items-center gap-2">
-                            <span>{order.customerPhone}</span>
-                            {order.customerEmail && (
-                              <span className="truncate max-w-[120px] text-[#94a3b8]">{order.customerEmail}</span>
-                            )}
+                        <TableCell>
+                          <div className="text-xs font-medium text-[#112542]">{order.customerName}</div>
+                          <div className="text-[11px] text-[#64748b] font-mono">{order.customerPhone}</div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="text-xs font-medium text-[#112542] max-w-[220px] truncate" title={order.cardTitle}>
+                            {order.cardTitle || "Resource #" + order.cardId}
                           </div>
                         </TableCell>
-                        <TableCell className="py-3.5 max-w-[240px]">
-                          <div className="font-medium text-xs text-[#112542] truncate" title={order.cardTitle}>
-                            {order.cardTitle || "—"}
-                          </div>
+                        <TableCell className="text-xs font-bold text-[#112542]">
+                          {formatRupees(order.amountPaise)}
                         </TableCell>
-                        <TableCell className="py-3.5">
-                          {order.amountPaise === 0 ? (
-                            <span className="bg-[#eaf5ec] text-[#167035] border border-[#d7ecdc] text-[11px] font-semibold px-2 py-0.5 rounded">
-                              Free
-                            </span>
-                          ) : (
-                            <span className="font-bold text-xs text-[#112542]">
-                              {formatRupees(order.amountPaise)}
-                            </span>
-                          )}
-                        </TableCell>
-                        <TableCell className="py-3.5">
+                        <TableCell>
                           <span
-                            className={`inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium border ${
-                              order.status === "paid"
-                                ? "bg-[#eaf5ec] text-[#167035] border-[#d7ecdc]"
+                            className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold border ${
+                              isPaid
+                                ? "bg-emerald-50 text-emerald-700 border-emerald-200"
                                 : order.status === "pending"
-                                ? "bg-[#fdf5e2] text-[#9e5e00] border-[#f9ecc8]"
+                                ? "bg-amber-50 text-amber-700 border-amber-200"
                                 : "bg-red-50 text-red-700 border-red-200"
                             }`}
                           >
-                            {order.status}
+                            {order.status.toUpperCase()}
                           </span>
                         </TableCell>
-                        <TableCell className="pr-5 py-3.5 text-right text-xs text-[#64748b]">
+                        <TableCell className="text-xs text-[#64748b] whitespace-nowrap">
                           {new Date(order.createdAt).toLocaleDateString("en-IN", {
                             day: "numeric",
                             month: "short",
-                            year: "numeric"
+                            hour: "2-digit",
+                            minute: "2-digit",
                           })}
                         </TableCell>
                       </TableRow>
@@ -343,14 +383,9 @@ export default function AdminDashboard() {
                 </TableBody>
               </Table>
             </div>
-          ) : (
-            <div className="text-center py-12 text-[#64748b] text-xs">
-              <ShoppingCart className="h-8 w-8 text-[#cbd5e1] mx-auto mb-2" />
-              No orders recorded yet.
-            </div>
           )}
-        </CardContent>
-      </Card>
+        </Card>
+      </div>
     </div>
   );
 }

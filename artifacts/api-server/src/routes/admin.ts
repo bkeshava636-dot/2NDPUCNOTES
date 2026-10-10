@@ -1,8 +1,9 @@
 import { Router } from "express";
 import multer from "multer";
+import crypto from "crypto";
 import { v4 as uuidv4 } from "uuid";
 import { db } from "@workspace/db";
-import { sectionsTable, cardsTable, ordersTable } from "@workspace/db";
+import { sectionsTable, cardsTable, ordersTable, customersTable, downloadsTable } from "@workspace/db";
 import { eq, sql, asc, desc, and } from "drizzle-orm";
 import { supabase, BUCKET_NOTES, BUCKET_IMAGES } from "../supabase.js";
 import { ensureDefaultSections, DEFAULT_CORE_SECTIONS } from "../lib/ensure-sections.js";
@@ -27,11 +28,47 @@ if (!ADMIN_USERNAME || !ADMIN_PASSWORD) {
     "ADMIN_USERNAME and ADMIN_PASSWORD must be set in .env"
   );
 }
+
+// In-memory cache for fast lookup & explicit logout invalidation
 const sessions = new Set<string>();
+const revokedSessions = new Set<string>();
+
+function signAdminToken(timestamp: number): string {
+  const data = `adm_${timestamp}`;
+  const hmac = crypto.createHmac("sha256", ADMIN_PASSWORD!).update(data).digest("hex");
+  return `adm_${timestamp}_${hmac}`;
+}
+
+function isValidAdminToken(token: string): boolean {
+  if (!token) return false;
+  if (revokedSessions.has(token)) return false;
+  if (sessions.has(token)) return true;
+
+  if (token.startsWith("adm_")) {
+    const parts = token.split("_");
+    if (parts.length === 3) {
+      const ts = parseInt(parts[1], 10);
+      if (isNaN(ts)) return false;
+      // 7 days expiration
+      const maxAgeMs = 7 * 24 * 60 * 60 * 1000;
+      if (Date.now() - ts > maxAgeMs) return false;
+      const expected = signAdminToken(ts);
+      try {
+        if (crypto.timingSafeEqual(Buffer.from(token), Buffer.from(expected))) {
+          sessions.add(token);
+          return true;
+        }
+      } catch {
+        return false;
+      }
+    }
+  }
+  return false;
+}
 
 function requireAdmin(req: any, res: any, next: any) {
   const token = req.headers["x-admin-token"] as string;
-  if (!token || !sessions.has(token)) {
+  if (!token || !isValidAdminToken(token)) {
     res.status(401).json({ error: "Unauthorized" });
     return;
   }
@@ -57,7 +94,7 @@ router.post("/admin/login", async (req, res) => {
     return;
   }
 
-  const token = uuidv4();
+  const token = signAdminToken(Date.now());
   sessions.add(token);
 
   res.json({
@@ -69,13 +106,16 @@ router.post("/admin/login", async (req, res) => {
 
 router.post("/admin/logout", requireAdmin, (req, res) => {
   const token = req.headers["x-admin-token"] as string;
-  sessions.delete(token);
+  if (token) {
+    sessions.delete(token);
+    revokedSessions.add(token);
+  }
   res.json({ success: true });
 });
 
 router.get("/admin/me", (req, res) => {
   const token = req.headers["x-admin-token"] as string;
-  if (!token || !sessions.has(token)) {
+  if (!token || !isValidAdminToken(token)) {
     res.status(401).json({ error: "Not authenticated" });
     return;
   }
@@ -138,6 +178,15 @@ router.get("/admin/stats", requireAdmin, async (req, res) => {
         return 0;
       });
 
+    const downloadsPromise = db
+      .select({ count: sql<number>`count(*)::int` })
+      .from(downloadsTable)
+      .then((rows) => rows[0]?.count ?? 0)
+      .catch((err) => {
+        req.log?.error?.(err, "Failed to query downloads count");
+        return 0;
+      });
+
     const recentOrdersPromise = db
       .select({ order: ordersTable, cardTitle: cardsTable.title })
       .from(ordersTable)
@@ -149,13 +198,14 @@ router.get("/admin/stats", requireAdmin, async (req, res) => {
         return [];
       });
 
-    const [totalRevenuePaise, totalOrders, totalCards, totalSections, totalCustomers, recentOrders] =
+    const [totalRevenuePaise, totalOrders, totalCards, totalSections, totalCustomers, totalDownloads, recentOrders] =
       await Promise.all([
         revenuePromise,
         ordersPromise,
         cardsPromise,
         sectionsPromise,
         customersPromise,
+        downloadsPromise,
         recentOrdersPromise,
       ]);
 
@@ -165,6 +215,7 @@ router.get("/admin/stats", requireAdmin, async (req, res) => {
       totalCards,
       totalSections,
       totalCustomers,
+      totalDownloads,
       recentOrders: (recentOrders || []).map(({ order, cardTitle }: any) => ({
         id: order.id,
         cardId: order.cardId,
@@ -450,6 +501,142 @@ router.get("/admin/orders", requireAdmin, async (req, res) => {
   } catch (err: any) {
     req.log?.error?.(err, "Failed to fetch orders");
     res.json({ orders: [], total: 0, page: 1 });
+  }
+});
+
+// ── Customers ──────────────────────────────────────────────────────────────
+
+router.get("/admin/customers", requireAdmin, async (req, res) => {
+  try {
+    const page = Math.max(1, parseInt((req.query.page as string) || "1") || 1);
+    const limit = Math.min(100, Math.max(1, parseInt((req.query.limit as string) || "20") || 20));
+    const search = ((req.query.search as string) || "").trim();
+    const offset = (page - 1) * limit;
+
+    let searchCondition = undefined;
+    if (search) {
+      const pattern = `%${search}%`;
+      searchCondition = sql`(${customersTable.fullName} ILIKE ${pattern} OR ${customersTable.phone} ILIKE ${pattern} OR ${customersTable.email} ILIKE ${pattern})`;
+    }
+
+    const [totalRow] = await db
+      .select({ count: sql<number>`count(*)::int` })
+      .from(customersTable)
+      .where(searchCondition)
+      .catch(() => [{ count: 0 }]);
+
+    const customers = await db
+      .select()
+      .from(customersTable)
+      .where(searchCondition)
+      .orderBy(desc(customersTable.createdAt))
+      .limit(limit)
+      .offset(offset)
+      .catch(() => []);
+
+    const customerIds = customers.map((c) => c.id);
+    let orderStatsMap: Record<number, { paidOrdersCount: number; totalSpentPaise: number }> = {};
+
+    if (customerIds.length > 0) {
+      const orderStats = await db
+        .select({
+          customerId: ordersTable.customerId,
+          paidOrdersCount: sql<number>`count(case when ${ordersTable.status} = 'paid' then 1 end)::int`,
+          totalSpentPaise: sql<number>`coalesce(sum(case when ${ordersTable.status} = 'paid' then ${ordersTable.amountPaise} else 0 end), 0)::int`,
+        })
+        .from(ordersTable)
+        .where(sql`${ordersTable.customerId} IN ${customerIds}`)
+        .groupBy(ordersTable.customerId)
+        .catch(() => []);
+
+      for (const stat of orderStats) {
+        if (stat.customerId) {
+          orderStatsMap[stat.customerId] = {
+            paidOrdersCount: stat.paidOrdersCount,
+            totalSpentPaise: stat.totalSpentPaise,
+          };
+        }
+      }
+    }
+
+    res.json({
+      customers: customers.map((c) => ({
+        id: c.id,
+        fullName: c.fullName,
+        phone: c.phone,
+        email: c.email,
+        createdAt: c.createdAt,
+        paidOrdersCount: orderStatsMap[c.id]?.paidOrdersCount ?? 0,
+        totalSpentPaise: orderStatsMap[c.id]?.totalSpentPaise ?? 0,
+      })),
+      total: totalRow?.count ?? 0,
+      page,
+      limit,
+    });
+  } catch (err: any) {
+    req.log?.error?.(err, "Failed to fetch customers");
+    res.json({ customers: [], total: 0, page: 1, limit: 20 });
+  }
+});
+
+// ── Downloads Audit ────────────────────────────────────────────────────────
+
+router.get("/admin/downloads", requireAdmin, async (req, res) => {
+  try {
+    const page = Math.max(1, parseInt((req.query.page as string) || "1") || 1);
+    const limit = Math.min(100, Math.max(1, parseInt((req.query.limit as string) || "20") || 20));
+    const search = ((req.query.search as string) || "").trim();
+    const offset = (page - 1) * limit;
+
+    let searchCondition = undefined;
+    if (search) {
+      const pattern = `%${search}%`;
+      searchCondition = sql`(${downloadsTable.orderId} ILIKE ${pattern} OR ${cardsTable.title} ILIKE ${pattern} OR ${ordersTable.customerName} ILIKE ${pattern} OR ${ordersTable.customerPhone} ILIKE ${pattern})`;
+    }
+
+    const [totalRow] = await db
+      .select({ count: sql<number>`count(*)::int` })
+      .from(downloadsTable)
+      .leftJoin(cardsTable, eq(downloadsTable.cardId, cardsTable.id))
+      .leftJoin(ordersTable, eq(downloadsTable.orderId, ordersTable.id))
+      .where(searchCondition)
+      .catch(() => [{ count: 0 }]);
+
+    const rows = await db
+      .select({
+        download: downloadsTable,
+        cardTitle: cardsTable.title,
+        customerName: ordersTable.customerName,
+        customerPhone: ordersTable.customerPhone,
+      })
+      .from(downloadsTable)
+      .leftJoin(cardsTable, eq(downloadsTable.cardId, cardsTable.id))
+      .leftJoin(ordersTable, eq(downloadsTable.orderId, ordersTable.id))
+      .where(searchCondition)
+      .orderBy(desc(downloadsTable.downloadedAt))
+      .limit(limit)
+      .offset(offset)
+      .catch(() => []);
+
+    res.json({
+      downloads: rows.map(({ download, cardTitle, customerName, customerPhone }) => ({
+        id: download.id,
+        orderId: download.orderId,
+        cardId: download.cardId,
+        cardTitle: cardTitle ?? "Unknown Resource",
+        customerName: customerName ?? "Guest",
+        customerPhone: customerPhone ?? "—",
+        downloadedAt: download.downloadedAt,
+        ipAddress: download.ipAddress,
+        deviceInfo: download.deviceInfo,
+      })),
+      total: totalRow?.count ?? 0,
+      page,
+      limit,
+    });
+  } catch (err: any) {
+    req.log?.error?.(err, "Failed to fetch downloads");
+    res.json({ downloads: [], total: 0, page: 1, limit: 20 });
   }
 });
 
