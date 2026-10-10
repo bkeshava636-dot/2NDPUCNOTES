@@ -27,9 +27,14 @@ export default function AdminOrders() {
   const [selectedStatus, setSelectedStatus] = useState("all");
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
-  const { data, isLoading } = useAdminListOrders(
+  const { data, isLoading, isError, error, isFetching, refetch } = useAdminListOrders(
     { page }, 
-    { query: { queryKey: getAdminListOrdersQueryKey({ page }) } }
+    { 
+      query: { 
+        queryKey: getAdminListOrdersQueryKey({ page }),
+        retry: 1,
+      } 
+    }
   );
 
   const totalPages = data ? Math.max(1, Math.ceil(data.total / 20)) : 1;
@@ -70,6 +75,39 @@ export default function AdminOrders() {
           {[1, 2, 3, 4, 5].map((i) => (
             <Skeleton key={i} className="h-16 w-full rounded-xl" />
           ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-bold text-[#112542] tracking-tight">Customer Orders</h1>
+            <p className="text-[#5a6b82] text-xs sm:text-sm mt-0.5">
+              Monitor incoming purchases, student transactions, and payment statuses
+            </p>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-xl border border-red-200 p-8 text-center max-w-lg mx-auto">
+          <div className="h-12 w-12 rounded-full bg-red-100 text-red-600 mx-auto flex items-center justify-center mb-4">
+            <CreditCard className="h-6 w-6" />
+          </div>
+          <h3 className="text-base font-bold text-[#112542]">Failed to load customer orders</h3>
+          <p className="text-xs text-[#64748b] mt-1 mb-5">
+            {(error as any)?.message || "A network or database error occurred while retrieving order history."}
+          </p>
+          <Button
+            onClick={() => refetch()}
+            disabled={isFetching}
+            className="gap-2 text-xs bg-[#2f74de] hover:bg-[#1f63c8] text-white"
+          >
+            <Check className={`h-3.5 w-3.5 ${isFetching ? "animate-spin" : ""}`} />
+            <span>Retry Connection</span>
+          </Button>
         </div>
       </div>
     );

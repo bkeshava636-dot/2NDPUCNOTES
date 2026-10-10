@@ -3,7 +3,7 @@ import { useLocation } from "wouter";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useAdminLogin, useAdminMe } from "@workspace/api-client-react";
+import { useAdminLogin, useAdminMe, getAdminMeQueryKey } from "@workspace/api-client-react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -20,7 +20,13 @@ const loginSchema = z.object({
 export default function AdminLogin() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
-  const { data: adminMe } = useAdminMe();
+  const token = typeof window !== "undefined" ? localStorage.getItem("admin_token") : null;
+  const { data: adminMe } = useAdminMe({
+    query: {
+      queryKey: getAdminMeQueryKey(),
+      enabled: Boolean(token),
+    },
+  });
   const loginMutation = useAdminLogin();
   const [showPassword, setShowPassword] = useState(false);
 
@@ -32,7 +38,7 @@ export default function AdminLogin() {
     },
   });
 
-  if (adminMe?.isAdmin) {
+  if (token && adminMe?.isAdmin) {
     setLocation("/admin/dashboard");
     return null;
   }

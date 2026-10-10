@@ -26,7 +26,8 @@ import {
   ExternalLink,
   X,
   Sparkles,
-  Link2
+  Link2,
+  RefreshCw
 } from "lucide-react";
 import { formatRupees } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
@@ -43,7 +44,12 @@ import {
 } from "@/components/ui/alert-dialog";
 
 export default function AdminCards() {
-  const { data: cards, isLoading } = useAdminListCards();
+  const { data: cards, isLoading, isError, error, isFetching, refetch } = useAdminListCards(undefined, {
+    query: {
+      queryKey: getAdminListCardsQueryKey(),
+      retry: 1,
+    },
+  });
   const { data: sections } = useAdminListSections();
   const deleteCard = useAdminDeleteCard();
   const updateCard = useAdminUpdateCard();
@@ -176,6 +182,39 @@ export default function AdminCards() {
           {[1, 2, 3, 4, 5].map((i) => (
             <Skeleton key={i} className="h-16 w-full rounded-xl" />
           ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-bold text-[#112542] tracking-tight">Resources Management</h1>
+            <p className="text-[#5a6b82] text-xs sm:text-sm mt-0.5">
+              Manage notes, sample papers, pricing, and downloadable PDFs
+            </p>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-xl border border-red-200 p-8 text-center max-w-lg mx-auto">
+          <div className="h-12 w-12 rounded-full bg-red-100 text-red-600 mx-auto flex items-center justify-center mb-4">
+            <AlertCircle className="h-6 w-6" />
+          </div>
+          <h3 className="text-base font-bold text-[#112542]">Failed to load study resources</h3>
+          <p className="text-xs text-[#64748b] mt-1 mb-5">
+            {(error as any)?.message || "A network or server error occurred while retrieving resources."}
+          </p>
+          <Button
+            onClick={() => refetch()}
+            disabled={isFetching}
+            className="gap-2 text-xs bg-[#2f74de] hover:bg-[#1f63c8] text-white"
+          >
+            <RefreshCw className={`h-3.5 w-3.5 ${isFetching ? "animate-spin" : ""}`} />
+            <span>Retry Connection</span>
+          </Button>
         </div>
       </div>
     );

@@ -378,7 +378,25 @@ export async function customFetch<T = unknown>(
 
   const requestInfo = { method, url: resolveUrl(input) };
 
-  const response = await fetch(input, { ...init, method, headers });
+  // Setup abort controller with timeout (default 20s if no signal is provided)
+  let timeoutId: ReturnType<typeof setTimeout> | undefined;
+  let effectiveSignal = init.signal;
+  if (!effectiveSignal && typeof AbortController !== "undefined") {
+    const controller = new AbortController();
+    effectiveSignal = controller.signal;
+    timeoutId = setTimeout(() => {
+      controller.abort(new Error("Request timed out after 20 seconds"));
+    }, 20000);
+  }
+
+  let response: Response;
+  try {
+    response = await fetch(input, { ...init, method, headers, signal: effectiveSignal });
+  } finally {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+  }
 
   if (!response.ok) {
     const errorData = await parseErrorBody(response, method);

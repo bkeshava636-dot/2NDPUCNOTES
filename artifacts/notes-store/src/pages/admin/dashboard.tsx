@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "wouter";
-import { useGetAdminStats } from "@workspace/api-client-react";
+import { useGetAdminStats, getGetAdminStatsQueryKey } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { formatRupees } from "@/lib/utils";
@@ -15,15 +15,19 @@ import {
   RefreshCw,
   Copy,
   Check,
-  ExternalLink
+  AlertCircle
 } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function AdminDashboard() {
-  const { data: stats, isLoading, isFetching, refetch } = useGetAdminStats();
-  const queryClient = useQueryClient();
+  const { data: stats, isLoading, isError, error, isFetching, refetch } = useGetAdminStats({
+    query: {
+      queryKey: getGetAdminStatsQueryKey(),
+      retry: 1,
+    },
+  });
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
   const handleCopyId = (id: string) => {
@@ -62,7 +66,36 @@ export default function AdminDashboard() {
     );
   }
 
-  if (!stats) return null;
+  if (isError || !stats) {
+    return (
+      <div className="space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-bold text-[#112542] tracking-tight">Dashboard Overview</h1>
+            <p className="text-[#5a6b82] text-xs sm:text-sm mt-0.5">Real-time summary of your store's sales and study materials</p>
+          </div>
+        </div>
+
+        <Card className="rounded-xl border border-red-200 bg-red-50/50 p-6 sm:p-8 text-center max-w-lg mx-auto">
+          <div className="h-12 w-12 rounded-full bg-red-100 text-red-600 mx-auto flex items-center justify-center mb-4">
+            <AlertCircle className="h-6 w-6" />
+          </div>
+          <h3 className="text-base font-bold text-[#112542]">Failed to load dashboard metrics</h3>
+          <p className="text-xs text-[#64748b] mt-1.5 mb-5 max-w-sm mx-auto">
+            {(error as any)?.message || "A network or server error occurred while retrieving real-time stats."}
+          </p>
+          <Button
+            onClick={() => refetch()}
+            disabled={isFetching}
+            className="gap-2 text-xs bg-[#2f74de] hover:bg-[#1f63c8] text-white"
+          >
+            <RefreshCw className={`h-3.5 w-3.5 ${isFetching ? "animate-spin" : ""}`} />
+            <span>Retry Connection</span>
+          </Button>
+        </Card>
+      </div>
+    );
+  }
 
   const statCards = [
     {
