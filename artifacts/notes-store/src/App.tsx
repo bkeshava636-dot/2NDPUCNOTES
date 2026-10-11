@@ -7,6 +7,7 @@ import NotFound from "@/pages/not-found";
 import { PublicLayout } from "@/components/layout/public-layout";
 import { AdminLayout } from "@/components/layout/admin-layout";
 import { AdminGuard } from "@/components/admin-guard";
+import { AdminErrorBoundary } from "@/components/admin-error-boundary";
 import { ApiWakeUpGate } from "@/components/api-wake-up-gate";
 
 import { lazy, Suspense } from "react";
@@ -63,24 +64,26 @@ function RouteLoadingFallback() {
 function AdminRoutes() {
   return (
     <AdminLayout>
-      <AdminGuard>
-        <Suspense fallback={<RouteLoadingFallback />}>
-          <Switch>
-            <Route path="/admin" component={() => <Redirect to="/admin/dashboard" />} />
-            <Route path="/admin/dashboard" component={AdminDashboard} />
-            <Route path="/admin/sections" component={AdminSections} />
-            <Route path="/admin/cards" component={AdminCards} />
-            <Route path="/admin/cards/new" component={AdminCardNew} />
-            <Route path="/admin/cards/:id/edit" component={AdminCardEdit} />
-            <Route path="/admin/orders" component={AdminOrders} />
-            <Route path="/admin/customers" component={AdminCustomers} />
-            <Route path="/admin/downloads" component={AdminDownloads} />
-            <Route path="/admin/analytics" component={AdminAnalytics} />
-            <Route path="/admin/settings" component={AdminSettings} />
-            <Route component={NotFound} />
-          </Switch>
-        </Suspense>
-      </AdminGuard>
+      <AdminErrorBoundary>
+        <AdminGuard>
+          <Suspense fallback={<RouteLoadingFallback />}>
+            <Switch>
+              <Route path="/admin" component={() => <Redirect to="/admin/dashboard" />} />
+              <Route path="/admin/dashboard" component={AdminDashboard} />
+              <Route path="/admin/sections" component={AdminSections} />
+              <Route path="/admin/cards" component={AdminCards} />
+              <Route path="/admin/cards/new" component={AdminCardNew} />
+              <Route path="/admin/cards/:id/edit" component={AdminCardEdit} />
+              <Route path="/admin/orders" component={AdminOrders} />
+              <Route path="/admin/customers" component={AdminCustomers} />
+              <Route path="/admin/downloads" component={AdminDownloads} />
+              <Route path="/admin/analytics" component={AdminAnalytics} />
+              <Route path="/admin/settings" component={AdminSettings} />
+              <Route component={NotFound} />
+            </Switch>
+          </Suspense>
+        </AdminGuard>
+      </AdminErrorBoundary>
     </AdminLayout>
   );
 }

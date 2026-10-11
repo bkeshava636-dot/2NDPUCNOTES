@@ -21,32 +21,33 @@ export function AdminGuard({ children }: { children: ReactNode }) {
     query: {
       queryKey: getAdminMeQueryKey(),
       enabled: Boolean(token),
-      staleTime: 5 * 60 * 1000, // Reuse verified session for 5 minutes during navigation
-      gcTime: 10 * 60 * 1000,
-      retry: 1,
+      staleTime: 10 * 60 * 1000, // 10 minutes session reuse
+      gcTime: 30 * 60 * 1000,
+      retry: 2,
     },
   });
 
   useEffect(() => {
-    // If query finished and admin is invalid or unauthorized
-    if (token && !isLoading && (adminMe?.isAdmin === false || (isError && (error as any)?.status === 401))) {
+    // Only redirect if backend definitively responded with 401 Unauthorized
+    if (token && !isLoading && (isError && (error as any)?.status === 401)) {
       clearAdminToken();
       setLocation("/admin/login");
     }
-  }, [token, adminMe, isLoading, isError, error, setLocation]);
+  }, [token, isLoading, isError, error, setLocation]);
 
   if (!token) {
     return null;
   }
 
-  if (isLoading) {
+  // If query is actively loading and we don't have cached authorization yet
+  if (isLoading && !adminMe) {
     return (
-      <div className="py-12 flex flex-col items-center justify-center">
+      <div className="py-16 flex flex-col items-center justify-center">
         <div className="bg-white p-6 rounded-xl border border-[#e2e8f0] flex flex-col items-center gap-3 shadow-2xs max-w-sm w-full text-center">
           <Spinner className="size-6 text-[#1856b8]" />
           <div>
-            <h3 className="text-xs font-semibold text-[#112542]">Verifying session</h3>
-            <p className="text-[11px] text-[#64748b] mt-0.5">Checking your administrative privileges...</p>
+            <h3 className="text-xs font-semibold text-[#112542]">Loading admin workspace...</h3>
+            <p className="text-[11px] text-[#64748b] mt-0.5">Initializing management console</p>
           </div>
         </div>
       </div>
@@ -93,9 +94,6 @@ export function AdminGuard({ children }: { children: ReactNode }) {
     );
   }
 
-  if (!adminMe?.isAdmin) {
-    return null;
-  }
-
+  // If token is present and hasn't been rejected by 401, allow render
   return <>{children}</>;
 }
