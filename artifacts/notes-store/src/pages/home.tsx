@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "wouter";
-import { useListSections, useGetStoreStats, useListCards, listCards } from "@workspace/api-client-react";
+import { useListSections, useListCards, listCards } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { CardItem } from "@/components/card-item";
 import { Input } from "@/components/ui/input";
@@ -224,7 +224,6 @@ export default function Home() {
   const queryClient = useQueryClient();
 
   const { data: sections, isLoading: sectionsLoading } = useListSections();
-  const { data: stats } = useGetStoreStats();
   const { data: searchResults, isLoading: searchLoading } = useListCards(
     submitted ? { search: submitted } : undefined,
     {
@@ -309,14 +308,9 @@ export default function Home() {
           </div>
 
           {/* Heading */}
-          <h1 className="text-3xl sm:text-4xl font-bold text-[#112542] tracking-tight mb-3">
+          <h1 className="text-3xl sm:text-4xl font-bold text-[#112542] tracking-tight mb-5">
             2PUC Notes Store
           </h1>
-
-          {/* Tagline */}
-          <p className="text-[#5a6b82] text-sm sm:text-base max-w-xl mx-auto leading-relaxed mb-6">
-            Discover high-quality 2nd PUC Science notes and study materials, organized to help you prepare with confidence.
-          </p>
 
           {/* Search Form */}
           <form
@@ -353,26 +347,6 @@ export default function Home() {
               Search
             </Button>
           </form>
-
-          {/* Understated Stats Row */}
-          {stats && (
-            <div className="flex flex-wrap items-center justify-center gap-5 sm:gap-7 pt-6 text-xs text-[#5a6b82]">
-              <div className="flex items-center gap-1.5">
-                <span className="font-semibold text-[#112542] text-xs sm:text-sm">{stats.totalResources}</span>
-                <span>Resources</span>
-              </div>
-              <span className="text-[#cbd5e1] hidden sm:inline">&bull;</span>
-              <div className="flex items-center gap-1.5">
-                <span className="font-semibold text-[#112542] text-xs sm:text-sm">{stats.freeResources}</span>
-                <span>Free</span>
-              </div>
-              <span className="text-[#cbd5e1] hidden sm:inline">&bull;</span>
-              <div className="flex items-center gap-1.5">
-                <span className="font-semibold text-[#112542] text-xs sm:text-sm">{stats.totalOrders}</span>
-                <span>Happy Students</span>
-              </div>
-            </div>
-          )}
         </div>
       </section>
 
