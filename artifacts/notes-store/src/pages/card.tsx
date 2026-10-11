@@ -290,9 +290,15 @@ export default function CardPage() {
                   <span className="font-medium">{(card.fileSizeKb / 1024).toFixed(1)} MB PDF</span>
                 </div>
               ) : card.pdfFileKey?.startsWith("http") ? (
-                <div className="flex items-center gap-2 p-2 rounded-lg bg-[#ebf3ff] border border-[#dce8fa] text-xs text-[#1856b8]">
-                  <FileText className="h-3.5 w-3.5 text-[#1856b8] shrink-0" />
-                  <span className="font-medium">Google Drive Document</span>
+                <div className={`flex items-center gap-2 p-2 rounded-lg text-xs ${
+                  card.pdfFileKey.includes("gov.in")
+                    ? "bg-[#f0f9ff] border border-[#bae6fd] text-[#0284c7]"
+                    : "bg-[#ebf3ff] border border-[#dce8fa] text-[#1856b8]"
+                }`}>
+                  <FileText className="h-3.5 w-3.5 shrink-0" />
+                  <span className="font-medium">
+                    {card.pdfFileKey.includes("gov.in") ? "Official Government Resource" : "Google Drive Document"}
+                  </span>
                 </div>
               ) : null}
             </div>

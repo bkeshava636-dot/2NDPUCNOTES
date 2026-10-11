@@ -28,7 +28,10 @@ import {
   Sparkles,
   Link2,
   FolderOpen,
-  Search
+  Search,
+  Landmark,
+  Globe,
+  Check
 } from "lucide-react";
 import { Link } from "wouter";
 import { useToast } from "@/hooks/use-toast";
@@ -145,10 +148,15 @@ export default function CardForm({ initialData, cardId }: { initialData?: Partia
 
   const [form, setForm] = useState<CardFormData>({ ...defaultForm, ...initialData });
   const [uploading, setUploading] = useState<"pdf" | "image" | null>(null);
-  const [uploadMethod, setUploadMethod] = useState<"file" | "drive" | "existing">(
-    initialData?.pdfFileKey?.startsWith("http") ? "drive" : "file"
+  const [uploadMethod, setUploadMethod] = useState<"file" | "drive" | "gov" | "existing">(
+    initialData?.pdfFileKey?.includes("gov.in")
+      ? "gov"
+      : initialData?.pdfFileKey?.startsWith("http")
+      ? "drive"
+      : "file"
   );
   const [driveUrlInput, setDriveUrlInput] = useState("");
+  const [govUrlInput, setGovUrlInput] = useState("");
   const [existingSearch, setExistingSearch] = useState("");
   const [pickerOpen, setPickerOpen] = useState(false);
 
@@ -205,6 +213,27 @@ export default function CardForm({ initialData, cardId }: { initialData?: Partia
     set("pdfFileKey", trimmed);
     setDriveUrlInput("");
     toast({ title: "Drive Link Attached", description: "Google Drive resource link successfully linked to this note." });
+  }
+
+  function handleAttachGovLink(customUrl?: string) {
+    const trimmed = (customUrl || govUrlInput).trim();
+    if (!trimmed) {
+      toast({ title: "Government URL required", description: "Please enter a valid official government portal or PDF link", variant: "destructive" });
+      return;
+    }
+    if (!trimmed.startsWith("http://") && !trimmed.startsWith("https://")) {
+      toast({ title: "Invalid URL", description: "URL must start with https:// or http://", variant: "destructive" });
+      return;
+    }
+    set("pdfFileKey", trimmed);
+    if (!form.officialSourceUrl) {
+      set("officialSourceUrl", trimmed);
+    }
+    setGovUrlInput("");
+    toast({ 
+      title: "Government Portal Linked Directly", 
+      description: "Direct official government resource linked for instant student access." 
+    });
   }
 
   // Unique existing files to choose from
@@ -776,6 +805,18 @@ export default function CardForm({ initialData, cardId }: { initialData?: Partia
                   </button>
                   <button
                     type="button"
+                    onClick={() => setUploadMethod("gov")}
+                    className={`px-2.5 py-1 text-[11px] font-semibold rounded transition-all flex items-center gap-1 ${
+                      uploadMethod === "gov"
+                        ? "bg-white text-[#0284c7] shadow-2xs border border-[#bae6fd]"
+                        : "text-[#5a6b82] hover:text-[#112542]"
+                    }`}
+                  >
+                    <Landmark className="h-3 w-3" />
+                    <span>Official Gov Link</span>
+                  </button>
+                  <button
+                    type="button"
                     onClick={() => {
                       setUploadMethod("existing");
                       setPickerOpen(true);
@@ -795,15 +836,31 @@ export default function CardForm({ initialData, cardId }: { initialData?: Partia
               {/* Display currently attached file or link */}
               {form.pdfFileKey ? (
                 form.pdfFileKey.startsWith("http") ? (
-                  <div className="flex items-center justify-between p-3 border rounded-lg bg-[#ebf3ff] border-[#dce8fa]">
+                  <div className={`flex items-center justify-between p-3 border rounded-lg ${
+                    form.pdfFileKey.includes("gov.in")
+                      ? "bg-[#f0f9ff] border-[#bae6fd]"
+                      : "bg-[#ebf3ff] border-[#dce8fa]"
+                  }`}>
                     <div className="flex items-center gap-2.5 min-w-0">
-                      <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white text-[#1856b8] border border-[#dce8fa] shrink-0">
-                        <Link2 className="h-4 w-4" />
+                      <div className={`flex h-8 w-8 items-center justify-center rounded-lg bg-white border shrink-0 ${
+                        form.pdfFileKey.includes("gov.in")
+                          ? "text-[#0284c7] border-[#bae6fd]"
+                          : "text-[#1856b8] border-[#dce8fa]"
+                      }`}>
+                        {form.pdfFileKey.includes("gov.in") ? <Landmark className="h-4 w-4" /> : <Link2 className="h-4 w-4" />}
                       </div>
                       <div className="min-w-0">
                         <div className="flex items-center gap-1.5">
-                          <p className="text-xs font-semibold text-[#1856b8]">Google Drive Resource Attached</p>
-                          <span className="bg-[#16a34a] text-white text-[9px] font-bold px-1.5 py-0.2 rounded">Cloud</span>
+                          <p className={`text-xs font-semibold ${
+                            form.pdfFileKey.includes("gov.in") ? "text-[#0369a1]" : "text-[#1856b8]"
+                          }`}>
+                            {form.pdfFileKey.includes("gov.in") ? "Official Government Resource Linked" : "Google Drive Resource Attached"}
+                          </p>
+                          <span className={`text-white text-[9px] font-bold px-1.5 py-0.2 rounded ${
+                            form.pdfFileKey.includes("gov.in") ? "bg-[#0284c7]" : "bg-[#16a34a]"
+                          }`}>
+                            {form.pdfFileKey.includes("gov.in") ? "Official Portal" : "Cloud"}
+                          </span>
                         </div>
                         <p className="text-[11px] text-[#5a6b82] truncate max-w-xs sm:max-w-md font-mono mt-0.5">{form.pdfFileKey}</p>
                       </div>
@@ -851,6 +908,87 @@ export default function CardForm({ initialData, cardId }: { initialData?: Partia
                     </Button>
                   </div>
                 )
+              ) : uploadMethod === "gov" ? (
+                <div className="space-y-3 p-3.5 border rounded-xl bg-[#f0f9ff] border-[#bae6fd]">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <Label className="text-xs font-bold text-[#0369a1] flex items-center gap-1.5">
+                        <Landmark className="h-3.5 w-3.5" />
+                        Official Government Resource / MQP Portal Link
+                      </Label>
+                      <p className="text-[11px] text-[#0284c7] mt-0.5">
+                        Directly links official Karnataka Board (KSEAB/DPUE) model question papers or blueprints without manual re-uploading
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-2">
+                    <Input
+                      placeholder="https://dpue-exam.karnataka.gov.in/kseabdpueqpue/PuModelQP27 or PDF link"
+                      value={govUrlInput}
+                      onChange={e => setGovUrlInput(e.target.value)}
+                      className="h-9 text-xs bg-white border-[#bae6fd] text-[#112542] focus-visible:border-[#0284c7]"
+                      onKeyDown={e => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          handleAttachGovLink();
+                        }
+                      }}
+                    />
+                    <Button
+                      type="button"
+                      size="sm"
+                      onClick={() => handleAttachGovLink()}
+                      className="h-9 px-4 text-xs font-semibold bg-[#0284c7] hover:bg-[#0369a1] text-white shrink-0 shadow-2xs"
+                    >
+                      Attach Gov Link
+                    </Button>
+                  </div>
+
+                  {/* 1-Click Official Karnataka Gov Presets */}
+                  <div className="space-y-1.5 pt-1 border-t border-[#e0f2fe]">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-[#0369a1]">
+                      Quick Official Karnataka Board Presets:
+                    </span>
+                    <div className="flex flex-wrap gap-1.5">
+                      <button
+                        type="button"
+                        onClick={() => handleAttachGovLink("https://dpue-exam.karnataka.gov.in/kseabdpueqpue/PuModelQP27")}
+                        className="text-[11px] px-2.5 py-1 rounded-md bg-white text-[#0369a1] border border-[#bae6fd] hover:bg-[#e0f2fe] hover:border-[#0284c7] font-medium transition-colors text-left flex items-center gap-1"
+                      >
+                        <Landmark className="h-3 w-3 text-[#0284c7]" />
+                        <span>KSEAB 2nd PUC Model Question Papers Portal</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => handleAttachGovLink("https://dpue-exam.karnataka.gov.in/kseabdpueqpue/QuestionBankPage")}
+                        className="text-[11px] px-2.5 py-1 rounded-md bg-white text-[#0369a1] border border-[#bae6fd] hover:bg-[#e0f2fe] hover:border-[#0284c7] font-medium transition-colors text-left flex items-center gap-1"
+                      >
+                        <Landmark className="h-3 w-3 text-[#0284c7]" />
+                        <span>Official Question Bank Portal</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => handleAttachGovLink("https://dpue-exam.karnataka.gov.in/kseabdpueqpue/QueEnkStdCorner2027")}
+                        className="text-[11px] px-2.5 py-1 rounded-md bg-white text-[#0369a1] border border-[#bae6fd] hover:bg-[#e0f2fe] hover:border-[#0284c7] font-medium transition-colors text-left flex items-center gap-1"
+                      >
+                        <Landmark className="h-3 w-3 text-[#0284c7]" />
+                        <span>Official PYQ Corner</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => handleAttachGovLink("https://dpue-exam.karnataka.gov.in/kseabdpueqpue/PracticalSchemeOfEvaluation")}
+                        className="text-[11px] px-2.5 py-1 rounded-md bg-white text-[#0369a1] border border-[#bae6fd] hover:bg-[#e0f2fe] hover:border-[#0284c7] font-medium transition-colors text-left flex items-center gap-1"
+                      >
+                        <Landmark className="h-3 w-3 text-[#0284c7]" />
+                        <span>Practical Scheme of Evaluation</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
               ) : uploadMethod === "drive" ? (
                 <div className="space-y-2 p-3.5 border rounded-lg bg-[#f8fafc] border-[#e2e8f0]">
                   <Label className="text-[11px] font-semibold text-[#475569]">Google Drive / Cloud Shareable URL</Label>
