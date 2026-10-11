@@ -14,17 +14,21 @@ import {
   ShieldCheck,
   CheckCircle2,
   Send,
-  Sparkles
+  Sparkles,
+  Loader2
 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatRupees } from "@/lib/utils";
 import { TELEGRAM_LINK } from "@/lib/site-config";
+import { useToast } from "@/hooks/use-toast";
 
 export default function CardPage() {
   const params = useParams<{ id: string }>();
   const id = parseInt(params.id || "0");
   const [, setLocation] = useLocation();
   const [previewIdx, setPreviewIdx] = useState(0);
+  const [downloading, setDownloading] = useState(false);
+  const { toast } = useToast();
 
   const queryClient = useQueryClient();
   const { data: card, isLoading } = useGetCard(id, {
@@ -89,8 +93,37 @@ export default function CardPage() {
     setLocation(`/checkout?cardId=${card!.id}`);
   }
 
-  function handleFreeDownload() {
-    setLocation(`/checkout?cardId=${card!.id}&free=true`);
+  async function handleFreeDownload() {
+    if (!card) return;
+    setDownloading(true);
+    try {
+      const rawApiUrl = import.meta.env.VITE_API_URL;
+      const API_URL = rawApiUrl ? rawApiUrl.replace(/\/+$/, "") : "";
+      const res = await fetch(`${API_URL}/api/checkout/free-download`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ cardId: card.id }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to download");
+      
+      const link = document.createElement("a");
+      link.href = data.downloadUrl;
+      link.download = data.filename || `${card.title}.pdf`;
+      link.target = "_blank";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      toast({ title: "Download Started", description: "Your free PDF study resource is opening." });
+    } catch (err: any) {
+      toast({
+        title: "Download Failed",
+        description: err.message || "Failed to download free resource",
+        variant: "destructive",
+      });
+    } finally {
+      setDownloading(false);
+    }
   }
 
   return (
@@ -104,58 +137,53 @@ export default function CardPage() {
       </Link>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
-        {/* Left Column: Image Preview & Description */}
-        <div className="lg:col-span-7 space-y-5">
-          <div className="bg-white rounded-xl border border-[#e2e8f0] overflow-hidden">
-            {/* Main Preview Container */}
-            <div className="aspect-[16/10] sm:aspect-video bg-[#f8fafc] relative flex items-center justify-center overflow-hidden border-b border-[#eef2f6]">
-              {currentPreview ? (
+        {/* Left Column: Image Preview (only if available) & Description */}
+        <div className={`space-y-5 ${currentPreview || card.description ? "lg:col-span-7" : "hidden"}`}>
+          {currentPreview && (
+            <div className="bg-white rounded-xl border border-[#e2e8f0] overflow-hidden">
+              {/* Main Preview Container */}
+              <div className="aspect-[16/10] sm:aspect-video bg-[#f8fafc] relative flex items-center justify-center overflow-hidden border-b border-[#eef2f6]">
                 <img
                   src={currentPreview}
                   alt={card.title}
                   className="object-contain w-full h-full max-h-[440px] p-2"
                 />
-              ) : (
-                <div className="text-[#94a3b8] flex flex-col items-center gap-2 p-8 text-center">
-                  <FileText className="h-12 w-12 opacity-60" />
-                  <span className="text-xs font-medium text-[#94a3b8]">No Preview Available</span>
+
+                {/* Status Badge overlay */}
+                <div className="absolute top-3 left-3 flex gap-2">
+                  {card.isFree && (
+                    <span className="bg-[#16a34a] text-white font-semibold text-[11px] px-2.5 py-0.5 rounded-md shadow-2xs">
+                      Free
+                    </span>
+                  )}
+                  {card.isFeatured && (
+                    <span className="bg-[#d97706] text-white font-semibold text-[11px] px-2.5 py-0.5 rounded-md shadow-2xs">
+                      Popular
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              {/* Thumbnail carousel selector */}
+              {previewImages.length > 1 && (
+                <div className="flex gap-2 p-3 overflow-x-auto bg-[#f8fafc]/50 border-t border-[#eef2f6]">
+                  {previewImages.map((url, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setPreviewIdx(i)}
+                      className={`shrink-0 w-14 h-14 rounded-lg border-2 overflow-hidden transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1856b8] ${
+                        i === previewIdx
+                          ? "border-[#1856b8]"
+                          : "border-[#e2e8f0] hover:border-[#cbd5e1] opacity-70 hover:opacity-100"
+                      }`}
+                    >
+                      <img src={url} alt={`Preview ${i + 1}`} className="w-full h-full object-cover" />
+                    </button>
+                  ))}
                 </div>
               )}
-
-              {/* Status Badge overlay */}
-              <div className="absolute top-3 left-3 flex gap-2">
-                {card.isFree && (
-                  <span className="bg-[#16a34a] text-white font-semibold text-[11px] px-2.5 py-0.5 rounded-md shadow-2xs">
-                    Free
-                  </span>
-                )}
-                {card.isFeatured && (
-                  <span className="bg-[#d97706] text-white font-semibold text-[11px] px-2.5 py-0.5 rounded-md shadow-2xs">
-                    Popular
-                  </span>
-                )}
-              </div>
             </div>
-
-            {/* Thumbnail carousel selector */}
-            {previewImages.length > 1 && (
-              <div className="flex gap-2 p-3 overflow-x-auto bg-[#f8fafc]/50 border-t border-[#eef2f6]">
-                {previewImages.map((url, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setPreviewIdx(i)}
-                    className={`shrink-0 w-14 h-14 rounded-lg border-2 overflow-hidden transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1856b8] ${
-                      i === previewIdx
-                        ? "border-[#1856b8]"
-                        : "border-[#e2e8f0] hover:border-[#cbd5e1] opacity-70 hover:opacity-100"
-                    }`}
-                  >
-                    <img src={url} alt={`Preview ${i + 1}`} className="w-full h-full object-cover" />
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
+          )}
 
           {/* Description Card */}
           {card.description && (
@@ -301,27 +329,29 @@ export default function CardPage() {
 
               {/* Purchase / Download Button */}
               {card.isFree ? (
-                <Button onClick={handleFreeDownload} size="lg" className="w-full gap-2 rounded-lg text-sm font-semibold h-11 bg-[#1856b8] hover:bg-[#0b57d0] text-white shadow-none transition-colors">
-                  <Download className="h-4 w-4" />
-                  <span>Download Free</span>
+                <Button 
+                  onClick={handleFreeDownload} 
+                  disabled={downloading}
+                  size="lg" 
+                  className="w-full gap-2 rounded-lg text-sm font-semibold h-11 bg-[#16a34a] hover:bg-[#15803d] text-white shadow-none transition-colors"
+                >
+                  {downloading ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      <span>Opening PDF...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Download className="h-4 w-4" />
+                      <span>Download Free PDF</span>
+                    </>
+                  )}
                 </Button>
               ) : (
                 <Button onClick={handleBuy} size="lg" className="w-full gap-2 rounded-lg text-sm font-semibold h-11 bg-[#2f74de] hover:bg-[#1f63c8] text-white shadow-none transition-colors">
                   <span>Buy Now &rarr;</span>
                 </Button>
               )}
-
-              {/* Reassurance bullet points */}
-              <div className="space-y-1.5 pt-1 text-xs text-[#5a6b82]">
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="h-3.5 w-3.5 text-[#16a34a] shrink-0" />
-                  <span>Instant PDF download after checkout</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="h-3.5 w-3.5 text-[#16a34a] shrink-0" />
-                  <span>Re-download anytime from My Purchases</span>
-                </div>
-              </div>
             </div>
           </div>
 

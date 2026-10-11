@@ -52,9 +52,10 @@ export function CardItem({ card }: { card: CardType }) {
               className="object-cover w-full h-full transition-transform duration-200 group-hover:scale-102"
             />
           ) : (
-            <div className="text-[#94a3b8] flex flex-col items-center gap-1">
-              <FileText className="h-8 w-8 opacity-60" />
-              <span className="text-[11px] font-medium text-[#94a3b8]">No Preview</span>
+            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[#f8fafc] to-[#eef2f6]">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-[#1856b8] border border-[#dce8fa] shadow-2xs group-hover:scale-105 transition-transform">
+                <FileText className="h-5 w-5" />
+              </div>
             </div>
           )}
 

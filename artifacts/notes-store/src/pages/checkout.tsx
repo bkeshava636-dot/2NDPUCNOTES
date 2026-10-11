@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { ArrowLeft, Lock, ShieldCheck, CheckCircle2, Phone, User, Mail, FileText } from "lucide-react";
+import { ArrowLeft, Lock, ShieldCheck, CheckCircle2, Phone, User, Mail, FileText, Download, Loader2 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatRupees } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
@@ -43,8 +43,36 @@ export default function Checkout() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
 
+  async function handleFreeDownloadDirect() {
+    setLoading(true);
+    try {
+      const res = await fetch(`${API_URL}/api/checkout/free-download`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ cardId }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed");
+      const link = document.createElement("a");
+      link.href = data.downloadUrl;
+      link.download = data.filename || `${card?.title || "notes"}.pdf`;
+      link.target = "_blank";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setLoading(false);
+      setLocation(`/payment-success?orderId=${data.orderId}&cardId=${cardId}&free=true`);
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message || "Failed to download", variant: "destructive" });
+      setLoading(false);
+    }
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (isFree || card?.isFree) {
+      return handleFreeDownloadDirect();
+    }
     if (!name.trim() || !phone.trim()) return;
     if (!/^[6-9]\d{9}$/.test(phone)) {
       toast({ title: "Invalid phone", description: "Enter a valid 10-digit Indian mobile number.", variant: "destructive" });
@@ -225,91 +253,114 @@ export default function Checkout() {
       <Card className="rounded-xl border-[#e2e8f0] shadow-none">
         <CardHeader className="pb-3 pt-5 px-5">
           <CardTitle className="text-base sm:text-lg font-bold text-[#112542]">
-            {isCardFree ? "Get Free Download" : "Complete Purchase"}
+            {isCardFree ? "Free Study Resource" : "Complete Purchase"}
           </CardTitle>
           <CardDescription className="text-xs text-[#5a6b82]">
-            We need a few details to send you your resource
+            {isCardFree
+              ? "This resource is completely free. Click below to download the PDF immediately."
+              : "Enter your contact details to receive and access your purchased study material"}
           </CardDescription>
         </CardHeader>
         <CardContent className="px-5 pb-5">
-          <form onSubmit={handleSubmit} className="space-y-3.5">
-            <div className="space-y-1.5">
-              <Label htmlFor="name" className="text-xs font-semibold text-[#334155] flex items-center gap-1.5">
-                <User className="h-3.5 w-3.5 text-[#94a3b8]" />
-                <span>Full Name *</span>
-              </Label>
-              <Input
-                id="name"
-                placeholder="Your name"
-                value={name}
-                onChange={e => setName(e.target.value)}
-                required
-                className="h-10 text-sm bg-[#f8fafc] border-[#e2e8f0] text-[#112542] focus-visible:border-[#1856b8]"
-              />
-            </div>
-
-            <div className="space-y-1.5">
-              <Label htmlFor="phone" className="text-xs font-semibold text-[#334155] flex items-center gap-1.5">
-                <Phone className="h-3.5 w-3.5 text-[#94a3b8]" />
-                <span>Phone Number *</span>
-              </Label>
-              <Input
-                id="phone"
-                type="tel"
-                placeholder="10-digit mobile number"
-                value={phone}
-                onChange={e => setPhone(e.target.value)}
-                required
-                maxLength={10}
-                className="h-10 text-sm bg-[#f8fafc] border-[#e2e8f0] text-[#112542] focus-visible:border-[#1856b8]"
-              />
-              <p className="text-[11px] text-[#94a3b8]">Used to retrieve your purchases later</p>
-            </div>
-
-            <div className="space-y-1.5">
-              <Label htmlFor="email" className="text-xs font-semibold text-[#334155] flex items-center gap-1.5">
-                <Mail className="h-3.5 w-3.5 text-[#94a3b8]" />
-                <span>Email (optional)</span>
-              </Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="your@email.com"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                className="h-10 text-sm bg-[#f8fafc] border-[#e2e8f0] text-[#112542] focus-visible:border-[#1856b8]"
-              />
-            </div>
-
-            <div className="pt-1">
+          {isCardFree ? (
+            <div className="space-y-4 pt-1">
               <Button
-                type="submit"
-                className="w-full gap-2 h-11 font-semibold text-sm rounded-lg bg-[#2f74de] hover:bg-[#1f63c8] text-white shadow-none transition-colors"
+                type="button"
+                onClick={handleFreeDownloadDirect}
                 disabled={loading}
+                className="w-full gap-2 h-11 font-semibold text-sm rounded-lg bg-[#16a34a] hover:bg-[#15803d] text-white shadow-none transition-colors"
               >
-                {loading ? "Processing..." : (
+                {loading ? (
                   <>
-                    <Lock className="h-4 w-4" />
-                    {isCardFree ? "Get Free Download" : `Pay ${formatRupees(effectivePrice)} Securely`}
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <span>Preparing PDF Download...</span>
+                  </>
+                ) : (
+                  <>
+                    <Download className="h-4 w-4" />
+                    <span>Download Free PDF Now</span>
                   </>
                 )}
               </Button>
             </div>
-
-            {/* Trust and security badges */}
-            <div className="pt-3 border-t border-[#eef2f6] flex items-center justify-center gap-4 text-xs text-[#5a6b82]">
-              <div className="flex items-center gap-1">
-                <ShieldCheck className="h-3.5 w-3.5 text-[#16a34a]" />
-                <span>256-bit Encryption</span>
+          ) : (
+            <form onSubmit={handleSubmit} className="space-y-3.5">
+              <div className="space-y-1.5">
+                <Label htmlFor="name" className="text-xs font-semibold text-[#334155] flex items-center gap-1.5">
+                  <User className="h-3.5 w-3.5 text-[#94a3b8]" />
+                  <span>Full Name *</span>
+                </Label>
+                <Input
+                  id="name"
+                  placeholder="Your name"
+                  value={name}
+                  onChange={e => setName(e.target.value)}
+                  required
+                  className="h-10 text-sm bg-[#f8fafc] border-[#e2e8f0] text-[#112542] focus-visible:border-[#1856b8]"
+                />
               </div>
-              {!isCardFree && (
+
+              <div className="space-y-1.5">
+                <Label htmlFor="phone" className="text-xs font-semibold text-[#334155] flex items-center gap-1.5">
+                  <Phone className="h-3.5 w-3.5 text-[#94a3b8]" />
+                  <span>Phone Number *</span>
+                </Label>
+                <Input
+                  id="phone"
+                  type="tel"
+                  placeholder="10-digit mobile number"
+                  value={phone}
+                  onChange={e => setPhone(e.target.value)}
+                  required
+                  maxLength={10}
+                  className="h-10 text-sm bg-[#f8fafc] border-[#e2e8f0] text-[#112542] focus-visible:border-[#1856b8]"
+                />
+                <p className="text-[11px] text-[#94a3b8]">Used to retrieve your purchases later</p>
+              </div>
+
+              <div className="space-y-1.5">
+                <Label htmlFor="email" className="text-xs font-semibold text-[#334155] flex items-center gap-1.5">
+                  <Mail className="h-3.5 w-3.5 text-[#94a3b8]" />
+                  <span>Email (optional)</span>
+                </Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="your@email.com"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  className="h-10 text-sm bg-[#f8fafc] border-[#e2e8f0] text-[#112542] focus-visible:border-[#1856b8]"
+                />
+              </div>
+
+              <div className="pt-1">
+                <Button
+                  type="submit"
+                  className="w-full gap-2 h-11 font-semibold text-sm rounded-lg bg-[#2f74de] hover:bg-[#1f63c8] text-white shadow-none transition-colors"
+                  disabled={loading}
+                >
+                  {loading ? "Processing..." : (
+                    <>
+                      <Lock className="h-4 w-4" />
+                      {`Pay ${formatRupees(effectivePrice)} Securely`}
+                    </>
+                  )}
+                </Button>
+              </div>
+
+              {/* Trust and security badges */}
+              <div className="pt-3 border-t border-[#eef2f6] flex items-center justify-center gap-4 text-xs text-[#5a6b82]">
+                <div className="flex items-center gap-1">
+                  <ShieldCheck className="h-3.5 w-3.5 text-[#16a34a]" />
+                  <span>256-bit Encryption</span>
+                </div>
                 <div className="flex items-center gap-1">
                   <Lock className="h-3.5 w-3.5 text-[#1856b8]" />
                   <span>Secured by Razorpay</span>
                 </div>
-              )}
-            </div>
-          </form>
+              </div>
+            </form>
+          )}
         </CardContent>
       </Card>
     </div>

@@ -137,8 +137,8 @@ router.post("/checkout/verify", async (req, res) => {
 router.post("/checkout/free-download", async (req, res) => {
   try {
     const { cardId, customerName, customerPhone, customerEmail } = req.body;
-    if (!cardId || !customerName || !customerPhone) {
-      res.status(400).json({ error: "cardId, customerName, customerPhone are required" });
+    if (!cardId) {
+      res.status(400).json({ error: "cardId is required" });
       return;
     }
     const [card] = await db
@@ -157,14 +157,16 @@ router.post("/checkout/free-download", async (req, res) => {
       res.status(400).json({ error: "No file available for this resource" });
       return;
     }
-    const customerId = await upsertCustomer(customerName, customerPhone, customerEmail);
+    const name = customerName?.trim() || "Student";
+    const phone = customerPhone?.trim() || "Free Access";
+    const customerId = customerPhone?.trim() ? await upsertCustomer(name, phone, customerEmail) : null;
     const orderId = uuidv4();
     await db.insert(ordersTable).values({
       id: orderId,
       cardId: card.id,
       customerId,
-      customerName,
-      customerPhone,
+      customerName: name,
+      customerPhone: phone,
       customerEmail: customerEmail || null,
       amountPaise: 0,
       status: "paid",
