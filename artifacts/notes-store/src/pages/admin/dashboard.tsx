@@ -20,7 +20,9 @@ import {
   ShieldCheck,
   Clock,
   Sparkles,
-  ChevronRight
+  ChevronRight,
+  Eye,
+  BarChart3
 } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
@@ -91,6 +93,14 @@ export default function AdminDashboard() {
       color: "text-teal-600 bg-teal-50 border-teal-100",
       accent: "border-l-teal-500",
     },
+    {
+      title: "Site Views & Traffic",
+      value: (stats as any)?.totalPageViews !== undefined ? (stats as any).totalPageViews.toLocaleString() : "0",
+      description: "Live student impressions across sites",
+      icon: Eye,
+      color: "text-sky-600 bg-sky-50 border-sky-100",
+      accent: "border-l-sky-500",
+    },
   ];
 
   const quickActions = [
@@ -136,6 +146,13 @@ export default function AdminDashboard() {
       href: "/admin/downloads",
       icon: DownloadCloud,
       btnLabel: "Audit Log",
+    },
+    {
+      title: "Site Traffic & Views",
+      description: "Analyze how many students viewed sites, popular pages, and daily trends",
+      href: "/admin/analytics",
+      icon: BarChart3,
+      btnLabel: "Analytics",
     },
   ];
 

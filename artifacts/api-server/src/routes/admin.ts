@@ -3,7 +3,7 @@ import multer from "multer";
 import crypto from "crypto";
 import { v4 as uuidv4 } from "uuid";
 import { db } from "@workspace/db";
-import { sectionsTable, cardsTable, ordersTable, customersTable, downloadsTable } from "@workspace/db";
+import { sectionsTable, cardsTable, ordersTable, customersTable, downloadsTable, pageViewsTable } from "@workspace/db";
 import { eq, sql, asc, desc, and } from "drizzle-orm";
 import { supabase, BUCKET_NOTES, BUCKET_IMAGES } from "../supabase.js";
 import { ensureDefaultSections, DEFAULT_CORE_SECTIONS } from "../lib/ensure-sections.js";
@@ -198,7 +198,16 @@ router.get("/admin/stats", requireAdmin, async (req, res) => {
         return [];
       });
 
-    const [totalRevenuePaise, totalOrders, totalCards, totalSections, totalCustomers, totalDownloads, recentOrders] =
+    const pageViewsPromise = db
+      .select({ count: sql<number>`count(*)::int` })
+      .from(pageViewsTable)
+      .then((rows) => rows[0]?.count ?? 0)
+      .catch((err) => {
+        req.log?.error?.(err, "Failed to query page views count");
+        return 0;
+      });
+
+    const [totalRevenuePaise, totalOrders, totalCards, totalSections, totalCustomers, totalDownloads, totalPageViews, recentOrders] =
       await Promise.all([
         revenuePromise,
         ordersPromise,
@@ -206,6 +215,7 @@ router.get("/admin/stats", requireAdmin, async (req, res) => {
         sectionsPromise,
         customersPromise,
         downloadsPromise,
+        pageViewsPromise,
         recentOrdersPromise,
       ]);
 
@@ -216,6 +226,7 @@ router.get("/admin/stats", requireAdmin, async (req, res) => {
       totalSections,
       totalCustomers,
       totalDownloads,
+      totalPageViews,
       recentOrders: (recentOrders || []).map(({ order, cardTitle }: any) => ({
         id: order.id,
         cardId: order.cardId,
@@ -671,6 +682,96 @@ router.post("/admin/upload/image", requireAdmin, uploadImageMemory.single("file"
   if (error) { req.log.error(error); res.status(500).json({ error: "Upload to storage failed" }); return; }
   const { data: publicData } = supabase.storage.from(BUCKET_IMAGES).getPublicUrl(key);
   res.json({ key, url: publicData.publicUrl });
+});
+
+// ── Analytics ────────────────────────────────────────────────────────────────
+
+router.get("/admin/analytics", requireAdmin, async (req, res) => {
+  try {
+    const range = (req.query.range as string) || "30d"; // 24h, 7d, 30d, all
+    let timeCondition = sql`1=1`;
+    if (range === "24h") {
+      timeCondition = sql`created_at >= NOW() - INTERVAL '24 hours'`;
+    } else if (range === "7d") {
+      timeCondition = sql`created_at >= NOW() - INTERVAL '7 days'`;
+    } else if (range === "30d") {
+      timeCondition = sql`created_at >= NOW() - INTERVAL '30 days'`;
+    }
+
+    // 1. Total views in range & all time
+    const [rangeTotalRow] = await db
+      .select({ count: sql<number>`count(*)::int` })
+      .from(pageViewsTable)
+      .where(timeCondition);
+    const rangeTotal = rangeTotalRow?.count ?? 0;
+
+    const [allTimeTotalRow] = await db
+      .select({ count: sql<number>`count(*)::int` })
+      .from(pageViewsTable);
+    const allTimeTotal = allTimeTotalRow?.count ?? 0;
+
+    // 2. Unique visitors (by distinct visitor_id or ip_address)
+    const [uniqueVisitorsRow] = await db
+      .select({ count: sql<number>`count(DISTINCT coalesce(visitor_id, ip_address))::int` })
+      .from(pageViewsTable)
+      .where(timeCondition);
+    const uniqueVisitors = uniqueVisitorsRow?.count ?? 0;
+
+    // 3. Today's views
+    const [todayRow] = await db
+      .select({ count: sql<number>`count(*)::int` })
+      .from(pageViewsTable)
+      .where(sql`created_at >= CURRENT_DATE`);
+    const todayViews = todayRow?.count ?? 0;
+
+    // 4. Breakdown by page/path
+    const topPages = await db
+      .select({
+        path: pageViewsTable.path,
+        pageTitle: sql<string>`coalesce(max(page_title), max(path))`,
+        views: sql<number>`count(*)::int`,
+        uniqueVisitors: sql<number>`count(DISTINCT coalesce(visitor_id, ip_address))::int`,
+      })
+      .from(pageViewsTable)
+      .where(timeCondition)
+      .groupBy(pageViewsTable.path)
+      .orderBy(desc(sql`count(*)`))
+      .limit(20);
+
+    // 5. Daily trend (for charts / timelines)
+    const dailyTrend = await db
+      .select({
+        date: sql<string>`TO_CHAR(created_at, 'YYYY-MM-DD')`,
+        views: sql<number>`count(*)::int`,
+        visitors: sql<number>`count(DISTINCT coalesce(visitor_id, ip_address))::int`,
+      })
+      .from(pageViewsTable)
+      .where(timeCondition)
+      .groupBy(sql`TO_CHAR(created_at, 'YYYY-MM-DD')`)
+      .orderBy(asc(sql`TO_CHAR(created_at, 'YYYY-MM-DD')`))
+      .limit(30);
+
+    // 6. Recent live pageviews log
+    const recentViews = await db
+      .select()
+      .from(pageViewsTable)
+      .orderBy(desc(pageViewsTable.createdAt))
+      .limit(25);
+
+    res.json({
+      range,
+      rangeTotal,
+      allTimeTotal,
+      uniqueVisitors,
+      todayViews,
+      topPages,
+      dailyTrend,
+      recentViews,
+    });
+  } catch (err: any) {
+    req.log?.error?.(err, "Failed to fetch analytics");
+    res.status(500).json({ error: "Failed to fetch analytics", detail: err?.message || String(err) });
+  }
 });
 
 export default router;

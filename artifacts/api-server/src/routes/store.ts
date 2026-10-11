@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { db } from "@workspace/db";
-import { sectionsTable, cardsTable, ordersTable } from "@workspace/db";
+import { sectionsTable, cardsTable, ordersTable, pageViewsTable } from "@workspace/db";
 import { eq, and, ilike, or, sql, asc, inArray } from "drizzle-orm";
 import { ensureDefaultSections, DEFAULT_CORE_SECTIONS } from "../lib/ensure-sections.js";
 
@@ -215,6 +215,33 @@ router.get("/cards/:id", async (req, res) => {
   } catch (err) {
     req.log.error(err);
     res.status(500).json({ error: "Failed to fetch card" });
+  }
+});
+
+router.post("/analytics/view", async (req, res) => {
+  try {
+    const { path, pageTitle, visitorId, referrer } = req.body || {};
+    if (!path || typeof path !== "string") {
+      res.status(400).json({ error: "path is required" });
+      return;
+    }
+
+    const ip = (req.headers["x-forwarded-for"] as string)?.split(",")[0]?.trim() || req.socket.remoteAddress || null;
+    const userAgent = req.headers["user-agent"] || null;
+
+    await db.insert(pageViewsTable).values({
+      path: path.slice(0, 500),
+      pageTitle: pageTitle ? String(pageTitle).slice(0, 300) : null,
+      visitorId: visitorId ? String(visitorId).slice(0, 100) : null,
+      ipAddress: ip ? String(ip).slice(0, 100) : null,
+      userAgent: userAgent ? String(userAgent).slice(0, 500) : null,
+      referrer: referrer ? String(referrer).slice(0, 500) : null,
+    });
+
+    res.json({ success: true });
+  } catch (err) {
+    req.log?.error?.(err, "Failed to record page view");
+    res.json({ success: false }); // Non-blocking: fail quietly for client
   }
 });
 

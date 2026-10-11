@@ -76,6 +76,18 @@ export async function ensureDefaultSections(): Promise<void> {
         ALTER TABLE cards ADD COLUMN IF NOT EXISTS official_source_url text;
         ALTER TABLE cards ADD COLUMN IF NOT EXISTS additional_categories text[] DEFAULT '{}';
         ALTER TABLE sections ADD COLUMN IF NOT EXISTS official_source_url text;
+        CREATE TABLE IF NOT EXISTS page_views (
+          id SERIAL PRIMARY KEY,
+          path TEXT NOT NULL,
+          page_title TEXT,
+          visitor_id TEXT,
+          ip_address TEXT,
+          user_agent TEXT,
+          referrer TEXT,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+        );
+        CREATE INDEX IF NOT EXISTS idx_page_views_path ON page_views(path);
+        CREATE INDEX IF NOT EXISTS idx_page_views_created_at ON page_views(created_at);
       `).catch(() => {});
 
       const existing = await db.select().from(sectionsTable);

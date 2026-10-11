@@ -17,7 +17,8 @@ import {
   DownloadCloud,
   Settings,
   Sparkles,
-  ChevronRight
+  ChevronRight,
+  BarChart3
 } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
@@ -38,6 +39,7 @@ const NAV_GROUPS: NavGroup[] = [
     title: "OVERVIEW",
     items: [
       { href: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
+      { href: "/admin/analytics", label: "Traffic & Views", icon: BarChart3, badge: "Live" },
     ],
   },
   {
@@ -68,6 +70,7 @@ const ALL_NAV_ITEMS = NAV_GROUPS.flatMap((g) => g.items);
 
 function preloadAdminRoute(href: string) {
   if (href === "/admin/dashboard") import("@/pages/admin/dashboard");
+  else if (href === "/admin/analytics") import("@/pages/admin/analytics");
   else if (href === "/admin/cards") import("@/pages/admin/cards");
   else if (href === "/admin/cards/new") import("@/pages/admin/card-new");
   else if (href === "/admin/sections") import("@/pages/admin/sections");

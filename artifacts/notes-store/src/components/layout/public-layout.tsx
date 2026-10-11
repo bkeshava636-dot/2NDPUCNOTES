@@ -3,8 +3,10 @@ import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Footer } from "@/components/footer";
 import { BookOpen, ShoppingBag } from "lucide-react";
+import { usePageViewTracker } from "@/hooks/use-page-view-tracker";
 
 export function PublicLayout({ children }: { children: ReactNode }) {
+  usePageViewTracker();
   const [location] = useLocation();
   const isPurchasesActive = location === "/my-purchases";
 
