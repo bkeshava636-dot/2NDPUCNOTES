@@ -120,7 +120,7 @@ export default function Checkout() {
         key: orderData.keyId,
         amount: orderData.amountPaise,
         currency: "INR",
-        name: "2PUC Notes Store",
+        name: "2puc",
         description: orderData.cardTitle,
         order_id: orderData.razorpayOrderId,
         prefill: {
@@ -198,77 +198,77 @@ export default function Checkout() {
   return (
     <div className="max-w-lg mx-auto w-full px-4 py-8 sm:py-10">
       <Link href={`/card/${cardId}`}>
-        <Button variant="ghost" size="sm" className="gap-2 text-[#5a6b82] hover:text-[#112542] -ml-2 mb-6">
+        <Button variant="ghost" size="sm" className="gap-2 text-[#475569] hover:text-[#0f172a] -ml-2 mb-5 font-medium">
           <ArrowLeft className="h-4 w-4" />
-          <span>Back</span>
+          <span>Back to Notes</span>
         </Button>
       </Link>
 
       {/* Order Summary Card */}
-      <div className="bg-white border border-[#e2e8f0] rounded-xl p-4 sm:p-5 mb-5">
-        <div className="flex items-center justify-between border-b border-[#eef2f6] pb-2.5 mb-3">
-          <span className="text-[11px] font-semibold text-[#64748b] uppercase tracking-wider">Order Summary</span>
-          <span className="text-xs font-medium text-[#1856b8] bg-[#ebf3ff] border border-[#dce8fa] px-2 py-0.5 rounded">
+      <div className="bg-white border border-[#e2e8f0] rounded-2xl p-4.5 sm:p-5 mb-5 shadow-xs">
+        <div className="flex items-center justify-between border-b border-[#f1f5f9] pb-3 mb-3.5">
+          <span className="text-[11px] font-bold text-[#64748b] uppercase tracking-wider">Order Summary</span>
+          <span className="text-xs font-semibold text-[#2563eb] bg-[#eff6ff] border border-[#bfdbfe] px-2.5 py-0.5 rounded-full">
             {card.resourceType}
           </span>
         </div>
 
-        <div className="flex items-start gap-3">
-          <div className="h-12 w-12 rounded-lg bg-[#f8fafc] border border-[#eef2f6] overflow-hidden shrink-0 flex items-center justify-center">
+        <div className="flex items-start gap-3.5">
+          <div className="h-13 w-13 rounded-xl bg-[#f8fafc] border border-[#e2e8f0] overflow-hidden shrink-0 flex items-center justify-center">
             {card.thumbnailUrl ? (
               <img src={card.thumbnailUrl} alt={card.title} className="w-full h-full object-cover" />
             ) : (
-              <FileText className="h-5 w-5 text-[#94a3b8]" />
+              <FileText className="h-5.5 w-5.5 text-[#94a3b8]" />
             )}
           </div>
           <div className="flex-1 min-w-0">
-            <h2 className="font-bold text-[#112542] text-sm leading-snug line-clamp-2">
+            <h2 className="font-bold text-[#0f172a] text-sm sm:text-base leading-snug line-clamp-2">
               {card.title}
             </h2>
             {card.chapter && (
-              <p className="text-xs text-[#5a6b82] mt-0.5 truncate">{card.chapter}</p>
+              <p className="text-xs text-[#64748b] mt-1 truncate">{card.chapter}</p>
             )}
           </div>
         </div>
 
         {/* Price Row */}
-        <div className="flex items-center justify-between border-t border-[#eef2f6] pt-3 mt-3.5">
-          <span className="text-sm font-medium text-[#5a6b82]">Total</span>
+        <div className="flex items-center justify-between border-t border-[#f1f5f9] pt-3.5 mt-3.5">
+          <span className="text-sm font-medium text-[#64748b]">Total Payable</span>
           <div className="text-right">
             {isCardFree ? (
-              <span className="text-lg font-bold text-[#16a34a]">Free</span>
+              <span className="text-xl font-extrabold text-[#16a34a]">Free</span>
             ) : card.discountPricePaise && card.discountPricePaise < card.pricePaise ? (
               <div className="flex items-baseline gap-2">
                 <span className="text-xs text-[#94a3b8] line-through">{formatRupees(card.pricePaise)}</span>
-                <span className="text-lg font-bold text-[#112542]">{formatRupees(effectivePrice)}</span>
+                <span className="text-xl font-extrabold text-[#0f172a]">{formatRupees(effectivePrice)}</span>
               </div>
             ) : (
-              <span className="text-lg font-bold text-[#112542]">{formatRupees(effectivePrice)}</span>
+              <span className="text-xl font-extrabold text-[#0f172a]">{formatRupees(effectivePrice)}</span>
             )}
           </div>
         </div>
       </div>
 
       {/* Customer Form Card */}
-      <Card className="rounded-xl border-[#e2e8f0] shadow-none">
-        <CardHeader className="pb-3 pt-5 px-5">
-          <CardTitle className="text-base sm:text-lg font-bold text-[#112542]">
+      <Card className="rounded-2xl border-[#e2e8f0] shadow-xs">
+        <CardHeader className="pb-3 pt-5 px-5 sm:px-6">
+          <CardTitle className="text-base sm:text-lg font-bold text-[#0f172a]">
             {isCardFree ? "Free Study Resource" : "Complete Purchase"}
           </CardTitle>
-          <CardDescription className="text-xs text-[#5a6b82]">
+          <CardDescription className="text-xs sm:text-sm text-[#64748b]">
             {isCardFree
               ? "This resource is completely free. Click below to download the PDF immediately."
               : "Enter your contact details to receive and access your purchased study material"}
           </CardDescription>
         </CardHeader>
-        <CardContent className="px-5 pb-5">
+        <CardContent className="px-5 sm:px-6 pb-6 pt-1">
           {isCardFree ? (
             <div className="space-y-4 pt-1">
               <Button
                 type="button"
                 onClick={handleFreeDownloadDirect}
                 disabled={loading}
-                className="w-full gap-2 h-11 font-semibold text-sm rounded-lg bg-[#16a34a] hover:bg-[#15803d] text-white shadow-none transition-colors"
+                className="w-full gap-2 h-11 font-semibold text-sm rounded-xl bg-[#16a34a] hover:bg-[#15803d] text-white shadow-2xs transition-all"
               >
                 {loading ? (
                   <>
@@ -284,26 +284,26 @@ export default function Checkout() {
               </Button>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="space-y-3.5">
+            <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-1.5">
-                <Label htmlFor="name" className="text-xs font-semibold text-[#334155] flex items-center gap-1.5">
+                <Label htmlFor="name" className="text-xs font-bold text-[#334155] flex items-center gap-1.5">
                   <User className="h-3.5 w-3.5 text-[#94a3b8]" />
-                  <span>Full Name *</span>
+                  <span>Student Full Name *</span>
                 </Label>
                 <Input
                   id="name"
-                  placeholder="Your name"
+                  placeholder="Your full name"
                   value={name}
                   onChange={e => setName(e.target.value)}
                   required
-                  className="h-10 text-sm bg-[#f8fafc] border-[#e2e8f0] text-[#112542] focus-visible:border-[#1856b8]"
+                  className="h-10.5 rounded-lg text-sm bg-[#f8fafc] border-[#cbd5e1] text-[#0f172a] focus-visible:ring-[#2563eb]"
                 />
               </div>
 
               <div className="space-y-1.5">
-                <Label htmlFor="phone" className="text-xs font-semibold text-[#334155] flex items-center gap-1.5">
+                <Label htmlFor="phone" className="text-xs font-bold text-[#334155] flex items-center gap-1.5">
                   <Phone className="h-3.5 w-3.5 text-[#94a3b8]" />
-                  <span>Phone Number *</span>
+                  <span>Mobile Number *</span>
                 </Label>
                 <Input
                   id="phone"
@@ -313,49 +313,54 @@ export default function Checkout() {
                   onChange={e => setPhone(e.target.value)}
                   required
                   maxLength={10}
-                  className="h-10 text-sm bg-[#f8fafc] border-[#e2e8f0] text-[#112542] focus-visible:border-[#1856b8]"
+                  className="h-10.5 rounded-lg text-sm bg-[#f8fafc] border-[#cbd5e1] text-[#0f172a] focus-visible:ring-[#2563eb]"
                 />
-                <p className="text-[11px] text-[#94a3b8]">Used to retrieve your purchases later</p>
+                <p className="text-[11px] text-[#64748b]">Used to instantly retrieve and re-download your purchases anytime</p>
               </div>
 
               <div className="space-y-1.5">
-                <Label htmlFor="email" className="text-xs font-semibold text-[#334155] flex items-center gap-1.5">
+                <Label htmlFor="email" className="text-xs font-bold text-[#334155] flex items-center gap-1.5">
                   <Mail className="h-3.5 w-3.5 text-[#94a3b8]" />
-                  <span>Email (optional)</span>
+                  <span>Email Address (Optional)</span>
                 </Label>
                 <Input
                   id="email"
                   type="email"
-                  placeholder="your@email.com"
+                  placeholder="Optional: for backup receipt"
                   value={email}
                   onChange={e => setEmail(e.target.value)}
-                  className="h-10 text-sm bg-[#f8fafc] border-[#e2e8f0] text-[#112542] focus-visible:border-[#1856b8]"
+                  className="h-10.5 rounded-lg text-sm bg-[#f8fafc] border-[#cbd5e1] text-[#0f172a] focus-visible:ring-[#2563eb]"
                 />
               </div>
 
-              <div className="pt-1">
+              <div className="pt-2">
                 <Button
                   type="submit"
-                  className="w-full gap-2 h-11 font-semibold text-sm rounded-lg bg-[#2f74de] hover:bg-[#1f63c8] text-white shadow-none transition-colors"
+                  className="w-full gap-2 h-11 font-semibold text-sm rounded-xl bg-[#2563eb] hover:bg-[#1d4ed8] text-white shadow-2xs transition-all"
                   disabled={loading}
                 >
-                  {loading ? "Processing..." : (
+                  {loading ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      <span>Processing with Razorpay...</span>
+                    </>
+                  ) : (
                     <>
                       <Lock className="h-4 w-4" />
-                      {`Pay ${formatRupees(effectivePrice)} Securely`}
+                      {`Pay ${formatRupees(effectivePrice)} & Download`}
                     </>
                   )}
                 </Button>
               </div>
 
               {/* Trust and security badges */}
-              <div className="pt-3 border-t border-[#eef2f6] flex items-center justify-center gap-4 text-xs text-[#5a6b82]">
-                <div className="flex items-center gap-1">
+              <div className="pt-3 border-t border-[#f1f5f9] flex items-center justify-center gap-5 text-[11px] text-[#64748b]">
+                <div className="flex items-center gap-1.5">
                   <ShieldCheck className="h-3.5 w-3.5 text-[#16a34a]" />
-                  <span>256-bit Encryption</span>
+                  <span>256-bit Encrypted</span>
                 </div>
-                <div className="flex items-center gap-1">
-                  <Lock className="h-3.5 w-3.5 text-[#1856b8]" />
+                <div className="flex items-center gap-1.5">
+                  <Lock className="h-3.5 w-3.5 text-[#2563eb]" />
                   <span>Secured by Razorpay</span>
                 </div>
               </div>

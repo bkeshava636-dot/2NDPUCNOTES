@@ -130,7 +130,7 @@ export default function CardPage() {
     <div className="max-w-5xl mx-auto w-full px-4 py-8 sm:py-10">
       {/* Back button */}
       <Link href="/">
-        <Button variant="ghost" size="sm" className="gap-2 text-[#5a6b82] hover:text-[#112542] -ml-2 mb-6">
+        <Button variant="ghost" size="sm" className="gap-2 text-[#475569] hover:text-[#0f172a] -ml-2 mb-6 font-medium">
           <ArrowLeft className="h-4 w-4" />
           <span>Back to Notes</span>
         </Button>
@@ -138,9 +138,9 @@ export default function CardPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
         {/* Left Column: Image Preview (only if available) & Description */}
-        <div className={`space-y-5 ${currentPreview || card.description ? "lg:col-span-7" : "hidden"}`}>
+        <div className={`space-y-6 ${currentPreview || card.description ? "lg:col-span-7" : "hidden"}`}>
           {currentPreview && (
-            <div className="bg-white rounded-xl border border-[#e2e8f0] overflow-hidden">
+            <div className="bg-white rounded-2xl border border-[#e2e8f0] overflow-hidden shadow-xs">
               {/* Main Preview Container */}
               <div className="aspect-[16/10] sm:aspect-video bg-[#f8fafc] relative flex items-center justify-center overflow-hidden border-b border-[#eef2f6]">
                 <img
@@ -152,12 +152,12 @@ export default function CardPage() {
                 {/* Status Badge overlay */}
                 <div className="absolute top-3 left-3 flex gap-2">
                   {card.isFree && (
-                    <span className="bg-[#16a34a] text-white font-semibold text-[11px] px-2.5 py-0.5 rounded-md shadow-2xs">
+                    <span className="bg-[#16a34a] text-white font-semibold text-[11px] px-2.5 py-0.5 rounded shadow-2xs">
                       Free
                     </span>
                   )}
                   {card.isFeatured && (
-                    <span className="bg-[#d97706] text-white font-semibold text-[11px] px-2.5 py-0.5 rounded-md shadow-2xs">
+                    <span className="bg-[#d97706] text-white font-semibold text-[11px] px-2.5 py-0.5 rounded shadow-2xs">
                       Popular
                     </span>
                   )}
@@ -171,9 +171,9 @@ export default function CardPage() {
                     <button
                       key={i}
                       onClick={() => setPreviewIdx(i)}
-                      className={`shrink-0 w-14 h-14 rounded-lg border-2 overflow-hidden transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1856b8] ${
+                      className={`shrink-0 w-14 h-14 rounded-lg border-2 overflow-hidden transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2563eb] ${
                         i === previewIdx
-                          ? "border-[#1856b8]"
+                          ? "border-[#2563eb]"
                           : "border-[#e2e8f0] hover:border-[#cbd5e1] opacity-70 hover:opacity-100"
                       }`}
                     >
@@ -187,9 +187,9 @@ export default function CardPage() {
 
           {/* Description Card */}
           {card.description && (
-            <div className="bg-white rounded-xl border border-[#e2e8f0] p-5 sm:p-6 space-y-2.5">
-              <h2 className="text-sm sm:text-base font-bold text-[#112542]">About this Resource</h2>
-              <p className="text-[#5a6b82] leading-relaxed text-sm whitespace-pre-line">
+            <div className="bg-white rounded-2xl border border-[#e2e8f0] p-5 sm:p-6 space-y-2.5 shadow-xs">
+              <h2 className="text-sm sm:text-base font-bold text-[#0f172a]">About this Resource</h2>
+              <p className="text-[#64748b] leading-relaxed text-xs sm:text-sm whitespace-pre-line">
                 {card.description}
               </p>
             </div>
@@ -198,36 +198,36 @@ export default function CardPage() {
 
         {/* Right Column: Title, Metadata Chips, Pricing & Purchase CTA */}
         <div className="lg:col-span-5 space-y-5 lg:sticky lg:top-24">
-          <div className="bg-white rounded-xl border border-[#e2e8f0] p-5 sm:p-6 space-y-5">
+          <div className="bg-white rounded-2xl border border-[#e2e8f0] p-5 sm:p-6 space-y-5 shadow-xs">
             {/* Subject and tags */}
-            <div className="space-y-2.5">
-              <div className="flex flex-wrap items-center gap-2">
+            <div className="space-y-3">
+              <div className="flex flex-wrap items-center gap-1.5">
                 {card.isRecommended && (
-                  <Badge className="font-semibold text-xs bg-[#0284c7] text-white border-0">
+                  <Badge className="font-semibold text-[11px] bg-[#0284c7] text-white border-0 shadow-2xs">
                     Recommended
                   </Badge>
                 )}
                 {card.subject && (
-                  <Badge variant="secondary" className="font-semibold text-xs bg-[#ebf3ff] text-[#1856b8] border border-[#dce8fa]">
+                  <Badge variant="secondary" className="font-semibold text-[11px] bg-[#eff6ff] text-[#2563eb] border border-[#bfdbfe]">
                     {card.subject}
                   </Badge>
                 )}
-                <Badge variant="outline" className="text-xs font-medium text-[#64748b] border-[#e2e8f0] bg-[#f8fafc]">
+                <Badge variant="outline" className="text-[11px] font-medium text-[#475569] border-[#e2e8f0] bg-[#f8fafc]">
                   {card.resourceType}
                 </Badge>
                 {card.subtype && (
-                  <Badge variant="outline" className="text-xs font-medium text-[#0369a1] border-[#bae6fd] bg-[#f0f9ff]">
+                  <Badge variant="outline" className="text-[10px] font-medium text-[#0284c7] border-[#bae6fd] bg-[#f0f9ff]">
                     {card.subtype}
                   </Badge>
                 )}
                 {card.classLevel && (
-                  <Badge variant="outline" className="text-xs font-medium text-[#64748b] border-[#e2e8f0] bg-[#f8fafc]">
+                  <Badge variant="outline" className="text-[11px] font-medium text-[#475569] border-[#e2e8f0] bg-[#f8fafc]">
                     {card.classLevel}
                   </Badge>
                 )}
               </div>
 
-              <h1 className="text-xl sm:text-2xl font-bold text-[#112542] leading-snug tracking-tight">
+              <h1 className="text-xl sm:text-2xl font-bold text-[#0f172a] leading-snug tracking-tight">
                 {card.title}
               </h1>
 
@@ -238,7 +238,7 @@ export default function CardPage() {
                       href={card.answerKeyUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#0284c7] bg-[#e0f2fe] hover:bg-[#bae6fd] border border-[#bae6fd] px-2.5 py-1 rounded-md transition-colors"
+                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#0284c7] bg-[#f0f9ff] hover:bg-[#e0f2fe] border border-[#bae6fd] px-2.5 py-1 rounded-md transition-colors"
                     >
                       <CheckCircle2 className="h-3.5 w-3.5" />
                       View Linked Answer Key
@@ -249,7 +249,7 @@ export default function CardPage() {
                       href={card.officialSourceUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 text-xs font-medium text-[#475569] hover:text-[#0b57d0] bg-[#f1f5f9] hover:bg-[#e2e8f0] border border-[#e2e8f0] px-2.5 py-1 rounded-md transition-colors"
+                      className="inline-flex items-center gap-1.5 text-xs font-medium text-[#475569] hover:text-[#0f172a] bg-[#f8fafc] hover:bg-[#e2e8f0] border border-[#e2e8f0] px-2.5 py-1 rounded-md transition-colors"
                     >
                       Official Source Link &rarr;
                     </a>
@@ -261,42 +261,42 @@ export default function CardPage() {
             {/* Structured Metadata Chips Grid */}
             <div className="grid grid-cols-2 gap-2 pt-1">
               {card.chapter && (
-                <div className="flex items-center gap-2 p-2 rounded-lg bg-[#f8fafc] border border-[#e2e8f0] text-xs text-[#334155]">
-                  <BookOpen className="h-3.5 w-3.5 text-[#1856b8] shrink-0" />
-                  <span className="truncate font-medium">{card.chapter}</span>
+                <div className="flex items-center gap-2 p-2.5 rounded-xl bg-[#f8fafc] border border-[#e2e8f0] text-xs text-[#334155]">
+                  <BookOpen className="h-3.5 w-3.5 text-[#2563eb] shrink-0" />
+                  <span className="truncate font-semibold">{card.chapter}</span>
                 </div>
               )}
               {card.board && (
-                <div className="flex items-center gap-2 p-2 rounded-lg bg-[#f8fafc] border border-[#e2e8f0] text-xs text-[#334155]">
-                  <ShieldCheck className="h-3.5 w-3.5 text-[#1856b8] shrink-0" />
-                  <span className="truncate font-medium">{card.board} Board</span>
+                <div className="flex items-center gap-2 p-2.5 rounded-xl bg-[#f8fafc] border border-[#e2e8f0] text-xs text-[#334155]">
+                  <ShieldCheck className="h-3.5 w-3.5 text-[#2563eb] shrink-0" />
+                  <span className="truncate font-semibold">{card.board} Board</span>
                 </div>
               )}
               {card.semester && (
-                <div className="flex items-center gap-2 p-2 rounded-lg bg-[#f8fafc] border border-[#e2e8f0] text-xs text-[#334155]">
-                  <Hash className="h-3.5 w-3.5 text-[#1856b8] shrink-0" />
-                  <span className="truncate font-medium">{card.semester}</span>
+                <div className="flex items-center gap-2 p-2.5 rounded-xl bg-[#f8fafc] border border-[#e2e8f0] text-xs text-[#334155]">
+                  <Hash className="h-3.5 w-3.5 text-[#2563eb] shrink-0" />
+                  <span className="truncate font-semibold">{card.semester}</span>
                 </div>
               )}
               {card.pageCount && (
-                <div className="flex items-center gap-2 p-2 rounded-lg bg-[#f8fafc] border border-[#e2e8f0] text-xs text-[#334155]">
-                  <FileText className="h-3.5 w-3.5 text-[#1856b8] shrink-0" />
-                  <span className="font-medium">{card.pageCount} pages</span>
+                <div className="flex items-center gap-2 p-2.5 rounded-xl bg-[#f8fafc] border border-[#e2e8f0] text-xs text-[#334155]">
+                  <FileText className="h-3.5 w-3.5 text-[#2563eb] shrink-0" />
+                  <span className="font-semibold">{card.pageCount} pages</span>
                 </div>
               )}
               {card.fileSizeKb ? (
-                <div className="flex items-center gap-2 p-2 rounded-lg bg-[#f8fafc] border border-[#e2e8f0] text-xs text-[#334155]">
-                  <FileDown className="h-3.5 w-3.5 text-[#1856b8] shrink-0" />
-                  <span className="font-medium">{(card.fileSizeKb / 1024).toFixed(1)} MB PDF</span>
+                <div className="flex items-center gap-2 p-2.5 rounded-xl bg-[#f8fafc] border border-[#e2e8f0] text-xs text-[#334155]">
+                  <FileDown className="h-3.5 w-3.5 text-[#2563eb] shrink-0" />
+                  <span className="font-semibold">{(card.fileSizeKb / 1024).toFixed(1)} MB PDF</span>
                 </div>
               ) : card.pdfFileKey?.startsWith("http") ? (
-                <div className={`flex items-center gap-2 p-2 rounded-lg text-xs ${
+                <div className={`flex items-center gap-2 p-2.5 rounded-xl text-xs ${
                   card.pdfFileKey.includes("gov.in")
                     ? "bg-[#f0f9ff] border border-[#bae6fd] text-[#0284c7]"
-                    : "bg-[#ebf3ff] border border-[#dce8fa] text-[#1856b8]"
+                    : "bg-[#eff6ff] border border-[#bfdbfe] text-[#2563eb]"
                 }`}>
                   <FileText className="h-3.5 w-3.5 shrink-0" />
-                  <span className="font-medium">
+                  <span className="font-semibold">
                     {card.pdfFileKey.includes("gov.in") ? "Official Government Resource" : "Google Drive Document"}
                   </span>
                 </div>
@@ -304,15 +304,15 @@ export default function CardPage() {
             </div>
 
             {/* Pricing Section */}
-            <div className="pt-4 border-t border-[#eef2f6] space-y-4">
+            <div className="pt-4 border-t border-[#f1f5f9] space-y-4">
               <div className="flex items-baseline justify-between">
                 <div>
-                  <span className="text-[11px] font-semibold uppercase tracking-wider text-[#94a3b8] block mb-0.5">Price</span>
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-[#94a3b8] block mb-0.5">Price</span>
                   {card.isFree ? (
-                    <span className="text-2xl sm:text-3xl font-bold text-[#16a34a]">Free</span>
+                    <span className="text-2xl sm:text-3xl font-extrabold text-[#16a34a]">Free</span>
                   ) : hasDiscount ? (
                     <div className="flex items-baseline gap-2">
-                      <span className="text-2xl sm:text-3xl font-bold text-[#112542]">
+                      <span className="text-2xl sm:text-3xl font-extrabold text-[#0f172a]">
                         {formatRupees(card.discountPricePaise!)}
                       </span>
                       <span className="text-sm text-[#94a3b8] line-through">
@@ -320,14 +320,14 @@ export default function CardPage() {
                       </span>
                     </div>
                   ) : (
-                    <span className="text-2xl sm:text-3xl font-bold text-[#112542]">
+                    <span className="text-2xl sm:text-3xl font-extrabold text-[#0f172a]">
                       {formatRupees(card.pricePaise)}
                     </span>
                   )}
                 </div>
 
                 {hasDiscount && (
-                  <span className="bg-[#eaf5ec] text-[#167035] border border-[#d7ecdc] text-xs font-semibold px-2 py-0.5 rounded">
+                  <span className="bg-[#eff6ff] text-[#2563eb] border border-[#bfdbfe] text-xs font-bold px-2 py-0.5 rounded-full">
                     Discounted
                   </span>
                 )}
@@ -339,7 +339,7 @@ export default function CardPage() {
                   onClick={handleFreeDownload} 
                   disabled={downloading}
                   size="lg" 
-                  className="w-full gap-2 rounded-lg text-sm font-semibold h-11 bg-[#16a34a] hover:bg-[#15803d] text-white shadow-none transition-colors"
+                  className="w-full gap-2 rounded-xl text-sm font-semibold h-11 bg-[#16a34a] hover:bg-[#15803d] text-white shadow-2xs transition-all"
                 >
                   {downloading ? (
                     <>
@@ -354,7 +354,7 @@ export default function CardPage() {
                   )}
                 </Button>
               ) : (
-                <Button onClick={handleBuy} size="lg" className="w-full gap-2 rounded-lg text-sm font-semibold h-11 bg-[#2f74de] hover:bg-[#1f63c8] text-white shadow-none transition-colors">
+                <Button onClick={handleBuy} size="lg" className="w-full gap-2 rounded-xl text-sm font-semibold h-11 bg-[#2563eb] hover:bg-[#1d4ed8] text-white shadow-2xs transition-all">
                   <span>Buy Now &rarr;</span>
                 </Button>
               )}
@@ -362,13 +362,13 @@ export default function CardPage() {
           </div>
 
           {/* Telegram Support prompt */}
-          <div className="bg-[#eaf2fd] border border-[#dce7f7] rounded-xl p-3.5 flex items-center justify-between text-xs text-[#112542]">
-            <span>Have questions about this material?</span>
+          <div className="bg-[#eff6ff] border border-[#bfdbfe]/80 rounded-2xl p-3.5 px-4.5 flex items-center justify-between text-xs text-[#0f172a] shadow-2xs">
+            <span className="font-medium text-[#475569]">Have questions about this material?</span>
             <a
               href={card.telegramLink || TELEGRAM_LINK}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-1 font-semibold text-[#0284c7] hover:text-[#0369a1] transition-colors"
+              className="inline-flex items-center gap-1 font-semibold text-[#2563eb] hover:text-[#1d4ed8] transition-colors"
             >
               <Send className="h-3 w-3" />
               <span>Ask Support</span>

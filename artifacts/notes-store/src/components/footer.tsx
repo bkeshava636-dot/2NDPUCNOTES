@@ -13,7 +13,7 @@ export function Footer() {
               <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#ebf3ff] text-[#1856b8] border border-[#dce8fa]">
                 <BookOpen className="h-3.5 w-3.5" />
               </div>
-              <span className="tracking-tight">2PUC Notes</span>
+              <span className="tracking-tight text-lg font-bold">2puc</span>
             </Link>
             <p className="text-xs sm:text-sm text-[#5a6b82] leading-relaxed max-w-xs">
               High-quality 2nd PUC Science notes and study materials, organized to help you prepare with confidence.
@@ -91,7 +91,7 @@ export function Footer() {
 
         {/* Bottom divider and copyright */}
         <div className="mt-10 border-t border-[#eef2f6] pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[#8a99ad]">
-          <p>&copy; 2026 2nd PUC Notes. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} 2puc. All rights reserved.</p>
           <p className="text-center sm:text-right">
             Karnataka 2nd PUC Science Study Resources
           </p>

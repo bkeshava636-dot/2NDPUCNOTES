@@ -47,33 +47,33 @@ export default function PaymentSuccess() {
 
       {/* Order Info Card */}
       {isLoading ? (
-        <div className="bg-white border border-[#e2e8f0] rounded-xl p-4 sm:p-5 mb-5 text-left space-y-3">
+        <div className="bg-white border border-[#e2e8f0] rounded-2xl p-4 sm:p-5 mb-5 text-left space-y-3 shadow-xs">
           <Skeleton className="h-4 w-20" />
           <Skeleton className="h-6 w-full" />
           <Skeleton className="h-4 w-32" />
         </div>
       ) : (
-        <div className="bg-white border border-[#e2e8f0] rounded-xl p-4 sm:p-5 mb-5 text-left">
-          <div className="flex items-start gap-3">
-            <div className="h-9 w-9 rounded-lg bg-[#ebf3ff] text-[#1856b8] border border-[#dce8fa] flex items-center justify-center shrink-0 mt-0.5">
-              <FileText className="h-4 w-4" />
+        <div className="bg-white border border-[#e2e8f0] rounded-2xl p-4.5 sm:p-5 mb-5 text-left shadow-xs">
+          <div className="flex items-start gap-3.5">
+            <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-[#eff6ff] to-[#dbeafe] text-[#2563eb] border border-[#bfdbfe]/80 flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">
+              <FileText className="h-5 w-5" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-[11px] font-semibold text-[#94a3b8] uppercase tracking-wider mb-0.5">Resource</p>
-              <p className="font-bold text-[#112542] text-sm leading-snug">{card?.title}</p>
+              <p className="text-[11px] font-bold text-[#94a3b8] uppercase tracking-wider mb-0.5">Study Resource</p>
+              <p className="font-bold text-[#0f172a] text-sm leading-snug">{card?.title}</p>
             </div>
           </div>
 
           {orderId && (
-            <div className="mt-3.5 pt-3 border-t border-[#eef2f6] flex items-center justify-between">
+            <div className="mt-3.5 pt-3 border-t border-[#f1f5f9] flex items-center justify-between">
               <div>
-                <p className="text-[11px] font-semibold text-[#94a3b8] uppercase tracking-wider mb-0.5">Order ID</p>
-                <p className="font-mono text-xs text-[#5a6b82] break-all">{orderId}</p>
+                <p className="text-[11px] font-bold text-[#94a3b8] uppercase tracking-wider mb-0.5">Order Reference</p>
+                <p className="font-mono text-xs text-[#64748b] break-all">{orderId}</p>
               </div>
               <button
                 type="button"
                 onClick={handleCopyOrderId}
-                className="text-xs font-medium text-[#1856b8] hover:text-[#0b57d0] transition-colors ml-2 shrink-0 flex items-center gap-1"
+                className="text-xs font-semibold text-[#2563eb] hover:text-[#1d4ed8] transition-colors ml-2 shrink-0 flex items-center gap-1.5 px-2 py-1 rounded bg-[#eff6ff] border border-[#bfdbfe]"
                 aria-label="Copy Order ID"
               >
                 {copied ? (
@@ -96,9 +96,9 @@ export default function PaymentSuccess() {
         target={isDriveLink ? "_blank" : undefined}
         rel={isDriveLink ? "noopener noreferrer" : undefined}
         download={!isDriveLink} 
-        className="block mb-3"
+        className="block mb-3.5"
       >
-        <Button size="lg" className="w-full gap-2 h-11 rounded-lg text-sm font-semibold bg-[#2f74de] hover:bg-[#1f63c8] text-white shadow-none transition-colors">
+        <Button size="lg" className="w-full gap-2 h-11.5 rounded-xl text-sm font-semibold bg-[#2563eb] hover:bg-[#1d4ed8] text-white shadow-2xs transition-all">
           {isDriveLink ? (
             <>
               <ExternalLink className="h-4 w-4" />
@@ -113,20 +113,20 @@ export default function PaymentSuccess() {
         </Button>
       </a>
 
-      <p className="text-xs text-[#94a3b8] mb-7">
+      <p className="text-xs text-[#64748b] mb-7">
         You can re-download this resource anytime using your phone number in My Purchases.
       </p>
 
       {/* Secondary Actions */}
-      <div className="flex gap-2.5">
+      <div className="flex gap-3">
         <Link href="/my-purchases" className="flex-1">
-          <Button variant="outline" className="w-full gap-2 rounded-lg text-xs font-medium h-9 border-[#e2e8f0] text-[#5a6b82] hover:text-[#112542] hover:bg-[#f8fafc]">
+          <Button variant="outline" className="w-full gap-2 rounded-xl text-xs font-semibold h-10 border-[#cbd5e1] text-[#475569] hover:text-[#0f172a] hover:bg-[#f8fafc] shadow-2xs">
             <ShoppingBag className="h-3.5 w-3.5" />
             <span>My Purchases</span>
           </Button>
         </Link>
         <Link href="/" className="flex-1">
-          <Button variant="ghost" className="w-full gap-2 rounded-lg text-xs font-medium h-9 text-[#5a6b82] hover:text-[#112542] hover:bg-[#f8fafc]">
+          <Button variant="ghost" className="w-full gap-2 rounded-xl text-xs font-semibold h-10 text-[#475569] hover:text-[#0f172a] hover:bg-[#f8fafc]">
             <Home className="h-3.5 w-3.5" />
             <span>Home</span>
           </Button>

@@ -263,7 +263,7 @@ export default function CategoryPage() {
         <Button
           variant="ghost"
           size="sm"
-          className="gap-2 text-[#5a6b82] hover:text-[#112542] -ml-2 mb-4"
+          className="gap-2 text-[#475569] hover:text-[#0f172a] -ml-2 mb-4 font-medium"
         >
           <ArrowLeft className="h-4 w-4" />
           <span>Back to Home</span>
@@ -271,28 +271,28 @@ export default function CategoryPage() {
       </Link>
 
       {/* Category Banner */}
-      <div className="bg-white border border-[#e2e8f0] rounded-2xl p-6 sm:p-8 mb-6 shadow-2xs">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-white border border-[#e2e8f0] rounded-2xl p-6 sm:p-7 mb-6 shadow-xs">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-5">
           <div className="flex items-start gap-4">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#ebf3ff] text-[#1856b8] border border-[#dce8fa]">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#eff6ff] to-[#dbeafe] text-[#2563eb] border border-[#bfdbfe]/80 shadow-2xs">
               <Icon className="h-6 w-6" />
             </div>
             <div>
               <div className="flex items-center gap-2.5 flex-wrap">
-                <h1 className="text-2xl sm:text-3xl font-bold text-[#112542] tracking-tight">
+                <h1 className="text-2xl sm:text-3xl font-bold text-[#0f172a] tracking-tight">
                   {meta.title}
                 </h1>
                 <Badge
                   variant="outline"
-                  className="bg-[#ebf3ff] text-[#1856b8] border-[#dce8fa] text-xs font-semibold px-2 py-0.5"
+                  className="bg-[#eff6ff] text-[#2563eb] border-[#bfdbfe] text-xs font-semibold px-2.5 py-0.5 rounded-full"
                 >
                   Resource Category
                 </Badge>
-                <span className="text-xs font-medium text-[#64748b] bg-[#f0f4f9] px-2 py-0.5 rounded-md border border-[#e2e8f0]">
+                <span className="text-xs font-medium text-[#64748b] bg-[#f8fafc] px-2.5 py-0.5 rounded-full border border-[#e2e8f0]">
                   {filteredCards.length} {filteredCards.length === 1 ? "item" : "items"}
                 </span>
               </div>
-              <p className="text-[#5a6b82] text-sm leading-relaxed max-w-2xl mt-1.5">
+              <p className="text-[#64748b] text-xs sm:text-sm leading-relaxed max-w-2xl mt-1.5 font-normal">
                 {meta.description}
               </p>
             </div>
@@ -304,7 +304,7 @@ export default function CategoryPage() {
                 href={officialSourceUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#0284c7] bg-[#e0f2fe] hover:bg-[#bae6fd] border border-[#bae6fd] px-3 py-1.5 rounded-lg transition-colors"
+                className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#0284c7] bg-[#f0f9ff] hover:bg-[#e0f2fe] border border-[#bae6fd] px-3.5 py-2 rounded-lg transition-colors shadow-2xs"
               >
                 <span>Official Government Source (KSEAB)</span>
                 <ExternalLink className="h-3.5 w-3.5" />
@@ -315,20 +315,20 @@ export default function CategoryPage() {
       </div>
 
       {/* Filter by Subject Toolbar */}
-      <div className="space-y-3 mb-6">
-        <div className="flex items-center gap-2 text-xs font-semibold text-[#64748b] uppercase tracking-wider">
-          <SlidersHorizontal className="h-3.5 w-3.5" />
+      <div className="space-y-3.5 mb-6">
+        <div className="flex items-center gap-2 text-xs font-bold text-[#475569] uppercase tracking-wider">
+          <SlidersHorizontal className="h-3.5 w-3.5 text-[#2563eb]" />
           <span>Filter by Subject</span>
         </div>
 
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+        <div className="flex items-center gap-2 overflow-x-auto pb-1.5 scrollbar-none">
           <button
             type="button"
             onClick={() => setActiveSubject("all")}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium shrink-0 transition-colors ${
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold shrink-0 transition-all ${
               activeSubject === "all"
-                ? "bg-[#1856b8] text-white shadow-2xs"
-                : "bg-white text-[#475569] border border-[#e2e8f0] hover:bg-[#f8fafc]"
+                ? "bg-[#2563eb] text-white shadow-2xs"
+                : "bg-white text-[#475569] border border-[#e2e8f0] hover:bg-[#f8fafc] hover:border-[#cbd5e1]"
             }`}
           >
             All Subjects
@@ -340,10 +340,10 @@ export default function CategoryPage() {
                 key={subj}
                 type="button"
                 onClick={() => setActiveSubject(subj)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-medium shrink-0 transition-colors ${
+                className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold shrink-0 transition-all ${
                   isSelected
-                    ? "bg-[#1856b8] text-white shadow-2xs"
-                    : "bg-white text-[#475569] border border-[#e2e8f0] hover:bg-[#f8fafc]"
+                    ? "bg-[#2563eb] text-white shadow-2xs"
+                    : "bg-white text-[#475569] border border-[#e2e8f0] hover:bg-[#f8fafc] hover:border-[#cbd5e1]"
                 }`}
               >
                 {subj}
@@ -354,17 +354,17 @@ export default function CategoryPage() {
 
         {/* Subtype Filter Pills (Only for Practical or PYQ categories) */}
         {(isPractical || isPyq) && (
-          <div className="bg-[#f0f7ff] border border-[#dce8fa] rounded-xl p-3 flex flex-wrap items-center gap-2">
-            <span className="text-xs font-semibold text-[#1856b8] mr-1">
+          <div className="bg-[#eff6ff]/70 border border-[#bfdbfe]/80 rounded-xl p-3 flex flex-wrap items-center gap-2">
+            <span className="text-xs font-bold text-[#2563eb] mr-1">
               {isPractical ? "Practical Subtype:" : "Exam Category:"}
             </span>
             <button
               type="button"
               onClick={() => setActiveSubtype("all")}
-              className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors ${
+              className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-all ${
                 activeSubtype === "all"
-                  ? "bg-[#1856b8] text-white"
-                  : "bg-white text-[#1856b8] border border-[#bae6fd] hover:bg-[#e0f2fe]"
+                  ? "bg-[#2563eb] text-white shadow-2xs"
+                  : "bg-white text-[#2563eb] border border-[#bfdbfe] hover:bg-[#dbeafe]"
               }`}
             >
               All
@@ -374,10 +374,10 @@ export default function CategoryPage() {
                 key={sub}
                 type="button"
                 onClick={() => setActiveSubtype(sub)}
-                className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors ${
+                className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-all ${
                   activeSubtype.toLowerCase() === sub.toLowerCase()
-                    ? "bg-[#1856b8] text-white"
-                    : "bg-white text-[#1856b8] border border-[#bae6fd] hover:bg-[#e0f2fe]"
+                    ? "bg-[#2563eb] text-white shadow-2xs"
+                    : "bg-white text-[#2563eb] border border-[#bfdbfe] hover:bg-[#dbeafe]"
                 }`}
               >
                 {sub}
@@ -391,14 +391,14 @@ export default function CategoryPage() {
           <div className="bg-[#f0fdf4] border border-[#bbf7d0] rounded-xl p-3 flex flex-wrap items-center gap-2">
             <div className="flex items-center gap-1.5 mr-1 text-[#15803d]">
               <Calendar className="h-3.5 w-3.5" />
-              <span className="text-xs font-semibold">Exam Year:</span>
+              <span className="text-xs font-bold">Exam Year:</span>
             </div>
             <button
               type="button"
               onClick={() => setActiveYear("all")}
-              className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors ${
+              className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-all ${
                 activeYear === "all"
-                  ? "bg-[#16a34a] text-white shadow-2xs font-semibold"
+                  ? "bg-[#16a34a] text-white shadow-2xs"
                   : "bg-white text-[#15803d] border border-[#86efac] hover:bg-[#dcfce7]"
               }`}
             >
@@ -409,9 +409,9 @@ export default function CategoryPage() {
                 key={yr}
                 type="button"
                 onClick={() => setActiveYear(yr)}
-                className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors ${
+                className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-all ${
                   activeYear === yr
-                    ? "bg-[#16a34a] text-white shadow-2xs font-semibold"
+                    ? "bg-[#16a34a] text-white shadow-2xs"
                     : "bg-white text-[#15803d] border border-[#86efac] hover:bg-[#dcfce7]"
                 }`}
               >
@@ -423,16 +423,16 @@ export default function CategoryPage() {
       </div>
 
       {/* Price Filter Toolbar */}
-      <div className="flex items-center justify-between gap-4 mb-6">
-        <div className="flex items-center gap-1.5">
-          <span className="text-xs text-[#5a6b82] font-medium">Price:</span>
+      <div className="flex items-center justify-between gap-4 mb-6 bg-[#f8fafc] border border-[#e2e8f0] px-3.5 py-2 rounded-xl">
+        <div className="flex items-center gap-2">
+          <span className="text-xs text-[#64748b] font-medium">Price:</span>
           <button
             type="button"
             onClick={() => setPriceFilter("all")}
-            className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors ${
+            className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-all ${
               priceFilter === "all"
-                ? "bg-[#112542] text-white"
-                : "text-[#64748b] hover:bg-[#f1f5f9]"
+                ? "bg-[#0f172a] text-white shadow-2xs"
+                : "text-[#64748b] hover:bg-[#e2e8f0]/60"
             }`}
           >
             All
@@ -440,10 +440,10 @@ export default function CategoryPage() {
           <button
             type="button"
             onClick={() => setPriceFilter("free")}
-            className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors ${
+            className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-all ${
               priceFilter === "free"
-                ? "bg-[#16a34a] text-white"
-                : "text-[#64748b] hover:bg-[#f1f5f9]"
+                ? "bg-[#16a34a] text-white shadow-2xs"
+                : "text-[#64748b] hover:bg-[#e2e8f0]/60"
             }`}
           >
             Free
@@ -451,17 +451,17 @@ export default function CategoryPage() {
           <button
             type="button"
             onClick={() => setPriceFilter("paid")}
-            className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors ${
+            className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-all ${
               priceFilter === "paid"
-                ? "bg-[#2f74de] text-white"
-                : "text-[#64748b] hover:bg-[#f1f5f9]"
+                ? "bg-[#2563eb] text-white shadow-2xs"
+                : "text-[#64748b] hover:bg-[#e2e8f0]/60"
             }`}
           >
             Paid
           </button>
         </div>
 
-        <span className="text-xs text-[#64748b]">
+        <span className="text-xs text-[#64748b] font-medium">
           Showing {filteredCards.length} {filteredCards.length === 1 ? "item" : "items"}
         </span>
       </div>

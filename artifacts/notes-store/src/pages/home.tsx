@@ -299,29 +299,29 @@ export default function Home() {
   return (
     <div className="flex flex-col bg-white">
       {/* Hero Section */}
-      <section className="bg-gradient-to-b from-[#f2f7fd] via-[#f8fbff] to-white border-b border-[#e8eff7] py-12 sm:py-16 px-4">
-        <div className="max-w-3xl mx-auto text-center">
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#f8fafc] via-[#f1f5f9]/40 to-white border-b border-[#e2e8f0]/80 py-10 sm:py-14 px-4">
+        <div className="max-w-2xl mx-auto text-center">
           {/* Badge */}
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#ebf3ff] border border-[#dce8fa] text-[#1856b8] text-xs font-semibold mb-4">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#eff6ff] border border-[#bfdbfe]/80 text-[#2563eb] text-xs font-semibold mb-3.5 shadow-2xs">
             <BookOpen className="h-3.5 w-3.5" />
-            <span>Karnataka State Board</span>
+            <span>Karnataka State Board &bull; 2nd PUC</span>
           </div>
 
           {/* Heading */}
-          <h1 className="text-3xl sm:text-4xl font-bold text-[#112542] tracking-tight mb-5">
-            2PUC Notes Store
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-[#0f172a] tracking-tight mb-4">
+            2puc
           </h1>
 
           {/* Search Form */}
           <form
             onSubmit={handleSearch}
-            className="relative max-w-lg mx-auto flex items-center bg-white rounded-lg border border-[#d9e2ec] p-1 shadow-2xs focus-within:border-[#1856b8] focus-within:ring-2 focus-within:ring-[#1856b8]/15 transition-all"
+            className="relative max-w-lg mx-auto flex items-center bg-white rounded-xl border border-[#cbd5e1] p-1 shadow-xs focus-within:border-[#2563eb] focus-within:ring-2 focus-within:ring-[#2563eb]/15 transition-all"
           >
-            <div className="pl-3 text-[#94a3b8]">
+            <div className="pl-3.5 text-[#94a3b8]">
               <Search className="h-4 w-4" />
             </div>
             <Input
-              className="bg-transparent text-[#112542] placeholder:text-[#94a3b8] border-0 focus-visible:ring-0 focus-visible:ring-offset-0 h-9 text-sm shadow-none"
+              className="bg-transparent text-[#0f172a] placeholder:text-[#94a3b8] border-0 focus-visible:ring-0 focus-visible:ring-offset-0 h-10 text-sm shadow-none font-medium"
               placeholder="Search by subject, chapter, title..."
               value={search}
               onChange={(e) => {
@@ -333,7 +333,7 @@ export default function Home() {
               <button
                 type="button"
                 onClick={handleClearSearch}
-                className="p-1 text-[#94a3b8] hover:text-[#5a6b82] transition-colors mr-1"
+                className="p-1 text-[#94a3b8] hover:text-[#475569] transition-colors mr-1"
                 aria-label="Clear search text"
               >
                 <X className="h-4 w-4" />
@@ -342,7 +342,7 @@ export default function Home() {
             <Button
               type="submit"
               size="sm"
-              className="shrink-0 rounded-md px-4 h-8 text-xs font-medium bg-[#0b57d0] hover:bg-[#094bb8] text-white shadow-none transition-colors"
+              className="shrink-0 rounded-lg px-4.5 h-8.5 text-xs font-semibold bg-[#2563eb] hover:bg-[#1d4ed8] text-white shadow-2xs transition-all"
             >
               Search
             </Button>
@@ -351,13 +351,13 @@ export default function Home() {
       </section>
 
       {/* Main Content Area */}
-      <div className="max-w-5xl mx-auto w-full px-4 py-10 sm:py-14 flex flex-col gap-12 sm:gap-16">
+      <div className="max-w-5xl mx-auto w-full px-4 py-8 sm:py-12 flex flex-col gap-10 sm:gap-14">
         {/* Search Results */}
         {submitted && (
           <section className="scroll-mt-20">
             <div className="flex items-center justify-between mb-5 border-b border-[#e2e8f0] pb-3">
-              <h2 className="text-lg sm:text-xl font-bold text-[#112542]">Results for "{submitted}"</h2>
-              <Button variant="ghost" size="sm" onClick={handleClearSearch} className="text-[#1856b8] hover:text-[#0b57d0] text-xs">
+              <h2 className="text-lg sm:text-xl font-bold text-[#0f172a]">Results for "{submitted}"</h2>
+              <Button variant="ghost" size="sm" onClick={handleClearSearch} className="text-[#2563eb] hover:text-[#1d4ed8] text-xs font-semibold">
                 Clear
               </Button>
             </div>
@@ -368,7 +368,7 @@ export default function Home() {
             ) : searchResults?.length === 0 ? (
               <div className="text-center py-16 bg-[#f8fafc] border border-[#e2e8f0] rounded-xl p-8">
                 <BookOpen className="h-9 w-9 text-[#94a3b8] mx-auto mb-2" />
-                <p className="text-[#5a6b82] font-medium text-sm">No results found. Try different keywords.</p>
+                <p className="text-[#64748b] font-medium text-sm">No results found. Try different keywords.</p>
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -380,16 +380,16 @@ export default function Home() {
 
         {/* PART 1: Browse by Subject */}
         {!submitted && (
-          <section className="space-y-8">
-            <div>
-              <h2 className="text-xl sm:text-2xl font-bold text-[#112542] tracking-tight">Browse by Subject</h2>
-              <p className="text-sm text-[#5a6b82] mt-0.5">Explore curriculum-aligned notes by subject and topic</p>
+          <section className="space-y-6">
+            <div className="border-b border-[#eef2f6] pb-3">
+              <h2 className="text-xl sm:text-2xl font-bold text-[#0f172a] tracking-tight">Browse by Subject</h2>
+              <p className="text-xs sm:text-sm text-[#64748b] mt-0.5">Explore curriculum-aligned notes by subject and topic</p>
             </div>
 
             {/* A. Core Subjects */}
             <div className="space-y-3">
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-bold uppercase tracking-wider text-[#1856b8] bg-[#ebf3ff] px-2.5 py-0.5 rounded border border-[#dce8fa]">
+              <div className="flex items-center justify-between flex-wrap gap-2">
+                <span className="text-xs font-bold uppercase tracking-wider text-[#2563eb] bg-[#eff6ff] px-2.5 py-0.5 rounded border border-[#bfdbfe]/80">
                   Core Subjects
                 </span>
                 <span className="text-xs text-[#64748b]">Includes Practicals, Lab Manuals, Schemes & Notes</span>
@@ -400,7 +400,7 @@ export default function Home() {
                   {[1, 2, 3, 4].map(i => <Skeleton key={i} className="h-20 rounded-xl" />)}
                 </div>
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                   {coreSections.map(subj => {
                     const Icon = subj.icon;
                     const theme = subj.theme;
@@ -411,21 +411,21 @@ export default function Home() {
                         onPointerEnter={() => prefetchSubject(subj.name)}
                         onFocus={() => prefetchSubject(subj.name)}
                       >
-                        <div className={`group h-full ${theme.bg} border ${theme.border} ${theme.hoverBorder} rounded-xl p-4 transition-all cursor-pointer flex items-center justify-between shadow-2xs hover:shadow-xs`}>
-                          <div className="flex items-center gap-3">
-                            <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${theme.iconBg} ${theme.iconColor} shadow-2xs`}>
-                              <Icon className="h-4 w-4" />
+                        <div className={`group h-full ${theme.bg} border ${theme.border} ${theme.hoverBorder} rounded-xl p-3.5 transition-all cursor-pointer flex items-center justify-between shadow-2xs hover:shadow-xs`}>
+                          <div className="flex items-center gap-3 min-w-0">
+                            <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${theme.iconBg} ${theme.iconColor} shadow-2xs border border-white/60`}>
+                              <Icon className="h-4.5 w-4.5" />
                             </div>
-                            <div>
-                              <h3 className={`font-semibold text-sm ${theme.titleColor}`}>
+                            <div className="min-w-0">
+                              <h3 className={`font-semibold text-sm ${theme.titleColor} truncate`}>
                                 {subj.name}
                               </h3>
-                              <p className={`text-xs ${theme.countColor} mt-0.5`}>
+                              <p className={`text-[11px] ${theme.countColor} mt-0.5 font-medium`}>
                                 {subj.cardCount !== undefined ? `${subj.cardCount} resources` : "View notes"}
                               </p>
                             </div>
                           </div>
-                          <ArrowRight className={`h-4 w-4 ${theme.countColor} group-hover:translate-x-0.5 transition-transform shrink-0`} />
+                          <ArrowRight className={`h-4 w-4 ${theme.countColor} group-hover:translate-x-0.5 transition-transform shrink-0 ml-1`} />
                         </div>
                       </Link>
                     );
@@ -435,8 +435,8 @@ export default function Home() {
             </div>
 
             {/* B. Languages and Other Subjects */}
-            <div className="space-y-3 pt-2">
-              <div className="flex items-center gap-2">
+            <div className="space-y-3 pt-3">
+              <div className="flex items-center justify-between flex-wrap gap-2">
                 <span className="text-xs font-bold uppercase tracking-wider text-[#6d28d9] bg-[#f5f3ff] px-2.5 py-0.5 rounded border border-[#ede9fe]">
                   Languages & Other Subjects
                 </span>
@@ -448,7 +448,7 @@ export default function Home() {
                   {[1, 2, 3].map(i => <Skeleton key={i} className="h-20 rounded-xl" />)}
                 </div>
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                   {languageSections.map(subj => {
                     const Icon = subj.icon;
                     const theme = subj.theme;
@@ -459,21 +459,21 @@ export default function Home() {
                         onPointerEnter={() => prefetchSubject(subj.name)}
                         onFocus={() => prefetchSubject(subj.name)}
                       >
-                        <div className={`group h-full ${theme.bg} border ${theme.border} ${theme.hoverBorder} rounded-xl p-4 transition-all cursor-pointer flex items-center justify-between shadow-2xs hover:shadow-xs`}>
-                          <div className="flex items-center gap-3">
-                            <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${theme.iconBg} ${theme.iconColor} shadow-2xs`}>
-                              <Icon className="h-4 w-4" />
+                        <div className={`group h-full ${theme.bg} border ${theme.border} ${theme.hoverBorder} rounded-xl p-3.5 transition-all cursor-pointer flex items-center justify-between shadow-2xs hover:shadow-xs`}>
+                          <div className="flex items-center gap-3 min-w-0">
+                            <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${theme.iconBg} ${theme.iconColor} shadow-2xs border border-white/60`}>
+                              <Icon className="h-4.5 w-4.5" />
                             </div>
-                            <div>
-                              <h3 className={`font-semibold text-sm ${theme.titleColor}`}>
+                            <div className="min-w-0">
+                              <h3 className={`font-semibold text-sm ${theme.titleColor} truncate`}>
                                 {subj.name}
                               </h3>
-                              <p className={`text-xs ${theme.countColor} mt-0.5`}>
+                              <p className={`text-[11px] ${theme.countColor} mt-0.5 font-medium`}>
                                 {subj.cardCount !== undefined ? `${subj.cardCount} resources` : "View notes"}
                               </p>
                             </div>
                           </div>
-                          <ArrowRight className={`h-4 w-4 ${theme.countColor} group-hover:translate-x-0.5 transition-transform shrink-0`} />
+                          <ArrowRight className={`h-4 w-4 ${theme.countColor} group-hover:translate-x-0.5 transition-transform shrink-0 ml-1`} />
                         </div>
                       </Link>
                     );
@@ -487,17 +487,17 @@ export default function Home() {
         {/* PART 2: Browse by Category */}
         {!submitted && (
           <section className="space-y-5">
-            <div>
+            <div className="border-b border-[#eef2f6] pb-3">
               <div className="flex items-center gap-2">
-                <h2 className="text-xl sm:text-2xl font-bold text-[#112542] tracking-tight">Browse by Category</h2>
-                <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-[#f0f9ff] text-[#0284c7] border border-[#bae6fd]">
+                <h2 className="text-xl sm:text-2xl font-bold text-[#0f172a] tracking-tight">Browse by Category</h2>
+                <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-[#eff6ff] text-[#2563eb] border border-[#bfdbfe]">
                   Resource Types
                 </span>
               </div>
-              <p className="text-sm text-[#5a6b82] mt-0.5">Filter all study materials by format, exam type, or question bank</p>
+              <p className="text-xs sm:text-sm text-[#64748b] mt-0.5">Filter all study materials by format, exam type, or question bank</p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
               {CATEGORY_ITEMS.map((cat) => {
                 const Icon = cat.icon;
                 return (
@@ -507,24 +507,24 @@ export default function Home() {
                     onPointerEnter={prefetchCategory}
                     onFocus={prefetchCategory}
                   >
-                    <div className="group h-full bg-white border border-[#e2e8f0] hover:border-[#1856b8]/40 hover:bg-[#fafcff] rounded-xl p-4 transition-all cursor-pointer flex flex-col justify-between shadow-2xs hover:shadow-xs">
+                    <div className="group h-full bg-white border border-[#e2e8f0] hover:border-[#93c5fd] hover:bg-[#fafcff] rounded-xl p-4 transition-all cursor-pointer flex flex-col justify-between shadow-2xs hover:shadow-xs">
                       <div>
-                        <div className="flex items-center justify-between mb-3">
-                          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#ebf3ff] text-[#1856b8] border border-[#dce8fa]">
-                            <Icon className="h-4 w-4" />
+                        <div className="flex items-center justify-between mb-2.5">
+                          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#eff6ff] text-[#2563eb] border border-[#dbeafe]">
+                            <Icon className="h-4.5 w-4.5" />
                           </div>
-                          <span className="text-[10px] font-semibold text-[#0284c7] bg-[#f0f9ff] px-2 py-0.5 rounded border border-[#bae6fd]">
+                          <span className="text-[10px] font-semibold text-[#0369a1] bg-[#f0f9ff] px-2 py-0.5 rounded border border-[#bae6fd]">
                             {cat.badge}
                           </span>
                         </div>
-                        <h3 className="font-bold text-sm text-[#112542] group-hover:text-[#1856b8] transition-colors">
+                        <h3 className="font-bold text-sm text-[#0f172a] group-hover:text-[#2563eb] transition-colors">
                           {cat.title}
                         </h3>
-                        <p className="text-xs text-[#5a6b82] mt-1 leading-relaxed">
+                        <p className="text-xs text-[#64748b] mt-1 leading-relaxed">
                           {cat.desc}
                         </p>
                       </div>
-                      <div className="flex items-center justify-end pt-3 mt-3 border-t border-[#f1f5f9] text-xs font-semibold text-[#1856b8] group-hover:translate-x-0.5 transition-transform">
+                      <div className="flex items-center justify-end pt-3 mt-3 border-t border-[#f1f5f9] text-xs font-semibold text-[#2563eb] group-hover:translate-x-0.5 transition-transform">
                         <span>Browse resources &rarr;</span>
                       </div>
                     </div>
@@ -537,14 +537,16 @@ export default function Home() {
 
         {/* Featured Resources */}
         {!submitted && Array.isArray(featuredCards) && featuredCards.length > 0 && (
-          <section>
-            <div className="flex items-center gap-2.5 mb-5">
-              <h2 className="text-xl sm:text-2xl font-bold text-[#112542] tracking-tight">
-                Featured Resources
-              </h2>
-              <span className="bg-[#fef3c7] text-[#92400e] border border-[#fde68a] text-xs font-semibold px-2 py-0.5 rounded-md">
-                Popular
-              </span>
+          <section className="space-y-4">
+            <div className="border-b border-[#eef2f6] pb-3 flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <h2 className="text-xl sm:text-2xl font-bold text-[#0f172a] tracking-tight">
+                  Featured Resources
+                </h2>
+                <span className="bg-[#fef3c7] text-[#92400e] border border-[#fde68a] text-xs font-semibold px-2 py-0.5 rounded-md">
+                  Popular
+                </span>
+              </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -556,19 +558,19 @@ export default function Home() {
         )}
 
         {/* Telegram Contact Banner */}
-        <section className="bg-[#eaf2fd] border border-[#dce7f7] rounded-xl p-6 sm:p-7">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-5 text-center sm:text-left">
+        <section className="bg-gradient-to-r from-[#eff6ff] to-[#f8fafc] border border-[#dbeafe] rounded-xl p-5 sm:p-6 shadow-2xs">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
             <div className="flex items-center gap-3.5">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white text-[#0284c7] shadow-2xs">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white text-[#2563eb] border border-[#bfdbfe] shadow-2xs">
                 <MessageCircle className="h-5 w-5" />
               </div>
               <div>
-                <h3 className="font-bold text-[#112542] text-base">Need help or have questions?</h3>
-                <p className="text-[#5a6b82] text-xs sm:text-sm mt-0.5">Reach out on Telegram for quick support</p>
+                <h3 className="font-bold text-[#0f172a] text-sm sm:text-base">Need help or have questions?</h3>
+                <p className="text-[#64748b] text-xs sm:text-sm mt-0.5">Reach out on Telegram for quick support and student community</p>
               </div>
             </div>
             <a href={TELEGRAM_LINK} target="_blank" rel="noreferrer" className="shrink-0 w-full sm:w-auto">
-              <Button size="sm" className="w-full sm:w-auto gap-2 px-4 h-9 font-medium text-xs rounded-lg bg-[#0284c7] hover:bg-[#0369a1] text-white shadow-none transition-colors">
+              <Button size="sm" className="w-full sm:w-auto gap-2 px-4 h-9 font-semibold text-xs rounded-lg bg-[#2563eb] hover:bg-[#1d4ed8] text-white shadow-2xs transition-all">
                 <MessageCircle className="h-3.5 w-3.5" />
                 Contact on Telegram
               </Button>
