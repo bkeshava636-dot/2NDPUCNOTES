@@ -42,67 +42,85 @@ export function CardItem({ card }: { card: CardType }) {
       className="block h-full group focus-visible:outline-none"
     >
       <Card className="h-full flex flex-col overflow-hidden rounded-xl border border-[#e2e8f0] bg-white transition-all duration-150 hover:border-[#b8d4f8] hover:shadow-xs focus-within:ring-2 focus-within:ring-[#1856b8]/20">
-        {/* Preview image */}
-        <div className="aspect-[16/10] bg-[#f8fafc] relative overflow-hidden flex items-center justify-center border-b border-[#eef2f6]">
-          {card.thumbnailUrl ? (
+        {/* Preview image (only when thumbnail is provided) */}
+        {card.thumbnailUrl && (
+          <div className="aspect-[16/10] bg-[#f8fafc] relative overflow-hidden flex items-center justify-center border-b border-[#eef2f6]">
             <img
               src={card.thumbnailUrl}
               alt={card.title}
               loading="lazy"
               className="object-cover w-full h-full transition-transform duration-200 group-hover:scale-102"
             />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[#f8fafc] to-[#eef2f6]">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-[#1856b8] border border-[#dce8fa] shadow-2xs group-hover:scale-105 transition-transform">
-                <FileText className="h-5 w-5" />
-              </div>
-            </div>
-          )}
 
-          {/* Top badges */}
-          <div className="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between pointer-events-none">
-            <div className="flex gap-1.5 flex-wrap">
-              {card.isRecommended && (
+            {/* Top badges on image */}
+            <div className="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between pointer-events-none">
+              <div className="flex gap-1.5 flex-wrap">
+                {card.isRecommended && (
+                  <span className="bg-[#0284c7] text-white font-semibold text-[10px] px-2 py-0.5 rounded-md shadow-2xs">
+                    Recommended
+                  </span>
+                )}
+                {card.isNew && (
+                  <span className="bg-[#dc2626] text-white font-semibold text-[10px] px-2 py-0.5 rounded-md shadow-2xs">
+                    New
+                  </span>
+                )}
+                {card.isFeatured && (
+                  <span className="bg-[#d97706] text-white font-semibold text-[10px] px-2 py-0.5 rounded-md shadow-2xs">
+                    Popular
+                  </span>
+                )}
+              </div>
+
+              {card.isFree && (
+                <span className="bg-[#16a34a] text-white font-semibold text-[10px] px-2 py-0.5 rounded-md ml-auto shadow-2xs">
+                  Free
+                </span>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Content */}
+        <CardContent className="flex-1 p-4 flex flex-col">
+          <div className="flex items-center justify-between gap-1.5 flex-wrap mb-2">
+            <div className="flex items-center gap-1.5 flex-wrap">
+              {card.subject && (
+                <span className={`text-[11px] font-medium px-2 py-0.5 rounded border ${getSubjectBadgeStyle(card.subject)}`}>
+                  {card.subject}
+                </span>
+              )}
+              <Badge variant="outline" className="text-[11px] font-medium text-[#64748b] border-[#e2e8f0] bg-[#f8fafc]">
+                {card.resourceType}
+              </Badge>
+              {card.subtype && (
+                <Badge variant="outline" className="text-[10px] font-medium text-[#0369a1] border-[#bae6fd] bg-[#f0f9ff]">
+                  {card.subtype}
+                </Badge>
+              )}
+              {!card.thumbnailUrl && card.isRecommended && (
                 <span className="bg-[#0284c7] text-white font-semibold text-[10px] px-2 py-0.5 rounded-md shadow-2xs">
                   Recommended
                 </span>
               )}
-              {card.isNew && (
+              {!card.thumbnailUrl && card.isNew && (
                 <span className="bg-[#dc2626] text-white font-semibold text-[10px] px-2 py-0.5 rounded-md shadow-2xs">
                   New
                 </span>
               )}
-              {card.isFeatured && (
+              {!card.thumbnailUrl && card.isFeatured && (
                 <span className="bg-[#d97706] text-white font-semibold text-[10px] px-2 py-0.5 rounded-md shadow-2xs">
                   Popular
                 </span>
               )}
             </div>
 
-            {card.isFree && (
-              <span className="bg-[#16a34a] text-white font-semibold text-[10px] px-2 py-0.5 rounded-md ml-auto shadow-2xs">
+            {!card.thumbnailUrl && card.isFree && (
+              <span className="bg-[#16a34a] text-white font-semibold text-[10px] px-2 py-0.5 rounded-md shadow-2xs ml-auto">
                 Free
               </span>
             )}
           </div>
-        </div>
-
-        {/* Content */}
-        <CardContent className="flex-1 p-4 flex flex-col">
-          <div className="flex items-center gap-1.5 flex-wrap mb-2">
-            {card.subject && (
-              <span className={`text-[11px] font-medium px-2 py-0.5 rounded border ${getSubjectBadgeStyle(card.subject)}`}>
-                {card.subject}
-              </span>
-            )}
-            <Badge variant="outline" className="text-[11px] font-medium text-[#64748b] border-[#e2e8f0] bg-[#f8fafc]">
-              {card.resourceType}
-            </Badge>
-            {card.subtype && (
-              <Badge variant="outline" className="text-[10px] font-medium text-[#0369a1] border-[#bae6fd] bg-[#f0f9ff]">
-                {card.subtype}
-              </Badge>
-            )}
             {card.answerKeyUrl && (
               <a
                 href={card.answerKeyUrl}
@@ -115,7 +133,6 @@ export function CardItem({ card }: { card: CardType }) {
                 Answer Key
               </a>
             )}
-          </div>
 
           <h3 className="font-bold text-base leading-snug text-[#112542] group-hover:text-[#1856b8] transition-colors line-clamp-2">
             {card.title}
