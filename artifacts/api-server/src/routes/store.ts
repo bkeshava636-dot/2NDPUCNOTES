@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { db } from "@workspace/db";
-import { sectionsTable, cardsTable, ordersTable, pageViewsTable } from "@workspace/db";
+import { sectionsTable, cardsTable, ordersTable, pageViewsTable, feedbackTable } from "@workspace/db";
 import { eq, and, ilike, or, sql, asc, inArray } from "drizzle-orm";
 import { ensureDefaultSections, DEFAULT_CORE_SECTIONS } from "../lib/ensure-sections.js";
 
@@ -242,6 +242,38 @@ router.post("/analytics/view", async (req, res) => {
   } catch (err) {
     req.log?.error?.(err, "Failed to record page view");
     res.json({ success: false }); // Non-blocking: fail quietly for client
+  }
+});
+
+router.post("/feedback", async (req, res) => {
+  try {
+    await ensureDefaultSections();
+    const { type = "feedback", rating, message, contact, pageUrl } = req.body || {};
+
+    if (!message || typeof message !== "string" || !message.trim()) {
+      res.status(400).json({ error: "Message is required." });
+      return;
+    }
+
+    const userAgent = req.headers["user-agent"] || null;
+
+    const [created] = await db
+      .insert(feedbackTable)
+      .values({
+        type: String(type).slice(0, 50),
+        rating: rating ? String(rating).slice(0, 50) : null,
+        message: message.trim().slice(0, 2000),
+        contact: contact ? String(contact).trim().slice(0, 200) : null,
+        pageUrl: pageUrl ? String(pageUrl).slice(0, 500) : null,
+        userAgent: userAgent ? String(userAgent).slice(0, 500) : null,
+        status: "new",
+      })
+      .returning();
+
+    res.json({ success: true, feedbackId: created?.id });
+  } catch (err: any) {
+    req.log?.error?.(err, "Failed to submit feedback");
+    res.status(500).json({ error: "Failed to submit feedback", detail: err?.message || String(err) });
   }
 });
 

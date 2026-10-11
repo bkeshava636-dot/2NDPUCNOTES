@@ -88,6 +88,20 @@ export async function ensureDefaultSections(): Promise<void> {
         );
         CREATE INDEX IF NOT EXISTS idx_page_views_path ON page_views(path);
         CREATE INDEX IF NOT EXISTS idx_page_views_created_at ON page_views(created_at);
+
+        CREATE TABLE IF NOT EXISTS user_feedback (
+          id SERIAL PRIMARY KEY,
+          type TEXT NOT NULL DEFAULT 'feedback',
+          rating TEXT,
+          message TEXT NOT NULL,
+          contact TEXT,
+          page_url TEXT,
+          user_agent TEXT,
+          status TEXT NOT NULL DEFAULT 'new',
+          created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+        );
+        CREATE INDEX IF NOT EXISTS idx_user_feedback_created_at ON user_feedback(created_at);
+        CREATE INDEX IF NOT EXISTS idx_user_feedback_status ON user_feedback(status);
       `).catch(() => {});
 
       const existing = await db.select().from(sectionsTable);

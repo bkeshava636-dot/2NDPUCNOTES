@@ -299,17 +299,12 @@ export default function Home() {
   return (
     <div className="flex flex-col bg-white">
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-[#f8fafc] via-[#f1f5f9]/40 to-white border-b border-[#e2e8f0]/80 py-10 sm:py-14 px-4">
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#f8fafc] via-[#f1f5f9]/30 to-white border-b border-[#e2e8f0]/80 py-8 sm:py-12 px-4">
         <div className="max-w-2xl mx-auto text-center">
-          {/* Badge */}
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#eff6ff] border border-[#bfdbfe]/80 text-[#2563eb] text-xs font-semibold mb-3.5 shadow-2xs">
-            <BookOpen className="h-3.5 w-3.5" />
-            <span>Karnataka State Board &bull; 2nd PUC</span>
-          </div>
-
-          {/* Heading */}
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-[#0f172a] tracking-tight mb-4">
-            2puc
+          {/* Main 2PUC Heading */}
+          <h1 className="text-4xl sm:text-5xl font-black text-[#0f172a] tracking-tight mb-4 sm:mb-5 select-none inline-flex items-baseline justify-center">
+            <span className="text-[#2563eb]">2</span>
+            <span>PUC</span>
           </h1>
 
           {/* Search Form */}
@@ -317,7 +312,7 @@ export default function Home() {
             onSubmit={handleSearch}
             className="relative max-w-lg mx-auto flex items-center bg-white rounded-xl border border-[#cbd5e1] p-1 shadow-xs focus-within:border-[#2563eb] focus-within:ring-2 focus-within:ring-[#2563eb]/15 transition-all"
           >
-            <div className="pl-3.5 text-[#94a3b8]">
+            <div className="pl-3 sm:pl-3.5 text-[#94a3b8]">
               <Search className="h-4 w-4" />
             </div>
             <Input
@@ -342,7 +337,7 @@ export default function Home() {
             <Button
               type="submit"
               size="sm"
-              className="shrink-0 rounded-lg px-4.5 h-8.5 text-xs font-semibold bg-[#2563eb] hover:bg-[#1d4ed8] text-white shadow-2xs transition-all"
+              className="shrink-0 rounded-lg px-4 sm:px-5 h-8.5 text-xs font-semibold bg-[#2563eb] hover:bg-[#1d4ed8] text-white shadow-2xs transition-all"
             >
               Search
             </Button>
@@ -396,11 +391,11 @@ export default function Home() {
               </div>
 
               {sectionsLoading ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+                <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3">
                   {[1, 2, 3, 4].map(i => <Skeleton key={i} className="h-20 rounded-xl" />)}
                 </div>
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3">
                   {coreSections.map(subj => {
                     const Icon = subj.icon;
                     const theme = subj.theme;
@@ -411,21 +406,21 @@ export default function Home() {
                         onPointerEnter={() => prefetchSubject(subj.name)}
                         onFocus={() => prefetchSubject(subj.name)}
                       >
-                        <div className={`group h-full ${theme.bg} border ${theme.border} ${theme.hoverBorder} rounded-xl p-3.5 transition-all cursor-pointer flex items-center justify-between shadow-2xs hover:shadow-xs`}>
-                          <div className="flex items-center gap-3 min-w-0">
-                            <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${theme.iconBg} ${theme.iconColor} shadow-2xs border border-white/60`}>
-                              <Icon className="h-4.5 w-4.5" />
+                        <div className={`group h-full ${theme.bg} border ${theme.border} ${theme.hoverBorder} rounded-xl p-3 sm:p-3.5 transition-all cursor-pointer flex items-center justify-between shadow-2xs hover:shadow-xs active:scale-[0.98]`}>
+                          <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
+                            <div className={`flex h-8 w-8 sm:h-9 sm:w-9 shrink-0 items-center justify-center rounded-lg ${theme.iconBg} ${theme.iconColor} shadow-2xs border border-white/60`}>
+                              <Icon className="h-4 w-4 sm:h-4.5 sm:w-4.5" />
                             </div>
                             <div className="min-w-0">
-                              <h3 className={`font-semibold text-sm ${theme.titleColor} truncate`}>
+                              <h3 className={`font-semibold text-xs sm:text-sm ${theme.titleColor} truncate`}>
                                 {subj.name}
                               </h3>
-                              <p className={`text-[11px] ${theme.countColor} mt-0.5 font-medium`}>
+                              <p className={`text-[10px] sm:text-[11px] ${theme.countColor} mt-0.5 font-medium truncate`}>
                                 {subj.cardCount !== undefined ? `${subj.cardCount} resources` : "View notes"}
                               </p>
                             </div>
                           </div>
-                          <ArrowRight className={`h-4 w-4 ${theme.countColor} group-hover:translate-x-0.5 transition-transform shrink-0 ml-1`} />
+                          <ArrowRight className={`hidden xs:block h-3.5 w-3.5 sm:h-4 sm:w-4 ${theme.countColor} group-hover:translate-x-0.5 transition-transform shrink-0 ml-1`} />
                         </div>
                       </Link>
                     );
@@ -444,11 +439,11 @@ export default function Home() {
               </div>
 
               {sectionsLoading ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
+                <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-3">
                   {[1, 2, 3].map(i => <Skeleton key={i} className="h-20 rounded-xl" />)}
                 </div>
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-3">
                   {languageSections.map(subj => {
                     const Icon = subj.icon;
                     const theme = subj.theme;
@@ -459,21 +454,21 @@ export default function Home() {
                         onPointerEnter={() => prefetchSubject(subj.name)}
                         onFocus={() => prefetchSubject(subj.name)}
                       >
-                        <div className={`group h-full ${theme.bg} border ${theme.border} ${theme.hoverBorder} rounded-xl p-3.5 transition-all cursor-pointer flex items-center justify-between shadow-2xs hover:shadow-xs`}>
-                          <div className="flex items-center gap-3 min-w-0">
-                            <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${theme.iconBg} ${theme.iconColor} shadow-2xs border border-white/60`}>
-                              <Icon className="h-4.5 w-4.5" />
+                        <div className={`group h-full ${theme.bg} border ${theme.border} ${theme.hoverBorder} rounded-xl p-3 sm:p-3.5 transition-all cursor-pointer flex items-center justify-between shadow-2xs hover:shadow-xs active:scale-[0.98]`}>
+                          <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
+                            <div className={`flex h-8 w-8 sm:h-9 sm:w-9 shrink-0 items-center justify-center rounded-lg ${theme.iconBg} ${theme.iconColor} shadow-2xs border border-white/60`}>
+                              <Icon className="h-4 w-4 sm:h-4.5 sm:w-4.5" />
                             </div>
                             <div className="min-w-0">
-                              <h3 className={`font-semibold text-sm ${theme.titleColor} truncate`}>
+                              <h3 className={`font-semibold text-xs sm:text-sm ${theme.titleColor} truncate`}>
                                 {subj.name}
                               </h3>
-                              <p className={`text-[11px] ${theme.countColor} mt-0.5 font-medium`}>
+                              <p className={`text-[10px] sm:text-[11px] ${theme.countColor} mt-0.5 font-medium truncate`}>
                                 {subj.cardCount !== undefined ? `${subj.cardCount} resources` : "View notes"}
                               </p>
                             </div>
                           </div>
-                          <ArrowRight className={`h-4 w-4 ${theme.countColor} group-hover:translate-x-0.5 transition-transform shrink-0 ml-1`} />
+                          <ArrowRight className={`hidden xs:block h-3.5 w-3.5 sm:h-4 sm:w-4 ${theme.countColor} group-hover:translate-x-0.5 transition-transform shrink-0 ml-1`} />
                         </div>
                       </Link>
                     );
@@ -497,7 +492,7 @@ export default function Home() {
               <p className="text-xs sm:text-sm text-[#64748b] mt-0.5">Filter all study materials by format, exam type, or question bank</p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-3.5">
               {CATEGORY_ITEMS.map((cat) => {
                 const Icon = cat.icon;
                 return (

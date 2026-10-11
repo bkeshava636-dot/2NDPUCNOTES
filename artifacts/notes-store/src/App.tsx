@@ -40,6 +40,7 @@ const AdminOrders = lazy(() => import("@/pages/admin/orders"));
 const AdminCustomers = lazy(() => import("@/pages/admin/customers"));
 const AdminDownloads = lazy(() => import("@/pages/admin/downloads"));
 const AdminAnalytics = lazy(() => import("@/pages/admin/analytics"));
+const AdminFeedback = lazy(() => import("@/pages/admin/feedback"));
 const AdminSettings = lazy(() => import("@/pages/admin/settings"));
 
 const queryClient = new QueryClient({
@@ -78,6 +79,7 @@ function AdminRoutes() {
               <Route path="/admin/customers" component={AdminCustomers} />
               <Route path="/admin/downloads" component={AdminDownloads} />
               <Route path="/admin/analytics" component={AdminAnalytics} />
+              <Route path="/admin/feedback" component={AdminFeedback} />
               <Route path="/admin/settings" component={AdminSettings} />
               <Route component={NotFound} />
             </Switch>

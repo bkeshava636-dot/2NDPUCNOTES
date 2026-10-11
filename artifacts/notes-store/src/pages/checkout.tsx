@@ -120,7 +120,7 @@ export default function Checkout() {
         key: orderData.keyId,
         amount: orderData.amountPaise,
         currency: "INR",
-        name: "2puc",
+        name: "2PUC",
         description: orderData.cardTitle,
         order_id: orderData.razorpayOrderId,
         prefill: {

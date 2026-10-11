@@ -3,7 +3,7 @@ import multer from "multer";
 import crypto from "crypto";
 import { v4 as uuidv4 } from "uuid";
 import { db } from "@workspace/db";
-import { sectionsTable, cardsTable, ordersTable, customersTable, downloadsTable, pageViewsTable } from "@workspace/db";
+import { sectionsTable, cardsTable, ordersTable, customersTable, downloadsTable, pageViewsTable, feedbackTable } from "@workspace/db";
 import { eq, sql, asc, desc, and } from "drizzle-orm";
 import { supabase, BUCKET_NOTES, BUCKET_IMAGES } from "../supabase.js";
 import { ensureDefaultSections, DEFAULT_CORE_SECTIONS } from "../lib/ensure-sections.js";
@@ -771,6 +771,61 @@ router.get("/admin/analytics", requireAdmin, async (req, res) => {
   } catch (err: any) {
     req.log?.error?.(err, "Failed to fetch analytics");
     res.status(500).json({ error: "Failed to fetch analytics", detail: err?.message || String(err) });
+  }
+});
+
+// ── User Feedback & Issue Reports ──────────────────────────────────────────
+
+router.get("/admin/feedback", requireAdmin, async (req, res) => {
+  try {
+    await ensureDefaultSections();
+    const list = await db
+      .select()
+      .from(feedbackTable)
+      .orderBy(desc(feedbackTable.createdAt))
+      .limit(100);
+
+    const [stats] = await db
+      .select({
+        total: sql<number>`count(*)::int`,
+        newCount: sql<number>`count(*) filter (where status = 'new')::int`,
+        reportsCount: sql<number>`count(*) filter (where type = 'bug_report' or type = 'broken_link')::int`,
+      })
+      .from(feedbackTable);
+
+    res.json({
+      feedback: list,
+      stats: {
+        total: stats?.total || 0,
+        newCount: stats?.newCount || 0,
+        reportsCount: stats?.reportsCount || 0,
+      },
+    });
+  } catch (err: any) {
+    req.log?.error?.(err, "Failed to fetch feedback");
+    res.status(500).json({ error: "Failed to fetch feedback", detail: err?.message || String(err) });
+  }
+});
+
+router.patch("/admin/feedback/:id", requireAdmin, async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const { status } = req.body;
+    if (isNaN(id) || !status) {
+      res.status(400).json({ error: "Invalid id or status" });
+      return;
+    }
+
+    const [updated] = await db
+      .update(feedbackTable)
+      .set({ status })
+      .where(eq(feedbackTable.id, id))
+      .returning();
+
+    res.json(updated);
+  } catch (err: any) {
+    req.log?.error?.(err, "Failed to update feedback status");
+    res.status(500).json({ error: "Failed to update feedback" });
   }
 });
 

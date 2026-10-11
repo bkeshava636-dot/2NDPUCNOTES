@@ -3,6 +3,8 @@ import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Footer } from "@/components/footer";
 import { BookOpen, ShoppingBag } from "lucide-react";
+import { BrandLogo } from "@/components/brand-logo";
+import { FloatingFeedback } from "@/components/floating-feedback";
 import { usePageViewTracker } from "@/hooks/use-page-view-tracker";
 
 export function PublicLayout({ children }: { children: ReactNode }) {
@@ -16,17 +18,10 @@ export function PublicLayout({ children }: { children: ReactNode }) {
         <div className="container flex h-15 items-center justify-between px-4 max-w-5xl mx-auto">
           <Link
             href="/"
-            className="flex items-center gap-2.5 font-bold text-lg text-[#0f172a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2563eb]/30 rounded-lg p-1 -ml-1 transition-colors hover:text-[#2563eb]"
+            className="flex items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2563eb]/30 rounded-lg p-1 -ml-1 transition-opacity hover:opacity-90"
+            aria-label="2PUC Home"
           >
-            <div className="flex h-8.5 w-8.5 items-center justify-center rounded-lg bg-gradient-to-br from-[#eff6ff] to-[#dbeafe] text-[#2563eb] border border-[#bfdbfe]/60 shadow-2xs">
-              <BookOpen className="h-4 w-4" />
-            </div>
-            <div className="flex items-center gap-1.5">
-              <span className="tracking-tight text-lg font-bold text-[#0f172a]">2puc</span>
-              <span className="hidden sm:inline-flex text-[11px] font-semibold text-[#64748b] bg-[#f1f5f9] px-2 py-0.5 rounded-full border border-[#e2e8f0]">
-                Karnataka State Board
-              </span>
-            </div>
+            <BrandLogo size="md" />
           </Link>
 
           <nav className="flex items-center gap-2">
@@ -63,6 +58,7 @@ export function PublicLayout({ children }: { children: ReactNode }) {
       </header>
       <main className="flex-1 flex flex-col">{children}</main>
       <Footer />
+      <FloatingFeedback />
     </div>
   );
 }

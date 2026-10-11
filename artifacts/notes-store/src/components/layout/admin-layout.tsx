@@ -18,7 +18,8 @@ import {
   Settings,
   Sparkles,
   ChevronRight,
-  BarChart3
+  BarChart3,
+  MessageSquarePlus
 } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
@@ -56,6 +57,7 @@ const NAV_GROUPS: NavGroup[] = [
       { href: "/admin/orders", label: "Orders & Payments", icon: ShoppingCart },
       { href: "/admin/customers", label: "Students Directory", icon: Users },
       { href: "/admin/downloads", label: "Downloads Audit", icon: DownloadCloud },
+      { href: "/admin/feedback", label: "Student Feedback", icon: MessageSquarePlus },
     ],
   },
   {
@@ -77,6 +79,7 @@ function preloadAdminRoute(href: string) {
   else if (href === "/admin/orders") import("@/pages/admin/orders");
   else if (href === "/admin/customers") import("@/pages/admin/customers");
   else if (href === "/admin/downloads") import("@/pages/admin/downloads");
+  else if (href === "/admin/feedback") import("@/pages/admin/feedback");
   else if (href === "/admin/settings") import("@/pages/admin/settings");
 }
 
