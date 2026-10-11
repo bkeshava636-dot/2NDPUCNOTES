@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { db } from "@workspace/db";
 import { sectionsTable, cardsTable, ordersTable } from "@workspace/db";
-import { eq, and, ilike, or, sql, asc } from "drizzle-orm";
+import { eq, and, ilike, or, sql, asc, inArray } from "drizzle-orm";
 import { ensureDefaultSections, DEFAULT_CORE_SECTIONS } from "../lib/ensure-sections.js";
 
 const router = Router();
@@ -39,12 +39,20 @@ router.get("/sections", async (req, res) => {
   try {
     await ensureDefaultSections();
     const sections = await db.select().from(sectionsTable).where(eq(sectionsTable.isVisible, true)).orderBy(asc(sectionsTable.sortOrder));
-    const cardCounts = await db
-      .select({ sectionId: cardsTable.sectionId, count: sql<number>`count(*)::int` })
+    const allVisibleCards = await db
+      .select({ id: cardsTable.id, sectionId: cardsTable.sectionId, subject: cardsTable.subject })
       .from(cardsTable)
-      .where(and(eq(cardsTable.isVisible, true), eq(cardsTable.isDeleted, false)))
-      .groupBy(cardsTable.sectionId);
-    const countMap = Object.fromEntries(cardCounts.map((r) => [r.sectionId, r.count]));
+      .where(and(eq(cardsTable.isVisible, true), eq(cardsTable.isDeleted, false)));
+
+    const countMap: Record<number, number> = {};
+    for (const s of sections) {
+      const sNameLower = s.name.toLowerCase();
+      const count = allVisibleCards.filter((c) => 
+        c.sectionId === s.id || 
+        (c.subject && c.subject.toLowerCase() === sNameLower)
+      ).length;
+      countMap[s.id] = count;
+    }
     
     if (sections.length === 0) {
       res.json(DEFAULT_CORE_SECTIONS.map((s, idx) => ({
@@ -91,7 +99,7 @@ router.get("/sections/:id/cards", async (req, res) => {
 router.get("/cards", async (req, res) => {
   try {
     const { search, subject, resourceType, isFree, sectionId, featured, subtype, isRecommended } = req.query as Record<string, string>;
-    const conditions: ReturnType<typeof eq>[] = [
+    const conditions: any[] = [
       eq(cardsTable.isVisible, true),
       eq(cardsTable.isDeleted, false),
     ];
@@ -103,13 +111,47 @@ router.get("/cards", async (req, res) => {
       );
       if (likeCond) conditions.push(likeCond);
     }
-    if (subject) conditions.push(eq(cardsTable.subject, subject));
+    if (subject) {
+      const matching = await db
+        .select({ id: sectionsTable.id })
+        .from(sectionsTable)
+        .where(ilike(sectionsTable.name, subject));
+      const sectionIds = matching.map((s) => s.id);
+      if (sectionIds.length > 0) {
+        conditions.push(
+          or(
+            ilike(cardsTable.subject, `%${subject}%`),
+            inArray(cardsTable.sectionId, sectionIds)
+          )
+        );
+      } else {
+        conditions.push(ilike(cardsTable.subject, `%${subject}%`));
+      }
+    }
     if (resourceType) conditions.push(eq(cardsTable.resourceType, resourceType));
     if (subtype) conditions.push(eq(cardsTable.subtype, subtype));
     if (isRecommended === "true") conditions.push(eq(cardsTable.isRecommended, true));
     if (isFree === "true") conditions.push(eq(cardsTable.isFree, true));
     if (isFree === "false") conditions.push(eq(cardsTable.isFree, false));
-    if (sectionId) conditions.push(eq(cardsTable.sectionId, parseInt(sectionId)));
+    if (sectionId) {
+      const secId = parseInt(sectionId);
+      if (!isNaN(secId)) {
+        const [sec] = await db
+          .select({ name: sectionsTable.name })
+          .from(sectionsTable)
+          .where(eq(sectionsTable.id, secId));
+        if (sec) {
+          conditions.push(
+            or(
+              eq(cardsTable.sectionId, secId),
+              ilike(cardsTable.subject, `%${sec.name}%`)
+            )
+          );
+        } else {
+          conditions.push(eq(cardsTable.sectionId, secId));
+        }
+      }
+    }
     if (featured === "true") conditions.push(eq(cardsTable.isFeatured, true));
     const cards = await db
       .select({ card: cardsTable, sectionName: sectionsTable.name })

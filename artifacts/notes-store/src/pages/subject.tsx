@@ -111,13 +111,13 @@ export default function SubjectPage() {
 
   const supportedTypes = isCoreSubject ? CORE_RESOURCE_TYPES : LANGUAGE_RESOURCE_TYPES;
 
-  // Query cards for this subject / section immediately in parallel with zero waterfall!
+  // Query cards for this subject immediately in parallel with zero waterfall!
   const { data: cards, isLoading: cardsLoading } = useListCards(
-    section?.id ? { sectionId: section.id } : { subject: subjectName || undefined },
+    { subject: subjectName || undefined },
     {
       query: {
-        enabled: Boolean(section?.id || subjectName),
-        queryKey: ["subject-cards", section?.id || subjectName],
+        enabled: Boolean(subjectName),
+        queryKey: ["subject-cards", subjectName],
         placeholderData: (prev) => prev,
       },
     }
