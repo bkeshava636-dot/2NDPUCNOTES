@@ -104,6 +104,7 @@ export type CardFormData = {
   fileSizeKb: string;
   isFeatured: boolean;
   isVisible: boolean;
+  additionalCategories: string[];
 };
 
 const defaultForm: CardFormData = {
@@ -130,6 +131,7 @@ const defaultForm: CardFormData = {
   fileSizeKb: "", 
   isFeatured: false, 
   isVisible: true,
+  additionalCategories: [],
 };
 
 export default function CardForm({ initialData, cardId }: { initialData?: Partial<CardFormData>; cardId?: number }) {
@@ -322,7 +324,8 @@ export default function CardForm({ initialData, cardId }: { initialData?: Partia
       fileSizeKb: form.fileSizeKb ? parseInt(form.fileSizeKb) : undefined,
       isFeatured: form.isFeatured,
       isVisible: form.isVisible,
-    };
+      additionalCategories: form.additionalCategories || [],
+    } as any;
 
     if (cardId) {
       updateCard.mutate(
@@ -452,6 +455,59 @@ export default function CardForm({ initialData, cardId }: { initialData?: Partia
                     ))}
                   </SelectContent>
                 </Select>
+              </div>
+            </div>
+
+            {/* Additional Categories Multi-Select Linking */}
+            <div className="space-y-2 p-3.5 rounded-xl bg-[#f8fafc] border border-[#e2e8f0]">
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label className="text-xs font-semibold text-[#112542] flex items-center gap-1.5">
+                    <Link2 className="w-3.5 h-3.5 text-[#1856b8]" />
+                    Link with Other Categories (Optional)
+                  </Label>
+                  <p className="text-[11px] text-[#64748b] mt-0.5">
+                    Show this single resource in other category tabs (e.g. Passing Package, MQP) without re-uploading or duplicating it.
+                  </p>
+                </div>
+                {form.additionalCategories && form.additionalCategories.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => set("additionalCategories", [])}
+                    className="text-[10px] text-[#dc2626] hover:underline font-medium"
+                  >
+                    Clear linked categories
+                  </button>
+                )}
+              </div>
+              <div className="flex flex-wrap gap-1.5 pt-1">
+                {availableResourceTypes
+                  .filter((t) => t.toLowerCase() !== form.resourceType.toLowerCase())
+                  .map((t) => {
+                    const isSelected = form.additionalCategories?.includes(t);
+                    return (
+                      <button
+                        key={t}
+                        type="button"
+                        onClick={() => {
+                          const current = form.additionalCategories || [];
+                          if (isSelected) {
+                            set("additionalCategories", current.filter((c) => c !== t));
+                          } else {
+                            set("additionalCategories", [...current, t]);
+                          }
+                        }}
+                        className={`text-xs px-2.5 py-1 rounded-lg border transition-all flex items-center gap-1 ${
+                          isSelected
+                            ? "bg-[#1856b8] text-white border-[#1856b8] font-semibold shadow-2xs"
+                            : "bg-white text-[#5a6b82] border-[#e2e8f0] hover:bg-[#f1f5f9] hover:text-[#112542]"
+                        }`}
+                      >
+                        <span>{t}</span>
+                        {isSelected && <span className="text-[10px] font-bold">✓</span>}
+                      </button>
+                    );
+                  })}
               </div>
             </div>
 

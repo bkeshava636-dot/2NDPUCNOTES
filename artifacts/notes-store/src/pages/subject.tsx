@@ -150,23 +150,30 @@ export default function SubjectPage() {
   const filteredCards = useMemo(() => {
     if (!cards) return [];
     return cards.filter((card) => {
-      // Type matching (flexible to match "Model Question Papers" with "(MQP)" or without)
+      // Type matching (flexible to match "Model Question Papers" with "(MQP)" or without, checking primary and additionalCategories)
       if (activeType !== "all") {
-        const cardType = card.resourceType?.toLowerCase() || "";
+        const allTypes = [
+          card.resourceType || "",
+          ...(Array.isArray((card as any).additionalCategories) ? (card as any).additionalCategories : []),
+        ].map((t) => String(t).toLowerCase());
+
         const targetType = activeType.toLowerCase();
 
-        const matchMqp =
-          targetType.includes("model question") &&
-          (cardType.includes("model") || cardType.includes("mqp"));
-        const matchPyq =
-          targetType.includes("previous year") &&
-          (cardType.includes("previous") || cardType.includes("pyq"));
-        const matchDirect =
-          cardType === targetType ||
-          cardType.includes(targetType) ||
-          targetType.includes(cardType);
+        const typeMatches = allTypes.some((cardType) => {
+          const matchMqp =
+            targetType.includes("model question") &&
+            (cardType.includes("model") || cardType.includes("mqp"));
+          const matchPyq =
+            targetType.includes("previous year") &&
+            (cardType.includes("previous") || cardType.includes("pyq"));
+          const matchDirect =
+            cardType === targetType ||
+            cardType.includes(targetType) ||
+            targetType.includes(cardType);
+          return matchMqp || matchPyq || matchDirect;
+        });
 
-        if (!matchMqp && !matchPyq && !matchDirect) {
+        if (!typeMatches) {
           return false;
         }
       }

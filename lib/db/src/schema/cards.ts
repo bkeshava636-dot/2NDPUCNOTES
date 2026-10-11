@@ -18,6 +18,7 @@ export const cardsTable = pgTable("cards", {
   isRecommended:       boolean("is_recommended").notNull().default(false),
   answerKeyUrl:        text("answer_key_url"),
   officialSourceUrl:   text("official_source_url"),
+  additionalCategories: text("additional_categories").array().notNull().default([]),
   isFree:              boolean("is_free").notNull().default(false),
   pricePaise:          integer("price_paise").notNull().default(0),
   discountPricePaise:  integer("discount_price_paise"),

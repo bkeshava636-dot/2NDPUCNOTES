@@ -40,17 +40,26 @@ router.get("/sections", async (req, res) => {
     await ensureDefaultSections();
     const sections = await db.select().from(sectionsTable).where(eq(sectionsTable.isVisible, true)).orderBy(asc(sectionsTable.sortOrder));
     const allVisibleCards = await db
-      .select({ id: cardsTable.id, sectionId: cardsTable.sectionId, subject: cardsTable.subject })
+      .select({
+        id: cardsTable.id,
+        sectionId: cardsTable.sectionId,
+        subject: cardsTable.subject,
+        resourceType: cardsTable.resourceType,
+        additionalCategories: cardsTable.additionalCategories,
+      })
       .from(cardsTable)
       .where(and(eq(cardsTable.isVisible, true), eq(cardsTable.isDeleted, false)));
 
     const countMap: Record<number, number> = {};
     for (const s of sections) {
       const sNameLower = s.name.toLowerCase();
-      const count = allVisibleCards.filter((c) => 
-        c.sectionId === s.id || 
-        (c.subject && c.subject.toLowerCase() === sNameLower)
-      ).length;
+      const count = allVisibleCards.filter((c) => {
+        const matchesSectionId = c.sectionId === s.id;
+        const matchesSubject = c.subject && c.subject.toLowerCase() === sNameLower;
+        const matchesType = c.resourceType && c.resourceType.toLowerCase() === sNameLower;
+        const matchesAdditional = Array.isArray(c.additionalCategories) && c.additionalCategories.some((cat) => cat && cat.toLowerCase() === sNameLower);
+        return matchesSectionId || matchesSubject || matchesType || matchesAdditional;
+      }).length;
       countMap[s.id] = count;
     }
     
@@ -128,7 +137,14 @@ router.get("/cards", async (req, res) => {
         conditions.push(ilike(cardsTable.subject, `%${subject}%`));
       }
     }
-    if (resourceType) conditions.push(eq(cardsTable.resourceType, resourceType));
+    if (resourceType) {
+      conditions.push(
+        or(
+          ilike(cardsTable.resourceType, `%${resourceType}%`),
+          sql`EXISTS (SELECT 1 FROM unnest(${cardsTable.additionalCategories}) cat WHERE cat ILIKE ${'%' + resourceType + '%'})`
+        )
+      );
+    }
     if (subtype) conditions.push(eq(cardsTable.subtype, subtype));
     if (isRecommended === "true") conditions.push(eq(cardsTable.isRecommended, true));
     if (isFree === "true") conditions.push(eq(cardsTable.isFree, true));

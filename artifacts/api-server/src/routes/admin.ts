@@ -380,6 +380,7 @@ router.post("/admin/cards", requireAdmin, async (req, res) => {
     const {
       sectionId, title, description, subject, chapter, semester,
       board, classLevel, resourceType, subtype, isRecommended, answerKeyUrl, officialSourceUrl,
+      additionalCategories,
       isFree, pricePaise, discountPricePaise, telegramLink, isNew,
       thumbnailUrl, previewImageUrls, pdfFileKey,
       pageCount, fileSizeKb, isFeatured, isVisible,
@@ -404,6 +405,7 @@ router.post("/admin/cards", requireAdmin, async (req, res) => {
         isRecommended: isRecommended ?? false,
         answerKeyUrl: answerKeyUrl || null,
         officialSourceUrl: officialSourceUrl || null,
+        additionalCategories: Array.isArray(additionalCategories) ? additionalCategories : [],
         isFree: isFree ?? false,
         pricePaise: pricePaise || 0,
         discountPricePaise: discountPricePaise || null,
@@ -434,6 +436,7 @@ const updateCardHandler = async (req: any, res: any) => {
     const fields = [
       "sectionId", "title", "description", "subject", "chapter", "semester",
       "board", "classLevel", "resourceType", "subtype", "isRecommended", "answerKeyUrl", "officialSourceUrl",
+      "additionalCategories",
       "isFree", "pricePaise", "discountPricePaise", "telegramLink", "isNew",
       "thumbnailUrl", "previewImageUrls", "pdfFileKey",
       "pageCount", "fileSizeKb", "isFeatured", "isVisible", "sortOrder",

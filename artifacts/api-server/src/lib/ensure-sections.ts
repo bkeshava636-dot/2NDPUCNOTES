@@ -74,6 +74,7 @@ export async function ensureDefaultSections(): Promise<void> {
         ALTER TABLE cards ADD COLUMN IF NOT EXISTS is_recommended boolean NOT NULL DEFAULT false;
         ALTER TABLE cards ADD COLUMN IF NOT EXISTS answer_key_url text;
         ALTER TABLE cards ADD COLUMN IF NOT EXISTS official_source_url text;
+        ALTER TABLE cards ADD COLUMN IF NOT EXISTS additional_categories text[] DEFAULT '{}';
         ALTER TABLE sections ADD COLUMN IF NOT EXISTS official_source_url text;
       `).catch(() => {});
 

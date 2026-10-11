@@ -159,34 +159,41 @@ export default function CategoryPage() {
     if (!allCards || !meta) return [];
 
     return allCards.filter((card) => {
-      // 1. Check if card matches this category
-      const cardType = (card.resourceType || "").toLowerCase();
+      // 1. Check if card matches this category (primary resourceType OR additionalCategories)
+      const allTypes = [
+        card.resourceType || "",
+        ...(Array.isArray((card as any).additionalCategories) ? (card as any).additionalCategories : []),
+      ].map((t) => String(t).toLowerCase());
+
       const targetType = meta.dbType.toLowerCase();
 
-      let typeMatches = false;
-      if (slug === "mqp") {
-        typeMatches = cardType.includes("model") || cardType.includes("mqp");
-      } else if (slug === "mcq") {
-        typeMatches = cardType.includes("mcq") || cardType.includes("multiple choice");
-      } else if (slug === "question-bank") {
-        typeMatches = cardType.includes("question bank");
-      } else if (slug === "practical") {
-        typeMatches = cardType.includes("practical");
-      } else if (slug === "pyq") {
-        typeMatches =
-          cardType.includes("previous") ||
-          cardType.includes("pyq") ||
-          cardType.includes("year");
-      } else if (slug === "passing-package") {
-        typeMatches = cardType.includes("passing");
-      } else if (slug === "publication-books") {
-        typeMatches = cardType.includes("publication") || cardType.includes("book");
-      } else {
-        typeMatches =
-          cardType === targetType ||
-          cardType.includes(targetType) ||
-          targetType.includes(cardType);
-      }
+      const typeMatches = allTypes.some((cardType) => {
+        if (slug === "mqp") {
+          return cardType.includes("model") || cardType.includes("mqp");
+        } else if (slug === "mcq") {
+          return cardType.includes("mcq") || cardType.includes("multiple choice");
+        } else if (slug === "question-bank") {
+          return cardType.includes("question bank");
+        } else if (slug === "practical") {
+          return cardType.includes("practical");
+        } else if (slug === "pyq") {
+          return (
+            cardType.includes("previous") ||
+            cardType.includes("pyq") ||
+            cardType.includes("year")
+          );
+        } else if (slug === "passing-package") {
+          return cardType.includes("passing");
+        } else if (slug === "publication-books") {
+          return cardType.includes("publication") || cardType.includes("book");
+        } else {
+          return (
+            cardType === targetType ||
+            cardType.includes(targetType) ||
+            targetType.includes(cardType)
+          );
+        }
+      });
 
       if (!typeMatches) return false;
 

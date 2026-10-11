@@ -46,6 +46,7 @@ export default function AdminCardEdit() {
         fileSizeKb: card.fileSizeKb ? String(card.fileSizeKb) : "",
         isFeatured: card.isFeatured,
         isVisible: card.isVisible,
+        additionalCategories: (card as any).additionalCategories || [],
       }}
     />
   );
