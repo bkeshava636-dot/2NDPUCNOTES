@@ -158,8 +158,22 @@ export default function AdminSections() {
   // Check which standard categories or subjects are missing from the database
   const missingCategories = useMemo(() => {
     if (!sections) return [];
-    const existingSlugs = new Set(sections.map((s) => (s.slug || "").toLowerCase()));
-    return STANDARD_RESOURCE_CATEGORIES.filter((c) => !existingSlugs.has(c.slug.toLowerCase()));
+    return STANDARD_RESOURCE_CATEGORIES.filter((c) => {
+      return !sections.some((s) => {
+        const sSlug = (s.slug || "").toLowerCase();
+        const sName = (s.name || "").toLowerCase();
+        const cSlug = c.slug.toLowerCase();
+        const cName = c.name.toLowerCase();
+        return (
+          sSlug === cSlug ||
+          sName === cName ||
+          (cSlug === "mqp" && (sSlug.includes("mqp") || sName.includes("model"))) ||
+          (cSlug === "mcq" && (sSlug.includes("mcq") || sName.includes("multiple choice"))) ||
+          (cSlug === "pyq" && (sSlug.includes("pyq") || sName.includes("previous"))) ||
+          (cSlug === "question-bank" && (sSlug.includes("question-bank") || sName.includes("question bank")))
+        );
+      });
+    });
   }, [sections]);
 
   const missingSubjects = useMemo(() => {
