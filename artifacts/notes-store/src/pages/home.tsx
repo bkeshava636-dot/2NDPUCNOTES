@@ -6,21 +6,12 @@ import { CardItem } from "@/components/card-item";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import {
   Search,
   BookOpen,
   MessageCircle,
   ArrowRight,
   X,
-  HelpCircle,
-  Sparkles,
   TrendingUp,
-  FileCheck,
 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { TELEGRAM_LINK } from "@/lib/site-config";
@@ -28,7 +19,6 @@ import {
   SCIENCE_SUBJECTS,
   LANGUAGE_SUBJECTS,
   RESOURCE_CATEGORIES,
-  STUDENT_FAQS,
 } from "@/lib/site-navigation";
 import { useLanguage } from "@/lib/language-context";
 
@@ -140,19 +130,12 @@ export default function Home() {
       <section className="relative overflow-hidden bg-gradient-to-b from-[#f8fafc] via-[#f1f5f9]/40 to-white border-b border-[#e2e8f0]/80 pt-7 pb-8 sm:pt-10 sm:pb-11 px-4">
         <div className="max-w-2xl mx-auto text-center">
           {/* Main 2PUC Brand Heading */}
-          <div className="inline-flex items-center justify-center gap-2 mb-2">
+          <div className="inline-flex items-center justify-center gap-2 mb-4">
             <h1 className="text-4xl sm:text-5xl font-black text-[#0f172a] tracking-tight select-none inline-flex items-baseline justify-center">
               <span className="text-[#2563eb]">2</span>
               <span>PUC</span>
             </h1>
           </div>
-
-          {/* One-line Value Proposition */}
-          <p className="text-xs sm:text-sm text-[#475569] font-medium max-w-lg mx-auto mb-5 sm:mb-6 leading-relaxed">
-            {language === "kn"
-              ? "ಕರ್ನಾಟಕ ದ್ವಿತೀಯ ಪಿಯುಸಿ ವಿಜ್ಞಾನ ನೋಟ್ಸ್, ನೀಲನಕ್ಷೆ ಮಾದರಿ ಪತ್ರಿಕೆಗಳು ಹಾಗೂ ಪ್ರಶ್ನೆ ಕೋಶಗಳು"
-              : "Karnataka 2nd PUC Science Notes, Blueprint Model Papers, PYQs & Question Banks"}
-          </p>
 
           {/* Search Form */}
           <form
@@ -427,29 +410,27 @@ export default function Home() {
                   {t("Browse by Resource Type", "ಸಂಪನ್ಮೂಲ ಪ್ರಕಾರವಾರು ಹುಡುಕಿ")}
                 </h2>
                 <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-[#eff6ff] text-[#2563eb] border border-[#bfdbfe]">
-                  7 {t("Formats", "ಪ್ರಕಾರಗಳು")}
+                  {RESOURCE_CATEGORIES.length} {t("Formats", "ಪ್ರಕಾರಗಳು")}
                 </span>
               </div>
               <p className="text-xs sm:text-sm text-[#64748b] mt-0.5">
                 {t(
-                  "Filter Karnataka 2nd PUC materials by exam format, blueprint paper, or question bank",
+                  "Filter Karnataka 2nd PUC materials by notes, exam format, blueprint paper, or question bank",
                   "ಪರೀಕ್ಷಾ ಮಾದರಿ, ಬ್ಲೂಪ್ರಿಂಟ್ ಅಥವಾ ಹಿಂದಿನ ವರ್ಷದ ಪತ್ರಿಕೆಗಳ ಪ್ರಕಾರ ಹುಡುಕಿ"
                 )}
               </p>
             </div>
 
-            {/* Responsive grid handling 7 items cleanly across all devices */}
+            {/* Responsive grid handling all categories cleanly across all devices */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-3.5">
-              {RESOURCE_CATEGORIES.map((cat, idx) => {
+              {RESOURCE_CATEGORIES.map((cat) => {
                 const Icon = cat.icon;
-                const isLastItem = idx === RESOURCE_CATEGORIES.length - 1;
                 return (
                   <Link
                     key={cat.slug}
                     href={`/category/${cat.slug}`}
                     onPointerEnter={prefetchCategory}
                     onFocus={prefetchCategory}
-                    className={isLastItem ? "sm:col-span-2 lg:col-span-1 xl:col-span-1" : ""}
                   >
                     <div
                       className={`group h-full bg-white border border-[#e2e8f0] ${cat.theme.hoverBorder} hover:bg-[#fafcff] rounded-xl p-4 transition-all cursor-pointer flex flex-col justify-between shadow-2xs hover:shadow-xs active:scale-[0.99]`}
@@ -511,42 +492,6 @@ export default function Home() {
           </section>
         )}
 
-        {/* ── PART 4: Student FAQs ── */}
-        {!submitted && (
-          <section id="faqs" className="space-y-4 scroll-mt-20">
-            <div className="border-b border-[#eef2f6] pb-3 flex items-center gap-2">
-              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#eff6ff] text-[#2563eb] border border-[#bfdbfe]">
-                <HelpCircle className="h-4 w-4" />
-              </div>
-              <div>
-                <h2 className="text-xl sm:text-2xl font-bold text-[#0f172a] tracking-tight">
-                  {t("Frequently Asked Questions", "ಸಾಮಾನ್ಯ ಪ್ರಶ್ನೆಗಳು")}
-                </h2>
-                <p className="text-xs sm:text-sm text-[#64748b]">
-                  {t(
-                    "Quick answers about syllabus alignment, PDF downloads, and payments",
-                    "ಪಠ್ಯಕ್ರಮ, ಡೌನ್‌ಲೋಡ್ ಹಾಗೂ ಪಾವತಿಗೆ ಸಂಬಂಧಿಸಿದ ವಿವರಗಳು"
-                  )}
-                </p>
-              </div>
-            </div>
-
-            <div className="bg-[#f8fafc] border border-[#e2e8f0] rounded-xl p-4 sm:p-5">
-              <Accordion type="single" collapsible className="w-full">
-                {STUDENT_FAQS.map((faq, idx) => (
-                  <AccordionItem key={idx} value={`faq-${idx}`} className="border-b-[#e2e8f0]/80 last:border-b-0">
-                    <AccordionTrigger className="text-xs sm:text-sm font-semibold text-[#0f172a] hover:text-[#2563eb] text-left py-3.5">
-                      {faq.question}
-                    </AccordionTrigger>
-                    <AccordionContent className="text-xs sm:text-sm text-[#475569] leading-relaxed pt-1 pb-3">
-                      {faq.answer}
-                    </AccordionContent>
-                  </AccordionItem>
-                ))}
-              </Accordion>
-            </div>
-          </section>
-        )}
 
         {/* ── PART 5: Community & Telegram Banner ── */}
         <section className="bg-gradient-to-r from-[#eff6ff] via-[#f0f9ff] to-[#f8fafc] border border-[#dbeafe] rounded-xl p-5 sm:p-6 shadow-2xs">

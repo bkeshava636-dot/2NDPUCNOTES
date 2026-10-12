@@ -227,6 +227,24 @@ export interface ResourceCategoryItem {
 
 export const RESOURCE_CATEGORIES: ResourceCategoryItem[] = [
   {
+    title: "Notes & Study Material",
+    kannadaTitle: "ನೋಟ್ಸ್ ಮತ್ತು ಅಧ್ಯಯನ ಸಾಮಗ್ರಿ",
+    slug: "notes",
+    dbType: "Notes",
+    desc: "Comprehensive chapterwise handwritten and typed notes, formulas, and derivations",
+    icon: BookOpen,
+    badge: "Core Notes",
+    theme: {
+      badgeBg: "bg-[#f0fdf4]",
+      badgeBorder: "border-[#bbf7d0]",
+      badgeText: "text-[#15803d]",
+      iconBg: "bg-[#f0fdf4]",
+      iconText: "text-[#16a34a]",
+      hoverBorder: "hover:border-[#86efac]",
+      accentHex: "#16a34a",
+    },
+  },
+  {
     title: "Model Question Papers (MQP)",
     kannadaTitle: "ಮಾದರಿ ಪ್ರಶ್ನೆ ಪತ್ರಿಕೆಗಳು",
     slug: "mqp",

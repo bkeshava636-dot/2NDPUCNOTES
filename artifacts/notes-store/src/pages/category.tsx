@@ -15,6 +15,7 @@ import {
   History,
   CheckCircle2,
   BookMarked,
+  BookOpen,
   Calendar
 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -23,12 +24,18 @@ interface CategoryMeta {
   title: string;
   dbType: string;
   description: string;
-  icon: typeof FileText;
+  icon: typeof FileText | typeof BookOpen;
   officialSourceUrl?: string;
   isPracticalOnly?: boolean;
 }
 
 const CATEGORIES_CONFIG: Record<string, CategoryMeta> = {
+  notes: {
+    title: "Notes & Study Material",
+    dbType: "Notes",
+    description: "Comprehensive chapterwise theory notes, derivations, formula sheets, and solved textbook exercises.",
+    icon: BookOpen,
+  },
   mqp: {
     title: "Model Question Papers (MQP)",
     dbType: "Model Question Papers (MQP)",
@@ -168,7 +175,9 @@ export default function CategoryPage() {
       const targetType = meta.dbType.toLowerCase();
 
       const typeMatches = allTypes.some((cardType) => {
-        if (slug === "mqp") {
+        if (slug === "notes") {
+          return cardType === "notes" || cardType.includes("note");
+        } else if (slug === "mqp") {
           return cardType.includes("model") || cardType.includes("mqp");
         } else if (slug === "mcq") {
           return cardType.includes("mcq") || cardType.includes("multiple choice");
