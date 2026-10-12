@@ -102,6 +102,22 @@ export async function ensureDefaultSections(): Promise<void> {
         );
         CREATE INDEX IF NOT EXISTS idx_user_feedback_created_at ON user_feedback(created_at);
         CREATE INDEX IF NOT EXISTS idx_user_feedback_status ON user_feedback(status);
+
+        CREATE TABLE IF NOT EXISTS support_donations (
+          id SERIAL PRIMARY KEY,
+          name TEXT NOT NULL DEFAULT 'Karnataka Student',
+          phone TEXT,
+          email TEXT,
+          message TEXT,
+          amount_paise INTEGER NOT NULL,
+          status TEXT NOT NULL DEFAULT 'pending',
+          razorpay_order_id TEXT,
+          razorpay_payment_id TEXT,
+          razorpay_signature TEXT,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+          paid_at TIMESTAMPTZ
+        );
+        CREATE INDEX IF NOT EXISTS idx_support_donations_status ON support_donations(status);
       `).catch(() => {});
 
       const existing = await db.select().from(sectionsTable);

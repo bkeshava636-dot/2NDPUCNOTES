@@ -3,9 +3,10 @@ import Razorpay from "razorpay";
 import crypto from "crypto";
 import { v4 as uuidv4 } from "uuid";
 import { db } from "@workspace/db";
-import { cardsTable, ordersTable, customersTable } from "@workspace/db";
+import { cardsTable, ordersTable, customersTable, donationsTable } from "@workspace/db";
 import { eq, and } from "drizzle-orm";
 import { supabase, BUCKET_NOTES } from "../supabase.js";
+import { ensureDefaultSections } from "../lib/ensure-sections.js";
 
 const router = Router();
 
@@ -196,6 +197,116 @@ router.post("/checkout/free-download", async (req, res) => {
   } catch (err) {
     req.log.error(err);
     res.status(500).json({ error: "Failed to process free download" });
+  }
+});
+
+// ── Buy Me Some Paneer (Support Donations) ───────────────────────────────────
+
+router.post("/support/create-order", async (req, res) => {
+  try {
+    await ensureDefaultSections();
+    const { amountPaise, name, phone, email, message } = req.body;
+    const amount = parseInt(amountPaise, 10);
+    if (isNaN(amount) || amount < 1000) {
+      res.status(400).json({ error: "Minimum support amount is ₹10" });
+      return;
+    }
+
+    const razorpay = getRazorpay();
+    const receipt = `paneer_${uuidv4().slice(0, 30)}`;
+    const rzOrder = await razorpay.orders.create({
+      amount,
+      currency: "INR",
+      receipt,
+      notes: {
+        type: "buy_me_paneer",
+        name: name ? String(name).slice(0, 100) : "Student",
+        message: message ? String(message).slice(0, 200) : "",
+      },
+    });
+
+    const [donation] = await db
+      .insert(donationsTable)
+      .values({
+        name: (name && String(name).trim()) || "Karnataka Student",
+        phone: (phone && String(phone).trim()) || null,
+        email: (email && String(email).trim()) || null,
+        message: (message && String(message).trim()) || null,
+        amountPaise: amount,
+        status: "pending",
+        razorpayOrderId: rzOrder.id as string,
+      })
+      .returning();
+
+    res.json({
+      razorpayOrderId: rzOrder.id,
+      donationId: donation.id,
+      amountPaise: amount,
+      currency: "INR",
+      keyId: process.env.RAZORPAY_KEY_ID,
+      name: donation.name,
+      phone: donation.phone || "",
+      email: donation.email || "",
+      description: "Found 2PUC Helpful - Buy Me Some Paneer 🧀",
+    });
+  } catch (err: any) {
+    req.log?.error?.(err, "Failed to create support donation order");
+    res.status(500).json({ error: "Failed to initiate payment gateway", detail: err?.message || String(err) });
+  }
+});
+
+router.post("/support/verify", async (req, res) => {
+  try {
+    const { razorpayOrderId, razorpayPaymentId, razorpaySignature } = req.body;
+    if (!razorpayOrderId || !razorpayPaymentId || !razorpaySignature) {
+      res.status(400).json({ error: "Missing payment verification fields" });
+      return;
+    }
+    const keySecret = process.env.RAZORPAY_KEY_SECRET;
+    if (!keySecret) {
+      res.status(500).json({ error: "Server misconfiguration" });
+      return;
+    }
+    const expectedSig = crypto
+      .createHmac("sha256", keySecret)
+      .update(`${razorpayOrderId}|${razorpayPaymentId}`)
+      .digest("hex");
+    if (expectedSig !== razorpaySignature) {
+      res.status(400).json({ error: "Invalid payment signature" });
+      return;
+    }
+
+    const [donation] = await db
+      .select()
+      .from(donationsTable)
+      .where(eq(donationsTable.razorpayOrderId, razorpayOrderId));
+
+    if (!donation) {
+      res.status(404).json({ error: "Donation record not found" });
+      return;
+    }
+
+    const [updated] = await db
+      .update(donationsTable)
+      .set({
+        status: "paid",
+        paidAt: new Date(),
+        razorpayPaymentId,
+        razorpaySignature,
+      })
+      .where(eq(donationsTable.id, donation.id))
+      .returning();
+
+    res.json({
+      success: true,
+      donationId: updated.id,
+      name: updated.name,
+      amountPaise: updated.amountPaise,
+      message: "Thank you so much for the paneer! 🧀 Your support keeps 2PUC free & fast for Karnataka students.",
+    });
+  } catch (err: any) {
+    req.log?.error?.(err, "Failed to verify donation");
+    res.status(500).json({ error: "Payment verification failed" });
   }
 });
 

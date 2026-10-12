@@ -14,20 +14,33 @@ router.use((req, res, next) => {
   next();
 });
 
+router.get("/page-views/count", async (req, res) => {
+  try {
+    await ensureDefaultSections();
+    const [row] = await db.select({ count: sql<number>`count(*)::int` }).from(pageViewsTable);
+    res.json({ count: row?.count ?? 0 });
+  } catch (err) {
+    res.json({ count: 0 });
+  }
+});
+
 router.get("/store/stats", async (req, res) => {
   try {
+    await ensureDefaultSections();
     const base = and(eq(cardsTable.isVisible, true), eq(cardsTable.isDeleted, false));
     const [totalResources] = await db.select({ count: sql<number>`count(*)::int` }).from(cardsTable).where(base);
     const [freeResources] = await db.select({ count: sql<number>`count(*)::int` }).from(cardsTable).where(and(eq(cardsTable.isVisible, true), eq(cardsTable.isDeleted, false), eq(cardsTable.isFree, true)));
     const [paidResources] = await db.select({ count: sql<number>`count(*)::int` }).from(cardsTable).where(and(eq(cardsTable.isVisible, true), eq(cardsTable.isDeleted, false), eq(cardsTable.isFree, false)));
     const [totalSections] = await db.select({ count: sql<number>`count(*)::int` }).from(sectionsTable).where(eq(sectionsTable.isVisible, true));
     const [totalOrders] = await db.select({ count: sql<number>`count(*)::int` }).from(ordersTable).where(eq(ordersTable.status, "paid"));
+    const [totalViews] = await db.select({ count: sql<number>`count(*)::int` }).from(pageViewsTable);
     res.json({
       totalResources: totalResources.count,
       freeResources: freeResources.count,
       paidResources: paidResources.count,
       totalSections: totalSections.count,
       totalOrders: totalOrders.count,
+      totalViews: totalViews?.count ?? 0,
     });
   } catch (err) {
     req.log.error(err);

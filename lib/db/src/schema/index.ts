@@ -5,3 +5,4 @@ export * from "./orders";
 export * from "./downloads";
 export * from "./page-views";
 export * from "./feedback";
+export * from "./donations";
