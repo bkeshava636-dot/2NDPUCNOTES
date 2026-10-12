@@ -3,14 +3,22 @@ import { Link, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Footer } from "@/components/footer";
-import { BookOpen, ShoppingBag, Eye } from "lucide-react";
+import { ShoppingBag, Eye, Send, Search, Languages } from "lucide-react";
 import { BrandLogo } from "@/components/brand-logo";
 import { FloatingFeedback } from "@/components/floating-feedback";
 import { usePageViewTracker } from "@/hooks/use-page-view-tracker";
+import { TELEGRAM_LINK } from "@/lib/site-config";
+import { useLanguage } from "@/lib/language-context";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export function PublicLayout({ children }: { children: ReactNode }) {
   usePageViewTracker();
-  const [location] = useLocation();
+  const [location, setLocation] = useLocation();
+  const { language, toggleLanguage, t } = useLanguage();
   const isPurchasesActive = location === "/my-purchases";
 
   const { data: viewData } = useQuery<{ count: number }>({
@@ -26,68 +34,128 @@ export function PublicLayout({ children }: { children: ReactNode }) {
     refetchInterval: 30000,
   });
 
+  const handleSearchClick = () => {
+    if (location !== "/") {
+      setLocation("/?focusSearch=1");
+    } else {
+      const searchInput = document.getElementById("home-search-input");
+      if (searchInput) {
+        searchInput.focus();
+        searchInput.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    }
+  };
+
   return (
-    <div className="min-h-[100dvh] flex flex-col bg-white text-[#112542] antialiased selection:bg-[#ebf3ff] selection:text-[#1856b8]">
-      <header className="sticky top-0 z-50 w-full border-b border-[#e2e8f0]/80 bg-white/95 backdrop-blur-md transition-all">
-        <div className="container flex h-15 items-center justify-between px-4 max-w-5xl mx-auto">
-          <div className="flex items-center gap-2.5 sm:gap-3">
+    <div className="min-h-[100dvh] flex flex-col bg-white text-[#0f172a] antialiased selection:bg-[#eff6ff] selection:text-[#1d4ed8]">
+      {/* 
+        Sticky header with 100% solid background (bg-white) and no semi-transparent backdrop blur, 
+        eliminating any blurred ghost text artifacts from content scrolling beneath it.
+      */}
+      <header className="sticky top-0 z-50 w-full border-b border-[#e2e8f0] bg-white shadow-2xs transition-all">
+        <div className="container flex h-14 sm:h-15 items-center justify-between px-3 sm:px-4 max-w-5xl mx-auto">
+          {/* Left Brand & View Count */}
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
             <Link
               href="/"
-              className="flex items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2563eb]/30 rounded-lg p-1 -ml-1 transition-opacity hover:opacity-90"
+              className="flex items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2563eb]/40 rounded-lg p-0.5 transition-opacity hover:opacity-90 shrink-0"
               aria-label="2PUC Home"
             >
               <BrandLogo size="md" />
             </Link>
 
-            {/* View Count (ONLY COUNT) */}
+            {/* View Count Badge with Accessible Tooltip */}
             {viewData?.count !== undefined && (
-              <div
-                className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full bg-slate-50 border border-slate-200/90 text-[11px] sm:text-xs font-bold text-slate-700 shadow-2xs select-none"
-                title="Total site views"
-              >
-                <Eye className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-[#2563eb]" />
-                <span>{viewData.count.toLocaleString()}</span>
-              </div>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div
+                    tabIndex={0}
+                    role="status"
+                    aria-label={`${viewData.count} total site visits to 2PUC notes`}
+                    className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-0.5 rounded-full bg-[#f8fafc] border border-[#cbd5e1] text-[11px] sm:text-xs font-semibold text-[#334155] shadow-2xs select-none cursor-default focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#2563eb]"
+                  >
+                    <Eye className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-[#2563eb] shrink-0" aria-hidden="true" />
+                    <span className="font-mono tracking-tight font-bold">{viewData.count.toLocaleString()}</span>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent side="bottom" className="text-xs bg-[#0f172a] text-white py-1 px-2.5 rounded-lg border-0 shadow-md">
+                  <span>{viewData.count.toLocaleString()} total visits across 2PUC study materials</span>
+                </TooltipContent>
+              </Tooltip>
             )}
           </div>
 
-          <nav className="flex items-center gap-2">
+          {/* Right Navigation Actions (visible at all times) */}
+          <nav className="flex items-center gap-1 sm:gap-2 shrink-0">
+            {/* Quick Search Action */}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleSearchClick}
+              className="h-8.5 px-2 sm:px-2.5 rounded-lg text-xs font-semibold text-[#475569] hover:text-[#0f172a] hover:bg-[#f1f5f9] flex items-center gap-1.5"
+              aria-label="Search study materials"
+              title="Search materials (/)"
+            >
+              <Search className="h-3.5 w-3.5 text-[#64748b]" />
+              <span className="hidden md:inline text-[11px] text-[#64748b] font-mono border border-[#cbd5e1] rounded px-1 py-0.2 bg-white">
+                /
+              </span>
+            </Button>
+
+            {/* Language Toggle */}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={toggleLanguage}
+              className="h-8.5 px-2 sm:px-2.5 rounded-lg text-xs font-semibold text-[#334155] hover:bg-[#f1f5f9] border border-transparent hover:border-[#cbd5e1] flex items-center gap-1"
+              aria-label="Toggle language between English and Kannada"
+              title="Toggle language (English / ಕನ್ನಡ)"
+            >
+              <Languages className="h-3.5 w-3.5 text-[#2563eb]" />
+              <span className="text-[11px] font-bold">{language === "en" ? "ಕನ್ನಡ" : "EN"}</span>
+            </Button>
+
+            {/* Telegram Link (Visible on all devices) */}
+            <a
+              href={TELEGRAM_LINK}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-1 px-2.5 h-8.5 rounded-lg text-xs font-semibold text-[#0088cc] hover:bg-[#0088cc]/10 transition-colors"
+              aria-label="Join 2PUC Telegram Channel"
+              title="Join Telegram Community"
+            >
+              <Send className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">Telegram</span>
+            </a>
+
+            {/* My Purchases */}
             <Link href="/my-purchases">
               <Button
                 variant={isPurchasesActive ? "secondary" : "ghost"}
                 size="sm"
-                className={`hidden sm:inline-flex items-center gap-2 font-medium text-xs sm:text-sm rounded-lg px-3.5 h-9 transition-all ${
+                className={`h-8.5 px-2.5 sm:px-3 text-xs font-semibold rounded-lg transition-all flex items-center gap-1.5 ${
                   isPurchasesActive
-                    ? "bg-[#eff6ff] text-[#2563eb] border border-[#bfdbfe] font-semibold shadow-2xs"
-                    : "text-[#475569] hover:text-[#0f172a] hover:bg-[#f8fafc] border border-transparent"
-                }`}
-              >
-                <ShoppingBag className="h-3.5 w-3.5" />
-                <span>My Purchases</span>
-              </Button>
-            </Link>
-            <Link href="/my-purchases">
-              <Button
-                variant={isPurchasesActive ? "secondary" : "ghost"}
-                size="icon"
-                className={`sm:hidden h-8.5 w-8.5 rounded-lg ${
-                  isPurchasesActive
-                    ? "bg-[#eff6ff] text-[#2563eb] border border-[#bfdbfe]"
-                    : "text-[#475569] hover:text-[#0f172a] hover:bg-[#f8fafc]"
+                    ? "bg-[#eff6ff] text-[#2563eb] border border-[#bfdbfe] shadow-2xs"
+                    : "text-[#334155] hover:text-[#0f172a] hover:bg-[#f1f5f9] border border-transparent"
                 }`}
                 aria-label="My Purchases"
               >
-                <ShoppingBag className="h-4 w-4" />
+                <ShoppingBag className="h-3.5 w-3.5 text-[#2563eb]" />
+                <span className="hidden xs:inline">{t("My Purchases", "ನನ್ನ ಖರೀದಿಗಳು")}</span>
               </Button>
             </Link>
           </nav>
         </div>
       </header>
+
+      {/* Main Page Content with safe scroll-padding so sticky header never clips section titles */}
       <main className="flex-1 flex flex-col">{children}</main>
+      
+      {/* Footer with built-in safe padding */}
       <Footer />
+
+      {/* Floating Student Feedback */}
       <FloatingFeedback />
     </div>
   );
 }
-
-

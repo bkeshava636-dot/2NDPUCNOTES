@@ -128,16 +128,20 @@ function Router() {
   );
 }
 
+import { LanguageProvider } from "@/lib/language-context";
+
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <ApiWakeUpGate>
-          <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
-            <Router />
-          </WouterRouter>
-          <Toaster />
-        </ApiWakeUpGate>
+        <LanguageProvider>
+          <ApiWakeUpGate>
+            <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
+              <Router />
+            </WouterRouter>
+            <Toaster />
+          </ApiWakeUpGate>
+        </LanguageProvider>
       </TooltipProvider>
     </QueryClientProvider>
   );

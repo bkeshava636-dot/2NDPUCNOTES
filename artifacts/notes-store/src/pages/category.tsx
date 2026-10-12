@@ -65,7 +65,7 @@ const CATEGORIES_CONFIG: Record<string, CategoryMeta> = {
   "passing-package": {
     title: "Passing Package",
     dbType: "Passing Package",
-    description: "High-yield guaranteed scoring questions and simplified notes tailored for scoring passing and first-class marks.",
+    description: "High-yield blueprint-focused questions, key derivations, and simplified notes designed to secure passing and first-class marks.",
     icon: CheckCircle2,
   },
   "publication-books": {

@@ -1,227 +1,65 @@
-import { useState } from "react";
-import { Link } from "wouter";
+import { useState, useEffect, useRef } from "react";
+import { Link, useLocation } from "wouter";
 import { useListSections, useListCards, listCards } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { CardItem } from "@/components/card-item";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import {
   Search,
   BookOpen,
   MessageCircle,
   ArrowRight,
   X,
-  Atom,
-  FlaskConical,
-  Calculator,
-  Dna,
-  BookA,
-  Scroll,
-  GraduationCap,
-  Languages,
-  Laptop,
-  FileText,
   HelpCircle,
-  BookMarked,
-  History,
-  CheckCircle2,
-  Layers,
-  Sparkles
+  Sparkles,
+  TrendingUp,
+  FileCheck,
 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { TELEGRAM_LINK } from "@/lib/site-config";
-
-// Defined lists for Core vs Language subjects
-const CORE_SUBJECT_NAMES = ["Physics", "Chemistry", "Computer Science", "Biology"];
-const LANGUAGE_OTHER_NAMES = ["Mathematics", "English", "Hindi", "Kannada", "Sanskrit"];
-
-function getSubjectIcon(name: string) {
-  const lower = name.toLowerCase();
-  if (lower.includes("phys")) return Atom;
-  if (lower.includes("chem")) return FlaskConical;
-  if (lower.includes("comp")) return Laptop;
-  if (lower.includes("math")) return Calculator;
-  if (lower.includes("bio")) return Dna;
-  if (lower.includes("eng")) return BookA;
-  if (lower.includes("hin")) return Scroll;
-  if (lower.includes("kan")) return GraduationCap;
-  if (lower.includes("san")) return Languages;
-  return BookOpen;
-}
-
-type SubjectTheme = {
-  bg: string;
-  border: string;
-  hoverBorder: string;
-  iconBg: string;
-  iconColor: string;
-  titleColor: string;
-  countColor: string;
-};
-
-const SUBJECT_THEMES: Record<string, SubjectTheme> = {
-  physics: {
-    bg: "bg-[#ebf3ff]",
-    border: "border-[#dce8fa]",
-    hoverBorder: "hover:border-[#b8d4f8]",
-    iconBg: "bg-white",
-    iconColor: "text-[#1856b8]",
-    titleColor: "text-[#1856b8]",
-    countColor: "text-[#5a7da8]",
-  },
-  chemistry: {
-    bg: "bg-[#fdece9]",
-    border: "border-[#f9dcd7]",
-    hoverBorder: "hover:border-[#f3beba]",
-    iconBg: "bg-white",
-    iconColor: "text-[#c93b2b]",
-    titleColor: "text-[#b83226]",
-    countColor: "text-[#9e5d56]",
-  },
-  "computer-science": {
-    bg: "bg-[#ecfeff]",
-    border: "border-[#cffafe]",
-    hoverBorder: "hover:border-[#a5f3fc]",
-    iconBg: "bg-white",
-    iconColor: "text-[#0891b2]",
-    titleColor: "text-[#0e7490]",
-    countColor: "text-[#155e75]",
-  },
-  biology: {
-    bg: "bg-[#fdf5e2]",
-    border: "border-[#f9ecc8]",
-    hoverBorder: "hover:border-[#f2dba1]",
-    iconBg: "bg-white",
-    iconColor: "text-[#b26a00]",
-    titleColor: "text-[#9e5e00]",
-    countColor: "text-[#94784e]",
-  },
-  math: {
-    bg: "bg-[#eaf5ec]",
-    border: "border-[#d7ecdc]",
-    hoverBorder: "hover:border-[#b8e0c1]",
-    iconBg: "bg-white",
-    iconColor: "text-[#197d3b]",
-    titleColor: "text-[#167035]",
-    countColor: "text-[#588366]",
-  },
-  english: {
-    bg: "bg-[#f5f3ff]",
-    border: "border-[#ede9fe]",
-    hoverBorder: "hover:border-[#ddd6fe]",
-    iconBg: "bg-white",
-    iconColor: "text-[#7c3aed]",
-    titleColor: "text-[#6d28d9]",
-    countColor: "text-[#8b5cf6]",
-  },
-  hindi: {
-    bg: "bg-[#fff7ed]",
-    border: "border-[#ffedd5]",
-    hoverBorder: "hover:border-[#fed7aa]",
-    iconBg: "bg-white",
-    iconColor: "text-[#ea580c]",
-    titleColor: "text-[#c2410c]",
-    countColor: "text-[#f97316]",
-  },
-  kannada: {
-    bg: "bg-[#f0fdf4]",
-    border: "border-[#dcfce7]",
-    hoverBorder: "hover:border-[#bbf7d0]",
-    iconBg: "bg-white",
-    iconColor: "text-[#16a34a]",
-    titleColor: "text-[#15803d]",
-    countColor: "text-[#22c55e]",
-  },
-  sanskrit: {
-    bg: "bg-[#fffbeb]",
-    border: "border-[#fef3c7]",
-    hoverBorder: "hover:border-[#fde68a]",
-    iconBg: "bg-white",
-    iconColor: "text-[#d97706]",
-    titleColor: "text-[#b45309]",
-    countColor: "text-[#f59e0b]",
-  },
-};
-
-function getSubjectTheme(name: string): SubjectTheme {
-  const lower = name.toLowerCase();
-  if (lower.includes("phys")) return SUBJECT_THEMES.physics;
-  if (lower.includes("chem")) return SUBJECT_THEMES.chemistry;
-  if (lower.includes("comp")) return SUBJECT_THEMES["computer-science"];
-  if (lower.includes("math")) return SUBJECT_THEMES.math;
-  if (lower.includes("bio")) return SUBJECT_THEMES.biology;
-  if (lower.includes("eng")) return SUBJECT_THEMES.english;
-  if (lower.includes("hin")) return SUBJECT_THEMES.hindi;
-  if (lower.includes("kan")) return SUBJECT_THEMES.kannada;
-  if (lower.includes("san")) return SUBJECT_THEMES.sanskrit;
-  return {
-    bg: "bg-[#f0f4f9]",
-    border: "border-[#e2e8f0]",
-    hoverBorder: "hover:border-[#cbd5e1]",
-    iconBg: "bg-white",
-    iconColor: "text-[#1856b8]",
-    titleColor: "text-[#112542]",
-    countColor: "text-[#64748b]",
-  };
-}
-
-const CATEGORY_ITEMS = [
-  {
-    title: "Model Question Papers (MQP)",
-    slug: "mqp",
-    desc: "Official model papers with answer keys",
-    icon: FileText,
-    badge: "Official",
-  },
-  {
-    title: "MCQ",
-    slug: "mcq",
-    desc: "Chapterwise multiple choice practice",
-    icon: HelpCircle,
-    badge: "Practice",
-  },
-  {
-    title: "Question Bank",
-    slug: "question-bank",
-    desc: "Board repeated questions & solutions",
-    icon: BookMarked,
-    badge: "Curated",
-  },
-  {
-    title: "Practical",
-    slug: "practical",
-    desc: "Schemes, lab manuals & viva questions",
-    icon: FlaskConical,
-    badge: "Core Science",
-  },
-  {
-    title: "Previous Year Question Papers (PYQs)",
-    slug: "pyq",
-    desc: "Midterm, preparatory & annual papers",
-    icon: History,
-    badge: "Past Papers",
-  },
-  {
-    title: "Passing Package",
-    slug: "passing-package",
-    desc: "Guaranteed scoring high-yield notes",
-    icon: CheckCircle2,
-    badge: "Essential",
-  },
-  {
-    title: "Publication Books",
-    slug: "publication-books",
-    desc: "Reference books and workbook solutions",
-    icon: BookOpen,
-    badge: "Reference",
-  },
-];
+import {
+  SCIENCE_SUBJECTS,
+  LANGUAGE_SUBJECTS,
+  RESOURCE_CATEGORIES,
+  STUDENT_FAQS,
+} from "@/lib/site-navigation";
+import { useLanguage } from "@/lib/language-context";
 
 export default function Home() {
   const [search, setSearch] = useState("");
   const [submitted, setSubmitted] = useState("");
+  const searchInputRef = useRef<HTMLInputElement>(null);
   const queryClient = useQueryClient();
+  const [location] = useLocation();
+  const { language, t } = useLanguage();
+
+  // Handle focusSearch parameter if navigated from header search
+  useEffect(() => {
+    if (window.location.search.includes("focusSearch=1")) {
+      searchInputRef.current?.focus();
+      searchInputRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }, [location]);
+
+  // Keyboard shortcut: '/' to focus search input
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "/" && document.activeElement?.tagName !== "INPUT" && document.activeElement?.tagName !== "TEXTAREA") {
+        e.preventDefault();
+        searchInputRef.current?.focus();
+        searchInputRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    }
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   const { data: sections, isLoading: sectionsLoading } = useListSections();
   const { data: searchResults, isLoading: searchLoading } = useListCards(
@@ -234,6 +72,7 @@ export default function Home() {
       },
     }
   );
+
   const featuredQuery = useListCards(
     { featured: true },
     {
@@ -273,51 +112,61 @@ export default function Home() {
     setSubmitted("");
   }
 
-  // Split sections into Core Subjects and Languages/Other Subjects
-  const coreSections = CORE_SUBJECT_NAMES.map((name) => {
-    const s = sections?.find((sec) => sec.name.toLowerCase().includes(name.toLowerCase()));
+  function handleChipSearch(term: string) {
+    setSearch(term);
+    setSubmitted(term);
+  }
+
+  // Map API sections count to predefined subjects
+  const scienceSections = SCIENCE_SUBJECTS.map((subj) => {
+    const s = sections?.find((sec) => sec.name.toLowerCase().includes(subj.name.toLowerCase()));
     return {
-      name,
-      slug: s?.slug || name.toLowerCase().replace(/\s+/g, "-"),
+      ...subj,
       cardCount: s ? (s as any).cardCount : undefined,
-      icon: getSubjectIcon(name),
-      theme: getSubjectTheme(name),
     };
   });
 
-  const languageSections = LANGUAGE_OTHER_NAMES.map((name) => {
-    const s = sections?.find((sec) => sec.name.toLowerCase().includes(name.toLowerCase()));
+  const languageSections = LANGUAGE_SUBJECTS.map((subj) => {
+    const s = sections?.find((sec) => sec.name.toLowerCase().includes(subj.name.toLowerCase()));
     return {
-      name,
-      slug: s?.slug || name.toLowerCase().replace(/\s+/g, "-"),
+      ...subj,
       cardCount: s ? (s as any).cardCount : undefined,
-      icon: getSubjectIcon(name),
-      theme: getSubjectTheme(name),
     };
   });
 
   return (
     <div className="flex flex-col bg-white">
-      {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-[#f8fafc] via-[#f1f5f9]/30 to-white border-b border-[#e2e8f0]/80 py-8 sm:py-12 px-4">
+      {/* ── Hero Section ── */}
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#f8fafc] via-[#f1f5f9]/40 to-white border-b border-[#e2e8f0]/80 pt-7 pb-8 sm:pt-10 sm:pb-11 px-4">
         <div className="max-w-2xl mx-auto text-center">
-          {/* Main 2PUC Heading */}
-          <h1 className="text-4xl sm:text-5xl font-black text-[#0f172a] tracking-tight mb-4 sm:mb-5 select-none inline-flex items-baseline justify-center">
-            <span className="text-[#2563eb]">2</span>
-            <span>PUC</span>
-          </h1>
+          {/* Main 2PUC Brand Heading */}
+          <div className="inline-flex items-center justify-center gap-2 mb-2">
+            <h1 className="text-4xl sm:text-5xl font-black text-[#0f172a] tracking-tight select-none inline-flex items-baseline justify-center">
+              <span className="text-[#2563eb]">2</span>
+              <span>PUC</span>
+            </h1>
+          </div>
+
+          {/* One-line Value Proposition */}
+          <p className="text-xs sm:text-sm text-[#475569] font-medium max-w-lg mx-auto mb-5 sm:mb-6 leading-relaxed">
+            {language === "kn"
+              ? "ಕರ್ನಾಟಕ ದ್ವಿತೀಯ ಪಿಯುಸಿ ವಿಜ್ಞಾನ ನೋಟ್ಸ್, ನೀಲನಕ್ಷೆ ಮಾದರಿ ಪತ್ರಿಕೆಗಳು ಹಾಗೂ ಪ್ರಶ್ನೆ ಕೋಶಗಳು"
+              : "Karnataka 2nd PUC Science Notes, Blueprint Model Papers, PYQs & Question Banks"}
+          </p>
 
           {/* Search Form */}
           <form
             onSubmit={handleSearch}
-            className="relative max-w-lg mx-auto flex items-center bg-white rounded-xl border border-[#cbd5e1] p-1 shadow-xs focus-within:border-[#2563eb] focus-within:ring-2 focus-within:ring-[#2563eb]/15 transition-all"
+            className="relative max-w-lg mx-auto flex items-center bg-white rounded-xl border border-[#cbd5e1] p-1 shadow-xs focus-within:border-[#2563eb] focus-within:ring-2 focus-within:ring-[#2563eb]/20 transition-all"
           >
             <div className="pl-3 sm:pl-3.5 text-[#94a3b8]">
               <Search className="h-4 w-4" />
             </div>
             <Input
+              id="home-search-input"
+              ref={searchInputRef}
               className="bg-transparent text-[#0f172a] placeholder:text-[#94a3b8] border-0 focus-visible:ring-0 focus-visible:ring-offset-0 h-10 text-sm shadow-none font-medium"
-              placeholder="Search by subject, chapter, title..."
+              placeholder={t("Search by subject, chapter, or question bank...", "ವಿಷಯ, ಅಧ್ಯಾಯ ಅಥವಾ ಪ್ರಶ್ನೆ ಕೋಶ ಹುಡುಕಿ...")}
               value={search}
               onChange={(e) => {
                 setSearch(e.target.value);
@@ -339,88 +188,166 @@ export default function Home() {
               size="sm"
               className="shrink-0 rounded-lg px-4 sm:px-5 h-8.5 text-xs font-semibold bg-[#2563eb] hover:bg-[#1d4ed8] text-white shadow-2xs transition-all"
             >
-              Search
+              {t("Search", "ಹುಡುಕಿ")}
             </Button>
           </form>
+
+          {/* Quick Access Chips */}
+          <div className="flex items-center justify-center flex-wrap gap-1.5 mt-3 sm:mt-4 text-xs">
+            <span className="text-[11px] font-semibold text-[#64748b] mr-1 hidden sm:inline">
+              {t("Quick jump:", "ತ್ವರಿತ ಆಯ್ಕೆ:")}
+            </span>
+            {SCIENCE_SUBJECTS.map((subj) => (
+              <button
+                key={subj.slug}
+                type="button"
+                onClick={() => handleChipSearch(subj.name)}
+                className="px-2.5 py-0.5 rounded-full bg-white hover:bg-[#eff6ff] text-[#334155] hover:text-[#2563eb] border border-[#cbd5e1] hover:border-[#bfdbfe] text-[11px] font-medium transition-all shadow-2xs active:scale-95"
+              >
+                {language === "kn" ? subj.kannadaName : subj.name}
+              </button>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* Main Content Area */}
+      {/* ── Main Content Area ── */}
       <div className="max-w-5xl mx-auto w-full px-4 py-8 sm:py-12 flex flex-col gap-10 sm:gap-14">
         {/* Search Results */}
         {submitted && (
           <section className="scroll-mt-20">
             <div className="flex items-center justify-between mb-5 border-b border-[#e2e8f0] pb-3">
-              <h2 className="text-lg sm:text-xl font-bold text-[#0f172a]">Results for "{submitted}"</h2>
-              <Button variant="ghost" size="sm" onClick={handleClearSearch} className="text-[#2563eb] hover:text-[#1d4ed8] text-xs font-semibold">
-                Clear
+              <h2 className="text-lg sm:text-xl font-bold text-[#0f172a]">
+                {t("Results for", "ಫಲಿತಾಂಶಗಳು:")} "{submitted}"
+              </h2>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleClearSearch}
+                className="text-[#2563eb] hover:text-[#1d4ed8] text-xs font-semibold"
+              >
+                {t("Clear", "ರದ್ದುಮಾಡಿ")}
               </Button>
             </div>
             {searchLoading ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                {[1, 2, 3].map(i => <Skeleton key={i} className="h-64 rounded-xl" />)}
+                {[1, 2, 3].map((i) => (
+                  <Skeleton key={i} className="h-64 rounded-xl" />
+                ))}
               </div>
             ) : searchResults?.length === 0 ? (
               <div className="text-center py-16 bg-[#f8fafc] border border-[#e2e8f0] rounded-xl p-8">
                 <BookOpen className="h-9 w-9 text-[#94a3b8] mx-auto mb-2" />
-                <p className="text-[#64748b] font-medium text-sm">No results found. Try different keywords.</p>
+                <p className="text-[#64748b] font-medium text-sm">
+                  {t(
+                    "No study materials found for this search. Try searching by subject or chapter name.",
+                    "ಯಾವುದೇ ಫಲಿತಾಂಶ ಕಂಡುಬಂದಿಲ್ಲ. ಬೇರೆ ವಿಷಯ ಅಥವಾ ಅಧ್ಯಾಯವನ್ನು ಹುಡುಕಿ."
+                  )}
+                </p>
+                <div className="flex justify-center gap-2 mt-4">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => handleChipSearch("Physics")}
+                    className="text-xs"
+                  >
+                    Physics
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => handleChipSearch("Chemistry")}
+                    className="text-xs"
+                  >
+                    Chemistry
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => handleChipSearch("Mathematics")}
+                    className="text-xs"
+                  >
+                    Mathematics
+                  </Button>
+                </div>
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                {searchResults?.map(card => <CardItem key={card.id} card={card} />)}
+                {searchResults?.map((card) => (
+                  <CardItem key={card.id} card={card} />
+                ))}
               </div>
             )}
           </section>
         )}
 
-        {/* PART 1: Browse by Subject */}
+        {/* ── PART 1: Browse by Subject ── */}
         {!submitted && (
-          <section className="space-y-6">
+          <section id="browse-by-subject" className="space-y-6 scroll-mt-20">
             <div className="border-b border-[#eef2f6] pb-3">
-              <h2 className="text-xl sm:text-2xl font-bold text-[#0f172a] tracking-tight">Browse by Subject</h2>
-              <p className="text-xs sm:text-sm text-[#64748b] mt-0.5">Explore curriculum-aligned notes by subject and topic</p>
+              <h2 className="text-xl sm:text-2xl font-bold text-[#0f172a] tracking-tight">
+                {t("Browse by Subject", "ವಿಷಯವಾರು ಅಧ್ಯಯನ ಸಾಮಗ್ರಿಗಳು")}
+              </h2>
+              <p className="text-xs sm:text-sm text-[#64748b] mt-0.5">
+                {t(
+                  "Curriculum-aligned 2nd PUC Science notes, formulas, schemes, and literature guides",
+                  "ಕರ್ನಾಟಕ ದ್ವಿತೀಯ ಪಿಯುಸಿ ಪಠ್ಯಕ್ರಮಕ್ಕೆ ಅನುಗುಣವಾದ ಅಧ್ಯಯನ ನೋಟ್ಸ್‌ಗಳು"
+                )}
+              </p>
             </div>
 
-            {/* A. Core Subjects */}
+            {/* A. Science Subjects (5 items balanced on grid) */}
             <div className="space-y-3">
               <div className="flex items-center justify-between flex-wrap gap-2">
-                <span className="text-xs font-bold uppercase tracking-wider text-[#2563eb] bg-[#eff6ff] px-2.5 py-0.5 rounded border border-[#bfdbfe]/80">
-                  Core Subjects
+                <span className="text-xs font-bold uppercase tracking-wider text-[#2563eb] bg-[#eff6ff] px-2.5 py-0.5 rounded border border-[#bfdbfe]">
+                  {t("Science Subjects", "ವಿಜ್ಞಾನ ವಿಷಯಗಳು")}
                 </span>
-                <span className="text-xs text-[#64748b]">Includes Practicals, Lab Manuals, Schemes & Notes</span>
+                <span className="text-xs text-[#64748b]">
+                  {t("Physics, Chemistry, Mathematics, Biology & Computer Science", "ಭೌತ, ರಸಾಯನ, ಗಣಿತ, ಜೀವಶಾಸ್ತ್ರ & ಗಣಕ ವಿಜ್ಞಾನ")}
+                </span>
               </div>
 
               {sectionsLoading ? (
-                <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3">
-                  {[1, 2, 3, 4].map(i => <Skeleton key={i} className="h-20 rounded-xl" />)}
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5 sm:gap-3">
+                  {[1, 2, 3, 4, 5].map((i) => (
+                    <Skeleton key={i} className="h-24 rounded-xl" />
+                  ))}
                 </div>
               ) : (
-                <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3">
-                  {coreSections.map(subj => {
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5 sm:gap-3">
+                  {scienceSections.map((subj) => {
                     const Icon = subj.icon;
                     const theme = subj.theme;
                     return (
-                      <Link 
-                        key={subj.name} 
+                      <Link
+                        key={subj.name}
                         href={`/subject/${subj.slug}`}
                         onPointerEnter={() => prefetchSubject(subj.name)}
                         onFocus={() => prefetchSubject(subj.name)}
                       >
-                        <div className={`group h-full ${theme.bg} border ${theme.border} ${theme.hoverBorder} rounded-xl p-3 sm:p-3.5 transition-all cursor-pointer flex items-center justify-between shadow-2xs hover:shadow-xs active:scale-[0.98]`}>
-                          <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
-                            <div className={`flex h-8 w-8 sm:h-9 sm:w-9 shrink-0 items-center justify-center rounded-lg ${theme.iconBg} ${theme.iconColor} shadow-2xs border border-white/60`}>
-                              <Icon className="h-4 w-4 sm:h-4.5 sm:w-4.5" />
+                        <div
+                          className={`group h-full ${theme.bg} border ${theme.border} ${theme.hoverBorder} rounded-xl p-3 sm:p-3.5 transition-all cursor-pointer flex flex-col justify-between shadow-2xs hover:shadow-xs active:scale-[0.98] min-h-[92px]`}
+                        >
+                          <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
+                            <div
+                              className={`flex h-8 w-8 sm:h-8.5 sm:w-8.5 shrink-0 items-center justify-center rounded-lg ${theme.iconBg} ${theme.iconColor} shadow-2xs border border-white/60`}
+                            >
+                              <Icon className="h-4 w-4" />
                             </div>
                             <div className="min-w-0">
                               <h3 className={`font-semibold text-xs sm:text-sm ${theme.titleColor} truncate`}>
-                                {subj.name}
+                                {language === "kn" ? subj.kannadaName : subj.name}
                               </h3>
-                              <p className={`text-[10px] sm:text-[11px] ${theme.countColor} mt-0.5 font-medium truncate`}>
-                                {subj.cardCount !== undefined ? `${subj.cardCount} resources` : "View notes"}
+                              <p className={`text-[10px] sm:text-[11px] ${theme.countColor} font-medium truncate`}>
+                                {subj.cardCount !== undefined
+                                  ? `${subj.cardCount} resources`
+                                  : t("View notes", "ನೋಟ್ಸ್ ನೋಡಿ")}
                               </p>
                             </div>
                           </div>
-                          <ArrowRight className={`hidden xs:block h-3.5 w-3.5 sm:h-4 sm:w-4 ${theme.countColor} group-hover:translate-x-0.5 transition-transform shrink-0 ml-1`} />
+                          <div className="flex items-center justify-end text-[10px] font-semibold text-[#2563eb] mt-1.5 opacity-80 group-hover:opacity-100 transition-opacity">
+                            <ArrowRight className="h-3 w-3 group-hover:translate-x-0.5 transition-transform" />
+                          </div>
                         </div>
                       </Link>
                     );
@@ -429,46 +356,58 @@ export default function Home() {
               )}
             </div>
 
-            {/* B. Languages and Other Subjects */}
-            <div className="space-y-3 pt-3">
+            {/* B. Languages (4 items balanced in 4 columns) */}
+            <div className="space-y-3 pt-2">
               <div className="flex items-center justify-between flex-wrap gap-2">
                 <span className="text-xs font-bold uppercase tracking-wider text-[#6d28d9] bg-[#f5f3ff] px-2.5 py-0.5 rounded border border-[#ede9fe]">
-                  Languages & Other Subjects
+                  {t("Languages", "ಭಾಷಾ ವಿಷಯಗಳು")}
                 </span>
-                <span className="text-xs text-[#64748b]">Literature, Grammars, Question Banks & Model Papers</span>
+                <span className="text-xs text-[#64748b]">
+                  {t("Kannada, English, Hindi & Sanskrit Literature and Grammar", "ಕನ್ನಡ, ಇಂಗ್ಲಿಷ್, ಹಿಂದಿ & ಸಂಸ್ಕೃತ ಸಾಹಿತ್ಯ ಮತ್ತು ವ್ಯಾಕರಣ")}
+                </span>
               </div>
 
               {sectionsLoading ? (
-                <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-3">
-                  {[1, 2, 3].map(i => <Skeleton key={i} className="h-20 rounded-xl" />)}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3">
+                  {[1, 2, 3, 4].map((i) => (
+                    <Skeleton key={i} className="h-24 rounded-xl" />
+                  ))}
                 </div>
               ) : (
-                <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-3">
-                  {languageSections.map(subj => {
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3">
+                  {languageSections.map((subj) => {
                     const Icon = subj.icon;
                     const theme = subj.theme;
                     return (
-                      <Link 
-                        key={subj.name} 
+                      <Link
+                        key={subj.name}
                         href={`/subject/${subj.slug}`}
                         onPointerEnter={() => prefetchSubject(subj.name)}
                         onFocus={() => prefetchSubject(subj.name)}
                       >
-                        <div className={`group h-full ${theme.bg} border ${theme.border} ${theme.hoverBorder} rounded-xl p-3 sm:p-3.5 transition-all cursor-pointer flex items-center justify-between shadow-2xs hover:shadow-xs active:scale-[0.98]`}>
-                          <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
-                            <div className={`flex h-8 w-8 sm:h-9 sm:w-9 shrink-0 items-center justify-center rounded-lg ${theme.iconBg} ${theme.iconColor} shadow-2xs border border-white/60`}>
-                              <Icon className="h-4 w-4 sm:h-4.5 sm:w-4.5" />
+                        <div
+                          className={`group h-full ${theme.bg} border ${theme.border} ${theme.hoverBorder} rounded-xl p-3 sm:p-3.5 transition-all cursor-pointer flex flex-col justify-between shadow-2xs hover:shadow-xs active:scale-[0.98] min-h-[92px]`}
+                        >
+                          <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
+                            <div
+                              className={`flex h-8 w-8 sm:h-8.5 sm:w-8.5 shrink-0 items-center justify-center rounded-lg ${theme.iconBg} ${theme.iconColor} shadow-2xs border border-white/60`}
+                            >
+                              <Icon className="h-4 w-4" />
                             </div>
                             <div className="min-w-0">
                               <h3 className={`font-semibold text-xs sm:text-sm ${theme.titleColor} truncate`}>
-                                {subj.name}
+                                {language === "kn" ? subj.kannadaName : subj.name}
                               </h3>
-                              <p className={`text-[10px] sm:text-[11px] ${theme.countColor} mt-0.5 font-medium truncate`}>
-                                {subj.cardCount !== undefined ? `${subj.cardCount} resources` : "View notes"}
+                              <p className={`text-[10px] sm:text-[11px] ${theme.countColor} font-medium truncate`}>
+                                {subj.cardCount !== undefined
+                                  ? `${subj.cardCount} resources`
+                                  : t("View notes", "ನೋಟ್ಸ್ ನೋಡಿ")}
                               </p>
                             </div>
                           </div>
-                          <ArrowRight className={`hidden xs:block h-3.5 w-3.5 sm:h-4 sm:w-4 ${theme.countColor} group-hover:translate-x-0.5 transition-transform shrink-0 ml-1`} />
+                          <div className="flex items-center justify-end text-[10px] font-semibold text-[#6d28d9] mt-1.5 opacity-80 group-hover:opacity-100 transition-opacity">
+                            <ArrowRight className="h-3 w-3 group-hover:translate-x-0.5 transition-transform" />
+                          </div>
                         </div>
                       </Link>
                     );
@@ -479,48 +418,67 @@ export default function Home() {
           </section>
         )}
 
-        {/* PART 2: Browse by Category */}
+        {/* ── PART 2: Browse by Resource Type (Explicit Heading & Balanced 7 Cards) ── */}
         {!submitted && (
-          <section className="space-y-5">
+          <section id="resource-types" className="space-y-5 scroll-mt-20">
             <div className="border-b border-[#eef2f6] pb-3">
               <div className="flex items-center gap-2">
-                <h2 className="text-xl sm:text-2xl font-bold text-[#0f172a] tracking-tight">Browse by Category</h2>
+                <h2 className="text-xl sm:text-2xl font-bold text-[#0f172a] tracking-tight">
+                  {t("Browse by Resource Type", "ಸಂಪನ್ಮೂಲ ಪ್ರಕಾರವಾರು ಹುಡುಕಿ")}
+                </h2>
                 <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-[#eff6ff] text-[#2563eb] border border-[#bfdbfe]">
-                  Resource Types
+                  7 {t("Formats", "ಪ್ರಕಾರಗಳು")}
                 </span>
               </div>
-              <p className="text-xs sm:text-sm text-[#64748b] mt-0.5">Filter all study materials by format, exam type, or question bank</p>
+              <p className="text-xs sm:text-sm text-[#64748b] mt-0.5">
+                {t(
+                  "Filter Karnataka 2nd PUC materials by exam format, blueprint paper, or question bank",
+                  "ಪರೀಕ್ಷಾ ಮಾದರಿ, ಬ್ಲೂಪ್ರಿಂಟ್ ಅಥವಾ ಹಿಂದಿನ ವರ್ಷದ ಪತ್ರಿಕೆಗಳ ಪ್ರಕಾರ ಹುಡುಕಿ"
+                )}
+              </p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-3.5">
-              {CATEGORY_ITEMS.map((cat) => {
+            {/* Responsive grid handling 7 items cleanly across all devices */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-3.5">
+              {RESOURCE_CATEGORIES.map((cat, idx) => {
                 const Icon = cat.icon;
+                const isLastItem = idx === RESOURCE_CATEGORIES.length - 1;
                 return (
-                  <Link 
-                    key={cat.slug} 
+                  <Link
+                    key={cat.slug}
                     href={`/category/${cat.slug}`}
                     onPointerEnter={prefetchCategory}
                     onFocus={prefetchCategory}
+                    className={isLastItem ? "sm:col-span-2 lg:col-span-1 xl:col-span-1" : ""}
                   >
-                    <div className="group h-full bg-white border border-[#e2e8f0] hover:border-[#93c5fd] hover:bg-[#fafcff] rounded-xl p-4 transition-all cursor-pointer flex flex-col justify-between shadow-2xs hover:shadow-xs">
+                    <div
+                      className={`group h-full bg-white border border-[#e2e8f0] ${cat.theme.hoverBorder} hover:bg-[#fafcff] rounded-xl p-4 transition-all cursor-pointer flex flex-col justify-between shadow-2xs hover:shadow-xs active:scale-[0.99]`}
+                    >
                       <div>
                         <div className="flex items-center justify-between mb-2.5">
-                          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#eff6ff] text-[#2563eb] border border-[#dbeafe]">
+                          <div
+                            className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${cat.theme.iconBg} ${cat.theme.iconText} border border-slate-100 shadow-2xs`}
+                          >
                             <Icon className="h-4.5 w-4.5" />
                           </div>
-                          <span className="text-[10px] font-semibold text-[#0369a1] bg-[#f0f9ff] px-2 py-0.5 rounded border border-[#bae6fd]">
+                          <span
+                            className={`text-[10px] font-semibold ${cat.theme.badgeText} ${cat.theme.badgeBg} px-2 py-0.5 rounded border ${cat.theme.badgeBorder}`}
+                          >
                             {cat.badge}
                           </span>
                         </div>
                         <h3 className="font-bold text-sm text-[#0f172a] group-hover:text-[#2563eb] transition-colors">
-                          {cat.title}
+                          {language === "kn" ? cat.kannadaTitle : cat.title}
                         </h3>
-                        <p className="text-xs text-[#64748b] mt-1 leading-relaxed">
+                        <p className="text-xs text-[#64748b] mt-1 leading-relaxed line-clamp-2">
                           {cat.desc}
                         </p>
                       </div>
-                      <div className="flex items-center justify-end pt-3 mt-3 border-t border-[#f1f5f9] text-xs font-semibold text-[#2563eb] group-hover:translate-x-0.5 transition-transform">
-                        <span>Browse resources &rarr;</span>
+                      <div className="flex items-center justify-end pt-3 mt-3 border-t border-[#f1f5f9] text-xs font-semibold text-[#2563eb]">
+                        <span className="flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
+                          <span>{t("Explore", "ವೀಕ್ಷಿಸಿ")}</span>
+                          <ArrowRight className="h-3 w-3" />
+                        </span>
                       </div>
                     </div>
                   </Link>
@@ -530,16 +488,17 @@ export default function Home() {
           </section>
         )}
 
-        {/* Featured Resources */}
+        {/* ── PART 3: Featured Resources ── */}
         {!submitted && Array.isArray(featuredCards) && featuredCards.length > 0 && (
-          <section className="space-y-4">
+          <section className="space-y-4 scroll-mt-20">
             <div className="border-b border-[#eef2f6] pb-3 flex items-center justify-between">
               <div className="flex items-center gap-2.5">
                 <h2 className="text-xl sm:text-2xl font-bold text-[#0f172a] tracking-tight">
-                  Featured Resources
+                  {t("Featured Resources", "ಪ್ರಮುಖ ಸಂಪನ್ಮೂಲಗಳು")}
                 </h2>
-                <span className="bg-[#fef3c7] text-[#92400e] border border-[#fde68a] text-xs font-semibold px-2 py-0.5 rounded-md">
-                  Popular
+                <span className="bg-[#fef3c7] text-[#92400e] border border-[#fde68a] text-xs font-semibold px-2 py-0.5 rounded-md flex items-center gap-1">
+                  <TrendingUp className="h-3 w-3" />
+                  <span>{t("Trending", "ಟ್ರೆಂಡಿಂಗ್")}</span>
                 </span>
               </div>
             </div>
@@ -552,22 +511,74 @@ export default function Home() {
           </section>
         )}
 
-        {/* Telegram Contact Banner */}
-        <section className="bg-gradient-to-r from-[#eff6ff] to-[#f8fafc] border border-[#dbeafe] rounded-xl p-5 sm:p-6 shadow-2xs">
+        {/* ── PART 4: Student FAQs ── */}
+        {!submitted && (
+          <section id="faqs" className="space-y-4 scroll-mt-20">
+            <div className="border-b border-[#eef2f6] pb-3 flex items-center gap-2">
+              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#eff6ff] text-[#2563eb] border border-[#bfdbfe]">
+                <HelpCircle className="h-4 w-4" />
+              </div>
+              <div>
+                <h2 className="text-xl sm:text-2xl font-bold text-[#0f172a] tracking-tight">
+                  {t("Frequently Asked Questions", "ಸಾಮಾನ್ಯ ಪ್ರಶ್ನೆಗಳು")}
+                </h2>
+                <p className="text-xs sm:text-sm text-[#64748b]">
+                  {t(
+                    "Quick answers about syllabus alignment, PDF downloads, and payments",
+                    "ಪಠ್ಯಕ್ರಮ, ಡೌನ್‌ಲೋಡ್ ಹಾಗೂ ಪಾವತಿಗೆ ಸಂಬಂಧಿಸಿದ ವಿವರಗಳು"
+                  )}
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-[#f8fafc] border border-[#e2e8f0] rounded-xl p-4 sm:p-5">
+              <Accordion type="single" collapsible className="w-full">
+                {STUDENT_FAQS.map((faq, idx) => (
+                  <AccordionItem key={idx} value={`faq-${idx}`} className="border-b-[#e2e8f0]/80 last:border-b-0">
+                    <AccordionTrigger className="text-xs sm:text-sm font-semibold text-[#0f172a] hover:text-[#2563eb] text-left py-3.5">
+                      {faq.question}
+                    </AccordionTrigger>
+                    <AccordionContent className="text-xs sm:text-sm text-[#475569] leading-relaxed pt-1 pb-3">
+                      {faq.answer}
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            </div>
+          </section>
+        )}
+
+        {/* ── PART 5: Community & Telegram Banner ── */}
+        <section className="bg-gradient-to-r from-[#eff6ff] via-[#f0f9ff] to-[#f8fafc] border border-[#dbeafe] rounded-xl p-5 sm:p-6 shadow-2xs">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
             <div className="flex items-center gap-3.5">
               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white text-[#2563eb] border border-[#bfdbfe] shadow-2xs">
                 <MessageCircle className="h-5 w-5" />
               </div>
               <div>
-                <h3 className="font-bold text-[#0f172a] text-sm sm:text-base">Need help or have questions?</h3>
-                <p className="text-[#64748b] text-xs sm:text-sm mt-0.5">Reach out on Telegram for quick support and student community</p>
+                <h3 className="font-bold text-[#0f172a] text-sm sm:text-base">
+                  {t("Need help or have questions?", "ಸಹಾಯ ಬೇಕೇ ಅಥವಾ ಪ್ರಶ್ನೆಗಳಿವೆಯೇ?")}
+                </h3>
+                <p className="text-[#64748b] text-xs sm:text-sm mt-0.5">
+                  {t(
+                    "Reach out on Telegram for prompt student support, study discussion, and updates",
+                    "ತ್ವರಿತ ಸಹಾಯ ಮತ್ತು ನವೀಕರಣಗಳಿಗಾಗಿ ನಮ್ಮ ಟೆಲಿಗ್ರಾಂ ಗುಂಪಿಗೆ ಸೇರಿ"
+                  )}
+                </p>
               </div>
             </div>
-            <a href={TELEGRAM_LINK} target="_blank" rel="noreferrer" className="shrink-0 w-full sm:w-auto">
-              <Button size="sm" className="w-full sm:w-auto gap-2 px-4 h-9 font-semibold text-xs rounded-lg bg-[#2563eb] hover:bg-[#1d4ed8] text-white shadow-2xs transition-all">
+            <a
+              href={TELEGRAM_LINK}
+              target="_blank"
+              rel="noreferrer"
+              className="shrink-0 w-full sm:w-auto"
+            >
+              <Button
+                size="sm"
+                className="w-full sm:w-auto gap-2 px-4 h-9 font-semibold text-xs rounded-lg bg-[#2563eb] hover:bg-[#1d4ed8] text-white shadow-2xs transition-all"
+              >
                 <MessageCircle className="h-3.5 w-3.5" />
-                Contact on Telegram
+                <span>{t("Join 2PUC Community", "ಟೆಲಿಗ್ರಾಂನಲ್ಲಿ ಸಂಪರ್ಕಿಸಿ")}</span>
               </Button>
             </a>
           </div>
