@@ -27,30 +27,34 @@ export function usePageViewTracker() {
     // Do not track admin back-office panel pageviews as student visits
     if (location.startsWith("/admin")) return;
 
-    const visitorId = getOrCreateVisitorId();
-    const payload = {
-      path: location,
-      pageTitle: typeof document !== "undefined" ? document.title : "",
-      visitorId,
-      referrer: typeof document !== "undefined" ? document.referrer : "",
-    };
+    const timer = setTimeout(() => {
+      const visitorId = getOrCreateVisitorId();
+      const payload = {
+        path: location,
+        pageTitle: typeof document !== "undefined" ? document.title : "",
+        visitorId,
+        referrer: typeof document !== "undefined" ? document.referrer : "",
+      };
 
-    // Use sendBeacon if available, otherwise fetch
-    const url = buildApiUrl("/analytics/view");
-    try {
-      if (typeof navigator !== "undefined" && typeof navigator.sendBeacon === "function") {
-        const blob = new Blob([JSON.stringify(payload)], { type: "application/json" });
-        navigator.sendBeacon(url, blob);
-      } else {
+      const url = buildApiUrl("/api/analytics/view");
+      try {
         fetch(url, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
           keepalive: true,
-        }).catch(() => {});
+        }).catch(() => {
+          // If fetch fails, attempt sendBeacon as backup
+          if (typeof navigator !== "undefined" && typeof navigator.sendBeacon === "function") {
+            const blob = new Blob([JSON.stringify(payload)], { type: "application/json" });
+            navigator.sendBeacon(url, blob);
+          }
+        });
+      } catch {
+        // Ignore background analytics logging errors
       }
-    } catch {
-      // Ignore background analytics logging errors
-    }
+    }, 150);
+
+    return () => clearTimeout(timer);
   }, [location]);
 }

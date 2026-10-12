@@ -220,7 +220,14 @@ router.get("/cards/:id", async (req, res) => {
 
 router.post("/analytics/view", async (req, res) => {
   try {
-    const { path, pageTitle, visitorId, referrer } = req.body || {};
+    await ensureDefaultSections();
+    let body = req.body;
+    if (typeof body === "string") {
+      try {
+        body = JSON.parse(body);
+      } catch {}
+    }
+    const { path, pageTitle, visitorId, referrer } = body || {};
     if (!path || typeof path !== "string") {
       res.status(400).json({ error: "path is required" });
       return;

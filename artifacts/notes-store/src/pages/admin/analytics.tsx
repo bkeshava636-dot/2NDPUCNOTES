@@ -18,7 +18,9 @@ import {
   Activity,
   BarChart3,
   MousePointerClick,
-  Sparkles
+  Sparkles,
+  AlertTriangle,
+  Send
 } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
@@ -59,16 +61,43 @@ interface AnalyticsResponse {
 
 export default function AdminAnalytics() {
   const [range, setRange] = useState<"24h" | "7d" | "30d" | "all">("30d");
+  const [isSendingPing, setIsSendingPing] = useState(false);
 
-  const { data, isLoading, isError, isFetching, refetch } = useQuery<AnalyticsResponse>({
+  const { data, isLoading, isError, error, isFetching, refetch } = useQuery<AnalyticsResponse>({
     queryKey: ["admin-analytics", range],
     queryFn: async () => {
-      const res = await apiFetch(`/admin/analytics?range=${range}`);
-      if (!res.ok) throw new Error("Failed to load analytics");
+      const res = await apiFetch(`/api/admin/analytics?range=${range}`);
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.detail || errorData.error || `HTTP ${res.status}`);
+      }
       return res.json();
     },
     refetchInterval: 30000, // Live poll every 30s
   });
+
+  const handleSendTestPing = async () => {
+    try {
+      setIsSendingPing(true);
+      const res = await fetch("/api/analytics/view", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          path: "/admin/analytics",
+          pageTitle: "Admin Analytics Ping Test",
+          visitorId: "admin_test_" + Date.now().toString(36),
+          referrer: "admin_panel",
+        }),
+      });
+      if (res.ok) {
+        await refetch();
+      }
+    } catch {
+      // ignore
+    } finally {
+      setIsSendingPing(false);
+    }
+  };
 
   const rangeLabels: Record<string, string> = {
     "24h": "Last 24 Hours",
@@ -119,6 +148,18 @@ export default function AdminAnalytics() {
           <Button
             variant="outline"
             size="sm"
+            onClick={handleSendTestPing}
+            disabled={isSendingPing || isFetching}
+            className="h-8 gap-1.5 text-xs text-[#0369a1] bg-[#f0f9ff] border-[#bae6fd] hover:bg-[#e0f2fe]"
+            title="Simulate a real-time visit to verify logging"
+          >
+            <Send className={`h-3 w-3 ${isSendingPing ? "animate-spin" : ""}`} />
+            <span>Test Visit</span>
+          </Button>
+
+          <Button
+            variant="outline"
+            size="sm"
             onClick={() => refetch()}
             disabled={isFetching}
             className="h-8 gap-1.5 text-xs text-[#5a6b82] border-[#e2e8f0]"
@@ -128,6 +169,26 @@ export default function AdminAnalytics() {
           </Button>
         </div>
       </div>
+
+      {/* Error state alert if API query failed */}
+      {isError && (
+        <div className="p-4 rounded-xl bg-red-50 border border-red-200 text-red-800 text-xs sm:text-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-2.5">
+            <AlertTriangle className="h-4 w-4 text-red-600 shrink-0" />
+            <span>
+              Unable to load traffic analysis: {error instanceof Error ? error.message : "Network error"}. Please verify your connection or try again.
+            </span>
+          </div>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => refetch()}
+            className="border-red-300 text-red-700 hover:bg-red-100 h-7 text-xs font-semibold shrink-0"
+          >
+            Retry Analysis
+          </Button>
+        </div>
+      )}
 
       {/* KPI Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">

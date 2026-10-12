@@ -688,14 +688,15 @@ router.post("/admin/upload/image", requireAdmin, uploadImageMemory.single("file"
 
 router.get("/admin/analytics", requireAdmin, async (req, res) => {
   try {
+    await ensureDefaultSections();
     const range = (req.query.range as string) || "30d"; // 24h, 7d, 30d, all
     let timeCondition = sql`1=1`;
     if (range === "24h") {
-      timeCondition = sql`created_at >= NOW() - INTERVAL '24 hours'`;
+      timeCondition = sql`${pageViewsTable.createdAt} >= NOW() - INTERVAL '24 hours'`;
     } else if (range === "7d") {
-      timeCondition = sql`created_at >= NOW() - INTERVAL '7 days'`;
+      timeCondition = sql`${pageViewsTable.createdAt} >= NOW() - INTERVAL '7 days'`;
     } else if (range === "30d") {
-      timeCondition = sql`created_at >= NOW() - INTERVAL '30 days'`;
+      timeCondition = sql`${pageViewsTable.createdAt} >= NOW() - INTERVAL '30 days'`;
     }
 
     // 1. Total views in range & all time
@@ -712,7 +713,7 @@ router.get("/admin/analytics", requireAdmin, async (req, res) => {
 
     // 2. Unique visitors (by distinct visitor_id or ip_address)
     const [uniqueVisitorsRow] = await db
-      .select({ count: sql<number>`count(DISTINCT coalesce(visitor_id, ip_address))::int` })
+      .select({ count: sql<number>`count(DISTINCT coalesce(${pageViewsTable.visitorId}, ${pageViewsTable.ipAddress}))::int` })
       .from(pageViewsTable)
       .where(timeCondition);
     const uniqueVisitors = uniqueVisitorsRow?.count ?? 0;
@@ -721,34 +722,34 @@ router.get("/admin/analytics", requireAdmin, async (req, res) => {
     const [todayRow] = await db
       .select({ count: sql<number>`count(*)::int` })
       .from(pageViewsTable)
-      .where(sql`created_at >= CURRENT_DATE`);
+      .where(sql`${pageViewsTable.createdAt} >= CURRENT_DATE`);
     const todayViews = todayRow?.count ?? 0;
 
     // 4. Breakdown by page/path
     const topPages = await db
       .select({
         path: pageViewsTable.path,
-        pageTitle: sql<string>`coalesce(max(page_title), max(path))`,
+        pageTitle: sql<string>`coalesce(max(${pageViewsTable.pageTitle}), max(${pageViewsTable.path}))`,
         views: sql<number>`count(*)::int`,
-        uniqueVisitors: sql<number>`count(DISTINCT coalesce(visitor_id, ip_address))::int`,
+        uniqueVisitors: sql<number>`count(DISTINCT coalesce(${pageViewsTable.visitorId}, ${pageViewsTable.ipAddress}))::int`,
       })
       .from(pageViewsTable)
       .where(timeCondition)
       .groupBy(pageViewsTable.path)
       .orderBy(desc(sql`count(*)`))
-      .limit(20);
+      .limit(25);
 
     // 5. Daily trend (for charts / timelines)
     const dailyTrend = await db
       .select({
-        date: sql<string>`TO_CHAR(created_at, 'YYYY-MM-DD')`,
+        date: sql<string>`TO_CHAR(${pageViewsTable.createdAt}, 'YYYY-MM-DD')`,
         views: sql<number>`count(*)::int`,
-        visitors: sql<number>`count(DISTINCT coalesce(visitor_id, ip_address))::int`,
+        visitors: sql<number>`count(DISTINCT coalesce(${pageViewsTable.visitorId}, ${pageViewsTable.ipAddress}))::int`,
       })
       .from(pageViewsTable)
       .where(timeCondition)
-      .groupBy(sql`TO_CHAR(created_at, 'YYYY-MM-DD')`)
-      .orderBy(asc(sql`TO_CHAR(created_at, 'YYYY-MM-DD')`))
+      .groupBy(sql`TO_CHAR(${pageViewsTable.createdAt}, 'YYYY-MM-DD')`)
+      .orderBy(asc(sql`TO_CHAR(${pageViewsTable.createdAt}, 'YYYY-MM-DD')`))
       .limit(30);
 
     // 6. Recent live pageviews log
@@ -756,7 +757,7 @@ router.get("/admin/analytics", requireAdmin, async (req, res) => {
       .select()
       .from(pageViewsTable)
       .orderBy(desc(pageViewsTable.createdAt))
-      .limit(25);
+      .limit(30);
 
     res.json({
       range,

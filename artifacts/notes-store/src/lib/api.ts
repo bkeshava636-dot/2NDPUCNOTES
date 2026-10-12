@@ -13,7 +13,10 @@ export function buildApiUrl(path: string): string {
     return path;
   }
   const baseUrl = getApiBaseUrl();
-  const cleanPath = path.startsWith("/") ? path : `/${path}`;
+  let cleanPath = path.startsWith("/") ? path : `/${path}`;
+  if (!cleanPath.startsWith("/api/") && cleanPath !== "/api") {
+    cleanPath = `/api${cleanPath}`;
+  }
   return baseUrl ? `${baseUrl}${cleanPath}` : cleanPath;
 }
 
