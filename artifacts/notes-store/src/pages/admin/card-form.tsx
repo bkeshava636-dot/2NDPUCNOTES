@@ -456,68 +456,6 @@ export default function CardForm({ initialData, cardId }: { initialData?: Partia
               </div>
             </div>
 
-            {/* Primary Placement Target: Notes vs Resource Types */}
-            <div className="p-3.5 rounded-xl bg-[#f8fafc] border border-[#e2e8f0] space-y-2">
-              <div className="flex items-center justify-between">
-                <div>
-                  <Label className="text-xs font-bold text-[#0f172a] flex items-center gap-1.5">
-                    <FolderOpen className="w-3.5 h-3.5 text-[#2563eb]" />
-                    Primary Placement Section *
-                  </Label>
-                  <p className="text-[11px] text-[#64748b] mt-0.5">
-                    Choose whether this item should appear under Subject Notes or under Browse by Resource Type
-                  </p>
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-2 pt-1">
-                <button
-                  type="button"
-                  onClick={() => {
-                    handleResourceTypeChange("Notes");
-                    if (sections && form.subject) {
-                      const match = sections.find(s => s.name.toLowerCase() === form.subject.toLowerCase());
-                      if (match) set("sectionId", String(match.id));
-                    }
-                  }}
-                  className={`p-2.5 rounded-lg border text-left transition-all ${
-                    form.resourceType === "Notes"
-                      ? "bg-[#eff6ff] border-[#2563eb] text-[#1d4ed8] shadow-2xs font-semibold ring-1 ring-[#2563eb]"
-                      : "bg-white border-[#e2e8f0] text-[#475569] hover:bg-[#f8fafc]"
-                  }`}
-                >
-                  <div className="flex items-center justify-between text-xs">
-                    <span>📖 Subject Notes Section</span>
-                    {form.resourceType === "Notes" && <Check className="h-3.5 w-3.5 text-[#2563eb]" />}
-                  </div>
-                  <p className="text-[10px] text-[#64748b] mt-0.5 font-normal">
-                    Places card in Subject Notes (e.g. {form.subject} Notes) & Resource Types
-                  </p>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (form.resourceType === "Notes") {
-                      handleResourceTypeChange("Model Question Papers (MQP)");
-                    }
-                  }}
-                  className={`p-2.5 rounded-lg border text-left transition-all ${
-                    form.resourceType !== "Notes"
-                      ? "bg-[#eff6ff] border-[#2563eb] text-[#1d4ed8] shadow-2xs font-semibold ring-1 ring-[#2563eb]"
-                      : "bg-white border-[#e2e8f0] text-[#475569] hover:bg-[#f8fafc]"
-                  }`}
-                >
-                  <div className="flex items-center justify-between text-xs">
-                    <span>📑 Resource Type Section</span>
-                    {form.resourceType !== "Notes" && <Check className="h-3.5 w-3.5 text-[#2563eb]" />}
-                  </div>
-                  <p className="text-[10px] text-[#64748b] mt-0.5 font-normal">
-                    Places card in MQP, PYQ, Question Bank, Practical, MCQ, etc.
-                  </p>
-                </button>
-              </div>
-            </div>
-
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1.5">
                 <Label className="text-xs font-semibold text-[#334155]">Store Category / Section *</Label>

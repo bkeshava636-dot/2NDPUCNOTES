@@ -37,7 +37,13 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
 
-type SectionForm = { name: string; description: string; officialSourceUrl: string; isVisible: boolean };
+type SectionForm = { 
+  itemType: "subject" | "category";
+  name: string; 
+  description: string; 
+  officialSourceUrl: string; 
+  isVisible: boolean;
+};
 
 const STANDARD_CURRICULUM_SUBJECTS = [
   { name: "Physics", slug: "physics", description: "Comprehensive 2nd PUC Physics notes, derivations, and question banks" },
@@ -115,7 +121,7 @@ export default function AdminSections() {
   const [showDialog, setShowDialog] = useState(false);
   const [editId, setEditId] = useState<number | null>(null);
   const [deleteId, setDeleteId] = useState<number | null>(null);
-  const [form, setForm] = useState<SectionForm>({ name: "", description: "", officialSourceUrl: "", isVisible: true });
+  const [form, setForm] = useState<SectionForm>({ itemType: "subject", name: "", description: "", officialSourceUrl: "", isVisible: true });
   const [draggingId, setDraggingId] = useState<number | null>(null);
   const [dragOverId, setDragOverId] = useState<number | null>(null);
 
@@ -127,6 +133,7 @@ export default function AdminSections() {
     const slug = (item.slug || "").toLowerCase();
     const name = (item.name || "").toLowerCase();
     return (
+      slug === "notes" || name.includes("notes") ||
       slug === "mqp" || name.includes("model") ||
       slug === "mcq" || name.includes("multiple choice") ||
       slug === "question-bank" || name.includes("question bank") ||
@@ -182,9 +189,10 @@ export default function AdminSections() {
     return STANDARD_CURRICULUM_SUBJECTS.filter((s) => !existingSlugs.has(s.slug.toLowerCase()));
   }, [sections]);
 
-  function openCreate(prefill?: { name: string; description?: string; officialSourceUrl?: string }) {
+  function openCreate(prefill?: { name: string; description?: string; officialSourceUrl?: string; itemType?: "subject" | "category" }) {
     setEditId(null);
     setForm({ 
+      itemType: prefill?.itemType || (activeTab === "categories" ? "category" : "subject"),
       name: prefill?.name || "", 
       description: prefill?.description || "", 
       officialSourceUrl: prefill?.officialSourceUrl || "", 
@@ -195,7 +203,9 @@ export default function AdminSections() {
 
   function openEdit(s: any) {
     setEditId(s.id);
+    const isCat = isCategorySection(s);
     setForm({ 
+      itemType: isCat ? "category" : "subject",
       name: s.name, 
       description: s.description || "", 
       officialSourceUrl: s.officialSourceUrl || "", 
@@ -728,10 +738,59 @@ export default function AdminSections() {
           </DialogHeader>
 
           <div className="space-y-4 py-2">
+            {/* Option to choose whether to put item in Category or Subject */}
+            <div className="space-y-1.5 p-3 rounded-xl bg-[#f8fafc] border border-[#e2e8f0]">
+              <Label className="text-xs font-bold text-[#112542] block">
+                Type of Item *
+              </Label>
+              <p className="text-[11px] text-[#64748b] mb-2">
+                Choose whether this item belongs to Curriculum Subjects or Browse by Category
+              </p>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => setForm({ ...form, itemType: "subject" })}
+                  className={`flex items-center justify-between p-2.5 rounded-lg border text-left text-xs transition-all ${
+                    form.itemType === "subject"
+                      ? "bg-[#eff6ff] border-[#2563eb] text-[#1d4ed8] font-semibold ring-1 ring-[#2563eb] shadow-2xs"
+                      : "bg-white border-[#e2e8f0] text-[#475569] hover:bg-[#f1f5f9]"
+                  }`}
+                >
+                  <div className="flex items-center gap-2">
+                    <BookOpen className="h-4 w-4 text-[#2563eb]" />
+                    <div>
+                      <span className="block font-bold">Subject</span>
+                      <span className="text-[10px] text-[#64748b] font-normal">Core & Language Subject</span>
+                    </div>
+                  </div>
+                  {form.itemType === "subject" && <span className="text-xs text-[#2563eb] font-bold">✓</span>}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setForm({ ...form, itemType: "category" })}
+                  className={`flex items-center justify-between p-2.5 rounded-lg border text-left text-xs transition-all ${
+                    form.itemType === "category"
+                      ? "bg-[#f0f9ff] border-[#0284c7] text-[#0369a1] font-semibold ring-1 ring-[#0284c7] shadow-2xs"
+                      : "bg-white border-[#e2e8f0] text-[#475569] hover:bg-[#f1f5f9]"
+                  }`}
+                >
+                  <div className="flex items-center gap-2">
+                    <Layers className="h-4 w-4 text-[#0284c7]" />
+                    <div>
+                      <span className="block font-bold">Category</span>
+                      <span className="text-[10px] text-[#64748b] font-normal">Resource Type / Format</span>
+                    </div>
+                  </div>
+                  {form.itemType === "category" && <span className="text-xs text-[#0284c7] font-bold">✓</span>}
+                </button>
+              </div>
+            </div>
+
             <div className="space-y-1.5">
               <Label className="text-xs font-semibold text-[#112542]">Name *</Label>
               <Input
-                placeholder="e.g. Model Question Papers (MQP) or Physics"
+                placeholder={form.itemType === "subject" ? "e.g. Physics, Electronics, etc." : "e.g. Question Bank, Notes, MQP, etc."}
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
                 className="h-9 text-xs"
