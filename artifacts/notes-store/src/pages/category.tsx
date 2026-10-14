@@ -19,6 +19,12 @@ import {
   Calendar
 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useLanguage } from "@/lib/language-context";
+import {
+  getSubjectDisplayName,
+  getCategoryDisplayTitle,
+  getCategoryDisplayDescription,
+} from "@/lib/site-navigation";
 
 interface CategoryMeta {
   title: string;
@@ -105,9 +111,24 @@ const PRACTICAL_CORE_SUBJECTS = [
 const PRACTICAL_SUBTYPES = ["Scheme", "Resources", "Lab Manual", "Viva Questions"];
 const PYQ_SUBTYPES = ["Midterm", "Preparatory", "Annual"];
 
+function getSubtypeDisplayName(sub: string, isKn: boolean) {
+  if (!isKn) return sub;
+  const lower = sub.toLowerCase();
+  if (lower === "scheme") return "ಅಂಕ ಯೋಜನೆ (Scheme)";
+  if (lower === "resources") return "ಸಂಪನ್ಮೂಲಗಳು (Resources)";
+  if (lower === "lab manual") return "ಲ್ಯಾಬ್ ಮ್ಯಾನ್ಯುಯಲ್";
+  if (lower === "viva questions") return "ವೈವಾ ಪ್ರಶ್ನೆಗಳು (Viva)";
+  if (lower === "midterm") return "ಮಧ್ಯವಾರ್ಷಿಕ (Midterm)";
+  if (lower === "preparatory") return "ಸಿದ್ಧತಾ (Preparatory)";
+  if (lower === "annual") return "ವಾರ್ಷಿಕ (Annual)";
+  return sub;
+}
+
 export default function CategoryPage() {
   const params = useParams<{ slug: string }>();
   const slug = (params.slug || "").toLowerCase();
+  const { language, t } = useLanguage();
+  const isKn = language === "kn";
 
   const meta = CATEGORIES_CONFIG[slug];
 
@@ -250,12 +271,12 @@ export default function CategoryPage() {
         <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gray-100 text-gray-400 mx-auto mb-4">
           <FileText className="h-7 w-7" />
         </div>
-        <h2 className="text-xl font-bold text-gray-900 mb-2">Category not found</h2>
+        <h2 className="text-xl font-bold text-gray-900 mb-2">{t("Category not found", "ವರ್ಗ ಕಂಡುಬಂದಿಲ್ಲ")}</h2>
         <p className="text-sm text-gray-500 mb-6">
-          The requested resource category does not exist.
+          {t("The requested resource category does not exist.", "ಕೋರಿದ ಸಂಪನ್ಮೂಲ ವರ್ಗ ಲಭ್ಯವಿಲ್ಲ.")}
         </p>
         <Link href="/">
-          <Button variant="default">Back to Home</Button>
+          <Button variant="default">{t("Back to Home", "ಮುಖಪುಟಕ್ಕೆ ಹಿಂತಿರುಗಿ")}</Button>
         </Link>
       </div>
     );
@@ -264,6 +285,8 @@ export default function CategoryPage() {
   const Icon = meta.icon;
   const isPractical = slug === "practical";
   const isPyq = slug === "pyq";
+  const displayTitle = getCategoryDisplayTitle(slug, isKn) || meta.title;
+  const displayDescription = getCategoryDisplayDescription(slug, isKn) || meta.description;
 
   return (
     <div className="max-w-6xl mx-auto w-full px-4 py-8 sm:py-10">
@@ -275,7 +298,7 @@ export default function CategoryPage() {
           className="gap-2 text-[#475569] hover:text-[#0f172a] -ml-2 mb-4 font-medium"
         >
           <ArrowLeft className="h-4 w-4" />
-          <span>Back to Home</span>
+          <span>{t("Back to Home", "ಮುಖಪುಟಕ್ಕೆ ಹಿಂತಿರುಗಿ")}</span>
         </Button>
       </Link>
 
@@ -289,20 +312,20 @@ export default function CategoryPage() {
             <div>
               <div className="flex items-center gap-2.5 flex-wrap">
                 <h1 className="text-2xl sm:text-3xl font-bold text-[#0f172a] tracking-tight">
-                  {meta.title}
+                  {displayTitle}
                 </h1>
                 <Badge
                   variant="outline"
                   className="bg-[#eff6ff] text-[#2563eb] border-[#bfdbfe] text-xs font-semibold px-2.5 py-0.5 rounded-full"
                 >
-                  Resource Category
+                  {t("Resource Category", "ಸಂಪನ್ಮೂಲ ವರ್ಗ")}
                 </Badge>
                 <span className="text-xs font-medium text-[#64748b] bg-[#f8fafc] px-2.5 py-0.5 rounded-full border border-[#e2e8f0]">
-                  {filteredCards.length} {filteredCards.length === 1 ? "item" : "items"}
+                  {filteredCards.length} {filteredCards.length === 1 ? t("item", "ಐಟಂ") : t("items", "ಐಟಂಗಳು")}
                 </span>
               </div>
               <p className="text-[#64748b] text-xs sm:text-sm leading-relaxed max-w-2xl mt-1.5 font-normal">
-                {meta.description}
+                {displayDescription}
               </p>
             </div>
           </div>
@@ -315,7 +338,7 @@ export default function CategoryPage() {
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#0284c7] bg-[#f0f9ff] hover:bg-[#e0f2fe] border border-[#bae6fd] px-3.5 py-2 rounded-lg transition-colors shadow-2xs"
               >
-                <span>Official Government Source (KSEAB)</span>
+                <span>{t("Official Government Source (KSEAB)", "ಕರ್ನಾಟಕ ಶಾಲಾ ಪರೀಕ್ಷಾ ಮಂಡಳಿ (KSEAB)")}</span>
                 <ExternalLink className="h-3.5 w-3.5" />
               </a>
             </div>
@@ -327,7 +350,7 @@ export default function CategoryPage() {
       <div className="space-y-3.5 mb-6">
         <div className="flex items-center gap-2 text-xs font-bold text-[#475569] uppercase tracking-wider">
           <SlidersHorizontal className="h-3.5 w-3.5 text-[#2563eb]" />
-          <span>Filter by Subject</span>
+          <span>{t("Filter by Subject", "ವಿಷಯವಾರು ಫಿಲ್ಟರ್")}</span>
         </div>
 
         <div className="flex items-center gap-2 overflow-x-auto pb-1.5 scrollbar-none">
@@ -340,7 +363,7 @@ export default function CategoryPage() {
                 : "bg-white text-[#475569] border border-[#e2e8f0] hover:bg-[#f8fafc] hover:border-[#cbd5e1]"
             }`}
           >
-            All Subjects
+            {t("All Subjects", "ಎಲ್ಲ ವಿಷಯಗಳು")}
           </button>
           {subjectList.map((subj) => {
             const isSelected = activeSubject.toLowerCase() === subj.toLowerCase();
@@ -355,7 +378,7 @@ export default function CategoryPage() {
                     : "bg-white text-[#475569] border border-[#e2e8f0] hover:bg-[#f8fafc] hover:border-[#cbd5e1]"
                 }`}
               >
-                {subj}
+                {getSubjectDisplayName(subj, isKn)}
               </button>
             );
           })}
@@ -365,7 +388,7 @@ export default function CategoryPage() {
         {(isPractical || isPyq) && (
           <div className="bg-[#eff6ff]/70 border border-[#bfdbfe]/80 rounded-xl p-3 flex flex-wrap items-center gap-2">
             <span className="text-xs font-bold text-[#2563eb] mr-1">
-              {isPractical ? "Practical Subtype:" : "Exam Category:"}
+              {isPractical ? t("Practical Subtype:", "ಪ್ರಾಯೋಗಿಕ ಉಪವಿಭಾಗ:") : t("Exam Category:", "ಪರೀಕ್ಷಾ ವರ್ಗ:")}
             </span>
             <button
               type="button"
@@ -376,7 +399,7 @@ export default function CategoryPage() {
                   : "bg-white text-[#2563eb] border border-[#bfdbfe] hover:bg-[#dbeafe]"
               }`}
             >
-              All
+              {t("All", "ಎಲ್ಲ")}
             </button>
             {(isPractical ? PRACTICAL_SUBTYPES : PYQ_SUBTYPES).map((sub) => (
               <button
@@ -389,7 +412,7 @@ export default function CategoryPage() {
                     : "bg-white text-[#2563eb] border border-[#bfdbfe] hover:bg-[#dbeafe]"
                 }`}
               >
-                {sub}
+                {getSubtypeDisplayName(sub, isKn)}
               </button>
             ))}
           </div>
@@ -400,7 +423,7 @@ export default function CategoryPage() {
           <div className="bg-[#f0fdf4] border border-[#bbf7d0] rounded-xl p-3 flex flex-wrap items-center gap-2">
             <div className="flex items-center gap-1.5 mr-1 text-[#15803d]">
               <Calendar className="h-3.5 w-3.5" />
-              <span className="text-xs font-bold">Exam Year:</span>
+              <span className="text-xs font-bold">{t("Exam Year:", "ಪರೀಕ್ಷೆಯ ವರ್ಷ:")}</span>
             </div>
             <button
               type="button"
@@ -411,7 +434,7 @@ export default function CategoryPage() {
                   : "bg-white text-[#15803d] border border-[#86efac] hover:bg-[#dcfce7]"
               }`}
             >
-              All Years
+              {t("All Years", "ಎಲ್ಲ ವರ್ಷಗಳು")}
             </button>
             {availableYears.map((yr) => (
               <button
@@ -434,7 +457,7 @@ export default function CategoryPage() {
       {/* Price Filter Toolbar */}
       <div className="flex items-center justify-between gap-4 mb-6 bg-[#f8fafc] border border-[#e2e8f0] px-3.5 py-2 rounded-xl">
         <div className="flex items-center gap-2">
-          <span className="text-xs text-[#64748b] font-medium">Price:</span>
+          <span className="text-xs text-[#64748b] font-medium">{t("Price:", "ಬೆಲೆ:")}</span>
           <button
             type="button"
             onClick={() => setPriceFilter("all")}
@@ -444,7 +467,7 @@ export default function CategoryPage() {
                 : "text-[#64748b] hover:bg-[#e2e8f0]/60"
             }`}
           >
-            All
+            {t("All", "ಎಲ್ಲ")}
           </button>
           <button
             type="button"
@@ -455,7 +478,7 @@ export default function CategoryPage() {
                 : "text-[#64748b] hover:bg-[#e2e8f0]/60"
             }`}
           >
-            Free
+            {t("Free", "ಉಚಿತ")}
           </button>
           <button
             type="button"
@@ -466,12 +489,12 @@ export default function CategoryPage() {
                 : "text-[#64748b] hover:bg-[#e2e8f0]/60"
             }`}
           >
-            Paid
+            {t("Paid", "ಪಾವತಿಸಿದ")}
           </button>
         </div>
 
         <span className="text-xs text-[#64748b] font-medium">
-          Showing {filteredCards.length} {filteredCards.length === 1 ? "item" : "items"}
+          {t("Showing", "ತೋರಿಸಲಾಗುತ್ತಿದೆ")} {filteredCards.length} {filteredCards.length === 1 ? t("item", "ಐಟಂ") : t("items", "ಐಟಂಗಳು")}
         </span>
       </div>
 
@@ -485,10 +508,12 @@ export default function CategoryPage() {
       ) : filteredCards.length === 0 ? (
         <div className="bg-white border border-[#e2e8f0] rounded-xl p-12 text-center">
           <FileQuestion className="h-10 w-10 text-[#94a3b8] mx-auto mb-3" />
-          <h3 className="font-bold text-base text-[#112542] mb-1">No resources found</h3>
+          <h3 className="font-bold text-base text-[#112542] mb-1">{t("No resources found", "ಯಾವುದೇ ಸಂಪನ್ಮೂಲ ಕಂಡುಬಂದಿಲ್ಲ")}</h3>
           <p className="text-xs sm:text-sm text-[#5a6b82] max-w-sm mx-auto">
-            No resources match the selected filters under {meta.title}. Try selecting a different
-            subject or resetting filters.
+            {t(
+              `No resources match the selected filters under ${meta.title}. Try selecting a different subject or resetting filters.`,
+              `${displayTitle} ಅಡಿಯಲ್ಲಿ ಆಯ್ಕೆಮಾಡಿದ ಫಿಲ್ಟರ್‌ಗಳಿಗೆ ಯಾವುದೇ ಸಂಪನ್ಮೂಲ ಹೊಂದಾಣಿಕೆಯಾಗುತ್ತಿಲ್ಲ. ಬೇರೆ ವಿಷಯ ಆಯ್ಕೆಮಾಡಿ ಅಥವಾ ಫಿಲ್ಟರ್ ಮರುಹೊಂದಿಸಿ.`
+            )}
           </p>
           {(activeSubject !== "all" || activeSubtype !== "all" || priceFilter !== "all") && (
             <Button
@@ -501,7 +526,7 @@ export default function CategoryPage() {
               }}
               className="mt-4 text-xs h-8"
             >
-              Reset Filters
+              {t("Reset Filters", "ಫಿಲ್ಟರ್ ತೆರವುಗೊಳಿಸಿ")}
             </Button>
           )}
         </div>

@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/lib/language-context";
 
 type FeedbackType = "feedback" | "bug_report" | "broken_link" | "content_error";
 type Rating = "working_great" | "minor_issue" | "broken";
@@ -19,6 +20,7 @@ export function FloatingFeedback() {
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const { toast } = useToast();
+  const { t } = useLanguage();
 
   const handleOpen = () => {
     setOpen(true);
@@ -74,12 +76,12 @@ export function FloatingFeedback() {
           type="button"
           onClick={handleOpen}
           className="flex items-center gap-2 px-3.5 py-2.5 rounded-full bg-[#0f172a] hover:bg-[#1e293b] text-white shadow-lg hover:shadow-xl transition-all duration-200 border border-slate-700/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2563eb] active:scale-95"
-          aria-label="Give Feedback or Report an Issue"
+          aria-label={t("Give Feedback or Report an Issue", "ಪ್ರತಿಕ್ರಿಯೆ ನೀಡಿ ಅಥವಾ ಸಮಸ್ಯೆಯನ್ನು ವರದಿ ಮಾಡಿ")}
         >
           <div className="flex h-5 w-5 items-center justify-center rounded-full bg-[#2563eb] text-white">
             <MessageSquarePlus className="h-3.5 w-3.5" />
           </div>
-          <span className="text-xs font-semibold tracking-tight pr-0.5">Feedback</span>
+          <span className="text-xs font-semibold tracking-tight pr-0.5">{t("Feedback", "ಪ್ರತಿಕ್ರಿಯೆ")}</span>
         </button>
       </div>
 
@@ -91,10 +93,10 @@ export function FloatingFeedback() {
               <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#eff6ff] text-[#2563eb] border border-[#bfdbfe]">
                 <MessageSquarePlus className="h-4 w-4" />
               </div>
-              <span>Feedback & Issue Report</span>
+              <span>{t("Feedback & Issue Report", "ಪ್ರತಿಕ್ರಿಯೆ ಮತ್ತು ವರದಿ")}</span>
             </DialogTitle>
             <DialogDescription className="text-xs text-[#64748b]">
-              Help us keep 2PUC study notes and downloads running smoothly for all students.
+              {t("Help us keep 2PUC study notes and downloads running smoothly for all students.", "2PUC ನೋಟ್ಸ್ ಮತ್ತು ಡೌನ್‌ಲೋಡ್‌ಗಳನ್ನು ಉತ್ತಮವಾಗಿಡಲು ನಿಮ್ಮ ಅಭಿಪ್ರಾಯ ತಿಳಿಸಿ.")}
             </DialogDescription>
           </DialogHeader>
 
@@ -103,9 +105,9 @@ export function FloatingFeedback() {
               <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#f0fdf4] text-[#16a34a] border border-[#bbf7d0]">
                 <CheckCircle2 className="h-7 w-7" />
               </div>
-              <h3 className="font-bold text-base text-[#0f172a]">Received with thanks!</h3>
+              <h3 className="font-bold text-base text-[#0f172a]">{t("Received with thanks!", "ಧನ್ಯವಾದಗಳು! ಸ್ವೀಕರಿಸಲಾಗಿದೆ")}</h3>
               <p className="text-xs text-[#64748b] max-w-xs mx-auto">
-                Thank you for helping us maintain accurate notes and instant PDF downloads.
+                {t("Thank you for helping us maintain accurate notes and instant PDF downloads.", "ನಿಖರವಾದ ನೋಟ್ಸ್ ಮತ್ತು ಡೌನ್‌ಲೋಡ್‌ಗಳನ್ನು ಕಾಪಾಡಿಕೊಳ್ಳಲು ಸಹಾಯ ಮಾಡಿದ್ದಕ್ಕಾಗಿ ಧನ್ಯವಾದಗಳು.")}
               </p>
               <div className="pt-2">
                 <Button
@@ -114,7 +116,7 @@ export function FloatingFeedback() {
                   size="sm"
                   className="rounded-xl text-xs h-9 px-5 font-semibold"
                 >
-                  Close
+                  {t("Close", "ಮುಚ್ಚಿ")}
                 </Button>
               </div>
             </div>

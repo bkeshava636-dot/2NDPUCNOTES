@@ -21,6 +21,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { formatRupees } from "@/lib/utils";
 import { TELEGRAM_LINK } from "@/lib/site-config";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/lib/language-context";
+import { getSubjectDisplayName, getResourceTypeDisplayName } from "@/lib/site-navigation";
 
 export default function CardPage() {
   const params = useParams<{ id: string }>();
@@ -29,6 +31,8 @@ export default function CardPage() {
   const [previewIdx, setPreviewIdx] = useState(0);
   const [downloading, setDownloading] = useState(false);
   const { toast } = useToast();
+  const { language, t } = useLanguage();
+  const isKn = language === "kn";
 
   const queryClient = useQueryClient();
   const { data: card, isLoading } = useGetCard(id, {
@@ -72,10 +76,10 @@ export default function CardPage() {
         <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gray-100 text-gray-400 mx-auto mb-4">
           <FileText className="h-7 w-7" />
         </div>
-        <h2 className="text-xl font-bold text-gray-900 mb-2">Resource not found</h2>
-        <p className="text-sm text-gray-500 mb-6">The requested notes card may have been moved or is unavailable.</p>
+        <h2 className="text-xl font-bold text-gray-900 mb-2">{t("Resource not found", "ಸಂಪನ್ಮೂಲ ಕಂಡುಬಂದಿಲ್ಲ")}</h2>
+        <p className="text-sm text-gray-500 mb-6">{t("The requested notes card may have been moved or is unavailable.", "ಕೋರಿದ ನೋಟ್ಸ್ ಕಾರ್ಡ್ ಲಭ್ಯವಿಲ್ಲ ಅಥವಾ ತೆಗೆದುಹಾಕಿರಬಹುದು.")}</p>
         <Link href="/">
-          <Button variant="default">Go Home</Button>
+          <Button variant="default">{t("Go Home", "ಮುಖಪುಟಕ್ಕೆ ಹೋಗಿ")}</Button>
         </Link>
       </div>
     );
@@ -114,11 +118,11 @@ export default function CardPage() {
       document.body.appendChild(link);
       link.click();
       link.remove();
-      toast({ title: "Download Started", description: "Your free PDF study resource is opening." });
+      toast({ title: t("Download Started", "ಡೌನ್‌ಲೋಡ್ ಪ್ರಾರಂಭವಾಯಿತು"), description: t("Your free PDF study resource is opening.", "ನಿಮ್ಮ ಉಚಿತ PDF ಅಧ್ಯಯನ ಸಾಮಗ್ರಿ ತೆರೆಯುತ್ತಿದೆ.") });
     } catch (err: any) {
       toast({
-        title: "Download Failed",
-        description: err.message || "Failed to download free resource",
+        title: t("Download Failed", "ಡೌನ್‌ಲೋಡ್ ವಿಫಲವಾಗಿದೆ"),
+        description: err.message || t("Failed to download free resource", "ಉಚಿತ ಸಂಪನ್ಮೂಲ ಡೌನ್‌ಲೋಡ್ ಮಾಡಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ"),
         variant: "destructive",
       });
     } finally {
@@ -132,7 +136,7 @@ export default function CardPage() {
       <Link href="/">
         <Button variant="ghost" size="sm" className="gap-2 text-[#475569] hover:text-[#0f172a] -ml-2 mb-6 font-medium">
           <ArrowLeft className="h-4 w-4" />
-          <span>Back to Notes</span>
+          <span>{t("Back to Notes", "ನೋಟ್ಸ್‌ಗೆ ಹಿಂತಿರುಗಿ")}</span>
         </Button>
       </Link>
 
@@ -153,12 +157,12 @@ export default function CardPage() {
                 <div className="absolute top-3 left-3 flex gap-2">
                   {card.isFree && (
                     <span className="bg-[#16a34a] text-white font-semibold text-[11px] px-2.5 py-0.5 rounded shadow-2xs">
-                      Free
+                      {t("Free", "ಉಚಿತ")}
                     </span>
                   )}
                   {card.isFeatured && (
                     <span className="bg-[#d97706] text-white font-semibold text-[11px] px-2.5 py-0.5 rounded shadow-2xs">
-                      Popular
+                      {t("Popular", "ಜನಪ್ರಿಯ")}
                     </span>
                   )}
                 </div>
@@ -188,7 +192,7 @@ export default function CardPage() {
           {/* Description Card */}
           {card.description && (
             <div className="bg-white rounded-2xl border border-[#e2e8f0] p-5 sm:p-6 space-y-2.5 shadow-xs">
-              <h2 className="text-sm sm:text-base font-bold text-[#0f172a]">About this Resource</h2>
+              <h2 className="text-sm sm:text-base font-bold text-[#0f172a]">{t("About this Resource", "ಸಂಪನ್ಮೂಲದ ವಿವರ")}</h2>
               <p className="text-[#64748b] leading-relaxed text-xs sm:text-sm whitespace-pre-line">
                 {card.description}
               </p>
@@ -204,16 +208,16 @@ export default function CardPage() {
               <div className="flex flex-wrap items-center gap-1.5">
                 {card.isRecommended && (
                   <Badge className="font-semibold text-[11px] bg-[#0284c7] text-white border-0 shadow-2xs">
-                    Recommended
+                    {t("Recommended", "ಶಿಫಾರಸು")}
                   </Badge>
                 )}
                 {card.subject && (
                   <Badge variant="secondary" className="font-semibold text-[11px] bg-[#eff6ff] text-[#2563eb] border border-[#bfdbfe]">
-                    {card.subject}
+                    {getSubjectDisplayName(card.subject, isKn)}
                   </Badge>
                 )}
                 <Badge variant="outline" className="text-[11px] font-medium text-[#475569] border-[#e2e8f0] bg-[#f8fafc]">
-                  {card.resourceType}
+                  {getResourceTypeDisplayName(card.resourceType, isKn)}
                 </Badge>
                 {card.subtype && (
                   <Badge variant="outline" className="text-[10px] font-medium text-[#0284c7] border-[#bae6fd] bg-[#f0f9ff]">
@@ -241,7 +245,7 @@ export default function CardPage() {
                       className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#0284c7] bg-[#f0f9ff] hover:bg-[#e0f2fe] border border-[#bae6fd] px-2.5 py-1 rounded-md transition-colors"
                     >
                       <CheckCircle2 className="h-3.5 w-3.5" />
-                      View Linked Answer Key
+                      {t("View Linked Answer Key", "ಲಿಂಕ್ ಮಾಡಲಾದ ಕೀ ಉತ್ತರಗಳು")}
                     </a>
                   )}
                   {card.officialSourceUrl && (
@@ -251,7 +255,7 @@ export default function CardPage() {
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-1.5 text-xs font-medium text-[#475569] hover:text-[#0f172a] bg-[#f8fafc] hover:bg-[#e2e8f0] border border-[#e2e8f0] px-2.5 py-1 rounded-md transition-colors"
                     >
-                      Official Source Link &rarr;
+                      {t("Official Source Link →", "ಅಧಿಕೃತ ಲಿಂಕ್ →")}
                     </a>
                   )}
                 </div>
@@ -269,7 +273,7 @@ export default function CardPage() {
               {card.board && (
                 <div className="flex items-center gap-2 p-2.5 rounded-xl bg-[#f8fafc] border border-[#e2e8f0] text-xs text-[#334155]">
                   <ShieldCheck className="h-3.5 w-3.5 text-[#2563eb] shrink-0" />
-                  <span className="truncate font-semibold">{card.board} Board</span>
+                  <span className="truncate font-semibold">{card.board} {t("Board", "ಮಂಡಳಿ")}</span>
                 </div>
               )}
               {card.semester && (
@@ -281,7 +285,7 @@ export default function CardPage() {
               {card.pageCount && (
                 <div className="flex items-center gap-2 p-2.5 rounded-xl bg-[#f8fafc] border border-[#e2e8f0] text-xs text-[#334155]">
                   <FileText className="h-3.5 w-3.5 text-[#2563eb] shrink-0" />
-                  <span className="font-semibold">{card.pageCount} pages</span>
+                  <span className="font-semibold">{card.pageCount} {t("pages", "ಪುಟಗಳು")}</span>
                 </div>
               )}
               {card.fileSizeKb ? (
@@ -297,7 +301,7 @@ export default function CardPage() {
                 }`}>
                   <FileText className="h-3.5 w-3.5 shrink-0" />
                   <span className="font-semibold">
-                    {card.pdfFileKey.includes("gov.in") ? "Official Government Resource" : "Google Drive Document"}
+                    {card.pdfFileKey.includes("gov.in") ? t("Official Government Resource", "ಅಧಿಕೃತ ಸರ್ಕಾರಿ ಸಂಪನ್ಮೂಲ") : t("Google Drive Document", "ಗೂಗಲ್ ಡ್ರೈವ್ ಡಾಕ್ಯುಮೆಂಟ್")}
                   </span>
                 </div>
               ) : null}
@@ -307,9 +311,9 @@ export default function CardPage() {
             <div className="pt-4 border-t border-[#f1f5f9] space-y-4">
               <div className="flex items-baseline justify-between">
                 <div>
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-[#94a3b8] block mb-0.5">Price</span>
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-[#94a3b8] block mb-0.5">{t("Price", "ಬೆಲೆ")}</span>
                   {card.isFree ? (
-                    <span className="text-2xl sm:text-3xl font-extrabold text-[#16a34a]">Free</span>
+                    <span className="text-2xl sm:text-3xl font-extrabold text-[#16a34a]">{t("Free", "ಉಚಿತ")}</span>
                   ) : hasDiscount ? (
                     <div className="flex items-baseline gap-2">
                       <span className="text-2xl sm:text-3xl font-extrabold text-[#0f172a]">
@@ -328,7 +332,7 @@ export default function CardPage() {
 
                 {hasDiscount && (
                   <span className="bg-[#eff6ff] text-[#2563eb] border border-[#bfdbfe] text-xs font-bold px-2 py-0.5 rounded-full">
-                    Discounted
+                    {t("Discounted", "ರಿಯಾಯಿತಿ")}
                   </span>
                 )}
               </div>
@@ -344,18 +348,18 @@ export default function CardPage() {
                   {downloading ? (
                     <>
                       <Loader2 className="h-4 w-4 animate-spin" />
-                      <span>Opening PDF...</span>
+                      <span>{t("Opening PDF...", "PDF ತೆರೆಯಲಾಗುತ್ತಿದೆ...")}</span>
                     </>
                   ) : (
                     <>
                       <Download className="h-4 w-4" />
-                      <span>Download Free PDF</span>
+                      <span>{t("Download Free PDF", "ಉಚಿತ PDF ಡೌನ್‌ಲೋಡ್")}</span>
                     </>
                   )}
                 </Button>
               ) : (
                 <Button onClick={handleBuy} size="lg" className="w-full gap-2 rounded-xl text-sm font-semibold h-11 bg-[#2563eb] hover:bg-[#1d4ed8] text-white shadow-2xs transition-all">
-                  <span>Buy Now &rarr;</span>
+                  <span>{t("Buy Now →", "ಈಗಲೇ ಖರೀದಿಸಿ →")}</span>
                 </Button>
               )}
             </div>
@@ -363,7 +367,7 @@ export default function CardPage() {
 
           {/* Telegram Support prompt */}
           <div className="bg-[#eff6ff] border border-[#bfdbfe]/80 rounded-2xl p-3.5 px-4.5 flex items-center justify-between text-xs text-[#0f172a] shadow-2xs">
-            <span className="font-medium text-[#475569]">Have questions about this material?</span>
+            <span className="font-medium text-[#475569]">{t("Have questions about this material?", "ಈ ಸಾಮಗ್ರಿಯ ಬಗ್ಗೆ ಪ್ರಶ್ನೆಗಳಿವೆಯೇ?")}</span>
             <a
               href={card.telegramLink || TELEGRAM_LINK}
               target="_blank"
@@ -371,7 +375,7 @@ export default function CardPage() {
               className="inline-flex items-center gap-1 font-semibold text-[#2563eb] hover:text-[#1d4ed8] transition-colors"
             >
               <Send className="h-3 w-3" />
-              <span>Ask Support</span>
+              <span>{t("Ask Support", "ಸಹಾಯ ಪಡೆಯಿರಿ")}</span>
             </a>
           </div>
         </div>

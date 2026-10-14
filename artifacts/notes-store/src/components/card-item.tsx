@@ -6,6 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { FileText, Download } from "lucide-react";
 import { formatRupees } from "@/lib/utils";
+import { useLanguage } from "@/lib/language-context";
+import { getSubjectDisplayName, getResourceTypeDisplayName } from "@/lib/site-navigation";
 
 function getSubjectBadgeStyle(subject?: string) {
   if (!subject) return "bg-[#f0f4f9] text-[#475569] border-[#e2e8f0]";
@@ -24,6 +26,8 @@ function getSubjectBadgeStyle(subject?: string) {
 
 export function CardItem({ card }: { card: CardType }) {
   const queryClient = useQueryClient();
+  const { language, t } = useLanguage();
+  const isKn = language === "kn";
   const hasDiscount = Boolean(
     !card.isFree &&
     card.discountPricePaise &&
@@ -57,24 +61,24 @@ export function CardItem({ card }: { card: CardType }) {
               <div className="flex gap-1.5 flex-wrap">
                 {card.isRecommended && (
                   <span className="bg-[#0284c7] text-white font-semibold text-[10px] px-2 py-0.5 rounded shadow-2xs">
-                    Recommended
+                    {t("Recommended", "ಶಿಫಾರಸು")}
                   </span>
                 )}
                 {card.isNew && (
                   <span className="bg-[#dc2626] text-white font-semibold text-[10px] px-2 py-0.5 rounded shadow-2xs">
-                    New
+                    {t("New", "ಹೊಸದು")}
                   </span>
                 )}
                 {card.isFeatured && (
                   <span className="bg-[#d97706] text-white font-semibold text-[10px] px-2 py-0.5 rounded shadow-2xs">
-                    Popular
+                    {t("Popular", "ಜನಪ್ರಿಯ")}
                   </span>
                 )}
               </div>
 
               {card.isFree && (
                 <span className="bg-[#16a34a] text-white font-semibold text-[10px] px-2 py-0.5 rounded ml-auto shadow-2xs">
-                  Free
+                  {t("Free", "ಉಚಿತ")}
                 </span>
               )}
             </div>
@@ -89,11 +93,11 @@ export function CardItem({ card }: { card: CardType }) {
               <div className="flex items-center gap-1.5 flex-wrap">
                 {card.subject && (
                   <span className={`text-[11px] font-semibold px-2 py-0.5 rounded border ${getSubjectBadgeStyle(card.subject)}`}>
-                    {card.subject}
+                    {getSubjectDisplayName(card.subject, isKn)}
                   </span>
                 )}
                 <Badge variant="outline" className="text-[11px] font-medium text-[#475569] border-[#e2e8f0] bg-[#f8fafc]">
-                  {card.resourceType}
+                  {getResourceTypeDisplayName(card.resourceType, isKn)}
                 </Badge>
                 {card.subtype && (
                   <Badge variant="outline" className="text-[10px] font-medium text-[#0284c7] border-[#bae6fd] bg-[#f0f9ff]">
@@ -102,24 +106,24 @@ export function CardItem({ card }: { card: CardType }) {
                 )}
                 {!card.thumbnailUrl && card.isRecommended && (
                   <span className="bg-[#0284c7] text-white font-semibold text-[10px] px-2 py-0.5 rounded shadow-2xs">
-                    Recommended
+                    {t("Recommended", "ಶಿಫಾರಸು")}
                   </span>
                 )}
                 {!card.thumbnailUrl && card.isNew && (
                   <span className="bg-[#dc2626] text-white font-semibold text-[10px] px-2 py-0.5 rounded shadow-2xs">
-                    New
+                    {t("New", "ಹೊಸದು")}
                   </span>
                 )}
                 {!card.thumbnailUrl && card.isFeatured && (
                   <span className="bg-[#d97706] text-white font-semibold text-[10px] px-2 py-0.5 rounded shadow-2xs">
-                    Popular
+                    {t("Popular", "ಜನಪ್ರಿಯ")}
                   </span>
                 )}
               </div>
 
               {!card.thumbnailUrl && card.isFree && (
                 <span className="bg-[#16a34a] text-white font-semibold text-[10px] px-2 py-0.5 rounded shadow-2xs ml-auto">
-                  Free
+                  {t("Free", "ಉಚಿತ")}
                 </span>
               )}
             </div>
@@ -133,9 +137,9 @@ export function CardItem({ card }: { card: CardType }) {
                   rel="noopener noreferrer"
                   onClick={(e) => e.stopPropagation()}
                   className="inline-flex items-center gap-1 text-[10px] font-semibold text-[#0284c7] bg-[#f0f9ff] hover:bg-[#e0f2fe] border border-[#bae6fd] px-2 py-0.5 rounded transition-colors"
-                  title="View Official Answer Key"
+                  title={t("View Official Answer Key", "ಅಧಿಕೃತ ಕೀ ಉತ್ತರಗಳನ್ನು ವೀಕ್ಷಿಸಿ")}
                 >
-                  <span>Answer Key Included</span>
+                  <span>{t("Answer Key Included", "ಉತ್ತರ ಸಹಿತ")}</span>
                 </a>
               </div>
             )}
@@ -158,7 +162,7 @@ export function CardItem({ card }: { card: CardType }) {
         <CardFooter className="p-3.5 px-4.5 flex items-center justify-between border-t border-[#f1f5f9] mt-auto bg-[#fafcff]">
           <div>
             {card.isFree ? (
-              <span className="font-bold text-base text-[#16a34a]">Free</span>
+              <span className="font-bold text-base text-[#16a34a]">{t("Free", "ಉಚಿತ")}</span>
             ) : hasDiscount ? (
               <div className="flex items-baseline gap-1.5">
                 <span className="font-bold text-base text-[#0f172a]">
@@ -187,10 +191,10 @@ export function CardItem({ card }: { card: CardType }) {
             {card.isFree ? (
               <>
                 <Download className="h-3.5 w-3.5 text-[#475569]" />
-                <span>Get PDF</span>
+                <span>{t("Get PDF", "PDF ಪಡೆಯಿರಿ")}</span>
               </>
             ) : (
-              <span>Buy Now</span>
+              <span>{t("Buy Now", "ಖರೀದಿಸಿ")}</span>
             )}
           </Button>
         </CardFooter>

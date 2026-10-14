@@ -9,6 +9,8 @@ import { ArrowLeft, Lock, ShieldCheck, CheckCircle2, Phone, User, Mail, FileText
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatRupees } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/lib/language-context";
+import { getResourceTypeDisplayName } from "@/lib/site-navigation";
 
 const rawApiUrl = import.meta.env.VITE_API_URL;
 const API_URL = rawApiUrl ? rawApiUrl.replace(/\/+$/, "") : "";
@@ -35,6 +37,8 @@ export default function Checkout() {
   const isFree = params.get("free") === "true";
   const [, setLocation] = useLocation();
   const { toast } = useToast();
+  const { language, t } = useLanguage();
+  const isKn = language === "kn";
 
   const { data: card, isLoading } = useGetCard(cardId, { query: { enabled: !!cardId, queryKey: ["card", cardId] } });
 
@@ -187,8 +191,8 @@ export default function Checkout() {
 
   if (!card) return (
     <div className="max-w-md mx-auto px-4 py-20 text-center">
-      <p className="text-gray-500 mb-4">Resource not found.</p>
-      <Link href="/"><Button variant="default">Go Home</Button></Link>
+      <p className="text-gray-500 mb-4">{t("Resource not found.", "ಸಂಪನ್ಮೂಲ ಕಂಡುಬಂದಿಲ್ಲ.")}</p>
+      <Link href="/"><Button variant="default">{t("Go Home", "ಮುಖಪುಟಕ್ಕೆ ಹೋಗಿ")}</Button></Link>
     </div>
   );
 
@@ -200,16 +204,16 @@ export default function Checkout() {
       <Link href={`/card/${cardId}`}>
         <Button variant="ghost" size="sm" className="gap-2 text-[#475569] hover:text-[#0f172a] -ml-2 mb-5 font-medium">
           <ArrowLeft className="h-4 w-4" />
-          <span>Back to Notes</span>
+          <span>{t("Back to Notes", "ನೋಟ್ಸ್‌ಗೆ ಹಿಂತಿರುಗಿ")}</span>
         </Button>
       </Link>
 
       {/* Order Summary Card */}
       <div className="bg-white border border-[#e2e8f0] rounded-2xl p-4.5 sm:p-5 mb-5 shadow-xs">
         <div className="flex items-center justify-between border-b border-[#f1f5f9] pb-3 mb-3.5">
-          <span className="text-[11px] font-bold text-[#64748b] uppercase tracking-wider">Order Summary</span>
+          <span className="text-[11px] font-bold text-[#64748b] uppercase tracking-wider">{t("Order Summary", "ಆರ್ಡರ್ ವಿವರ")}</span>
           <span className="text-xs font-semibold text-[#2563eb] bg-[#eff6ff] border border-[#bfdbfe] px-2.5 py-0.5 rounded-full">
-            {card.resourceType}
+            {getResourceTypeDisplayName(card.resourceType, isKn)}
           </span>
         </div>
 
@@ -233,10 +237,10 @@ export default function Checkout() {
 
         {/* Price Row */}
         <div className="flex items-center justify-between border-t border-[#f1f5f9] pt-3.5 mt-3.5">
-          <span className="text-sm font-medium text-[#64748b]">Total Payable</span>
+          <span className="text-sm font-medium text-[#64748b]">{t("Total Payable", "ಪಾವತಿಸಬೇಕಾದ ಮೊತ್ತ")}</span>
           <div className="text-right">
             {isCardFree ? (
-              <span className="text-xl font-extrabold text-[#16a34a]">Free</span>
+              <span className="text-xl font-extrabold text-[#16a34a]">{t("Free", "ಉಚಿತ")}</span>
             ) : card.discountPricePaise && card.discountPricePaise < card.pricePaise ? (
               <div className="flex items-baseline gap-2">
                 <span className="text-xs text-[#94a3b8] line-through">{formatRupees(card.pricePaise)}</span>
@@ -253,12 +257,12 @@ export default function Checkout() {
       <Card className="rounded-2xl border-[#e2e8f0] shadow-xs">
         <CardHeader className="pb-3 pt-5 px-5 sm:px-6">
           <CardTitle className="text-base sm:text-lg font-bold text-[#0f172a]">
-            {isCardFree ? "Free Study Resource" : "Complete Purchase"}
+            {isCardFree ? t("Free Study Resource", "ಉಚಿತ ಅಧ್ಯಯನ ಸಾಮಗ್ರಿ") : t("Complete Purchase", "ಖರೀದಿ ಪೂರ್ಣಗೊಳಿಸಿ")}
           </CardTitle>
           <CardDescription className="text-xs sm:text-sm text-[#64748b]">
             {isCardFree
-              ? "This resource is completely free. Click below to download the PDF immediately."
-              : "Enter your contact details to receive and access your purchased study material"}
+              ? t("This resource is completely free. Click below to download the PDF immediately.", "ಈ ಸಂಪನ್ಮೂಲ ಸಂಪೂರ್ಣ ಉಚಿತವಾಗಿದೆ. ತಕ್ಷಣವೇ PDF ಡೌನ್‌ಲೋಡ್ ಮಾಡಲು ಕೆಳಗೆ ಕ್ಲಿಕ್ ಮಾಡಿ.")
+              : t("Enter your contact details to receive and access your purchased study material", "ನಿಮ್ಮ ನೋಟ್ಸ್ ಪಡೆಯಲು ಮತ್ತು ಪ್ರವೇಶಿಸಲು ಸಂಪರ್ಕ ವಿವರಗಳನ್ನು ನಮೂದಿಸಿ")}
           </CardDescription>
         </CardHeader>
         <CardContent className="px-5 sm:px-6 pb-6 pt-1">
@@ -273,12 +277,12 @@ export default function Checkout() {
                 {loading ? (
                   <>
                     <Loader2 className="h-4 w-4 animate-spin" />
-                    <span>Preparing PDF Download...</span>
+                    <span>{t("Preparing PDF Download...", "PDF ಸಿದ್ಧಪಡಿಸಲಾಗುತ್ತಿದೆ...")}</span>
                   </>
                 ) : (
                   <>
                     <Download className="h-4 w-4" />
-                    <span>Download Free PDF Now</span>
+                    <span>{t("Download Free PDF Now", "ಈಗಲೇ ಉಚಿತ PDF ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ")}</span>
                   </>
                 )}
               </Button>
@@ -288,11 +292,11 @@ export default function Checkout() {
               <div className="space-y-1.5">
                 <Label htmlFor="name" className="text-xs font-bold text-[#334155] flex items-center gap-1.5">
                   <User className="h-3.5 w-3.5 text-[#94a3b8]" />
-                  <span>Student Full Name *</span>
+                  <span>{t("Student Full Name *", "ವಿದ್ಯಾರ್ಥಿಯ ಪೂರ್ಣ ಹೆಸರು *")}</span>
                 </Label>
                 <Input
                   id="name"
-                  placeholder="Your full name"
+                  placeholder={t("Your full name", "ನಿಮ್ಮ ಪೂರ್ಣ ಹೆಸರು")}
                   value={name}
                   onChange={e => setName(e.target.value)}
                   required
@@ -303,30 +307,30 @@ export default function Checkout() {
               <div className="space-y-1.5">
                 <Label htmlFor="phone" className="text-xs font-bold text-[#334155] flex items-center gap-1.5">
                   <Phone className="h-3.5 w-3.5 text-[#94a3b8]" />
-                  <span>Mobile Number *</span>
+                  <span>{t("Mobile Number *", "ಮೊಬೈಲ್ ಸಂಖ್ಯೆ *")}</span>
                 </Label>
                 <Input
                   id="phone"
                   type="tel"
-                  placeholder="10-digit mobile number"
+                  placeholder={t("10-digit mobile number", "10 ಅಂಕಿಗಳ ಮೊಬೈಲ್ ಸಂಖ್ಯೆ")}
                   value={phone}
                   onChange={e => setPhone(e.target.value)}
                   required
                   maxLength={10}
                   className="h-10.5 rounded-lg text-sm bg-[#f8fafc] border-[#cbd5e1] text-[#0f172a] focus-visible:ring-[#2563eb]"
                 />
-                <p className="text-[11px] text-[#64748b]">Used to instantly retrieve and re-download your purchases anytime</p>
+                <p className="text-[11px] text-[#64748b]">{t("Used to instantly retrieve and re-download your purchases anytime", "ನಿಮ್ಮ ಖರೀದಿಗಳನ್ನು ಯಾವುದೇ ಸಮಯದಲ್ಲಿ ಸುಲಭವಾಗಿ ಮರು-ಡೌನ್‌ಲೋಡ್ ಮಾಡಲು ಬಳಸಲಾಗುತ್ತದೆ")}</p>
               </div>
 
               <div className="space-y-1.5">
                 <Label htmlFor="email" className="text-xs font-bold text-[#334155] flex items-center gap-1.5">
                   <Mail className="h-3.5 w-3.5 text-[#94a3b8]" />
-                  <span>Email Address (Optional)</span>
+                  <span>{t("Email Address (Optional)", "ಇಮೇಲ್ ವಿಳಾಸ (ಐಚ್ಛಿಕ)")}</span>
                 </Label>
                 <Input
                   id="email"
                   type="email"
-                  placeholder="Optional: for backup receipt"
+                  placeholder={t("Optional: for backup receipt", "ಐಚ್ಛಿಕ: ರಸೀದಿಗಾಗಿ")}
                   value={email}
                   onChange={e => setEmail(e.target.value)}
                   className="h-10.5 rounded-lg text-sm bg-[#f8fafc] border-[#cbd5e1] text-[#0f172a] focus-visible:ring-[#2563eb]"
@@ -342,12 +346,12 @@ export default function Checkout() {
                   {loading ? (
                     <>
                       <Loader2 className="h-4 w-4 animate-spin" />
-                      <span>Processing with Razorpay...</span>
+                      <span>{t("Processing with Razorpay...", "Razorpay ಮೂಲಕ ಪ್ರಕ್ರಿಯೆಗೊಳಿಸಲಾಗುತ್ತಿದೆ...")}</span>
                     </>
                   ) : (
                     <>
                       <Lock className="h-4 w-4" />
-                      {`Pay ${formatRupees(effectivePrice)} & Download`}
+                      {`${t("Pay", "ಪಾವತಿಸಿ")} ${formatRupees(effectivePrice)} & ${t("Download", "ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ")}`}
                     </>
                   )}
                 </Button>
@@ -357,11 +361,11 @@ export default function Checkout() {
               <div className="pt-3 border-t border-[#f1f5f9] flex items-center justify-center gap-5 text-[11px] text-[#64748b]">
                 <div className="flex items-center gap-1.5">
                   <ShieldCheck className="h-3.5 w-3.5 text-[#16a34a]" />
-                  <span>256-bit Encrypted</span>
+                  <span>{t("256-bit Encrypted", "256-ಬಿಟ್ ಸುರಕ್ಷಿತ ಎನ್‌ಕ್ರಿಪ್ಶನ್")}</span>
                 </div>
                 <div className="flex items-center gap-1.5">
                   <Lock className="h-3.5 w-3.5 text-[#2563eb]" />
-                  <span>Secured by Razorpay</span>
+                  <span>{t("Secured by Razorpay", "Razorpay ಸುರಕ್ಷಿತ ಪಾವತಿ")}</span>
                 </div>
               </div>
             </form>

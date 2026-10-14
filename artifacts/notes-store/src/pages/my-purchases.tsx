@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Download, ShoppingBag, Search, Phone, Calendar, FileText, CheckCircle2 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatRupees } from "@/lib/utils";
+import { useLanguage } from "@/lib/language-context";
 
 const rawApiUrl = import.meta.env.VITE_API_URL;
 const API_URL = rawApiUrl ? rawApiUrl.replace(/\/+$/, "") : "";
@@ -15,6 +16,7 @@ const API_URL = rawApiUrl ? rawApiUrl.replace(/\/+$/, "") : "";
 export default function MyPurchases() {
   const [phone, setPhone] = useState("");
   const [submitted, setSubmitted] = useState("");
+  const { t } = useLanguage();
 
   const { data: orders, isLoading } = useGetPurchases(
     { phone: submitted },
@@ -34,8 +36,8 @@ export default function MyPurchases() {
           <ShoppingBag className="h-5 w-5" />
         </div>
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold text-[#0f172a] tracking-tight">My Purchases</h1>
-          <p className="text-[#64748b] text-xs sm:text-sm mt-0.5">Enter your phone number to access and re-download your study materials</p>
+          <h1 className="text-xl sm:text-2xl font-bold text-[#0f172a] tracking-tight">{t("My Purchases", "ನನ್ನ ಖರೀದಿಗಳು")}</h1>
+          <p className="text-[#64748b] text-xs sm:text-sm mt-0.5">{t("Enter your phone number to access and re-download your study materials", "ನಿಮ್ಮ ನೋಟ್ಸ್ ಡೌನ್‌ಲೋಡ್ ಮಾಡಲು ಮೊಬೈಲ್ ಸಂಖ್ಯೆಯನ್ನು ನಮೂದಿಸಿ")}</p>
         </div>
       </div>
 
@@ -45,12 +47,12 @@ export default function MyPurchases() {
           <div className="w-full sm:flex-1 space-y-1.5">
             <Label htmlFor="phone" className="text-xs font-bold text-[#334155] flex items-center gap-1.5">
               <Phone className="h-3.5 w-3.5 text-[#94a3b8]" />
-              <span>Mobile Phone Number</span>
+              <span>{t("Mobile Phone Number", "ಮೊಬೈಲ್ ಸಂಖ್ಯೆ")}</span>
             </Label>
             <Input
               id="phone"
               type="tel"
-              placeholder="Enter your 10-digit mobile number"
+              placeholder={t("Enter your 10-digit mobile number", "10 ಅಂಕಿಗಳ ಮೊಬೈಲ್ ಸಂಖ್ಯೆ ನಮೂದಿಸಿ")}
               value={phone}
               onChange={e => setPhone(e.target.value)}
               maxLength={10}
@@ -62,7 +64,7 @@ export default function MyPurchases() {
             className="w-full sm:w-auto gap-2 h-10.5 px-5 font-semibold text-xs sm:text-sm rounded-lg bg-[#2563eb] hover:bg-[#1d4ed8] text-white shadow-2xs transition-all"
           >
             <Search className="h-4 w-4" />
-            <span>Find Purchases</span>
+            <span>{t("Find Purchases", "ಖರೀದಿಗಳನ್ನು ಹುಡುಕಿ")}</span>
           </Button>
         </form>
       </div>
@@ -79,16 +81,16 @@ export default function MyPurchases() {
               <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#f8fafc] text-[#94a3b8] mx-auto mb-4 border border-[#e2e8f0]">
                 <ShoppingBag className="h-7 w-7 opacity-60" />
               </div>
-              <p className="font-bold text-[#0f172a] text-base">No purchases found for this number.</p>
+              <p className="font-bold text-[#0f172a] text-base">{t("No purchases found for this number.", "ಈ ಸಂಖ್ಯೆಗೆ ಯಾವುದೇ ಖರೀದಿಗಳು ಕಂಡುಬಂದಿಲ್ಲ.")}</p>
               <p className="text-sm text-[#64748b] mt-1 max-w-sm mx-auto">
-                Make sure you're using the same number you entered at checkout.
+                {t("Make sure you're using the same number you entered at checkout.", "ಖರೀದಿಯ ಸಮಯದಲ್ಲಿ ನೀಡಿದ ಮೊಬೈಲ್ ಸಂಖ್ಯೆಯನ್ನೇ ನಮೂದಿಸಿರುವುದನ್ನು ಖಚಿತಪಡಿಸಿಕೊಳ್ಳಿ.")}
               </p>
             </div>
           ) : (
             <div className="space-y-4">
               <div className="flex items-center justify-between px-1">
                 <p className="text-xs font-bold text-[#475569] uppercase tracking-wider">
-                  Purchased Resources ({orders?.length})
+                  {t("Purchased Resources", "ಖರೀದಿಸಿದ ಸಂಪನ್ಮೂಲಗಳು")} ({orders?.length})
                 </p>
               </div>
 
@@ -104,12 +106,12 @@ export default function MyPurchases() {
                         <FileText className="h-5 w-5 text-[#2563eb] shrink-0 mt-0.5" />
                         <div>
                           <p className="font-bold text-[#0f172a] text-sm leading-snug">{order.cardTitle}</p>
-                          <p className="text-[11px] font-mono text-[#94a3b8] mt-0.5">Order: {order.id.slice(0, 8)}...</p>
+                          <p className="text-[11px] font-mono text-[#94a3b8] mt-0.5">{t("Order:", "ಆರ್ಡರ್:")} {order.id.slice(0, 8)}...</p>
                         </div>
                       </div>
                       {order.amountPaise === 0 ? (
                         <span className="bg-[#eff6ff] text-[#2563eb] border border-[#bfdbfe] text-xs font-semibold px-2 py-0.5 rounded shrink-0">
-                          Free
+                          {t("Free", "ಉಚಿತ")}
                         </span>
                       ) : (
                         <span className="text-sm font-bold text-[#0f172a] shrink-0">
@@ -126,7 +128,7 @@ export default function MyPurchases() {
                       <a href={`${API_URL}/api/purchases/${order.id}/download/${order.cardId}`} download>
                         <Button size="sm" className="gap-1.5 h-8 px-3 text-xs font-semibold rounded-lg bg-[#2563eb] hover:bg-[#1d4ed8] text-white shadow-2xs transition-all">
                           <Download className="h-3.5 w-3.5" />
-                          <span>Download PDF</span>
+                          <span>{t("Download PDF", "PDF ಡೌನ್‌ಲೋಡ್")}</span>
                         </Button>
                       </a>
                     </div>
@@ -139,10 +141,10 @@ export default function MyPurchases() {
                 <Table>
                   <TableHeader className="bg-[#f8fafc]">
                     <TableRow className="border-[#f1f5f9] hover:bg-transparent">
-                      <TableHead className="font-bold text-xs text-[#475569] uppercase tracking-wider py-3.5">Resource</TableHead>
-                      <TableHead className="font-bold text-xs text-[#475569] uppercase tracking-wider py-3.5">Amount</TableHead>
-                      <TableHead className="font-bold text-xs text-[#475569] uppercase tracking-wider py-3.5">Date</TableHead>
-                      <TableHead className="font-bold text-xs text-[#475569] uppercase tracking-wider py-3.5 text-right">Action</TableHead>
+                      <TableHead className="font-bold text-xs text-[#475569] uppercase tracking-wider py-3.5">{t("Resource", "ಸಂಪನ್ಮೂಲ")}</TableHead>
+                      <TableHead className="font-bold text-xs text-[#475569] uppercase tracking-wider py-3.5">{t("Amount", "ಮೊತ್ತ")}</TableHead>
+                      <TableHead className="font-bold text-xs text-[#475569] uppercase tracking-wider py-3.5">{t("Date", "ದಿನಾಂಕ")}</TableHead>
+                      <TableHead className="font-bold text-xs text-[#475569] uppercase tracking-wider py-3.5 text-right">{t("Action", "ಕ್ರಿಯೆ")}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -150,12 +152,12 @@ export default function MyPurchases() {
                       <TableRow key={order.id} className="border-[#f1f5f9] hover:bg-[#f8fafc]/70 transition-colors">
                         <TableCell className="py-4">
                           <div className="font-semibold text-[#0f172a] leading-snug">{order.cardTitle}</div>
-                          <div className="text-[11px] text-[#94a3b8] font-mono mt-0.5">Order: {order.id}</div>
+                          <div className="text-[11px] text-[#94a3b8] font-mono mt-0.5">{t("Order:", "ಆರ್ಡರ್:")} {order.id}</div>
                         </TableCell>
                         <TableCell className="py-4">
                           {order.amountPaise === 0 ? (
                             <span className="bg-[#eff6ff] text-[#2563eb] border border-[#bfdbfe] text-xs font-semibold px-2 py-0.5 rounded">
-                              Free
+                              {t("Free", "ಉಚಿತ")}
                             </span>
                           ) : (
                             <span className="text-[#0f172a] font-bold text-sm">{formatRupees(order.amountPaise)}</span>
@@ -168,7 +170,7 @@ export default function MyPurchases() {
                           <a href={`${API_URL}/api/purchases/${order.id}/download/${order.cardId}`} download>
                             <Button variant="default" size="sm" className="gap-1.5 rounded-lg font-semibold bg-[#2563eb] hover:bg-[#1d4ed8] text-white shadow-2xs transition-all">
                               <Download className="h-3.5 w-3.5" />
-                              <span>Download PDF</span>
+                              <span>{t("Download PDF", "PDF ಡೌನ್‌ಲೋಡ್")}</span>
                             </Button>
                           </a>
                         </TableCell>

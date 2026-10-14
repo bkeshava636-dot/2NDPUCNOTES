@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { CheckCircle2, Download, ShoppingBag, Home, FileText, Check, ExternalLink } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useState } from "react";
+import { useLanguage } from "@/lib/language-context";
 
 const rawApiUrl = import.meta.env.VITE_API_URL;
 const API_URL = rawApiUrl ? rawApiUrl.replace(/\/+$/, "") : "";
@@ -15,6 +16,7 @@ export default function PaymentSuccess() {
   const cardId = parseInt(params.get("cardId") || "0");
   const isFree = params.get("free") === "true";
   const [copied, setCopied] = useState(false);
+  const { t } = useLanguage();
 
   const { data: card, isLoading } = useGetCard(cardId, { query: { enabled: !!cardId, queryKey: ["card", cardId] } });
 
@@ -38,11 +40,13 @@ export default function PaymentSuccess() {
       </div>
 
       <h1 className="text-2xl sm:text-3xl font-bold text-[#112542] tracking-tight mb-2">
-        {isFree ? "Ready to Download!" : "Payment Successful!"}
+        {isFree ? t("Ready to Download!", "ಡೌನ್‌ಲೋಡ್ ಮಾಡಲು ಸಿದ್ಧವಾಗಿದೆ!") : t("Payment Successful!", "ಪಾವತಿ ಯಶಸ್ವಿಯಾಗಿದೆ!")}
       </h1>
 
       <p className="text-sm text-[#5a6b82] mb-7 max-w-sm mx-auto leading-relaxed">
-        {isFree ? "Your free resource is ready." : "Your purchase is confirmed and your resource is ready to download."}
+        {isFree
+          ? t("Your free resource is ready.", "ನಿಮ್ಮ ಉಚಿತ ಸಂಪನ್ಮೂಲ ಸಿದ್ಧವಾಗಿದೆ.")
+          : t("Your purchase is confirmed and your resource is ready to download.", "ನಿಮ್ಮ ಖರೀದಿ ಖಚಿತವಾಗಿದೆ ಮತ್ತು ಸಂಪನ್ಮೂಲ ಡೌನ್‌ಲೋಡ್ ಮಾಡಲು ಸಿದ್ಧವಾಗಿದೆ.")}
       </p>
 
       {/* Order Info Card */}
@@ -59,7 +63,7 @@ export default function PaymentSuccess() {
               <FileText className="h-5 w-5" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-[11px] font-bold text-[#94a3b8] uppercase tracking-wider mb-0.5">Study Resource</p>
+              <p className="text-[11px] font-bold text-[#94a3b8] uppercase tracking-wider mb-0.5">{t("Study Resource", "ಅಧ್ಯಯನ ಸಂಪನ್ಮೂಲ")}</p>
               <p className="font-bold text-[#0f172a] text-sm leading-snug">{card?.title}</p>
             </div>
           </div>
@@ -67,7 +71,7 @@ export default function PaymentSuccess() {
           {orderId && (
             <div className="mt-3.5 pt-3 border-t border-[#f1f5f9] flex items-center justify-between">
               <div>
-                <p className="text-[11px] font-bold text-[#94a3b8] uppercase tracking-wider mb-0.5">Order Reference</p>
+                <p className="text-[11px] font-bold text-[#94a3b8] uppercase tracking-wider mb-0.5">{t("Order Reference", "ಆರ್ಡರ್ ಸಂಖ್ಯೆ")}</p>
                 <p className="font-mono text-xs text-[#64748b] break-all">{orderId}</p>
               </div>
               <button
@@ -79,10 +83,10 @@ export default function PaymentSuccess() {
                 {copied ? (
                   <>
                     <Check className="h-3.5 w-3.5 text-[#16a34a]" />
-                    <span className="text-[#16a34a]">Copied</span>
+                    <span className="text-[#16a34a]">{t("Copied", "ಕಾಪಿ ಮಾಡಲಾಗಿದೆ")}</span>
                   </>
                 ) : (
-                  <span>Copy</span>
+                  <span>{t("Copy", "ಕಾಪಿ")}</span>
                 )}
               </button>
             </div>
@@ -102,19 +106,22 @@ export default function PaymentSuccess() {
           {isDriveLink ? (
             <>
               <ExternalLink className="h-4 w-4" />
-              <span>Open on Google Drive</span>
+              <span>{t("Open on Google Drive", "ಗೂಗಲ್ ಡ್ರೈವ್‌ನಲ್ಲಿ ತೆರೆಯಿರಿ")}</span>
             </>
           ) : (
             <>
               <Download className="h-4 w-4" />
-              <span>Download PDF</span>
+              <span>{t("Download PDF", "PDF ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ")}</span>
             </>
           )}
         </Button>
       </a>
 
       <p className="text-xs text-[#64748b] mb-7">
-        You can re-download this resource anytime using your phone number in My Purchases.
+        {t(
+          "You can re-download this resource anytime using your phone number in My Purchases.",
+          "ನಿಮ್ಮ ಮೊಬೈಲ್ ಸಂಖ್ಯೆಯನ್ನು ಬಳಸಿಕೊಂಡು 'ನನ್ನ ಖರೀದಿಗಳು' ಪುಟದಲ್ಲಿ ಯಾವಾಗ ಬೇಕಾದರೂ ಇದನ್ನು ಮರು-ಡೌನ್‌ಲೋಡ್ ಮಾಡಿಕೊಳ್ಳಬಹುದು."
+        )}
       </p>
 
       {/* Secondary Actions */}
@@ -122,13 +129,13 @@ export default function PaymentSuccess() {
         <Link href="/my-purchases" className="flex-1">
           <Button variant="outline" className="w-full gap-2 rounded-xl text-xs font-semibold h-10 border-[#cbd5e1] text-[#475569] hover:text-[#0f172a] hover:bg-[#f8fafc] shadow-2xs">
             <ShoppingBag className="h-3.5 w-3.5" />
-            <span>My Purchases</span>
+            <span>{t("My Purchases", "ನನ್ನ ಖರೀದಿಗಳು")}</span>
           </Button>
         </Link>
         <Link href="/" className="flex-1">
           <Button variant="ghost" className="w-full gap-2 rounded-xl text-xs font-semibold h-10 text-[#475569] hover:text-[#0f172a] hover:bg-[#f8fafc]">
             <Home className="h-3.5 w-3.5" />
-            <span>Home</span>
+            <span>{t("Home", "ಮುಖಪುಟ")}</span>
           </Button>
         </Link>
       </div>

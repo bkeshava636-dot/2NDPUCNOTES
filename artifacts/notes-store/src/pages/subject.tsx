@@ -24,6 +24,8 @@ import {
   Calendar
 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useLanguage } from "@/lib/language-context";
+import { getSubjectDisplayName, getResourceTypeDisplayName } from "@/lib/site-navigation";
 
 // Core subjects supporting Practical
 const CORE_SUBJECT_NAMES = ["Physics", "Chemistry", "Computer Science", "Biology"];
@@ -68,6 +70,19 @@ function getSubjectIcon(name: string) {
   return BookOpen;
 }
 
+function getSubtypeDisplayName(sub: string, isKn: boolean) {
+  if (!isKn) return sub;
+  const lower = sub.toLowerCase();
+  if (lower === "scheme") return "ಅಂಕ ಯೋಜನೆ (Scheme)";
+  if (lower === "resources") return "ಸಂಪನ್ಮೂಲಗಳು (Resources)";
+  if (lower === "lab manual") return "ಲ್ಯಾಬ್ ಮ್ಯಾನ್ಯುಯಲ್";
+  if (lower === "viva questions") return "ವೈವಾ ಪ್ರಶ್ನೆಗಳು (Viva)";
+  if (lower === "midterm") return "ಮಧ್ಯವಾರ್ಷಿಕ (Midterm)";
+  if (lower === "preparatory") return "ಸಿದ್ಧತಾ (Preparatory)";
+  if (lower === "annual") return "ವಾರ್ಷಿಕ (Annual)";
+  return sub;
+}
+
 const SLUG_TO_NAME: Record<string, string> = {
   physics: "Physics",
   chemistry: "Chemistry",
@@ -83,6 +98,8 @@ const SLUG_TO_NAME: Record<string, string> = {
 export default function SubjectPage() {
   const params = useParams<{ slug: string }>();
   const slug = params.slug?.toLowerCase() || "";
+  const { language, t } = useLanguage();
+  const isKn = language === "kn";
 
   const [activeType, setActiveType] = useState<string>("all");
   const [activeSubtype, setActiveSubtype] = useState<string>("all");
@@ -223,20 +240,21 @@ export default function SubjectPage() {
         <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gray-100 text-gray-400 mx-auto mb-4">
           <BookOpen className="h-7 w-7" />
         </div>
-        <h2 className="text-xl font-bold text-gray-900 mb-2">Subject not found</h2>
+        <h2 className="text-xl font-bold text-gray-900 mb-2">{t("Subject not found", "ವಿಷಯ ಕಂಡುಬಂದಿಲ್ಲ")}</h2>
         <p className="text-sm text-gray-500 mb-6">
-          The requested subject does not exist or may have been renamed.
+          {t("The requested subject does not exist or may have been renamed.", "ಕೋರಿದ ವಿಷಯ ಲಭ್ಯವಿಲ್ಲ ಅಥವಾ ಹೆಸರು ಬದಲಾಗಿರಬಹುದು.")}
         </p>
         <Link href="/">
-          <Button variant="default">Back to Home</Button>
+          <Button variant="default">{t("Back to Home", "ಮುಖಪುಟಕ್ಕೆ ಹಿಂತಿರುಗಿ")}</Button>
         </Link>
       </div>
     );
   }
 
+  const displayName = getSubjectDisplayName(section?.name || subjectName, isKn);
+
   return (
     <div className="max-w-6xl mx-auto w-full px-4 py-8 sm:py-10">
-      {/* Back button */}
       {/* Back button */}
       <Link href="/">
         <Button
@@ -245,7 +263,7 @@ export default function SubjectPage() {
           className="gap-2 text-[#475569] hover:text-[#0f172a] -ml-2 mb-4 font-medium"
         >
           <ArrowLeft className="h-4 w-4" />
-          <span>Back to Home</span>
+          <span>{t("Back to Home", "ಮುಖಪುಟಕ್ಕೆ ಹಿಂತಿರುಗಿ")}</span>
         </Button>
       </Link>
 
@@ -259,7 +277,7 @@ export default function SubjectPage() {
             <div>
               <div className="flex items-center gap-2.5 flex-wrap">
                 <h1 className="text-2xl sm:text-3xl font-bold text-[#0f172a] tracking-tight">
-                  {section?.name || subjectName}
+                  {displayName}
                 </h1>
                 <Badge
                   variant="outline"
@@ -269,17 +287,20 @@ export default function SubjectPage() {
                       : "bg-[#f5f3ff] text-[#6d28d9] border-[#ede9fe]"
                   }`}
                 >
-                  {isCoreSubject ? "Core Subject" : "Language & Other Subject"}
+                  {isCoreSubject ? t("Core Subject", "ಪ್ರಮುಖ ವಿಜ್ಞಾನ ವಿಷಯ") : t("Language & Other Subject", "ಭಾಷಾ ವಿಷಯ")}
                 </Badge>
                 {cards && (
                   <span className="text-xs font-medium text-[#64748b] bg-[#f8fafc] px-2.5 py-0.5 rounded-full border border-[#e2e8f0]">
-                    {cards.length} {cards.length === 1 ? "resource" : "resources"}
+                    {cards.length} {cards.length === 1 ? t("resource", "ಸಂಪನ್ಮೂಲ") : t("resources", "ಸಂಪನ್ಮೂಲಗಳು")}
                   </span>
                 )}
               </div>
               <p className="text-[#64748b] text-xs sm:text-sm leading-relaxed max-w-2xl mt-1.5 font-normal">
                 {section?.description ||
-                  `Curriculum-aligned 2nd PUC ${section?.name || subjectName} notes, blueprint question papers, and study resources.`}
+                  t(
+                    `Curriculum-aligned 2nd PUC ${section?.name || subjectName} notes, blueprint question papers, and study resources.`,
+                    `ಪಠ್ಯಕ್ರಮ ಆಧಾರಿತ 2nd PUC ${displayName} ನೋಟ್ಸ್, ಬ್ಲೂಪ್ರಿಂಟ್ ಪ್ರಶ್ನೆ ಪತ್ರಿಕೆಗಳು ಮತ್ತು ಅಧ್ಯಯನ ಸಾಮಗ್ರಿಗಳು.`
+                  )}
               </p>
             </div>
           </div>
@@ -292,7 +313,7 @@ export default function SubjectPage() {
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#0284c7] bg-[#f0f9ff] hover:bg-[#e0f2fe] border border-[#bae6fd] px-3.5 py-2 rounded-lg transition-colors shadow-2xs"
               >
-                <span>Official Source</span>
+                <span>{t("Official Source", "ಅಧಿಕೃತ ಮೂಲ")}</span>
                 <ExternalLink className="h-3.5 w-3.5" />
               </a>
             </div>
@@ -304,7 +325,7 @@ export default function SubjectPage() {
       <div className="space-y-3.5 mb-6">
         <div className="flex items-center gap-2 text-xs font-bold text-[#475569] uppercase tracking-wider">
           <Layers className="h-3.5 w-3.5 text-[#2563eb]" />
-          <span>Resource Types</span>
+          <span>{t("Resource Types", "ಸಂಪನ್ಮೂಲ ಪ್ರಕಾರಗಳು")}</span>
         </div>
 
         <div className="flex items-center gap-2 overflow-x-auto pb-1.5 scrollbar-none">
@@ -320,7 +341,7 @@ export default function SubjectPage() {
                 : "bg-white text-[#475569] border border-[#e2e8f0] hover:bg-[#f8fafc] hover:border-[#cbd5e1]"
             }`}
           >
-            All Resources
+            {t("All Resources", "ಎಲ್ಲ ಸಂಪನ್ಮೂಲಗಳು")}
           </button>
           {supportedTypes.map((type) => {
             const isSelected = activeType === type;
@@ -338,7 +359,7 @@ export default function SubjectPage() {
                     : "bg-white text-[#475569] border border-[#e2e8f0] hover:bg-[#f8fafc] hover:border-[#cbd5e1]"
                 }`}
               >
-                {type}
+                {getResourceTypeDisplayName(type, isKn)}
               </button>
             );
           })}
@@ -348,7 +369,7 @@ export default function SubjectPage() {
         {(isPracticalActive || isPyqActive) && (
           <div className="bg-[#eff6ff]/70 border border-[#bfdbfe]/80 rounded-xl p-3 flex flex-wrap items-center gap-2">
             <span className="text-xs font-bold text-[#2563eb] mr-1">
-              {isPracticalActive ? "Practical Subtypes:" : "Exam Category:"}
+              {isPracticalActive ? t("Practical Subtypes:", "ಪ್ರಾಯೋಗಿಕ ಉಪವಿಭಾಗಗಳು:") : t("Exam Category:", "ಪರೀಕ್ಷಾ ವರ್ಗ:")}
             </span>
             <button
               type="button"
@@ -359,7 +380,7 @@ export default function SubjectPage() {
                   : "bg-white text-[#2563eb] border border-[#bfdbfe] hover:bg-[#dbeafe]"
               }`}
             >
-              All
+              {t("All", "ಎಲ್ಲ")}
             </button>
             {(isPracticalActive ? PRACTICAL_SUBTYPES : PYQ_SUBTYPES).map((sub) => (
               <button
@@ -372,7 +393,7 @@ export default function SubjectPage() {
                     : "bg-white text-[#2563eb] border border-[#bfdbfe] hover:bg-[#dbeafe]"
                 }`}
               >
-                {sub}
+                {getSubtypeDisplayName(sub, isKn)}
               </button>
             ))}
           </div>
@@ -383,7 +404,7 @@ export default function SubjectPage() {
           <div className="bg-[#f0fdf4] border border-[#bbf7d0] rounded-xl p-3 flex flex-wrap items-center gap-2">
             <div className="flex items-center gap-1.5 mr-1 text-[#15803d]">
               <Calendar className="h-3.5 w-3.5" />
-              <span className="text-xs font-bold">Exam Year:</span>
+              <span className="text-xs font-bold">{t("Exam Year:", "ಪರೀಕ್ಷೆಯ ವರ್ಷ:")}</span>
             </div>
             <button
               type="button"
@@ -394,7 +415,7 @@ export default function SubjectPage() {
                   : "bg-white text-[#15803d] border border-[#86efac] hover:bg-[#dcfce7]"
               }`}
             >
-              All Years
+              {t("All Years", "ಎಲ್ಲ ವರ್ಷಗಳು")}
             </button>
             {availableYears.map((yr) => (
               <button
@@ -417,7 +438,7 @@ export default function SubjectPage() {
       {/* Price Filter Toolbar */}
       <div className="flex items-center justify-between gap-4 mb-6 bg-[#f8fafc] border border-[#e2e8f0] px-3.5 py-2 rounded-xl">
         <div className="flex items-center gap-2">
-          <span className="text-xs text-[#64748b] font-medium">Price:</span>
+          <span className="text-xs text-[#64748b] font-medium">{t("Price:", "ಬೆಲೆ:")}</span>
           <button
             type="button"
             onClick={() => setPriceFilter("all")}
@@ -427,7 +448,7 @@ export default function SubjectPage() {
                 : "text-[#64748b] hover:bg-[#e2e8f0]/60"
             }`}
           >
-            All
+            {t("All", "ಎಲ್ಲ")}
           </button>
           <button
             type="button"
@@ -438,7 +459,7 @@ export default function SubjectPage() {
                 : "text-[#64748b] hover:bg-[#e2e8f0]/60"
             }`}
           >
-            Free
+            {t("Free", "ಉಚಿತ")}
           </button>
           <button
             type="button"
@@ -449,12 +470,12 @@ export default function SubjectPage() {
                 : "text-[#64748b] hover:bg-[#e2e8f0]/60"
             }`}
           >
-            Paid
+            {t("Paid", "ಪಾವತಿಸಿದ")}
           </button>
         </div>
 
         <span className="text-xs text-[#64748b] font-medium">
-          Showing {filteredCards.length} {filteredCards.length === 1 ? "item" : "items"}
+          {t("Showing", "ತೋರಿಸಲಾಗುತ್ತಿದೆ")} {filteredCards.length} {filteredCards.length === 1 ? t("item", "ಐಟಂ") : t("items", "ಐಟಂಗಳು")}
         </span>
       </div>
 
@@ -468,11 +489,17 @@ export default function SubjectPage() {
       ) : filteredCards.length === 0 ? (
         <div className="bg-white border border-[#e2e8f0] rounded-xl p-12 text-center">
           <FileQuestion className="h-10 w-10 text-[#94a3b8] mx-auto mb-3" />
-          <h3 className="font-bold text-base text-[#112542] mb-1">No resources found</h3>
+          <h3 className="font-bold text-base text-[#112542] mb-1">{t("No resources found", "ಯಾವುದೇ ಸಂಪನ್ಮೂಲ ಕಂಡುಬಂದಿಲ್ಲ")}</h3>
           <p className="text-xs sm:text-sm text-[#5a6b82] max-w-sm mx-auto">
             {activeType !== "all" || activeSubtype !== "all" || priceFilter !== "all"
-              ? "No resources match the selected filters. Try choosing a different tab or resetting filters."
-              : `Notes for ${section?.name || subjectName} will be uploaded soon. Check back shortly!`}
+              ? t(
+                  "No resources match the selected filters. Try choosing a different tab or resetting filters.",
+                  "ಆಯ್ಕೆಮಾಡಿದ ಫಿಲ್ಟರ್‌ಗಳಿಗೆ ಯಾವುದೇ ಸಂಪನ್ಮೂಲ ಹೊಂದಾಣಿಕೆಯಾಗುತ್ತಿಲ್ಲ. ಬೇರೆ ಟ್ಯಾಬ್ ಆಯ್ಕೆಮಾಡಿ ಅಥವಾ ಫಿಲ್ಟರ್ ಮರುಹೊಂದಿಸಿ."
+                )
+              : t(
+                  `Notes for ${section?.name || subjectName} will be uploaded soon. Check back shortly!`,
+                  `${displayName} ವಿಷಯದ ನೋಟ್ಸ್ ಶೀಘ್ರದಲ್ಲೇ ಅಪ್‌ಲೋಡ್ ಆಗಲಿದೆ. ದಯವಿಟ್ಟು ನಿರೀಕ್ಷಿಸಿ!`
+                )}
           </p>
           {(activeType !== "all" || activeSubtype !== "all" || priceFilter !== "all") && (
             <Button
@@ -485,7 +512,7 @@ export default function SubjectPage() {
               }}
               className="mt-4 text-xs h-8"
             >
-              Reset Filters
+              {t("Reset Filters", "ಫಿಲ್ಟರ್ ತೆರವುಗೊಳಿಸಿ")}
             </Button>
           )}
         </div>

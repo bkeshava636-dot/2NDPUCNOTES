@@ -395,3 +395,61 @@ export const STUDENT_FAQS: FaqItem[] = [
     answer: "Your order is securely tied to your phone number and Razorpay order ID. You can instantly recover and re-download your material at any time under the 'My Purchases' tab, or reach out to us directly on Telegram for immediate assistance.",
   },
 ];
+
+// Helper functions for bilingual translations
+export function getSubjectDisplayName(subjectOrSlug: string, isKannada: boolean): string {
+  if (!subjectOrSlug) return "";
+  const lower = subjectOrSlug.toLowerCase().trim();
+  const found = ALL_SUBJECTS.find(
+    (s) => s.slug.toLowerCase() === lower || s.name.toLowerCase() === lower
+  );
+  if (found) {
+    return isKannada ? found.kannadaName : found.name;
+  }
+  return subjectOrSlug;
+}
+
+export function getCategoryDisplayTitle(categoryOrSlug: string, isKannada: boolean): string {
+  if (!categoryOrSlug) return "";
+  const lower = categoryOrSlug.toLowerCase().trim();
+  const found = RESOURCE_CATEGORIES.find(
+    (c) =>
+      c.slug.toLowerCase() === lower ||
+      c.dbType.toLowerCase() === lower ||
+      c.title.toLowerCase() === lower
+  );
+  if (found) {
+    return isKannada ? found.kannadaTitle : found.title;
+  }
+  return categoryOrSlug;
+}
+
+export function getCategoryDisplayDescription(categoryOrSlug: string, isKannada: boolean): string {
+  if (!categoryOrSlug) return "";
+  const lower = categoryOrSlug.toLowerCase().trim();
+  const found = RESOURCE_CATEGORIES.find(
+    (c) =>
+      c.slug.toLowerCase() === lower ||
+      c.dbType.toLowerCase() === lower ||
+      c.title.toLowerCase() === lower
+  );
+  if (found) {
+    return found.desc;
+  }
+  return "";
+}
+
+export function getResourceTypeDisplayName(resourceType: string, isKannada: boolean): string {
+  if (!resourceType) return "";
+  if (!isKannada) return resourceType;
+  const lower = resourceType.toLowerCase().trim();
+  if (lower.includes("note")) return "ನೋಟ್ಸ್";
+  if (lower.includes("model") || lower.includes("mqp")) return "ಮಾದರಿ ಪ್ರಶ್ನೆ ಪತ್ರಿಕೆ (MQP)";
+  if (lower.includes("multiple") || lower.includes("mcq")) return "ಬಹು ಆಯ್ಕೆಯ ಪ್ರಶ್ನೆಗಳು (MCQ)";
+  if (lower.includes("bank")) return "ಪ್ರಶ್ನೆ ಕೋಶ";
+  if (lower.includes("practical")) return "ಪ್ರಾಯೋಗಿಕ ಪರೀಕ್ಷೆ";
+  if (lower.includes("previous") || lower.includes("pyq")) return "ಹಿಂದಿನ ವರ್ಷದ ಪತ್ರಿಕೆಗಳು";
+  if (lower.includes("passing")) return "ಪಾಸಿಂಗ್ ಪ್ಯಾಕೇಜ್";
+  if (lower.includes("book") || lower.includes("publication")) return "ಪ್ರಕಟಣಾ ಪುಸ್ತಕಗಳು";
+  return resourceType;
+}
