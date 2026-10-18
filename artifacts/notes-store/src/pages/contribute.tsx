@@ -1,19 +1,20 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Link } from "wouter";
 import {
   UploadCloud,
   CheckCircle2,
   ExternalLink,
-  Copy,
-  Info,
   Sparkles,
-  ShieldAlert,
   ArrowRight,
   BookOpen,
   FileText,
   Send,
   Loader2,
-  Share2,
+  HardDrive,
+  Check,
+  X,
+  FileCheck,
+  FolderSync,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,6 +23,10 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/lib/language-context";
+
+// User's Google Apps Script Web App that saves uploads straight to their Google Drive
+const GOOGLE_SCRIPT_WEBAPP_URL =
+  "https://script.google.com/macros/s/AKfycbzGHjAW2FQg7elDU4lezR2n4jC54qMX7-WoZtk75Jx2qON9mf5kGJIPNVkSRSxMSIg9fQ/exec";
 
 const SUBJECT_OPTIONS = [
   "Physics",
@@ -56,50 +61,83 @@ export default function ContributePage() {
   const [subject, setSubject] = useState(SUBJECT_OPTIONS[0]);
   const [resourceType, setResourceType] = useState(RESOURCE_TYPES[0]);
   const [materialTitle, setMaterialTitle] = useState("");
-  const [driveUrl, setDriveUrl] = useState("");
   const [additionalNotes, setAdditionalNotes] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const [copiedStep, setCopiedStep] = useState<number | null>(null);
 
-  const isValidDriveUrl = (url: string) => {
-    const trimmed = url.trim();
-    if (!trimmed.startsWith("http://") && !trimmed.startsWith("https://")) return false;
-    // Allow Google Drive, OneDrive, Dropbox, Mega, etc., but emphasize Google Drive
-    return (
-      trimmed.includes("drive.google.com") ||
-      trimmed.includes("docs.google.com") ||
-      trimmed.includes("onedrive.live.com") ||
-      trimmed.includes("1drv.ms") ||
-      trimmed.includes("dropbox.com") ||
-      trimmed.includes("mega.nz") ||
-      trimmed.startsWith("https://")
-    );
+  // Direct file upload state
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [fileError, setFileError] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgressText, setUploadProgressText] = useState("");
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [uploadedDriveUrl, setUploadedDriveUrl] = useState<string>("");
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFileError(null);
+    const file = e.target.files?.[0];
+    if (!file) {
+      setSelectedFile(null);
+      return;
+    }
+
+    // Maximum file size: 25 MB
+    const maxSize = 25 * 1024 * 1024;
+    if (file.size > maxSize) {
+      setFileError(t("File size exceeds 25 MB. Please choose a smaller file.", "ಫೈಲ್ ಗಾತ್ರ 25 MB ಗಿಂತ ಹೆಚ್ಚಾಗಿದೆ."));
+      setSelectedFile(null);
+      return;
+    }
+
+    setSelectedFile(file);
+
+    // If title is empty, prefill from file name
+    if (!materialTitle.trim()) {
+      const cleanName = file.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ");
+      setMaterialTitle(cleanName);
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setFileError(null);
+    const file = e.dataTransfer.files?.[0];
+    if (!file) return;
+
+    const maxSize = 25 * 1024 * 1024;
+    if (file.size > maxSize) {
+      setFileError(t("File size exceeds 25 MB. Please choose a smaller file.", "ಫೈಲ್ ಗಾತ್ರ 25 MB ಗಿಂತ ಹೆಚ್ಚಾಗಿದೆ."));
+      return;
+    }
+
+    setSelectedFile(file);
+    if (!materialTitle.trim()) {
+      const cleanName = file.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ");
+      setMaterialTitle(cleanName);
+    }
+  };
+
+  const fileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const result = reader.result as string;
+        // Split data URL to get just the base64 string
+        const base64 = result.split(",")[1];
+        resolve(base64);
+      };
+      reader.onerror = (error) => reject(error);
+      reader.readAsDataURL(file);
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const trimmedUrl = driveUrl.trim();
-    if (!trimmedUrl) {
+    if (!selectedFile) {
       toast({
-        title: t("Drive Link Required", "ಡ್ರೈವ್ ಲಿಂಕ್ ಅಗತ್ಯವಿದೆ"),
-        description: t(
-          "Please paste your Google Drive share link to submit your notes.",
-          "ದಯವಿಟ್ಟು ನಿಮ್ಮ ಗೂಗಲ್ ಡ್ರೈವ್ ಲಿಂಕ್ ನಮೂದಿಸಿ."
-        ),
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (!isValidDriveUrl(trimmedUrl)) {
-      toast({
-        title: t("Invalid Link", "ಅಮಾನ್ಯವಾದ ಲಿಂಕ್"),
-        description: t(
-          "Please provide a valid web link (e.g., https://drive.google.com/file/d/...)",
-          "ದಯವಿಟ್ಟು ಮಾನ್ಯವಾದ ವೆಬ್ ಲಿಂಕ್ ಒದಗಿಸಿ."
-        ),
+        title: t("PDF File Required", "ಪಿಡಿಎಫ್ ಫೈಲ್ ಆಯ್ಕೆಮಾಡಿ"),
+        description: t("Please choose your study notes PDF file to upload.", "ದಯವಿಟ್ಟು ನಿಮ್ಮ ನೋಟ್ಸ್ ಫೈಲ್ ಆಯ್ಕೆಮಾಡಿ."),
         variant: "destructive",
       });
       return;
@@ -114,25 +152,60 @@ export default function ContributePage() {
       return;
     }
 
-    setIsSubmitting(true);
+    setIsUploading(true);
+    setUploadProgressText(t("Reading file & uploading to Google Drive...", "ಗೂಗಲ್ ಡ್ರೈವ್‌ಗೆ ಅಪ್‌ಲೋಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ..."));
+
     try {
+      // Step 1: Convert file to Base64
+      const base64Content = await fileToBase64(selectedFile);
+
+      // Step 2: Send directly to Google Apps Script Web App (uploads into user's Google Drive)
+      setUploadProgressText(t("Uploading directly to Google Drive...", "ಗೂಗಲ್ ಡ್ರೈವ್‌ನಲ್ಲಿ ಉಳಿಸಲಾಗುತ್ತಿದೆ..."));
+
+      const googlePayload = {
+        fileBase64: base64Content,
+        fileName: selectedFile.name,
+        mimeType: selectedFile.type || "application/pdf",
+        subject,
+        resourceType,
+        materialTitle: materialTitle.trim(),
+        contributorName: contributorName.trim() || "Anonymous",
+      };
+
+      const driveRes = await fetch(GOOGLE_SCRIPT_WEBAPP_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify(googlePayload),
+      });
+
+      const driveData = await driveRes.json();
+      if (!driveData || driveData.status !== "success" || !driveData.fileUrl) {
+        throw new Error(driveData?.message || "Failed to save file to Google Drive.");
+      }
+
+      const generatedDriveUrl = driveData.fileUrl;
+      setUploadedDriveUrl(generatedDriveUrl);
+
+      // Step 3: Record contribution in the backend database for Admin approval
+      setUploadProgressText(t("Registering contribution for Admin review...", "ಅಡ್ಮಿನ್ ಪರಿಶೀಲನೆಗೆ ಕಳುಹಿಸಲಾಗುತ್ತಿದೆ..."));
+
       const rawApiUrl = import.meta.env.VITE_API_URL;
       const API_URL = rawApiUrl ? rawApiUrl.replace(/\/+$/, "") : "";
 
-      // Format payload nicely for admin review
       const formattedMessage = [
         `[COMMUNITY CONTRIBUTION]`,
         `Subject: ${subject}`,
         `Resource Type: ${resourceType}`,
         `Material Title: ${materialTitle.trim()}`,
-        `Google Drive Link: ${trimmedUrl}`,
+        `Google Drive Link: ${generatedDriveUrl}`,
+        `File Name: ${selectedFile.name} (${(selectedFile.size / (1024 * 1024)).toFixed(1)} MB)`,
         contributorName.trim() ? `Contributor: ${contributorName.trim()}` : `Contributor: Anonymous`,
         additionalNotes.trim() ? `Notes / Description: ${additionalNotes.trim()}` : null,
       ]
         .filter(Boolean)
         .join("\n");
 
-      const res = await fetch(`${API_URL}/api/feedback`, {
+      const dbRes = await fetch(`${API_URL}/api/feedback`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -144,36 +217,29 @@ export default function ContributePage() {
         }),
       });
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed to submit contribution");
+      if (!dbRes.ok) {
+        console.warn("Could not save to feedback db, but file uploaded to Drive successfully.");
+      }
 
       setIsSubmitted(true);
       toast({
-        title: t("Contribution Received!", "ಕೊಡುಗೆ ಯಶಸ್ವಿಯಾಗಿ ತಲುಪಿದೆ!"),
+        title: t("Uploaded to Google Drive!", "ಗೂಗಲ್ ಡ್ರೈವ್‌ಗೆ ಯಶಸ್ವಿಯಾಗಿ ಅಪ್‌ಲೋಡ್ ಆಗಿದೆ!"),
         description: t(
-          "Thank you! Our academic team will verify the Drive link and publish it for students.",
-          "ಧನ್ಯವಾದಗಳು! ನಮ್ಮ ತಂಡವು ಲಿಂಕ್ ಪರಿಶೀಲಿಸಿ ಪ್ರಕಟಿಸಲಿದೆ."
+          "Your study material is received and ready for review.",
+          "ನಿಮ್ಮ ಅಧ್ಯಯನ ಸಾಮಗ್ರಿ ಸ್ವೀಕರಿಸಲಾಗಿದೆ."
         ),
       });
     } catch (err: any) {
+      console.error("Upload error:", err);
       toast({
-        title: t("Submission Error", "ಸಲ್ಲಿಕೆಯಲ್ಲಿ ದೋಷ"),
+        title: t("Upload Failed", "ಅಪ್‌ಲೋಡ್ ವಿಫಲವಾಗಿದೆ"),
         description: err.message || t("Please check your internet connection.", "ದಯವಿಟ್ಟು ಸಂಪರ್ಕ ಪರಿಶೀಲಿಸಿ."),
         variant: "destructive",
       });
     } finally {
-      setIsSubmitting(false);
+      setIsUploading(false);
+      setUploadProgressText("");
     }
-  };
-
-  const copySampleText = (text: string, stepIndex: number) => {
-    navigator.clipboard.writeText(text);
-    setCopiedStep(stepIndex);
-    toast({
-      title: "Copied!",
-      description: "Permission instructions copied to clipboard.",
-    });
-    setTimeout(() => setCopiedStep(null), 2000);
   };
 
   return (
@@ -186,111 +252,77 @@ export default function ContributePage() {
             <span>{t("Community Notes & Materials", "ವಿದ್ಯಾರ್ಥಿ ಸಮುದಾಯ ನೋಟ್ಸ್ ಕೊಡುಗೆ")}</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-[#0f172a] tracking-tight">
-            {t("Contribute Study Materials", "ಅಧ್ಯಯನ ಸಾಮಗ್ರಿಗಳನ್ನು ಹಂಚಿಕೊಳ್ಳಿ")}
+            {t("Upload & Share Study Materials", "ಅಧ್ಯಯನ ಸಾಮಗ್ರಿಗಳನ್ನು ಅಪ್‌ಲೋಡ್ ಮಾಡಿ")}
           </h1>
           <p className="text-sm text-[#64748b] mt-2 leading-relaxed">
             {t(
-              "Help thousands of Karnataka 2nd PUC students by sharing your handwritten notes, blueprints, or solved question papers. We host all student materials via Google Drive links for fast, free access.",
-              "ನಿಮ್ಮ ನೋಟ್ಸ್ ಅಥವಾ ಪ್ರಶ್ನೆ ಪತ್ರಿಕೆಗಳನ್ನು ಹಂಚಿಕೊಳ್ಳುವ ಮೂಲಕ ಕರ್ನಾಟಕದ ಸಾವಿರಾರು ದ್ವಿತೀಯ ಪಿಯುಸಿ ವಿದ್ಯಾರ್ಥಿಗಳಿಗೆ ಸಹಾಯ ಮಾಡಿ."
+              "Select your PDF notes, solutions, or model question papers. Your file is automatically saved into our Google Drive library and published for thousands of 2nd PUC students.",
+              "ನಿಮ್ಮ ಪಿಡಿಎಫ್ ನೋಟ್ಸ್ ಅಥವಾ ಪ್ರಶ್ನೆ ಪತ್ರಿಕೆಗಳನ್ನು ಆಯ್ಕೆಮಾಡಿ. ನಿಮ್ಮ ಫೈಲ್ ನೇರವಾಗಿ ನಮ್ಮ ಗೂಗಲ್ ಡ್ರೈವ್‌ಗೆ ಅಪ್‌ಲೋಡ್ ಆಗುತ್ತದೆ."
             )}
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          {/* ── Visual Step-by-Step Guide ── */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          {/* ── Left Column: Easy Benefits & Info ── */}
           <div className="lg:col-span-5 space-y-4">
             <Card className="border-[#e2e8f0] shadow-sm rounded-xl overflow-hidden bg-white">
               <CardHeader className="bg-[#f8fafc] border-b border-[#f1f5f9] pb-3.5">
                 <CardTitle className="text-sm font-bold text-[#0f172a] flex items-center gap-2">
-                  <Share2 className="h-4 w-4 text-[#2563eb]" />
-                  <span>{t("How to Get Your Google Drive Link", "ಗೂಗಲ್ ಡ್ರೈವ್ ಲಿಂಕ್ ಪಡೆಯುವುದು ಹೇಗೆ?")}</span>
+                  <HardDrive className="h-4 w-4 text-[#2563eb]" />
+                  <span>{t("Direct Cloud Upload", "ನೇರ ಕ್ಲೌಡ್ ಅಪ್‌ಲೋಡ್")}</span>
                 </CardTitle>
                 <CardDescription className="text-xs text-[#64748b]">
-                  {t("Follow these 4 simple steps on your phone or computer", "ನಿಮ್ಮ ಮೊಬೈಲ್ ಅಥವಾ ಕಂಪ್ಯೂಟರ್‌ನಲ್ಲಿ ಈ 4 ಹಂತಗಳನ್ನು ಅನುಸರಿಸಿ")}
+                  {t("No Google Drive setup needed from your side", "ನಿಮ್ಮ ಕಡೆಯಿಂದ ಯಾವುದೇ ಗೂಗಲ್ ಡ್ರೈವ್ ಲಿಂಕ್ ಅಗತ್ಯವಿಲ್ಲ")}
                 </CardDescription>
               </CardHeader>
 
-              <CardContent className="p-4 space-y-4 text-xs">
-                {/* Step 1 */}
+              <CardContent className="p-4 space-y-3.5 text-xs">
                 <div className="flex gap-3">
-                  <div className="h-6 w-6 rounded-full bg-[#eff6ff] text-[#2563eb] font-bold flex items-center justify-center shrink-0 border border-[#bfdbfe]">
-                    1
+                  <div className="h-6 w-6 rounded-full bg-emerald-50 text-emerald-600 font-bold flex items-center justify-center shrink-0 border border-emerald-200">
+                    <Check className="h-3.5 w-3.5" />
                   </div>
-                  <div className="space-y-1">
+                  <div>
                     <p className="font-semibold text-[#0f172a]">
-                      {t("Upload PDF to Google Drive", "ಗೂಗಲ್ ಡ್ರೈವ್‌ಗೆ PDF ಅಪ್‌ಲೋಡ್ ಮಾಡಿ")}
+                      {t("Zero Burden On You", "ಯಾವುದೇ ಗೊಂದಲವಿಲ್ಲ")}
                     </p>
-                    <p className="text-[#64748b] leading-relaxed">
-                      {t("Open Google Drive app or visit", "ಗೂಗಲ್ ಡ್ರೈವ್ ಆ್ಯಪ್ ತೆರೆಯಿರಿ ಅಥವಾ ಭೇಟಿ ನೀಡಿ")}{" "}
-                      <a
-                        href="https://drive.google.com"
-                        target="_blank"
-                        rel="noreferrer"
-                        className="text-[#2563eb] font-medium inline-flex items-center gap-0.5 hover:underline"
-                      >
-                        drive.google.com <ExternalLink className="h-2.5 w-2.5" />
-                      </a>
-                      , {t("tap '+ New' and upload your PDF file.", "'+ New' ಕ್ಲಿಕ್ ಮಾಡಿ ನಿಮ್ಮ ನೋಟ್ಸ್ ಫೈಲ್ ಅಪ್‌ಲೋಡ್ ಮಾಡಿ.")}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Step 2 */}
-                <div className="flex gap-3">
-                  <div className="h-6 w-6 rounded-full bg-[#eff6ff] text-[#2563eb] font-bold flex items-center justify-center shrink-0 border border-[#bfdbfe]">
-                    2
-                  </div>
-                  <div className="space-y-1">
-                    <p className="font-semibold text-[#0f172a]">
-                      {t("Tap 'Share' on your file", "ಫೈಲ್ ಮೇಲೆ 'Share' (ಹಂಚಿಕೊಳ್ಳಿ) ಕ್ಲಿಕ್ ಮಾಡಿ")}
-                    </p>
-                    <p className="text-[#64748b] leading-relaxed">
+                    <p className="text-[#64748b] leading-relaxed mt-0.5">
                       {t(
-                        "Right click on the PDF (or tap the 3 dots on mobile) and select 'Share' &rarr; 'Share'.",
-                        "ಪಿಡಿಎಫ್ ಫೈಲ್ ಮೇಲಿನ 3 ಚುಕ್ಕೆಗಳನ್ನು ಒತ್ತಿ 'Share' ಆಯ್ಕೆಮಾಡಿ."
+                        "You don't need to configure permissions or create links. Just pick your PDF and hit upload.",
+                        "ನೀವು ಲಿಂಕ್ ರಚಿಸುವ ಅಗತ್ಯವಿಲ್ಲ. ಕೇವಲ ಫೈಲ್ ಆಯ್ಕೆ ಮಾಡಿ ಅಪ್‌ಲೋಡ್ ಮಾಡಿ."
                       )}
                     </p>
                   </div>
                 </div>
 
-                {/* Step 3 (Crucial) */}
-                <div className="flex gap-3 p-2.5 rounded-lg bg-emerald-50/70 border border-emerald-200">
-                  <div className="h-6 w-6 rounded-full bg-emerald-600 text-white font-bold flex items-center justify-center shrink-0">
-                    3
+                <div className="flex gap-3">
+                  <div className="h-6 w-6 rounded-full bg-emerald-50 text-emerald-600 font-bold flex items-center justify-center shrink-0 border border-emerald-200">
+                    <Check className="h-3.5 w-3.5" />
                   </div>
-                  <div className="space-y-1">
-                    <p className="font-bold text-emerald-950 flex items-center gap-1">
-                      <span>{t("Change to 'Anyone with the link'", "General Access ಬದಲಾಯಿಸಿ")}</span>
+                  <div>
+                    <p className="font-semibold text-[#0f172a]">
+                      {t("Saved Directly into 2PUC Cloud", "2PUC ಕ್ಲೌಡ್‌ನಲ್ಲಿ ಸಂಗ್ರಹ")}
                     </p>
-                    <p className="text-emerald-800 leading-relaxed text-[11.5px]">
+                    <p className="text-[#64748b] leading-relaxed mt-0.5">
                       {t(
-                        "Under 'General access', change from 'Restricted' to ",
-                        "'General access' ಅಡಿಯಲ್ಲಿ 'Restricted' ನಿಂದ "
-                      )}
-                      <strong className="text-emerald-950">
-                        {t('"Anyone with the link" (Viewer)', '"Anyone with the link" ಗೆ')}
-                      </strong>{" "}
-                      {t(
-                        "so students can read it without needing permission.",
-                        "ಬದಲಾಯಿಸಿ."
+                        "Uploaded files go straight into our permanent Google Drive storage.",
+                        "ಫೈಲ್‌ಗಳು ಸುರಕ್ಷಿತವಾಗಿ ಗೂಗಲ್ ಡ್ರೈವ್‌ನಲ್ಲಿ ಸಂಗ್ರಹವಾಗುತ್ತವೆ."
                       )}
                     </p>
                   </div>
                 </div>
 
-                {/* Step 4 */}
                 <div className="flex gap-3">
-                  <div className="h-6 w-6 rounded-full bg-[#eff6ff] text-[#2563eb] font-bold flex items-center justify-center shrink-0 border border-[#bfdbfe]">
-                    4
+                  <div className="h-6 w-6 rounded-full bg-emerald-50 text-emerald-600 font-bold flex items-center justify-center shrink-0 border border-emerald-200">
+                    <Check className="h-3.5 w-3.5" />
                   </div>
-                  <div className="space-y-1">
+                  <div>
                     <p className="font-semibold text-[#0f172a]">
-                      {t("Copy Link & Paste in Form", "ಲಿಂಕ್ ಕಾಪಿ ಮಾಡಿ ಇಲ್ಲಿ ಪೇಸ್ಟ್ ಮಾಡಿ")}
+                      {t("Verified Before Publishing", "ಪರಿಶೀಲಿಸಿ ಪ್ರಕಟ")}
                     </p>
-                    <p className="text-[#64748b] leading-relaxed">
+                    <p className="text-[#64748b] leading-relaxed mt-0.5">
                       {t(
-                        "Click 'Copy Link' and paste it in the Drive Link input on this page.",
-                        "'Copy Link' ಒತ್ತಿ, ಈ ಕೆಳಗಿನ ಫಾರ್ಮ್‌ನಲ್ಲಿ ಪೇಸ್ಟ್ ಮಾಡಿ ಸಲ್ಲಿಸಿ."
+                        "Our admin team checks the syllabus alignment and publishes it under the right subject & category.",
+                        "ನಮ್ಮ ತಂಡವು ಪಠ್ಯಕ್ರಮ ಪರಿಶೀಲಿಸಿ ಸೂಕ್ತ ವಿಷಯದಡಿಯಲ್ಲಿ ಪ್ರಕಟಿಸುತ್ತದೆ."
                       )}
                     </p>
                   </div>
@@ -298,38 +330,30 @@ export default function ContributePage() {
               </CardContent>
             </Card>
 
-            {/* Quick Benefits Card */}
+            {/* Supported formats card */}
             <div className="p-4 rounded-xl bg-white border border-[#e2e8f0] shadow-2xs space-y-2 text-xs">
               <span className="font-bold text-[#0f172a] block">
-                {t("Why Google Drive links?", "ಗೂಗಲ್ ಡ್ರೈವ್ ಲಿಂಕ್ ಏಕೆ?")}
+                {t("Supported File Formats", "ಬೆಂಬಲಿತ ಫೈಲ್‌ಗಳು")}
               </span>
-              <ul className="space-y-1.5 text-[#64748b]">
-                <li className="flex items-center gap-1.5">
-                  <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
-                  <span>{t("You maintain full ownership of your document", "ನಿಮ್ಮ ನೋಟ್ಸ್ ಮಾಲೀಕತ್ವ ನಿಮ್ಮ ಬಳಿಯೇ ಇರುತ್ತದೆ")}</span>
-                </li>
-                <li className="flex items-center gap-1.5">
-                  <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
-                  <span>{t("You can update your notes anytime without re-uploading", "ಯಾವುದೇ ಸಮಯದಲ್ಲಿ ನೋಟ್ಸ್ ಅಪ್ಡೇಟ್ ಮಾಡಬಹುದು")}</span>
-                </li>
-                <li className="flex items-center gap-1.5">
-                  <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
-                  <span>{t("100% free and fast cloud downloads for students", "ವಿದ್ಯಾರ್ಥಿಗಳಿಗೆ ವೇಗದ ಮತ್ತು ಉಚಿತ ಡೌನ್‌ಲೋಡ್")}</span>
-                </li>
-              </ul>
+              <p className="text-[#64748b] leading-relaxed">
+                {t(
+                  "PDF documents, scanned notes, blueprints, and question papers up to 25 MB are supported.",
+                  "25 MB ವರೆಗಿನ PDF ಡಾಕ್ಯುಮೆಂಟ್‌ಗಳು ಮತ್ತು ಸ್ಕ್ಯಾನ್ ಮಾಡಿದ ನೋಟ್ಸ್‌ಗಳು ಬೆಂಬಲಿತವಾಗಿವೆ."
+                )}
+              </p>
             </div>
           </div>
 
-          {/* ── Contribution Form ── */}
+          {/* ── Right Column: File Upload Form ── */}
           <div className="lg:col-span-7">
             <Card className="border-[#e2e8f0] shadow-sm rounded-xl overflow-hidden bg-white">
               <CardHeader className="border-b border-[#f1f5f9] pb-4">
                 <CardTitle className="text-base font-bold text-[#0f172a] flex items-center gap-2">
                   <UploadCloud className="h-5 w-5 text-[#2563eb]" />
-                  <span>{t("Submit Your Study Material", "ನಿಮ್ಮ ಅಧ್ಯಯನ ಸಾಮಗ್ರಿ ಸಲ್ಲಿಸಿ")}</span>
+                  <span>{t("Upload Study Material", "ಅಧ್ಯಯನ ಸಾಮಗ್ರಿ ಅಪ್‌ಲೋಡ್ ಮಾಡಿ")}</span>
                 </CardTitle>
                 <CardDescription className="text-xs text-[#64748b]">
-                  {t("Fill in details and provide your viewable Google Drive link", "ವಿವರಗಳನ್ನು ನಮೂದಿಸಿ ಗೂಗಲ್ ಡ್ರೈವ್ ಲಿಂಕ್ ಒದಗಿಸಿ")}
+                  {t("File will be saved directly into 2PUC Google Drive", "ಫೈಲ್ ನೇರವಾಗಿ ಗೂಗಲ್ ಡ್ರೈವ್‌ಗೆ ಅಪ್‌ಲೋಡ್ ಆಗುತ್ತದೆ")}
                 </CardDescription>
               </CardHeader>
 
@@ -341,29 +365,44 @@ export default function ContributePage() {
                     </div>
                     <div className="space-y-1.5">
                       <h3 className="text-lg font-bold text-[#0f172a]">
-                        {t("Thank You for Contributing!", "ಕೊಡುಗೆ ನೀಡಿದ್ದಕ್ಕಾಗಿ ಧನ್ಯವಾದಗಳು!")}
+                        {t("File Uploaded Successfully!", "ಫೈಲ್ ಯಶಸ್ವಿಯಾಗಿ ಅಪ್‌ಲೋಡ್ ಆಗಿದೆ!")}
                       </h3>
                       <p className="text-xs sm:text-sm text-[#64748b] max-w-md mx-auto leading-relaxed">
                         {t(
-                          "We received your Drive link. Our academic team will verify the link access and publish it to the 2PUC portal shortly.",
-                          "ನಿಮ್ಮ ಡ್ರೈವ್ ಲಿಂಕ್ ಸ್ವೀಕರಿಸಲಾಗಿದೆ. ಪರಿಶೀಲನೆಯ ನಂತರ ಶೀಘ್ರದಲ್ಲೇ 2PUC ನಲ್ಲಿ ಪ್ರಕಟಿಸಲಾಗುವುದು."
+                          "Your material has been saved to our Google Drive. Our academic team will review and categorize it in the store shortly.",
+                          "ನಿಮ್ಮ ಫೈಲ್ ಗೂಗಲ್ ಡ್ರೈವ್‌ನಲ್ಲಿ ಸುರಕ್ಷಿತವಾಗಿದೆ. ಪರಿಶೀಲನೆಯ ನಂತರ ಶೀಘ್ರದಲ್ಲೇ ಪ್ರಕಟಿಸಲಾಗುವುದು."
                         )}
                       </p>
                     </div>
 
-                    <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
+                    {uploadedDriveUrl && (
+                      <div className="pt-2">
+                        <a
+                          href={uploadedDriveUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#eff6ff] text-[#2563eb] text-xs font-semibold hover:underline"
+                        >
+                          <ExternalLink className="h-3.5 w-3.5" />
+                          <span>{t("View in Google Drive", "ಗೂಗಲ್ ಡ್ರೈವ್‌ನಲ್ಲಿ ವೀಕ್ಷಿಸಿ")}</span>
+                        </a>
+                      </div>
+                    )}
+
+                    <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-3">
                       <Button
                         variant="outline"
                         size="sm"
                         onClick={() => {
                           setIsSubmitted(false);
+                          setSelectedFile(null);
                           setMaterialTitle("");
-                          setDriveUrl("");
                           setAdditionalNotes("");
+                          setUploadedDriveUrl("");
                         }}
                         className="rounded-lg text-xs font-semibold"
                       >
-                        {t("Contribute Another Note", "ಮತ್ತೊಂದು ನೋಟ್ಸ್ ಸಲ್ಲಿಸಿ")}
+                        {t("Upload Another PDF", "ಮತ್ತೊಂದು PDF ಅಪ್‌ಲೋಡ್ ಮಾಡಿ")}
                       </Button>
                       <Link href="/">
                         <Button size="sm" className="bg-[#2563eb] hover:bg-[#1d4ed8] text-white rounded-lg text-xs font-semibold">
@@ -374,6 +413,73 @@ export default function ContributePage() {
                   </div>
                 ) : (
                   <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
+                    {/* Direct File Drag & Drop / Browse Box */}
+                    <div className="space-y-1.5">
+                      <Label className="text-xs font-bold text-[#334155]">
+                        {t("Select PDF Document *", "PDF ಫೈಲ್ ಆಯ್ಕೆಮಾಡಿ *")}
+                      </Label>
+
+                      <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept="application/pdf"
+                        onChange={handleFileChange}
+                        className="hidden"
+                      />
+
+                      {!selectedFile ? (
+                        <div
+                          onClick={() => fileInputRef.current?.click()}
+                          onDragOver={(e) => e.preventDefault()}
+                          onDrop={handleDrop}
+                          className="border-2 border-dashed border-[#93c5fd] hover:border-[#2563eb] bg-[#eff6ff]/40 hover:bg-[#eff6ff]/70 transition-all rounded-xl p-6 sm:p-8 text-center cursor-pointer group"
+                        >
+                          <div className="h-12 w-12 rounded-full bg-white text-[#2563eb] flex items-center justify-center mx-auto mb-3 shadow-2xs group-hover:scale-105 transition-transform">
+                            <UploadCloud className="h-6 w-6" />
+                          </div>
+                          <p className="text-xs sm:text-sm font-bold text-[#0f172a]">
+                            {t("Click to browse or drag and drop your PDF here", "PDF ಆಯ್ಕೆ ಮಾಡಲು ಕ್ಲಿಕ್ ಮಾಡಿ ಅಥವಾ ಇಲ್ಲಿ ಎಳೆಯಿರಿ")}
+                          </p>
+                          <p className="text-[11px] text-[#64748b] mt-1">
+                            {t("PDF files up to 25 MB", "ಗರಿಷ್ಠ 25 MB ವರೆಗಿನ PDF")}
+                          </p>
+                        </div>
+                      ) : (
+                        <div className="p-3.5 rounded-xl bg-emerald-50/70 border border-emerald-200 flex items-center justify-between gap-3">
+                          <div className="flex items-center gap-2.5 min-w-0">
+                            <div className="h-9 w-9 rounded-lg bg-emerald-600 text-white flex items-center justify-center shrink-0">
+                              <FileCheck className="h-5 w-5" />
+                            </div>
+                            <div className="min-w-0">
+                              <p className="text-xs font-bold text-[#0f172a] truncate">
+                                {selectedFile.name}
+                              </p>
+                              <p className="text-[11px] text-[#64748b]">
+                                {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB &bull; PDF
+                              </p>
+                            </div>
+                          </div>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => {
+                              setSelectedFile(null);
+                              if (fileInputRef.current) fileInputRef.current.value = "";
+                            }}
+                            className="h-8 w-8 p-0 text-[#64748b] hover:text-[#e11d48] hover:bg-white rounded-lg shrink-0"
+                            title="Remove file"
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      )}
+
+                      {fileError && (
+                        <p className="text-[11px] text-[#e11d48] font-medium mt-1">{fileError}</p>
+                      )}
+                    </div>
+
                     {/* Material Title */}
                     <div className="space-y-1.5">
                       <Label htmlFor="materialTitle" className="text-xs font-bold text-[#334155]">
@@ -433,34 +539,6 @@ export default function ContributePage() {
                       </div>
                     </div>
 
-                    {/* Google Drive Link Input (Core Highlight) */}
-                    <div className="space-y-1.5 p-3 sm:p-4 rounded-xl bg-[#eff6ff]/60 border border-[#bfdbfe]">
-                      <div className="flex items-center justify-between">
-                        <Label htmlFor="driveUrl" className="text-xs font-bold text-[#1e40af] flex items-center gap-1.5">
-                          <ExternalLink className="h-3.5 w-3.5" />
-                          <span>{t("Google Drive / Cloud Share Link *", "ಗೂಗಲ್ ಡ್ರೈವ್ ಲಿಂಕ್ *")}</span>
-                        </Label>
-                        <span className="text-[10px] text-[#2563eb] font-semibold">
-                          {t("Anyone with link: Viewer", "ವೀವರ್ ಆಕ್ಸೆಸ್ ಇರಬೇಕು")}
-                        </span>
-                      </div>
-                      <Input
-                        id="driveUrl"
-                        required
-                        type="url"
-                        placeholder="https://drive.google.com/file/d/..."
-                        value={driveUrl}
-                        onChange={(e) => setDriveUrl(e.target.value)}
-                        className="text-xs sm:text-sm bg-white rounded-lg border-[#93c5fd] font-mono focus-visible:ring-[#2563eb]"
-                      />
-                      <p className="text-[11px] text-[#64748b]">
-                        {t(
-                          "Make sure link sharing is set to 'Anyone with the link' so our team can access and publish it.",
-                          "ಲಿಂಕ್ ಪ್ರವೇಶವನ್ನು 'Anyone with the link' ಗೆ ಹೊಂದಿಸಿರುವುದನ್ನು ಖಚಿತಪಡಿಸಿಕೊಳ್ಳಿ."
-                        )}
-                      </p>
-                    </div>
-
                     {/* Contributor Name & Contact (Optional) */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="space-y-1.5">
@@ -510,18 +588,18 @@ export default function ContributePage() {
 
                     <Button
                       type="submit"
-                      disabled={isSubmitting}
+                      disabled={isUploading}
                       className="w-full bg-[#2563eb] hover:bg-[#1d4ed8] text-white font-semibold text-xs sm:text-sm h-10 rounded-lg shadow-2xs gap-2"
                     >
-                      {isSubmitting ? (
+                      {isUploading ? (
                         <>
                           <Loader2 className="h-4 w-4 animate-spin" />
-                          <span>{t("Submitting Contribution...", "ಸಲ್ಲಿಸಲಾಗುತ್ತಿದೆ...")}</span>
+                          <span>{uploadProgressText || t("Uploading...", "ಅಪ್‌ಲೋಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ...")}</span>
                         </>
                       ) : (
                         <>
-                          <Send className="h-4 w-4" />
-                          <span>{t("Submit Study Material Link", "ಅಧ್ಯಯನ ಸಾಮಗ್ರಿ ಲಿಂಕ್ ಸಲ್ಲಿಸಿ")}</span>
+                          <UploadCloud className="h-4 w-4" />
+                          <span>{t("Upload & Submit Note", "ಅಪ್‌ಲೋಡ್ ಮಾಡಿ ಸಲ್ಲಿಸಿ")}</span>
                         </>
                       )}
                     </Button>
