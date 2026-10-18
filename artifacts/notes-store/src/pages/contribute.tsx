@@ -85,8 +85,8 @@ export default function ContributePage() {
       toast({
         title: t("Drive Link Required", "ಡ್ರೈವ್ ಲಿಂಕ್ ಅಗತ್ಯವಿದೆ"),
         description: t(
-          "Please paste your Google Drive share link. Direct PDF file uploads to Supabase are disabled.",
-          "ದಯವಿಟ್ಟು ಗೂಗಲ್ ಡ್ರೈವ್ ಲಿಂಕ್ ನಮೂದಿಸಿ. ನೇರ ಪಿಡಿಎಫ್ ಅಪ್‌ಲೋಡ್ ಅನುಮತಿಸಲಾಗಿಲ್ಲ."
+          "Please paste your Google Drive share link to submit your notes.",
+          "ದಯವಿಟ್ಟು ನಿಮ್ಮ ಗೂಗಲ್ ಡ್ರೈವ್ ಲಿಂಕ್ ನಮೂದಿಸಿ."
         ),
         variant: "destructive",
       });
@@ -194,22 +194,6 @@ export default function ContributePage() {
               "ನಿಮ್ಮ ನೋಟ್ಸ್ ಅಥವಾ ಪ್ರಶ್ನೆ ಪತ್ರಿಕೆಗಳನ್ನು ಹಂಚಿಕೊಳ್ಳುವ ಮೂಲಕ ಕರ್ನಾಟಕದ ಸಾವಿರಾರು ದ್ವಿತೀಯ ಪಿಯುಸಿ ವಿದ್ಯಾರ್ಥಿಗಳಿಗೆ ಸಹಾಯ ಮಾಡಿ."
             )}
           </p>
-        </div>
-
-        {/* ── Policy Notice: Drive Link Only ── */}
-        <div className="mb-8 p-4 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 flex items-start gap-3 shadow-2xs">
-          <ShieldAlert className="h-5 w-5 text-amber-600 shrink-0 mt-0.5" />
-          <div className="text-xs sm:text-sm space-y-1">
-            <span className="font-bold text-amber-950 block">
-              {t("Notice: Cloud / Google Drive Links Only (No Direct File Uploads)", "ಗಮನಿಸಿ: ಗೂಗಲ್ ಡ್ರೈವ್ ಲಿಂಕ್ ಮಾತ್ರ (ನೇರ ಫೈಲ್ ಅಪ್‌ಲೋಡ್ ಇಲ್ಲ)")}
-            </span>
-            <p className="text-amber-800 leading-relaxed">
-              {t(
-                "To keep the platform fast, secure, and permanent for all students, direct PDF file uploads to Supabase storage are disabled. Please upload your PDF to your own Google Drive and share the viewable link below.",
-                "ವೇಗದ ಮತ್ತು ಸುರಕ್ಷಿತ ಕಾರ್ಯಕ್ಷಮತೆಗಾಗಿ ನೇರ ಪಿಡಿಎಫ್ ಅಪ್‌ಲೋಡ್ ರದ್ದುಪಡಿಸಲಾಗಿದೆ. ದಯವಿಟ್ಟು ನಿಮ್ಮ ಗೂಗಲ್ ಡ್ರೈವ್‌ಗೆ ಅಪ್‌ಲೋಡ್ ಮಾಡಿ ಲಿಂಕ್ ಹಂಚಿಕೊಳ್ಳಿ."
-              )}
-            </p>
-          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
