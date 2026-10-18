@@ -136,8 +136,8 @@ export default function ContributePage() {
 
     if (!selectedFile) {
       toast({
-        title: t("PDF File Required", "ಪಿಡಿಎಫ್ ಫೈಲ್ ಆಯ್ಕೆಮಾಡಿ"),
-        description: t("Please choose your study notes PDF file to upload.", "ದಯವಿಟ್ಟು ನಿಮ್ಮ ನೋಟ್ಸ್ ಫೈಲ್ ಆಯ್ಕೆಮಾಡಿ."),
+        title: t("Document File Required", "ದಾಖಲೆ ಫೈಲ್ ಆಯ್ಕೆಮಾಡಿ"),
+        description: t("Please choose your study notes PDF or Word document (.docx/.doc).", "ದಯವಿಟ್ಟು ನಿಮ್ಮ PDF ಅಥವಾ Word ದಾಖಲೆ ಆಯ್ಕೆಮಾಡಿ."),
         variant: "destructive",
       });
       return;
@@ -256,8 +256,8 @@ export default function ContributePage() {
           </h1>
           <p className="text-sm text-[#64748b] mt-2 leading-relaxed">
             {t(
-              "Select your PDF notes, solutions, or model question papers. Your file is automatically saved into our Google Drive library and published for thousands of 2nd PUC students.",
-              "ನಿಮ್ಮ ಪಿಡಿಎಫ್ ನೋಟ್ಸ್ ಅಥವಾ ಪ್ರಶ್ನೆ ಪತ್ರಿಕೆಗಳನ್ನು ಆಯ್ಕೆಮಾಡಿ. ನಿಮ್ಮ ಫೈಲ್ ನೇರವಾಗಿ ನಮ್ಮ ಗೂಗಲ್ ಡ್ರೈವ್‌ಗೆ ಅಪ್‌ಲೋಡ್ ಆಗುತ್ತದೆ."
+              "Select your PDF or Word document (.docx/.doc) notes, solutions, or model question papers. Your file is automatically saved into our Google Drive library and published for thousands of 2nd PUC students.",
+              "ನಿಮ್ಮ PDF ಅಥವಾ Word ದಾಖಲೆ (.docx/.doc) ನೋಟ್ಸ್ ಅಥವಾ ಪ್ರಶ್ನೆ ಪತ್ರಿಕೆಗಳನ್ನು ಆಯ್ಕೆಮಾಡಿ. ನಿಮ್ಮ ಫೈಲ್ ನೇರವಾಗಿ ನಮ್ಮ ಗೂಗಲ್ ಡ್ರೈವ್‌ಗೆ ಅಪ್‌ಲೋಡ್ ಆಗುತ್ತದೆ."
             )}
           </p>
         </div>
@@ -284,12 +284,12 @@ export default function ContributePage() {
                   </div>
                   <div>
                     <p className="font-semibold text-[#0f172a]">
-                      {t("Select Your PDF File", "ನಿಮ್ಮ PDF ಫೈಲ್ ಆಯ್ಕೆಮಾಡಿ")}
+                      {t("Select Your PDF or Word File", "ನಿಮ್ಮ PDF ಅಥವಾ Word ಫೈಲ್ ಆಯ್ಕೆಮಾಡಿ")}
                     </p>
                     <p className="text-[#64748b] leading-relaxed mt-0.5">
                       {t(
-                        "Click the upload box on the right (or drag and drop). Select the PDF from your phone or computer (up to 25 MB).",
-                        "ಬಲಬದಿಯ ಬಾಕ್ಸ್ ಕ್ಲಿಕ್ ಮಾಡಿ ನಿಮ್ಮ ಮೊಬೈಲ್ ಅಥವಾ ಕಂಪ್ಯೂಟರ್‌ನಿಂದ PDF ಫೈಲ್ ಆಯ್ಕೆಮಾಡಿ (ಗರಿಷ್ಠ 25 MB)."
+                        "Click the upload box on the right (or drag and drop). Select your PDF, DOCX, or DOC file from your phone or computer (up to 25 MB).",
+                        "ಬಲಬದಿಯ ಬಾಕ್ಸ್ ಕ್ಲಿಕ್ ಮಾಡಿ ನಿಮ್ಮ ಮೊಬೈಲ್ ಅಥವಾ ಕಂಪ್ಯೂಟರ್‌ನಿಂದ PDF, DOCX ಅಥವಾ DOC ಫೈಲ್ ಆಯ್ಕೆಮಾಡಿ (ಗರಿಷ್ಠ 25 MB)."
                       )}
                     </p>
                   </div>
@@ -420,13 +420,13 @@ export default function ContributePage() {
                     {/* Direct File Drag & Drop / Browse Box */}
                     <div className="space-y-1.5">
                       <Label className="text-xs font-bold text-[#334155]">
-                        {t("Select PDF Document *", "PDF ಫೈಲ್ ಆಯ್ಕೆಮಾಡಿ *")}
+                        {t("Select Document File (PDF, DOCX, DOC) *", "ದಾಖಲೆ ಫೈಲ್ ಆಯ್ಕೆಮಾಡಿ (PDF, DOCX, DOC) *")}
                       </Label>
 
                       <input
                         ref={fileInputRef}
                         type="file"
-                        accept="application/pdf"
+                        accept="application/pdf,.doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                         onChange={handleFileChange}
                         className="hidden"
                       />
@@ -442,10 +442,10 @@ export default function ContributePage() {
                             <UploadCloud className="h-6 w-6" />
                           </div>
                           <p className="text-xs sm:text-sm font-bold text-[#0f172a]">
-                            {t("Click to browse or drag and drop your PDF here", "PDF ಆಯ್ಕೆ ಮಾಡಲು ಕ್ಲಿಕ್ ಮಾಡಿ ಅಥವಾ ಇಲ್ಲಿ ಎಳೆಯಿರಿ")}
+                            {t("Click to browse or drag and drop your document here", "ಫೈಲ್ ಆಯ್ಕೆ ಮಾಡಲು ಕ್ಲಿಕ್ ಮಾಡಿ ಅಥವಾ ಇಲ್ಲಿ ಎಳೆಯಿರಿ")}
                           </p>
                           <p className="text-[11px] text-[#64748b] mt-1">
-                            {t("PDF files up to 25 MB", "ಗರಿಷ್ಠ 25 MB ವರೆಗಿನ PDF")}
+                            {t("PDF, DOCX, DOC files up to 25 MB", "PDF, DOCX, DOC ಫೈಲ್‌ಗಳು (ಗರಿಷ್ಠ 25 MB)")}
                           </p>
                         </div>
                       ) : (
@@ -459,7 +459,7 @@ export default function ContributePage() {
                                 {selectedFile.name}
                               </p>
                               <p className="text-[11px] text-[#64748b]">
-                                {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB &bull; PDF
+                                {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB &bull; {selectedFile.name.split(".").pop()?.toUpperCase()}
                               </p>
                             </div>
                           </div>
