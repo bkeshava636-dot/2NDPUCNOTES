@@ -3,12 +3,14 @@ import { Link, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Footer } from "@/components/footer";
-import { ShoppingBag, Eye, Send, Search, Languages } from "lucide-react";
+import { ShoppingBag, Eye, Send, Search, Languages, Clock, Sparkles } from "lucide-react";
 import { BrandLogo } from "@/components/brand-logo";
 import { FloatingFeedback } from "@/components/floating-feedback";
 import { usePageViewTracker } from "@/hooks/use-page-view-tracker";
 import { TELEGRAM_LINK } from "@/lib/site-config";
 import { useLanguage } from "@/lib/language-context";
+import { useSitePass } from "@/lib/site-pass-context";
+import { SiteAccessPassModal } from "@/components/site-access-pass-modal";
 import {
   Tooltip,
   TooltipContent,
@@ -19,6 +21,7 @@ export function PublicLayout({ children }: { children: ReactNode }) {
   usePageViewTracker();
   const [location, setLocation] = useLocation();
   const { language, toggleLanguage, t } = useLanguage();
+  const { isPassActive, isExemptPage, remainingTimeFormatted } = useSitePass();
   const isPurchasesActive = location === "/my-purchases";
 
   const { data: viewData } = useQuery<{ count: number }>({
@@ -87,6 +90,29 @@ export function PublicLayout({ children }: { children: ReactNode }) {
 
           {/* Right Navigation Actions (visible at all times) */}
           <nav className="flex items-center gap-1 sm:gap-2 shrink-0">
+            {/* 5-Hour Pass Status Badge (shown when pass is active) */}
+            {isPassActive && !isExemptPage && (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div
+                    tabIndex={0}
+                    role="status"
+                    aria-label={`5-Hour Pass active: ${remainingTimeFormatted} remaining`}
+                    className="hidden sm:flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#f0fdf4] border border-[#bbf7d0] text-[11px] font-semibold text-[#15803d] shadow-2xs select-none cursor-default"
+                  >
+                    <span className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                    </span>
+                    <span className="font-mono font-bold">{remainingTimeFormatted}</span>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent side="bottom" className="text-xs bg-[#0f172a] text-white py-1 px-2.5 rounded-lg border-0 shadow-md">
+                  <span>{t("5-Hour Free Study Pass active. Unlimited site access.", "5 ಗಂಟೆಗಳ ಉಚಿತ ಅಧ್ಯಯನ ಪಾಸ್ ಸಕ್ರಿಯವಾಗಿದೆ.")}</span>
+                </TooltipContent>
+              </Tooltip>
+            )}
+
             {/* Quick Search Action */}
             <Button
               variant="ghost"
@@ -156,6 +182,9 @@ export function PublicLayout({ children }: { children: ReactNode }) {
 
       {/* Floating Student Feedback */}
       <FloatingFeedback />
+
+      {/* 5-Hour Site Access Pass Lock Modal */}
+      <SiteAccessPassModal />
     </div>
   );
 }
