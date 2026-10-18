@@ -263,66 +263,69 @@ export default function ContributePage() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          {/* ── Left Column: Easy Benefits & Info ── */}
+          {/* ── Left Column: Step-by-Step Instructions for User ── */}
           <div className="lg:col-span-5 space-y-4">
             <Card className="border-[#e2e8f0] shadow-sm rounded-xl overflow-hidden bg-white">
               <CardHeader className="bg-[#f8fafc] border-b border-[#f1f5f9] pb-3.5">
                 <CardTitle className="text-sm font-bold text-[#0f172a] flex items-center gap-2">
                   <HardDrive className="h-4 w-4 text-[#2563eb]" />
-                  <span>{t("Direct Cloud Upload", "ನೇರ ಕ್ಲೌಡ್ ಅಪ್‌ಲೋಡ್")}</span>
+                  <span>{t("How to Submit Notes (3 Easy Steps)", "ನೋಟ್ಸ್ ಸಲ್ಲಿಸುವುದು ಹೇಗೆ? (3 ಸುಲಭ ಹಂತಗಳು)")}</span>
                 </CardTitle>
                 <CardDescription className="text-xs text-[#64748b]">
-                  {t("No Google Drive setup needed from your side", "ನಿಮ್ಮ ಕಡೆಯಿಂದ ಯಾವುದೇ ಗೂಗಲ್ ಡ್ರೈವ್ ಲಿಂಕ್ ಅಗತ್ಯವಿಲ್ಲ")}
+                  {t("Follow these quick steps to share your study materials", "ನಿಮ್ಮ ನೋಟ್ಸ್ ಹಂಚಿಕೊಳ್ಳಲು ಈ ಹಂತಗಳನ್ನು ಅನುಸರಿಸಿ")}
                 </CardDescription>
               </CardHeader>
 
-              <CardContent className="p-4 space-y-3.5 text-xs">
+              <CardContent className="p-4 space-y-4 text-xs">
+                {/* Step 1 */}
                 <div className="flex gap-3">
-                  <div className="h-6 w-6 rounded-full bg-emerald-50 text-emerald-600 font-bold flex items-center justify-center shrink-0 border border-emerald-200">
-                    <Check className="h-3.5 w-3.5" />
+                  <div className="h-6 w-6 rounded-full bg-[#eff6ff] text-[#2563eb] font-bold flex items-center justify-center shrink-0 border border-[#bfdbfe]">
+                    1
                   </div>
                   <div>
                     <p className="font-semibold text-[#0f172a]">
-                      {t("Zero Burden On You", "ಯಾವುದೇ ಗೊಂದಲವಿಲ್ಲ")}
+                      {t("Select Your PDF File", "ನಿಮ್ಮ PDF ಫೈಲ್ ಆಯ್ಕೆಮಾಡಿ")}
                     </p>
                     <p className="text-[#64748b] leading-relaxed mt-0.5">
                       {t(
-                        "You don't need to configure permissions or create links. Just pick your PDF and hit upload.",
-                        "ನೀವು ಲಿಂಕ್ ರಚಿಸುವ ಅಗತ್ಯವಿಲ್ಲ. ಕೇವಲ ಫೈಲ್ ಆಯ್ಕೆ ಮಾಡಿ ಅಪ್‌ಲೋಡ್ ಮಾಡಿ."
+                        "Click the upload box on the right (or drag and drop). Select the PDF from your phone or computer (up to 25 MB).",
+                        "ಬಲಬದಿಯ ಬಾಕ್ಸ್ ಕ್ಲಿಕ್ ಮಾಡಿ ನಿಮ್ಮ ಮೊಬೈಲ್ ಅಥವಾ ಕಂಪ್ಯೂಟರ್‌ನಿಂದ PDF ಫೈಲ್ ಆಯ್ಕೆಮಾಡಿ (ಗರಿಷ್ಠ 25 MB)."
                       )}
                     </p>
                   </div>
                 </div>
 
+                {/* Step 2 */}
                 <div className="flex gap-3">
-                  <div className="h-6 w-6 rounded-full bg-emerald-50 text-emerald-600 font-bold flex items-center justify-center shrink-0 border border-emerald-200">
-                    <Check className="h-3.5 w-3.5" />
+                  <div className="h-6 w-6 rounded-full bg-[#eff6ff] text-[#2563eb] font-bold flex items-center justify-center shrink-0 border border-[#bfdbfe]">
+                    2
                   </div>
                   <div>
                     <p className="font-semibold text-[#0f172a]">
-                      {t("Saved Directly into 2PUC Cloud", "2PUC ಕ್ಲೌಡ್‌ನಲ್ಲಿ ಸಂಗ್ರಹ")}
+                      {t("Add Title & Choose Subject", "ಶೀರ್ಷಿಕೆ ಮತ್ತು ವಿಷಯ ಆಯ್ಕೆಮಾಡಿ")}
                     </p>
                     <p className="text-[#64748b] leading-relaxed mt-0.5">
                       {t(
-                        "Uploaded files go straight into our permanent Google Drive storage.",
-                        "ಫೈಲ್‌ಗಳು ಸುರಕ್ಷಿತವಾಗಿ ಗೂಗಲ್ ಡ್ರೈವ್‌ನಲ್ಲಿ ಸಂಗ್ರಹವಾಗುತ್ತವೆ."
+                        "Type a clear title (e.g. Physics Chapter 3 Current Electricity) and select the subject & material type (Notes, Blueprints, PYQ).",
+                        "ಅಧ್ಯಯನ ಸಾಮಗ್ರಿಯ ಶೀರ್ಷಿಕೆ ಮತ್ತು ಸೂಕ್ತ ವಿಷಯವನ್ನು ಆಯ್ಕೆಮಾಡಿ."
                       )}
                     </p>
                   </div>
                 </div>
 
+                {/* Step 3 */}
                 <div className="flex gap-3">
                   <div className="h-6 w-6 rounded-full bg-emerald-50 text-emerald-600 font-bold flex items-center justify-center shrink-0 border border-emerald-200">
-                    <Check className="h-3.5 w-3.5" />
+                    3
                   </div>
                   <div>
-                    <p className="font-semibold text-[#0f172a]">
-                      {t("Verified Before Publishing", "ಪರಿಶೀಲಿಸಿ ಪ್ರಕಟ")}
+                    <p className="font-semibold text-emerald-950">
+                      {t("Click 'Upload & Submit'", "'ಅಪ್‌ಲೋಡ್ ಮಾಡಿ ಸಲ್ಲಿಸಿ' ಕ್ಲಿಕ್ ಮಾಡಿ")}
                     </p>
-                    <p className="text-[#64748b] leading-relaxed mt-0.5">
+                    <p className="text-emerald-800 leading-relaxed mt-0.5">
                       {t(
-                        "Our admin team checks the syllabus alignment and publishes it under the right subject & category.",
-                        "ನಮ್ಮ ತಂಡವು ಪಠ್ಯಕ್ರಮ ಪರಿಶೀಲಿಸಿ ಸೂಕ್ತ ವಿಷಯದಡಿಯಲ್ಲಿ ಪ್ರಕಟಿಸುತ್ತದೆ."
+                        "Hit the submit button. That's it! Your file is automatically saved into our Google Drive and reviewed by our team to help students.",
+                        "ಸಲ್ಲಿಸು ಬಟನ್ ಕ್ಲಿಕ್ ಮಾಡಿ. ನಿಮ್ಮ ಫೈಲ್ ನೇರವಾಗಿ ನಮ್ಮ ಗೂಗಲ್ ಡ್ರೈವ್‌ನಲ್ಲಿ ಸುರಕ್ಷಿತವಾಗಿ ಸೇವ್ ಆಗುತ್ತದೆ."
                       )}
                     </p>
                   </div>
@@ -330,15 +333,16 @@ export default function ContributePage() {
               </CardContent>
             </Card>
 
-            {/* Supported formats card */}
+            {/* What Happens Next Card */}
             <div className="p-4 rounded-xl bg-white border border-[#e2e8f0] shadow-2xs space-y-2 text-xs">
-              <span className="font-bold text-[#0f172a] block">
-                {t("Supported File Formats", "ಬೆಂಬಲಿತ ಫೈಲ್‌ಗಳು")}
+              <span className="font-bold text-[#0f172a] block flex items-center gap-1.5">
+                <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" />
+                <span>{t("What happens after upload?", "ಅಪ್‌ಲೋಡ್ ಆದ ನಂತರ ಏನಾಗುತ್ತದೆ?")}</span>
               </span>
               <p className="text-[#64748b] leading-relaxed">
                 {t(
-                  "PDF documents, scanned notes, blueprints, and question papers up to 25 MB are supported.",
-                  "25 MB ವರೆಗಿನ PDF ಡಾಕ್ಯುಮೆಂಟ್‌ಗಳು ಮತ್ತು ಸ್ಕ್ಯಾನ್ ಮಾಡಿದ ನೋಟ್ಸ್‌ಗಳು ಬೆಂಬಲಿತವಾಗಿವೆ."
+                  "Our academic team reviews the syllabus alignment, organizes it into the correct subject & chapter, and publishes it with your name credit for all Karnataka students to read free.",
+                  "ನಮ್ಮ ಅಧ್ಯಾಪಕರ ತಂಡವು ಪಠ್ಯಕ್ರಮವನ್ನು ಪರಿಶೀಲಿಸಿ, ಸೂಕ್ತ ವಿಷಯ ಮತ್ತು ಅಧ್ಯಾಯದ ಅಡಿಯಲ್ಲಿ ನಿಮ್ಮ ಹೆಸರಿನ ಕ್ರೆಡಿಟ್‌ನೊಂದಿಗೆ ಪ್ರಕಟಿಸುತ್ತದೆ."
                 )}
               </p>
             </div>
