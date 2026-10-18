@@ -15,6 +15,9 @@ import {
   X,
   FileCheck,
   FolderSync,
+  Link2,
+  AlertCircle,
+  HelpCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -63,6 +66,11 @@ export default function ContributePage() {
   const [materialTitle, setMaterialTitle] = useState("");
   const [additionalNotes, setAdditionalNotes] = useState("");
 
+  // Upload mode: 'file' (direct upload up to 25MB) or 'link' (for files > 25MB or existing Drive links)
+  const [uploadMode, setUploadMode] = useState<"file" | "link">("file");
+  const [driveUrl, setDriveUrl] = useState("");
+  const [largeFileNotice, setLargeFileNotice] = useState<string | null>(null);
+
   // Direct file upload state
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [fileError, setFileError] = useState<string | null>(null);
@@ -73,19 +81,38 @@ export default function ContributePage() {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const processFileSelection = (file: File) => {
     setFileError(null);
-    const file = e.target.files?.[0];
-    if (!file) {
-      setSelectedFile(null);
-      return;
-    }
+    setLargeFileNotice(null);
 
-    // Maximum file size: 25 MB
+    // If file > 25 MB, automatically redirect them to Google Drive Link mode
     const maxSize = 25 * 1024 * 1024;
+    const fileSizeMb = (file.size / (1024 * 1024)).toFixed(1);
+
     if (file.size > maxSize) {
-      setFileError(t("File size exceeds 25 MB. Please choose a smaller file.", "ಫೈಲ್ ಗಾತ್ರ 25 MB ಗಿಂತ ಹೆಚ್ಚಾಗಿದೆ."));
+      setUploadMode("link");
+      setLargeFileNotice(
+        t(
+          `"${file.name}" is ${fileSizeMb} MB, which is larger than the 25 MB direct upload limit. We switched you to Google Drive Link mode below!`,
+          `"${file.name}" ${fileSizeMb} MB ಇದೆ, ಇದು 25 MB ಮಿತಿಗಿಂತ ಹೆಚ್ಚಾಗಿದೆ. ಆದ್ದರಿಂದ ಗೂಗಲ್ ಡ್ರೈವ್ ಲಿಂಕ್ ಮೋಡ್‌ಗೆ ಬದಲಾಯಿಸಲಾಗಿದೆ!`
+        )
+      );
       setSelectedFile(null);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+
+      // Prefill title if empty
+      if (!materialTitle.trim()) {
+        const cleanName = file.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ");
+        setMaterialTitle(cleanName);
+      }
+
+      toast({
+        title: t("Large File Detected (> 25 MB)", "ದೊಡ್ಡ ಫೈಲ್ ಕಂಡುಬಂದಿದೆ (> 25 MB)"),
+        description: t(
+          "Switched to Google Drive Link mode. Please upload to your Google Drive and paste the link below.",
+          "ಗೂಗಲ್ ಡ್ರೈವ್ ಲಿಂಕ್ ಮೋಡ್‌ಗೆ ಬದಲಾಯಿಸಲಾಗಿದೆ. ದಯವಿಟ್ಟು ಡ್ರೈವ್ ಲಿಂಕ್ ನಮೂದಿಸಿ."
+        ),
+      });
       return;
     }
 
@@ -98,23 +125,20 @@ export default function ContributePage() {
     }
   };
 
-  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    setFileError(null);
-    const file = e.dataTransfer.files?.[0];
-    if (!file) return;
-
-    const maxSize = 25 * 1024 * 1024;
-    if (file.size > maxSize) {
-      setFileError(t("File size exceeds 25 MB. Please choose a smaller file.", "ಫೈಲ್ ಗಾತ್ರ 25 MB ಗಿಂತ ಹೆಚ್ಚಾಗಿದೆ."));
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) {
+      setSelectedFile(null);
       return;
     }
+    processFileSelection(file);
+  };
 
-    setSelectedFile(file);
-    if (!materialTitle.trim()) {
-      const cleanName = file.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ");
-      setMaterialTitle(cleanName);
-    }
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    const file = e.dataTransfer.files?.[0];
+    if (!file) return;
+    processFileSelection(file);
   };
 
   const fileToBase64 = (file: File): Promise<string> => {
@@ -134,13 +158,44 @@ export default function ContributePage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!selectedFile) {
+    if (!materialTitle.trim()) {
       toast({
-        title: t("Document File Required", "ದಾಖಲೆ ಫೈಲ್ ಆಯ್ಕೆಮಾಡಿ"),
-        description: t("Please choose your study notes PDF or Word document (.docx/.doc).", "ದಯವಿಟ್ಟು ನಿಮ್ಮ PDF ಅಥವಾ Word ದಾಖಲೆ ಆಯ್ಕೆಮಾಡಿ."),
+        title: t("Title Required", "ಶೀರ್ಷಿಕೆ ಅಗತ್ಯವಿದೆ"),
+        description: t("Please enter a title describing your notes.", "ದಯವಿಟ್ಟು ನೋಟ್ಸ್ ಶೀರ್ಷಿಕೆಯನ್ನು ನಮೂದಿಸಿ."),
         variant: "destructive",
       });
       return;
+    }
+
+    // Direct file upload mode
+    if (uploadMode === "file") {
+      if (!selectedFile) {
+        toast({
+          title: t("Document File Required", "ದಾಖಲೆ ಫೈಲ್ ಆಯ್ಕೆಮಾಡಿ"),
+          description: t("Please choose your study notes PDF or Word document (.docx/.doc).", "ದಯವಿಟ್ಟು ನಿಮ್ಮ PDF ಅಥವಾ Word ದಾಖಲೆ ಆಯ್ಕೆಮಾಡಿ."),
+          variant: "destructive",
+        });
+        return;
+      }
+    } else {
+      // Google Drive link mode (for files > 25MB)
+      const trimmedUrl = driveUrl.trim();
+      if (!trimmedUrl) {
+        toast({
+          title: t("Google Drive Link Required", "ಗೂಗಲ್ ಡ್ರೈವ್ ಲಿಂಕ್ ಅಗತ್ಯವಿದೆ"),
+          description: t("Please enter your Google Drive share link.", "ದಯವಿಟ್ಟು ಗೂಗಲ್ ಡ್ರೈವ್ ಲಿಂಕ್ ನಮೂದಿಸಿ."),
+          variant: "destructive",
+        });
+        return;
+      }
+      if (!trimmedUrl.startsWith("http://") && !trimmedUrl.startsWith("https://")) {
+        toast({
+          title: t("Invalid URL", "ಅಮಾನ್ಯವಾದ ಲಿಂಕ್"),
+          description: t("URL must start with https:// or http://", "ಲಿಂಕ್ https:// ಅಥವಾ http:// ನಿಂದ ಪ್ರಾರಂಭವಾಗಬೇಕು."),
+          variant: "destructive",
+        });
+        return;
+      }
     }
 
     if (!materialTitle.trim()) {
@@ -153,40 +208,50 @@ export default function ContributePage() {
     }
 
     setIsUploading(true);
-    setUploadProgressText(t("Reading file & uploading to Google Drive...", "ಗೂಗಲ್ ಡ್ರೈವ್‌ಗೆ ಅಪ್‌ಲೋಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ..."));
 
     try {
-      // Step 1: Convert file to Base64
-      const base64Content = await fileToBase64(selectedFile);
+      let finalDriveUrl = "";
+      let fileMetaText = "";
 
-      // Step 2: Send directly to Google Apps Script Web App (uploads into user's Google Drive)
-      setUploadProgressText(t("Uploading directly to Google Drive...", "ಗೂಗಲ್ ಡ್ರೈವ್‌ನಲ್ಲಿ ಉಳಿಸಲಾಗುತ್ತಿದೆ..."));
+      if (uploadMode === "file" && selectedFile) {
+        // Direct file upload: upload to user's Google Drive via Apps Script
+        setUploadProgressText(t("Reading file & uploading to Google Drive...", "ಗೂಗಲ್ ಡ್ರೈವ್‌ಗೆ ಅಪ್‌ಲೋಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ..."));
+        const base64Content = await fileToBase64(selectedFile);
 
-      const googlePayload = {
-        fileBase64: base64Content,
-        fileName: selectedFile.name,
-        mimeType: selectedFile.type || "application/pdf",
-        subject,
-        resourceType,
-        materialTitle: materialTitle.trim(),
-        contributorName: contributorName.trim() || "Anonymous",
-      };
+        setUploadProgressText(t("Uploading directly to Google Drive...", "ಗೂಗಲ್ ಡ್ರೈವ್‌ನಲ್ಲಿ ಉಳಿಸಲಾಗುತ್ತಿದೆ..."));
 
-      const driveRes = await fetch(GOOGLE_SCRIPT_WEBAPP_URL, {
-        method: "POST",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify(googlePayload),
-      });
+        const googlePayload = {
+          fileBase64: base64Content,
+          fileName: selectedFile.name,
+          mimeType: selectedFile.type || "application/pdf",
+          subject,
+          resourceType,
+          materialTitle: materialTitle.trim(),
+          contributorName: contributorName.trim() || "Anonymous",
+        };
 
-      const driveData = await driveRes.json();
-      if (!driveData || driveData.status !== "success" || !driveData.fileUrl) {
-        throw new Error(driveData?.message || "Failed to save file to Google Drive.");
+        const driveRes = await fetch(GOOGLE_SCRIPT_WEBAPP_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify(googlePayload),
+        });
+
+        const driveData = await driveRes.json();
+        if (!driveData || driveData.status !== "success" || !driveData.fileUrl) {
+          throw new Error(driveData?.message || "Failed to save file to Google Drive.");
+        }
+
+        finalDriveUrl = driveData.fileUrl;
+        fileMetaText = `File Name: ${selectedFile.name} (${(selectedFile.size / (1024 * 1024)).toFixed(1)} MB)`;
+        setUploadedDriveUrl(finalDriveUrl);
+      } else {
+        // Google Drive link mode (for large files > 25MB)
+        finalDriveUrl = driveUrl.trim();
+        fileMetaText = `Large File / Cloud Link (> 25 MB)`;
+        setUploadedDriveUrl(finalDriveUrl);
       }
 
-      const generatedDriveUrl = driveData.fileUrl;
-      setUploadedDriveUrl(generatedDriveUrl);
-
-      // Step 3: Record contribution in the backend database for Admin approval
+      // Record contribution in the backend database for Admin approval
       setUploadProgressText(t("Registering contribution for Admin review...", "ಅಡ್ಮಿನ್ ಪರಿಶೀಲನೆಗೆ ಕಳುಹಿಸಲಾಗುತ್ತಿದೆ..."));
 
       const rawApiUrl = import.meta.env.VITE_API_URL;
@@ -197,8 +262,8 @@ export default function ContributePage() {
         `Subject: ${subject}`,
         `Resource Type: ${resourceType}`,
         `Material Title: ${materialTitle.trim()}`,
-        `Google Drive Link: ${generatedDriveUrl}`,
-        `File Name: ${selectedFile.name} (${(selectedFile.size / (1024 * 1024)).toFixed(1)} MB)`,
+        `Google Drive Link: ${finalDriveUrl}`,
+        fileMetaText,
         contributorName.trim() ? `Contributor: ${contributorName.trim()}` : `Contributor: Anonymous`,
         additionalNotes.trim() ? `Notes / Description: ${additionalNotes.trim()}` : null,
       ]
@@ -218,12 +283,14 @@ export default function ContributePage() {
       });
 
       if (!dbRes.ok) {
-        console.warn("Could not save to feedback db, but file uploaded to Drive successfully.");
+        console.warn("Could not save to feedback db, but link recorded.");
       }
 
       setIsSubmitted(true);
       toast({
-        title: t("Uploaded to Google Drive!", "ಗೂಗಲ್ ಡ್ರೈವ್‌ಗೆ ಯಶಸ್ವಿಯಾಗಿ ಅಪ್‌ಲೋಡ್ ಆಗಿದೆ!"),
+        title: uploadMode === "file" 
+          ? t("Uploaded to Google Drive!", "ಗೂಗಲ್ ಡ್ರೈವ್‌ಗೆ ಯಶಸ್ವಿಯಾಗಿ ಅಪ್‌ಲೋಡ್ ಆಗಿದೆ!")
+          : t("Drive Link Submitted!", "ಗೂಗಲ್ ಡ್ರೈವ್ ಲಿಂಕ್ ಸಲ್ಲಿಸಲಾಗಿದೆ!"),
         description: t(
           "Your study material is received and ready for review.",
           "ನಿಮ್ಮ ಅಧ್ಯಯನ ಸಾಮಗ್ರಿ ಸ್ವೀಕರಿಸಲಾಗಿದೆ."
@@ -333,6 +400,20 @@ export default function ContributePage() {
               </CardContent>
             </Card>
 
+            {/* Dedicated Note for Files Greater than 25 MB */}
+            <div className="p-4 rounded-xl bg-amber-50/80 border border-amber-200 text-amber-950 shadow-2xs space-y-1.5 text-xs">
+              <span className="font-bold text-amber-900 flex items-center gap-1.5">
+                <AlertCircle className="h-4 w-4 text-amber-600 shrink-0" />
+                <span>{t("File Greater Than 25 MB?", "ಫೈಲ್ 25 MB ಗಿಂತ ಹೆಚ್ಚಿದೆಯೇ?")}</span>
+              </span>
+              <p className="text-amber-800 leading-relaxed text-[11.5px]">
+                {t(
+                  "If your document or scanned textbook exceeds 25 MB, simply upload it to your Google Drive and share the link. Our system also automatically switches you to Link mode if you select a file larger than 25 MB!",
+                  "ನಿಮ್ಮ ಫೈಲ್ 25 MB ಗಿಂತ ಹೆಚ್ಚಿದ್ದರೆ, ಗೂಗಲ್ ಡ್ರೈವ್ ಲಿಂಕ್ ಹಂಚಿಕೊಳ್ಳಿ. ನೀವು 25 MB ಗಿಂತ ದೊಡ್ಡ ಫೈಲ್ ಆಯ್ಕೆಮಾಡಿದಾಗ ವೆಬ್‌ಸೈಟ್ ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಲಿಂಕ್ ಮೋಡ್‌ಗೆ ಬದಲಾಯಿಸುತ್ತದೆ!"
+                )}
+              </p>
+            </div>
+
             {/* What Happens Next Card */}
             <div className="p-4 rounded-xl bg-white border border-[#e2e8f0] shadow-2xs space-y-2 text-xs">
               <span className="font-bold text-[#0f172a] block flex items-center gap-1.5">
@@ -417,72 +498,166 @@ export default function ContributePage() {
                   </div>
                 ) : (
                   <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
-                    {/* Direct File Drag & Drop / Browse Box */}
-                    <div className="space-y-1.5">
-                      <Label className="text-xs font-bold text-[#334155]">
-                        {t("Select Document File (PDF, DOCX, DOC) *", "ದಾಖಲೆ ಫೈಲ್ ಆಯ್ಕೆಮಾಡಿ (PDF, DOCX, DOC) *")}
-                      </Label>
-
-                      <input
-                        ref={fileInputRef}
-                        type="file"
-                        accept="application/pdf,.doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                        onChange={handleFileChange}
-                        className="hidden"
-                      />
-
-                      {!selectedFile ? (
-                        <div
-                          onClick={() => fileInputRef.current?.click()}
-                          onDragOver={(e) => e.preventDefault()}
-                          onDrop={handleDrop}
-                          className="border-2 border-dashed border-[#93c5fd] hover:border-[#2563eb] bg-[#eff6ff]/40 hover:bg-[#eff6ff]/70 transition-all rounded-xl p-6 sm:p-8 text-center cursor-pointer group"
-                        >
-                          <div className="h-12 w-12 rounded-full bg-white text-[#2563eb] flex items-center justify-center mx-auto mb-3 shadow-2xs group-hover:scale-105 transition-transform">
-                            <UploadCloud className="h-6 w-6" />
-                          </div>
-                          <p className="text-xs sm:text-sm font-bold text-[#0f172a]">
-                            {t("Click to browse or drag and drop your document here", "ಫೈಲ್ ಆಯ್ಕೆ ಮಾಡಲು ಕ್ಲಿಕ್ ಮಾಡಿ ಅಥವಾ ಇಲ್ಲಿ ಎಳೆಯಿರಿ")}
-                          </p>
-                          <p className="text-[11px] text-[#64748b] mt-1">
-                            {t("PDF, DOCX, DOC files up to 25 MB", "PDF, DOCX, DOC ಫೈಲ್‌ಗಳು (ಗರಿಷ್ಠ 25 MB)")}
+                    {/* Notification Banner when File > 25MB is detected */}
+                    {largeFileNotice && (
+                      <div className="p-3.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-950 flex items-start gap-2.5 shadow-2xs">
+                        <AlertCircle className="h-4 w-4 text-amber-600 shrink-0 mt-0.5" />
+                        <div className="text-xs space-y-1">
+                          <p className="font-bold text-amber-900">{largeFileNotice}</p>
+                          <p className="text-amber-800 text-[11px] leading-relaxed">
+                            {t(
+                              "Files over 25 MB should be uploaded to your Google Drive and shared via link to keep uploads fast and error-free.",
+                              "25 MB ಗಿಂತ ದೊಡ್ಡದಾದ ಫೈಲ್‌ಗಳನ್ನು ನಿಮ್ಮ ಗೂಗಲ್ ಡ್ರೈವ್‌ಗೆ ಅಪ್‌ಲೋಡ್ ಮಾಡಿ ಲಿಂಕ್ ಹಂಚಿಕೊಳ್ಳಿ."
+                            )}
                           </p>
                         </div>
-                      ) : (
-                        <div className="p-3.5 rounded-xl bg-emerald-50/70 border border-emerald-200 flex items-center justify-between gap-3">
-                          <div className="flex items-center gap-2.5 min-w-0">
-                            <div className="h-9 w-9 rounded-lg bg-emerald-600 text-white flex items-center justify-center shrink-0">
-                              <FileCheck className="h-5 w-5" />
-                            </div>
-                            <div className="min-w-0">
-                              <p className="text-xs font-bold text-[#0f172a] truncate">
-                                {selectedFile.name}
-                              </p>
-                              <p className="text-[11px] text-[#64748b]">
-                                {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB &bull; {selectedFile.name.split(".").pop()?.toUpperCase()}
-                              </p>
-                            </div>
-                          </div>
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => {
-                              setSelectedFile(null);
-                              if (fileInputRef.current) fileInputRef.current.value = "";
-                            }}
-                            className="h-8 w-8 p-0 text-[#64748b] hover:text-[#e11d48] hover:bg-white rounded-lg shrink-0"
-                            title="Remove file"
-                          >
-                            <X className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      )}
+                      </div>
+                    )}
 
-                      {fileError && (
-                        <p className="text-[11px] text-[#e11d48] font-medium mt-1">{fileError}</p>
-                      )}
+                    {/* Mode Selector: Direct File Upload vs Google Drive Link */}
+                    <div className="flex items-center gap-1.5 p-1 bg-[#f1f5f9] rounded-xl border border-[#e2e8f0]">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setUploadMode("file");
+                          setLargeFileNotice(null);
+                        }}
+                        className={`flex-1 py-1.5 px-3 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition-all ${
+                          uploadMode === "file"
+                            ? "bg-white text-[#0f172a] shadow-2xs border border-[#cbd5e1]"
+                            : "text-[#64748b] hover:text-[#0f172a]"
+                        }`}
+                      >
+                        <UploadCloud className="h-3.5 w-3.5 text-[#2563eb]" />
+                        <span>{t("Direct Upload (Under 25 MB)", "ನೇರ ಅಪ್‌ಲೋಡ್ (25 MB ವರೆಗೆ)")}</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => setUploadMode("link")}
+                        className={`flex-1 py-1.5 px-3 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition-all ${
+                          uploadMode === "link"
+                            ? "bg-white text-[#0f172a] shadow-2xs border border-[#cbd5e1]"
+                            : "text-[#64748b] hover:text-[#0f172a]"
+                        }`}
+                      >
+                        <Link2 className="h-3.5 w-3.5 text-[#2563eb]" />
+                        <span>{t("Google Drive Link (Over 25 MB)", "ಗೂಗಲ್ ಡ್ರೈವ್ ಲಿಂಕ್ (25 MB ಗಿಂತ ಹೆಚ್ಚು)")}</span>
+                      </button>
                     </div>
+
+                    {uploadMode === "file" ? (
+                      /* Direct File Drag & Drop / Browse Box */
+                      <div className="space-y-1.5">
+                        <div className="flex items-center justify-between">
+                          <Label className="text-xs font-bold text-[#334155]">
+                            {t("Select Document File (PDF, DOCX, DOC) *", "ದಾಖಲೆ ಫೈಲ್ ಆಯ್ಕೆಮಾಡಿ (PDF, DOCX, DOC) *")}
+                          </Label>
+                          <span className="text-[11px] text-[#64748b]">
+                            {t("Max 25 MB per file", "ಗರಿಷ್ಠ 25 MB")}
+                          </span>
+                        </div>
+
+                        <input
+                          ref={fileInputRef}
+                          type="file"
+                          accept="application/pdf,.doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                          onChange={handleFileChange}
+                          className="hidden"
+                        />
+
+                        {!selectedFile ? (
+                          <div
+                            onClick={() => fileInputRef.current?.click()}
+                            onDragOver={(e) => e.preventDefault()}
+                            onDrop={handleDrop}
+                            className="border-2 border-dashed border-[#93c5fd] hover:border-[#2563eb] bg-[#eff6ff]/40 hover:bg-[#eff6ff]/70 transition-all rounded-xl p-6 sm:p-7 text-center cursor-pointer group"
+                          >
+                            <div className="h-11 w-11 rounded-full bg-white text-[#2563eb] flex items-center justify-center mx-auto mb-2.5 shadow-2xs group-hover:scale-105 transition-transform">
+                              <UploadCloud className="h-5 w-5" />
+                            </div>
+                            <p className="text-xs sm:text-sm font-bold text-[#0f172a]">
+                              {t("Click to browse or drag and drop your document here", "ಫೈಲ್ ಆಯ್ಕೆ ಮಾಡಲು ಕ್ಲಿಕ್ ಮಾಡಿ ಅಥವಾ ಇಲ್ಲಿ ಎಳೆಯಿರಿ")}
+                            </p>
+                            <p className="text-[11px] text-[#64748b] mt-1">
+                              {t("PDF, DOCX, DOC files up to 25 MB", "PDF, DOCX, DOC ಫೈಲ್‌ಗಳು (ಗರಿಷ್ಠ 25 MB)")}
+                            </p>
+                            <p className="text-[10.5px] text-[#2563eb] font-semibold mt-1.5">
+                              {t("File > 25 MB? It will auto-switch to Drive Link!", "ಫೈಲ್ > 25 MB ಇದ್ದರೆ, ಡ್ರೈವ್ ಲಿಂಕ್‌ಗೆ ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಬದಲಾಗುತ್ತದೆ!")}
+                            </p>
+                          </div>
+                        ) : (
+                          <div className="p-3.5 rounded-xl bg-emerald-50/70 border border-emerald-200 flex items-center justify-between gap-3">
+                            <div className="flex items-center gap-2.5 min-w-0">
+                              <div className="h-9 w-9 rounded-lg bg-emerald-600 text-white flex items-center justify-center shrink-0">
+                                <FileCheck className="h-5 w-5" />
+                              </div>
+                              <div className="min-w-0">
+                                <p className="text-xs font-bold text-[#0f172a] truncate">
+                                  {selectedFile.name}
+                                </p>
+                                <p className="text-[11px] text-[#64748b]">
+                                  {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB &bull; {selectedFile.name.split(".").pop()?.toUpperCase()}
+                                </p>
+                              </div>
+                            </div>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => {
+                                setSelectedFile(null);
+                                if (fileInputRef.current) fileInputRef.current.value = "";
+                              }}
+                              className="h-8 w-8 p-0 text-[#64748b] hover:text-[#e11d48] hover:bg-white rounded-lg shrink-0"
+                              title="Remove file"
+                            >
+                              <X className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        )}
+
+                        {fileError && (
+                          <p className="text-[11px] text-[#e11d48] font-medium mt-1">{fileError}</p>
+                        )}
+                      </div>
+                    ) : (
+                      /* Google Drive Link Input for Files > 25 MB */
+                      <div className="space-y-2 p-3.5 sm:p-4 rounded-xl bg-[#eff6ff]/70 border border-[#bfdbfe]">
+                        <div className="flex items-center justify-between">
+                          <Label htmlFor="driveUrl" className="text-xs font-bold text-[#1e40af] flex items-center gap-1.5">
+                            <ExternalLink className="h-3.5 w-3.5" />
+                            <span>{t("Google Drive / Cloud Share Link *", "ಗೂಗಲ್ ಡ್ರೈವ್ ಲಿಂಕ್ *")}</span>
+                          </Label>
+                          <span className="text-[10px] text-[#2563eb] font-semibold">
+                            {t("Anyone with link: Viewer", "ವೀವರ್ ಆಕ್ಸೆಸ್ ಇರಬೇಕು")}
+                          </span>
+                        </div>
+                        <Input
+                          id="driveUrl"
+                          required
+                          type="url"
+                          placeholder="https://drive.google.com/file/d/..."
+                          value={driveUrl}
+                          onChange={(e) => setDriveUrl(e.target.value)}
+                          className="text-xs sm:text-sm bg-white rounded-lg border-[#93c5fd] font-mono focus-visible:ring-[#2563eb]"
+                        />
+                        <div className="text-[11px] text-[#475569] space-y-1">
+                          <p>
+                            {t(
+                              "1. Upload your large file (> 25 MB) to Google Drive.",
+                              "1. ನಿಮ್ಮ ದೊಡ್ಡ ಫೈಲ್ (> 25 MB) ಗೂಗಲ್ ಡ್ರೈವ್‌ಗೆ ಅಪ್‌ಲೋಡ್ ಮಾಡಿ."
+                            )}
+                          </p>
+                          <p>
+                            {t(
+                              "2. Set General access to 'Anyone with the link' (Viewer) and paste the link above.",
+                              "2. 'Anyone with the link' (Viewer) ಆಯ್ಕೆಮಾಡಿ ಲಿಂಕ್ ಪೇಸ್ಟ್ ಮಾಡಿ."
+                            )}
+                          </p>
+                        </div>
+                      </div>
+                    )}
 
                     {/* Material Title */}
                     <div className="space-y-1.5">
