@@ -21,7 +21,7 @@ export function PublicLayout({ children }: { children: ReactNode }) {
   usePageViewTracker();
   const [location, setLocation] = useLocation();
   const { language, toggleLanguage, t } = useLanguage();
-  const { isPassActive, isExemptPage, remainingTimeFormatted } = useSitePass();
+  const { isFeatureEnabled, isPassActive, isExemptPage, remainingTimeFormatted } = useSitePass();
   const isPurchasesActive = location === "/my-purchases";
 
   const { data: viewData } = useQuery<{ count: number }>({
@@ -90,8 +90,8 @@ export function PublicLayout({ children }: { children: ReactNode }) {
 
           {/* Right Navigation Actions (visible at all times) */}
           <nav className="flex items-center gap-1 sm:gap-2 shrink-0">
-            {/* 5-Hour Pass Status Badge (shown when pass is active) */}
-            {isPassActive && !isExemptPage && (
+            {/* 5-Hour Pass Status Badge (shown when pass is active and feature enabled) */}
+            {isFeatureEnabled && isPassActive && !isExemptPage && (
               <Tooltip>
                 <TooltipTrigger asChild>
                   <div

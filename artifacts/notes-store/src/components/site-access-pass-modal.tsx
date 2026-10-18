@@ -38,7 +38,7 @@ declare global {
 }
 
 export function SiteAccessPassModal() {
-  const { isPassActive, isExemptPage, grantPass } = useSitePass();
+  const { isFeatureEnabled, isPassActive, isExemptPage, grantPass } = useSitePass();
   const { language, t } = useLanguage();
 
   const [isWatchingAd, setIsWatchingAd] = useState(false);
@@ -46,8 +46,8 @@ export function SiteAccessPassModal() {
   const [canClaimReward, setCanClaimReward] = useState(false);
   const rewardedSlotRef = useRef<any>(null);
 
-  // If pass is already active or on an exempt page (e.g. /admin, /privacy-policy), do not show lock
-  const shouldShowModal = !isPassActive && !isExemptPage;
+  // If feature is currently OFF, pass is already active, or on an exempt page, do not show lock
+  const shouldShowModal = isFeatureEnabled && !isPassActive && !isExemptPage;
 
   // Initialize Google Publisher Tag (GPT) Web Rewarded Ad Slot
   useEffect(() => {

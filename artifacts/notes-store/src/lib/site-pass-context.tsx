@@ -1,6 +1,10 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { useLocation } from "wouter";
 
+// Master switch: Set to true once Google AdSense approval is Ready.
+// Currently FALSE while site is getting ready, so students have full access without interruptions.
+export const IS_PASS_FEATURE_ENABLED = false;
+
 // 5 hours in milliseconds = 5 * 60 * 60 * 1000 = 18,000,000 ms
 export const PASS_DURATION_MS = 5 * 60 * 60 * 1000;
 const PASS_STORAGE_KEY = "2puc_site_pass_expires_at";
@@ -17,6 +21,7 @@ export const EXEMPT_PATH_PREFIXES = [
 ];
 
 interface SitePassContextType {
+  isFeatureEnabled: boolean;
   isPassActive: boolean;
   isExemptPage: boolean;
   remainingMs: number;
@@ -93,6 +98,7 @@ export function SitePassProvider({ children }: { children: ReactNode }) {
   return (
     <SitePassContext.Provider
       value={{
+        isFeatureEnabled: IS_PASS_FEATURE_ENABLED,
         isPassActive,
         isExemptPage,
         remainingMs,
