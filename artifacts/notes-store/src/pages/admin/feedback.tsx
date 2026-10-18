@@ -1,6 +1,21 @@
 import { useState } from "react";
+import { useLocation } from "wouter";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { MessageSquarePlus, Flag, CheckCircle2, AlertTriangle, HelpCircle, Clock, ExternalLink, Filter, RefreshCw, Check } from "lucide-react";
+import {
+  MessageSquarePlus,
+  Flag,
+  CheckCircle2,
+  AlertTriangle,
+  HelpCircle,
+  Clock,
+  ExternalLink,
+  Filter,
+  RefreshCw,
+  Check,
+  PlusCircle,
+  FolderPlus,
+  BookOpen,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -21,10 +36,28 @@ interface FeedbackItem {
 }
 
 export default function AdminFeedback() {
+  const [, setLocation] = useLocation();
   const [filterType, setFilterType] = useState<string>("all");
   const [filterStatus, setFilterStatus] = useState<string>("all");
   const queryClient = useQueryClient();
   const { toast } = useToast();
+
+  // Helper to extract contribution fields for one-click catalog approval
+  const parseContribution = (msg: string) => {
+    const lines = msg.split("\n");
+    const getVal = (prefix: string) => {
+      const line = lines.find((l) => l.toLowerCase().startsWith(prefix.toLowerCase()));
+      return line ? line.substring(prefix.length).trim() : "";
+    };
+
+    const subject = getVal("Subject:");
+    const resourceType = getVal("Resource Type:");
+    const title = getVal("Material Title:");
+    const driveUrl = getVal("Google Drive Link:");
+    const notes = getVal("Notes / Description:");
+
+    return { subject, resourceType, title, driveUrl, notes };
+  };
 
   const rawApiUrl = import.meta.env.VITE_API_URL;
   const API_URL = rawApiUrl ? rawApiUrl.replace(/\/+$/, "") : "";
@@ -247,9 +280,51 @@ export default function AdminFeedback() {
                     </TableCell>
 
                     <TableCell className="py-3.5 align-top max-w-md">
-                      <p className="text-xs sm:text-sm text-[#0f172a] whitespace-pre-wrap leading-relaxed font-normal">
-                        {item.message}
-                      </p>
+                      {item.type === "contribution" ? (
+                        <div className="space-y-2 text-xs">
+                          {(() => {
+                            const parsed = parseContribution(item.message);
+                            return (
+                              <div className="p-3 rounded-lg bg-emerald-50/60 border border-emerald-200/80 space-y-1.5">
+                                <div className="flex items-center justify-between">
+                                  <span className="font-bold text-[#0f172a] text-sm">{parsed.title || "Untitled Contribution"}</span>
+                                  <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-semibold text-[10px]">
+                                    {parsed.subject || "General"}
+                                  </span>
+                                </div>
+                                <div className="text-[#475569] text-[11px] flex items-center gap-1.5 font-medium">
+                                  <span className="text-[#64748b]">Type:</span>
+                                  <span className="bg-white px-1.5 py-0.5 rounded border border-emerald-200 font-semibold">
+                                    {parsed.resourceType || "Notes"}
+                                  </span>
+                                </div>
+                                {parsed.driveUrl && (
+                                  <div className="pt-1">
+                                    <a
+                                      href={parsed.driveUrl}
+                                      target="_blank"
+                                      rel="noreferrer"
+                                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-[#2563eb] hover:bg-[#1d4ed8] text-white text-[11px] font-semibold transition-colors shadow-2xs"
+                                    >
+                                      <ExternalLink className="h-3 w-3" />
+                                      <span>Open & Test Google Drive Link</span>
+                                    </a>
+                                  </div>
+                                )}
+                                {parsed.notes && (
+                                  <p className="text-[11px] text-[#64748b] italic pt-1 border-t border-emerald-200/60">
+                                    "{parsed.notes}"
+                                  </p>
+                                )}
+                              </div>
+                            );
+                          })()}
+                        </div>
+                      ) : (
+                        <p className="text-xs sm:text-sm text-[#0f172a] whitespace-pre-wrap leading-relaxed font-normal">
+                          {item.message}
+                        </p>
+                      )}
                     </TableCell>
 
                     <TableCell className="py-3.5 align-top text-xs font-medium text-[#475569]">
@@ -285,31 +360,61 @@ export default function AdminFeedback() {
                     </TableCell>
 
                     <TableCell className="py-3.5 align-top text-right">
-                      <div className="inline-flex items-center gap-1">
-                        {item.status === "new" && (
+                      <div className="inline-flex flex-col items-end gap-1.5">
+                        {/* If Contribution, provide one-click 'Approve & Put in Subject' button */}
+                        {item.type === "contribution" && (
                           <Button
                             size="sm"
-                            variant="outline"
-                            onClick={() => updateStatusMutation.mutate({ id: item.id, status: "reviewed" })}
-                            className="h-7 text-[11px] px-2 font-medium"
+                            onClick={() => {
+                              const parsed = parseContribution(item.message);
+                              const q = new URLSearchParams();
+                              if (parsed.title) q.set("title", parsed.title);
+                              if (parsed.subject) q.set("subject", parsed.subject);
+                              if (parsed.resourceType) q.set("resourceType", parsed.resourceType);
+                              if (parsed.driveUrl) q.set("driveUrl", parsed.driveUrl);
+                              if (parsed.notes) q.set("notes", parsed.notes);
+
+                              // Mark as reviewed in background
+                              if (item.status === "new") {
+                                updateStatusMutation.mutate({ id: item.id, status: "reviewed" });
+                              }
+
+                              // Navigate to card creation form with all prefilled parameters
+                              setLocation(`/admin/cards/new?${q.toString()}`);
+                            }}
+                            className="h-7 text-[11px] px-2.5 font-bold bg-[#2563eb] hover:bg-[#1d4ed8] text-white shadow-2xs gap-1"
                           >
-                            Mark Reviewed
+                            <FolderPlus className="h-3 w-3" />
+                            <span>Approve & Publish</span>
                           </Button>
                         )}
-                        {item.status !== "resolved" ? (
-                          <Button
-                            size="sm"
-                            onClick={() => updateStatusMutation.mutate({ id: item.id, status: "resolved" })}
-                            className="h-7 text-[11px] px-2.5 font-semibold bg-[#16a34a] hover:bg-[#15803d] text-white"
-                          >
-                            <Check className="h-3 w-3 mr-1" />
-                            Resolve
-                          </Button>
-                        ) : (
-                          <Badge className="bg-[#f0fdf4] text-[#16a34a] border-[#bbf7d0] text-[10px] font-bold">
-                            Resolved
-                          </Badge>
-                        )}
+
+                        <div className="inline-flex items-center gap-1">
+                          {item.status === "new" && item.type !== "contribution" && (
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => updateStatusMutation.mutate({ id: item.id, status: "reviewed" })}
+                              className="h-7 text-[11px] px-2 font-medium"
+                            >
+                              Mark Reviewed
+                            </Button>
+                          )}
+                          {item.status !== "resolved" ? (
+                            <Button
+                              size="sm"
+                              onClick={() => updateStatusMutation.mutate({ id: item.id, status: "resolved" })}
+                              className="h-7 text-[11px] px-2.5 font-semibold bg-[#16a34a] hover:bg-[#15803d] text-white"
+                            >
+                              <Check className="h-3 w-3 mr-1" />
+                              Resolve
+                            </Button>
+                          ) : (
+                            <Badge className="bg-[#f0fdf4] text-[#16a34a] border-[#bbf7d0] text-[10px] font-bold">
+                              Resolved
+                            </Badge>
+                          )}
+                        </div>
                       </div>
                     </TableCell>
                   </TableRow>

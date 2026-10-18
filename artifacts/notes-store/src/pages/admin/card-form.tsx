@@ -1,4 +1,4 @@
-import { useState, useRef, useMemo } from "react";
+import { useState, useRef, useMemo, useEffect } from "react";
 import { useLocation } from "wouter";
 import { 
   useAdminListSections, 
@@ -146,15 +146,41 @@ export default function CardForm({ initialData, cardId }: { initialData?: Partia
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
-  const [form, setForm] = useState<CardFormData>({ ...defaultForm, ...initialData });
+  // Parse URL search parameters for prefill (e.g. approving a community contribution)
+  const searchParams = useMemo(() => {
+    if (typeof window === "undefined") return new URLSearchParams();
+    return new URLSearchParams(window.location.search);
+  }, []);
+
+  const prefillData: Partial<CardFormData> = useMemo(() => {
+    const params: Partial<CardFormData> = {};
+    const paramTitle = searchParams.get("title");
+    const paramSubject = searchParams.get("subject");
+    const paramResourceType = searchParams.get("resourceType");
+    const paramDriveUrl = searchParams.get("driveUrl");
+    const paramNotes = searchParams.get("notes");
+
+    if (paramTitle) params.title = paramTitle;
+    if (paramSubject) params.subject = paramSubject;
+    if (paramResourceType) params.resourceType = paramResourceType;
+    if (paramDriveUrl) params.pdfFileKey = paramDriveUrl;
+    if (paramNotes) params.description = paramNotes;
+
+    return params;
+  }, [searchParams]);
+
+  const [form, setForm] = useState<CardFormData>(() => ({
+    ...defaultForm,
+    ...initialData,
+    ...prefillData,
+  }));
   const [uploading, setUploading] = useState<"pdf" | "image" | null>(null);
-  const [uploadMethod, setUploadMethod] = useState<"file" | "drive" | "gov" | "existing">(
-    initialData?.pdfFileKey?.includes("gov.in")
-      ? "gov"
-      : initialData?.pdfFileKey?.startsWith("http")
-      ? "drive"
-      : "file"
-  );
+  const [uploadMethod, setUploadMethod] = useState<"file" | "drive" | "gov" | "existing">(() => {
+    const activeKey = initialData?.pdfFileKey || prefillData?.pdfFileKey || "";
+    if (activeKey.includes("gov.in")) return "gov";
+    if (activeKey.startsWith("http")) return "drive";
+    return "file";
+  });
   const [driveUrlInput, setDriveUrlInput] = useState("");
   const [govUrlInput, setGovUrlInput] = useState("");
   const [existingSearch, setExistingSearch] = useState("");
@@ -162,6 +188,18 @@ export default function CardForm({ initialData, cardId }: { initialData?: Partia
 
   const pdfRef = useRef<HTMLInputElement>(null);
   const imageRef = useRef<HTMLInputElement>(null);
+
+  // Auto-link sectionId if sections load and subject is prefilled
+  useEffect(() => {
+    if (sections && form.subject && !form.sectionId) {
+      const match = sections.find(
+        (s) => s.name.toLowerCase() === form.subject.toLowerCase()
+      );
+      if (match) {
+        setForm((f) => ({ ...f, sectionId: String(match.id) }));
+      }
+    }
+  }, [sections, form.subject, form.sectionId]);
 
   function set(key: keyof CardFormData, value: any) {
     setForm(f => ({ ...f, [key]: value }));
