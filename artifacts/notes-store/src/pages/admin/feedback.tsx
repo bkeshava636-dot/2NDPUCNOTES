@@ -148,7 +148,7 @@ export default function AdminFeedback() {
       <div className="flex flex-wrap items-center justify-between gap-3 bg-white p-3 rounded-xl border border-[#e2e8f0] shadow-2xs">
         <div className="flex items-center gap-1.5 overflow-x-auto">
           <span className="text-xs font-bold text-[#64748b] mr-1">Type:</span>
-          {["all", "feedback", "bug_report", "broken_link", "content_error"].map((t) => (
+          {["all", "contribution", "feedback", "bug_report", "broken_link", "content_error"].map((t) => (
             <button
               key={t}
               onClick={() => setFilterType(t)}
@@ -215,7 +215,9 @@ export default function AdminFeedback() {
                         <Badge
                           variant="outline"
                           className={`text-[10px] font-bold uppercase ${
-                            item.type === "feedback"
+                            item.type === "contribution"
+                              ? "bg-[#f0fdf4] text-[#16a34a] border-[#bbf7d0]"
+                              : item.type === "feedback"
                               ? "bg-[#eff6ff] text-[#2563eb] border-[#bfdbfe]"
                               : "bg-[#fff1f2] text-[#e11d48] border-[#fecdd3]"
                           }`}

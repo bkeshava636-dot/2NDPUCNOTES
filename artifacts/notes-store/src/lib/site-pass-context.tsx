@@ -17,6 +17,7 @@ export const EXEMPT_PATH_PREFIXES = [
   "/terms-and-conditions",
   "/refund-policy",
   "/contact",
+  "/contribute",
   "/payment-success",
 ];
 

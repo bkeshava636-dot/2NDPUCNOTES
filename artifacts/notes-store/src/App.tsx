@@ -28,6 +28,7 @@ const PrivacyPolicy = lazy(() => import("@/pages/privacy-policy"));
 const TermsAndConditions = lazy(() => import("@/pages/terms-and-conditions"));
 const RefundPolicy = lazy(() => import("@/pages/refund-policy"));
 const ContactUs = lazy(() => import("@/pages/contact-us"));
+const ContributePage = lazy(() => import("@/pages/contribute"));
 
 // Code-split Admin Pages (keeps admin bundles separate from public store)
 const AdminLogin = lazy(() => import("@/pages/admin/login"));
@@ -107,6 +108,7 @@ function PublicRoutes() {
           <Route path="/terms" component={TermsAndConditions} />
           <Route path="/refund-policy" component={RefundPolicy} />
           <Route path="/contact" component={ContactUs} />
+          <Route path="/contribute" component={ContributePage} />
           <Route component={NotFound} />
         </Switch>
       </Suspense>

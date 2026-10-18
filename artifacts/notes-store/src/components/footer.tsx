@@ -156,6 +156,12 @@ export function Footer() {
                   </Link>
                 </li>
                 <li>
+                  <Link href="/contribute" className="text-[#2563eb] font-semibold hover:underline flex items-center gap-1 transition-colors">
+                    <span>{t("Contribute Notes", "ನೋಟ್ಸ್ ಹಂಚಿಕೊಳ್ಳಿ")}</span>
+                    <span className="text-[10px] bg-blue-100 text-blue-800 px-1.5 py-0.2 rounded-full font-bold">Drive</span>
+                  </Link>
+                </li>
+                <li>
                   <Link href="/contact" className="hover:text-[#2563eb] transition-colors">
                     {t("Contact Us", "ಸಂಪರ್ಕಿಸಿ")}
                   </Link>

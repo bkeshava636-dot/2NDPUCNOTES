@@ -3,7 +3,7 @@ import { Link, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Footer } from "@/components/footer";
-import { ShoppingBag, Eye, Send, Search, Languages, Clock, Sparkles } from "lucide-react";
+import { ShoppingBag, Eye, Send, Search, Languages, Clock, Sparkles, UploadCloud } from "lucide-react";
 import { BrandLogo } from "@/components/brand-logo";
 import { FloatingFeedback } from "@/components/floating-feedback";
 import { usePageViewTracker } from "@/hooks/use-page-view-tracker";
@@ -153,6 +153,24 @@ export function PublicLayout({ children }: { children: ReactNode }) {
               <Send className="h-3.5 w-3.5" />
               <span className="hidden sm:inline">Telegram</span>
             </a>
+
+            {/* Contribute Study Materials */}
+            <Link href="/contribute">
+              <Button
+                variant={location === "/contribute" ? "secondary" : "ghost"}
+                size="sm"
+                className={`h-8.5 px-2 sm:px-2.5 text-xs font-semibold rounded-lg transition-all flex items-center gap-1.5 ${
+                  location === "/contribute"
+                    ? "bg-[#eff6ff] text-[#2563eb] border border-[#bfdbfe] shadow-2xs"
+                    : "text-[#334155] hover:text-[#0f172a] hover:bg-[#f1f5f9] border border-transparent"
+                }`}
+                aria-label="Contribute Study Materials"
+                title={t("Contribute Notes via Google Drive", "ಗೂಗಲ್ ಡ್ರೈವ್ ಮೂಲಕ ನೋಟ್ಸ್ ಕೊಡುಗೆ ನೀಡಿ")}
+              >
+                <UploadCloud className="h-3.5 w-3.5 text-[#2563eb]" />
+                <span className="hidden sm:inline">{t("Contribute", "ಕೊಡುಗೆ")}</span>
+              </Button>
+            </Link>
 
             {/* My Purchases */}
             <Link href="/my-purchases">
