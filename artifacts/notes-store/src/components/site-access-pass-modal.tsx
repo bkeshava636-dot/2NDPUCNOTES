@@ -1,9 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useSitePass } from "@/lib/site-pass-context";
 import { useLanguage } from "@/lib/language-context";
-import { BrandLogo } from "@/components/brand-logo";
 import {
   Clock,
   PlayCircle,
@@ -13,29 +12,94 @@ import {
   Loader2,
   Zap,
   Lock,
-  ExternalLink,
 } from "lucide-react";
+
+// Google Ad Manager Network Code
+const GAM_NETWORK_CODE = "23386196117";
+// Default Rewarded Ad Unit Code
+const GAM_AD_UNIT_PATH = `/${GAM_NETWORK_CODE}/2puc_pass_video`;
 
 declare global {
   interface Window {
     adsbygoogle?: any[];
-    googletag?: any;
+    googletag?: {
+      cmd: any[];
+      defineOutOfPageSlot?: (path: string, type: any) => any;
+      enums?: {
+        OutOfPageType: {
+          REWARDED: any;
+        };
+      };
+      pubads?: () => any;
+      enableServices?: () => void;
+      display?: (slot: any) => void;
+    };
   }
 }
 
 export function SiteAccessPassModal() {
   const { isPassActive, isExemptPage, grantPass } = useSitePass();
   const { language, t } = useLanguage();
-  const isKn = language === "kn";
 
   const [isWatchingAd, setIsWatchingAd] = useState(false);
   const [adCountdown, setAdCountdown] = useState(15);
   const [canClaimReward, setCanClaimReward] = useState(false);
+  const rewardedSlotRef = useRef<any>(null);
 
-  // If pass is already active or this is an exempt page (like /admin, /privacy-policy), do not show lock
+  // If pass is already active or on an exempt page (e.g. /admin, /privacy-policy), do not show lock
   const shouldShowModal = !isPassActive && !isExemptPage;
 
-  // Countdown timer when ad watching is active
+  // Initialize Google Publisher Tag (GPT) Web Rewarded Ad Slot
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const gTag = (window.googletag = window.googletag || ({ cmd: [] } as any));
+
+    gTag.cmd.push(() => {
+      try {
+        if (
+          gTag.defineOutOfPageSlot &&
+          gTag.enums?.OutOfPageType?.REWARDED &&
+          typeof gTag.pubads === "function"
+        ) {
+          // Define official web rewarded ad slot
+          const slot = gTag.defineOutOfPageSlot(
+            GAM_AD_UNIT_PATH,
+            gTag.enums.OutOfPageType.REWARDED
+          );
+
+          if (slot) {
+            slot.addService(gTag.pubads());
+            rewardedSlotRef.current = slot;
+
+            const pubadsService = gTag.pubads();
+            if (pubadsService?.addEventListener) {
+              // Listen for official reward granted event
+              pubadsService.addEventListener("rewardedSlotGranted", () => {
+                grantPass();
+                setIsWatchingAd(false);
+                setCanClaimReward(false);
+              });
+
+              // Listen for ad closed event
+              pubadsService.addEventListener("rewardedSlotClosed", () => {
+                // Destroy or refresh slot for next session
+                try {
+                  gTag.pubads?.()?.refresh?.([slot]);
+                } catch {}
+              });
+            }
+
+            gTag.enableServices?.();
+          }
+        }
+      } catch (err) {
+        console.warn("GPT Rewarded slot registration note:", err);
+      }
+    });
+  }, [grantPass]);
+
+  // Fallback 15s countdown timer when ad watching is active
   useEffect(() => {
     let timer: NodeJS.Timeout;
     if (isWatchingAd && adCountdown > 0) {
@@ -53,11 +117,19 @@ export function SiteAccessPassModal() {
     setAdCountdown(15);
     setCanClaimReward(false);
 
-    // Attempt to invoke Google Rewarded / Interstitial Ad if Google Publisher Tag or Adsense Rewarded API is initialized
+    // 1. Try to trigger Google Ad Manager official Rewarded Video display
     try {
-      if (window.googletag && window.googletag.openConsole) {
-        // Trigger rewarded ad event if configured in GAM
+      if (window.googletag && rewardedSlotRef.current) {
+        window.googletag.cmd.push(() => {
+          try {
+            window.googletag?.display?.(rewardedSlotRef.current);
+          } catch {}
+        });
       }
+    } catch {}
+
+    // 2. Trigger Google AdSense display push
+    try {
       if (window.adsbygoogle && Array.isArray(window.adsbygoogle)) {
         window.adsbygoogle.push({});
       }
@@ -153,9 +225,8 @@ export function SiteAccessPassModal() {
             /* Ad Player / Countdown View */
             <div className="text-center space-y-4 py-2">
               <div className="aspect-video w-full rounded-xl bg-[#0f172a] text-white p-4 flex flex-col items-center justify-center relative overflow-hidden border border-[#334155] shadow-inner">
-                {/* Ad Container for Google AdSense */}
+                {/* Ad Container for Google AdSense / Google Ad Manager */}
                 <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
-                  {/* Google AdSense container hook */}
                   <ins
                     className="adsbygoogle"
                     style={{ display: "block", width: "100%", height: "100%" }}
