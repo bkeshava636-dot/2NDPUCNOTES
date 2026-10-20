@@ -1,3 +1,4 @@
+import { MetaNoIndex } from "@/components/meta-noindex";
 import { ReactNode, useEffect, useState } from "react";
 import { Link, useLocation } from "wouter";
 import { useAdminLogout } from "@workspace/api-client-react";

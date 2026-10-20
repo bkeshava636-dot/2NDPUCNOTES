@@ -49,6 +49,47 @@ export default function PrivacyPolicy() {
         </p>
       </PolicySection>
 
+      <PolicySection title="Cookies and Advertising Technologies">
+        <p>
+          We use cookies, web beacons, and similar technologies to enhance user experience, remember your preferences (such as your chosen language and viewing settings), and analyze traffic to improve our learning resources.
+        </p>
+      </PolicySection>
+
+      <PolicySection title="Google AdSense & Third-Party Advertising">
+        <p>
+          We may partner with third-party advertising vendors, including Google, to serve advertisements when you visit our website.
+        </p>
+        <ul className="list-disc space-y-2 pl-5 mt-2">
+          <li>
+            Third-party vendors, including <strong>Google</strong>, use cookies (such as the DoubleClick DART cookie) to serve ads based on a user&apos;s prior visits to this website or other websites on the Internet.
+          </li>
+          <li>
+            Google&apos;s use of advertising cookies enables it and its partners to serve ads to users based on their visits to our site and/or other sites on the Internet.
+          </li>
+          <li>
+            Users may opt out of personalized advertising by visiting{" "}
+            <a
+              href="https://www.google.com/settings/ads"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary font-medium hover:underline"
+            >
+              Google Ads Settings
+            </a>
+            . Alternatively, you can opt out of third-party vendor cookies for personalized advertising by visiting{" "}
+            <a
+              href="https://www.aboutads.info/choices/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary font-medium hover:underline"
+            >
+              aboutads.info
+            </a>
+            .
+          </li>
+        </ul>
+      </PolicySection>
+
       <PolicySection title="Data Security">
         <p>
           We take reasonable measures to protect your personal information from

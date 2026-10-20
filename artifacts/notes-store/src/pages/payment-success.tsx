@@ -1,3 +1,4 @@
+import { MetaNoIndex } from "@/components/meta-noindex";
 import { useSearch, Link } from "wouter";
 import { useGetCard } from "@workspace/api-client-react";
 import { Button } from "@/components/ui/button";

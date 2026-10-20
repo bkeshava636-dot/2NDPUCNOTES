@@ -1,2 +1,16 @@
 User-agent: *
 Allow: /
+Disallow: /admin/
+Disallow: /checkout
+Disallow: /payment-success
+Disallow: /my-purchases
+
+# AdSense Crawler
+User-agent: Mediapartners-Google
+Allow: /
+Disallow: /admin/
+Disallow: /checkout
+Disallow: /payment-success
+Disallow: /my-purchases
+
+Sitemap: https://2ndpucnotes.vercel.app/sitemap.xml

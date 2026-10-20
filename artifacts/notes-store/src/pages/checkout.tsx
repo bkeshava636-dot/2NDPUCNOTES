@@ -1,3 +1,4 @@
+import { MetaNoIndex } from "@/components/meta-noindex";
 import { useState } from "react";
 import { useLocation, useSearch, Link } from "wouter";
 import { useGetCard } from "@workspace/api-client-react";
@@ -201,6 +202,7 @@ export default function Checkout() {
 
   return (
     <div className="max-w-lg mx-auto w-full px-4 py-8 sm:py-10">
+      <MetaNoIndex />
       <Link href={`/card/${cardId}`}>
         <Button variant="ghost" size="sm" className="gap-2 text-[#475569] hover:text-[#0f172a] -ml-2 mb-5 font-medium">
           <ArrowLeft className="h-4 w-4" />

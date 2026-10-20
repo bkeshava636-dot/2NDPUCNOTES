@@ -162,6 +162,11 @@ export function Footer() {
                   </Link>
                 </li>
                 <li>
+                  <Link href="/about" className="hover:text-[#2563eb] transition-colors">
+                    {t("About Us", "ನಮ್ಮ ಬಗ್ಗೆ")}
+                  </Link>
+                </li>
+                <li>
                   <Link href="/contact" className="hover:text-[#2563eb] transition-colors">
                     {t("Contact Us", "ಸಂಪರ್ಕಿಸಿ")}
                   </Link>

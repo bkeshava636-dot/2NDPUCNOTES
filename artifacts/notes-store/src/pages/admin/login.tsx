@@ -1,3 +1,4 @@
+import { MetaNoIndex } from "@/components/meta-noindex";
 import { useState } from "react";
 import { useLocation } from "wouter";
 import { useForm } from "react-hook-form";

@@ -1,3 +1,4 @@
+import { MetaNoIndex } from "@/components/meta-noindex";
 import { useState } from "react";
 import { useGetPurchases } from "@workspace/api-client-react";
 import { Button } from "@/components/ui/button";

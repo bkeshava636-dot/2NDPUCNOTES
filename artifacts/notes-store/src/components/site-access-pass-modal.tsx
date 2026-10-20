@@ -117,7 +117,7 @@ export function SiteAccessPassModal() {
     setAdCountdown(15);
     setCanClaimReward(false);
 
-    // 1. Try to trigger Google Ad Manager official Rewarded Video display
+    // Trigger Google Ad Manager official Rewarded Video display if available
     try {
       if (window.googletag && rewardedSlotRef.current) {
         window.googletag.cmd.push(() => {
@@ -127,15 +127,6 @@ export function SiteAccessPassModal() {
         });
       }
     } catch {}
-
-    // 2. Trigger Google AdSense display push
-    try {
-      if (window.adsbygoogle && Array.isArray(window.adsbygoogle)) {
-        window.adsbygoogle.push({});
-      }
-    } catch (e) {
-      console.warn("AdSense trigger notice:", e);
-    }
   };
 
   const handleClaimPass = () => {
@@ -225,15 +216,8 @@ export function SiteAccessPassModal() {
             /* Ad Player / Countdown View */
             <div className="text-center space-y-4 py-2">
               <div className="aspect-video w-full rounded-xl bg-[#0f172a] text-white p-4 flex flex-col items-center justify-center relative overflow-hidden border border-[#334155] shadow-inner">
-                {/* Ad Container for Google AdSense / Google Ad Manager */}
+                {/* Ad Container for Google Ad Manager */}
                 <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
-                  <ins
-                    className="adsbygoogle"
-                    style={{ display: "block", width: "100%", height: "100%" }}
-                    data-ad-client="ca-pub-2516613029504029"
-                    data-ad-format="auto"
-                    data-full-width-responsive="true"
-                  ></ins>
 
                   {!canClaimReward ? (
                     <div className="space-y-3 z-10 bg-slate-900/90 p-4 rounded-xl backdrop-blur-sm border border-slate-700/60 max-w-xs">

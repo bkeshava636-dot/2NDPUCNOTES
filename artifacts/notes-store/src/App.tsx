@@ -24,6 +24,7 @@ import PaymentSuccess from "@/pages/payment-success";
 import MyPurchases from "@/pages/my-purchases";
 
 // Code-split Legal Pages
+const AboutUs = lazy(() => import("@/pages/about"));
 const PrivacyPolicy = lazy(() => import("@/pages/privacy-policy"));
 const TermsAndConditions = lazy(() => import("@/pages/terms-and-conditions"));
 const RefundPolicy = lazy(() => import("@/pages/refund-policy"));
@@ -104,6 +105,7 @@ function PublicRoutes() {
           <Route path="/checkout" component={Checkout} />
           <Route path="/payment-success" component={PaymentSuccess} />
           <Route path="/my-purchases" component={MyPurchases} />
+          <Route path="/about" component={AboutUs} />
           <Route path="/privacy-policy" component={PrivacyPolicy} />
           <Route path="/terms" component={TermsAndConditions} />
           <Route path="/refund-policy" component={RefundPolicy} />

@@ -1,3 +1,4 @@
+import { HomeFaqAndGuide } from "@/components/home-faq-and-guide";
 import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "wouter";
 import { useListSections, useListCards, listCards } from "@workspace/api-client-react";
@@ -492,6 +493,9 @@ export default function Home() {
           </section>
         )}
 
+
+        {/* ── PART 4: Academic Blueprint & FAQs ── */}
+        {!submitted && <HomeFaqAndGuide />}
 
         {/* ── PART 5: Community & Telegram Banner ── */}
         <section className="bg-gradient-to-r from-[#eff6ff] via-[#f0f9ff] to-[#f8fafc] border border-[#dbeafe] rounded-xl p-5 sm:p-6 shadow-2xs">
