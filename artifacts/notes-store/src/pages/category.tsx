@@ -1,3 +1,5 @@
+import { CategoryAcademicGuide } from "@/components/category-academic-guide";
+import { MetaNoIndex } from "@/components/meta-noindex";
 import { useState, useMemo } from "react";
 import { useParams, Link } from "wouter";
 import { useListCards, useListSections } from "@workspace/api-client-react";
@@ -507,6 +509,7 @@ export default function CategoryPage() {
         </div>
       ) : filteredCards.length === 0 ? (
         <div className="bg-white border border-[#e2e8f0] rounded-xl p-12 text-center">
+          <MetaNoIndex />
           <FileQuestion className="h-10 w-10 text-[#94a3b8] mx-auto mb-3" />
           <h3 className="font-bold text-base text-[#112542] mb-1">{t("No resources found", "ಯಾವುದೇ ಸಂಪನ್ಮೂಲ ಕಂಡುಬಂದಿಲ್ಲ")}</h3>
           <p className="text-xs sm:text-sm text-[#5a6b82] max-w-sm mx-auto">
@@ -537,6 +540,9 @@ export default function CategoryPage() {
           ))}
         </div>
       )}
+
+      {/* Category Academic Guide */}
+      <CategoryAcademicGuide slug={slug} categoryTitle={displayTitle} />
     </div>
   );
 }

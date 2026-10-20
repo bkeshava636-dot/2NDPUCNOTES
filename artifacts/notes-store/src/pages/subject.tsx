@@ -1,3 +1,5 @@
+import { SubjectAcademicGuide } from "@/components/subject-academic-guide";
+import { MetaNoIndex } from "@/components/meta-noindex";
 import { useState, useMemo } from "react";
 import { useParams, Link } from "wouter";
 import { useListSections, useListCards } from "@workspace/api-client-react";
@@ -488,6 +490,7 @@ export default function SubjectPage() {
         </div>
       ) : filteredCards.length === 0 ? (
         <div className="bg-white border border-[#e2e8f0] rounded-xl p-12 text-center">
+          <MetaNoIndex />
           <FileQuestion className="h-10 w-10 text-[#94a3b8] mx-auto mb-3" />
           <h3 className="font-bold text-base text-[#112542] mb-1">{t("No resources found", "ಯಾವುದೇ ಸಂಪನ್ಮೂಲ ಕಂಡುಬಂದಿಲ್ಲ")}</h3>
           <p className="text-xs sm:text-sm text-[#5a6b82] max-w-sm mx-auto">
@@ -497,7 +500,7 @@ export default function SubjectPage() {
                   "ಆಯ್ಕೆಮಾಡಿದ ಫಿಲ್ಟರ್‌ಗಳಿಗೆ ಯಾವುದೇ ಸಂಪನ್ಮೂಲ ಹೊಂದಾಣಿಕೆಯಾಗುತ್ತಿಲ್ಲ. ಬೇರೆ ಟ್ಯಾಬ್ ಆಯ್ಕೆಮಾಡಿ ಅಥವಾ ಫಿಲ್ಟರ್ ಮರುಹೊಂದಿಸಿ."
                 )
               : t(
-                  `Notes for ${section?.name || subjectName} will be uploaded soon. Check back shortly!`,
+                  t(`Review the official ${section?.name || subjectName} syllabus guide and blueprint weightages below.`, `ಕೆಳಗೆ ನೀಡಿರುವ ಪಠ್ಯಕ್ರಮ ಮತ್ತು ಬ್ಲೂಪ್ರಿಂಟ್ ಮಾರ್ಗದರ್ಶಿಯನ್ನು ಪರಿಶೀಲಿಸಿ.`),
                   `${displayName} ವಿಷಯದ ನೋಟ್ಸ್ ಶೀಘ್ರದಲ್ಲೇ ಅಪ್‌ಲೋಡ್ ಆಗಲಿದೆ. ದಯವಿಟ್ಟು ನಿರೀಕ್ಷಿಸಿ!`
                 )}
           </p>
@@ -523,6 +526,9 @@ export default function SubjectPage() {
           ))}
         </div>
       )}
+
+      {/* Subject Academic & Blueprint Guide */}
+      <SubjectAcademicGuide slug={slug} subjectName={displayName} />
     </div>
   );
 }
