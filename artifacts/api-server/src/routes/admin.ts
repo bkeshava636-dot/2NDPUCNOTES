@@ -725,6 +725,13 @@ router.get("/admin/analytics", requireAdmin, async (req, res) => {
       .where(sql`${pageViewsTable.createdAt} >= CURRENT_DATE`);
     const todayViews = todayRow?.count ?? 0;
 
+    // 3b. Today's unique visitors
+    const [todayVisitorsRow] = await db
+      .select({ count: sql<number>`count(DISTINCT coalesce(${pageViewsTable.visitorId}, ${pageViewsTable.ipAddress}))::int` })
+      .from(pageViewsTable)
+      .where(sql`${pageViewsTable.createdAt} >= CURRENT_DATE`);
+    const todayVisitors = todayVisitorsRow?.count ?? 0;
+
     // 4. Breakdown by page/path
     const topPages = await db
       .select({
@@ -765,6 +772,7 @@ router.get("/admin/analytics", requireAdmin, async (req, res) => {
       allTimeTotal,
       uniqueVisitors,
       todayViews,
+      todayVisitors,
       topPages,
       dailyTrend,
       recentViews,
