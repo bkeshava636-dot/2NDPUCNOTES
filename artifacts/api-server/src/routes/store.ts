@@ -231,6 +231,21 @@ router.get("/cards/:id", async (req, res) => {
   }
 });
 
+// In-memory view deduplication & anti-spam rate limiting
+const viewCooldowns = new Map<string, number>(); // `${key}:${path}` -> timestamp
+const ipRateLimits = new Map<string, { count: number; resetAt: number }>(); // ip -> { count, resetAt }
+
+// Periodic cleanup every 5 minutes
+setInterval(() => {
+  const now = Date.now();
+  for (const [key, timestamp] of viewCooldowns.entries()) {
+    if (now - timestamp > 60000) viewCooldowns.delete(key);
+  }
+  for (const [ip, limit] of ipRateLimits.entries()) {
+    if (now > limit.resetAt) ipRateLimits.delete(ip);
+  }
+}, 5 * 60 * 1000);
+
 router.post("/analytics/view", async (req, res) => {
   try {
     await ensureDefaultSections();
@@ -246,8 +261,46 @@ router.post("/analytics/view", async (req, res) => {
       return;
     }
 
-    const ip = (req.headers["x-forwarded-for"] as string)?.split(",")[0]?.trim() || req.socket.remoteAddress || null;
-    const userAgent = req.headers["user-agent"] || null;
+    const ip = (req.headers["x-forwarded-for"] as string)?.split(",")[0]?.trim() || req.socket.remoteAddress || "unknown";
+    const userAgent = (req.headers["user-agent"] as string) || "";
+
+    // 1. Filter automated bots, scrapers, and uptime monitors
+    const lowerUa = userAgent.toLowerCase();
+    if (
+      lowerUa.includes("bot") ||
+      lowerUa.includes("spider") ||
+      lowerUa.includes("crawler") ||
+      lowerUa.includes("curl") ||
+      lowerUa.includes("wget") ||
+      lowerUa.includes("python-requests")
+    ) {
+      res.json({ success: true, filtered: "bot" });
+      return;
+    }
+
+    // 2. IP Rate Limiting: Max 25 pageview logs per minute per IP
+    const now = Date.now();
+    const currentLimit = ipRateLimits.get(ip);
+    if (currentLimit && now < currentLimit.resetAt) {
+      if (currentLimit.count >= 25) {
+        // Drop excessive rapid requests from automated loops or extensions
+        res.json({ success: true, rateLimited: true });
+        return;
+      }
+      currentLimit.count++;
+    } else {
+      ipRateLimits.set(ip, { count: 1, resetAt: now + 60000 });
+    }
+
+    // 3. Deduplication Window: Don't log duplicate views for same visitor + path within 30 seconds
+    const visitorKey = visitorId || ip;
+    const cooldownKey = `${visitorKey}:${path}`;
+    const lastViewedAt = viewCooldowns.get(cooldownKey);
+    if (lastViewedAt && now - lastViewedAt < 30000) {
+      res.json({ success: true, deduped: true });
+      return;
+    }
+    viewCooldowns.set(cooldownKey, now);
 
     await db.insert(pageViewsTable).values({
       path: path.slice(0, 500),

@@ -18,14 +18,26 @@ function getOrCreateVisitorId(): string {
 export function usePageViewTracker() {
   const [location] = useLocation();
   const lastPathRef = useRef<string | null>(null);
+  const lastTimeRef = useRef<number>(0);
 
   useEffect(() => {
-    // Only track if pathname changed
-    if (lastPathRef.current === location) return;
-    lastPathRef.current = location;
+    // Ignore hidden or prerendering tabs
+    if (typeof document !== "undefined" && document.visibilityState === "prerender") {
+      return;
+    }
 
     // Do not track admin back-office panel pageviews as student visits
-    if (location.startsWith("/admin")) return;
+    if (location.startsWith("/admin")) {
+      return;
+    }
+
+    // Deduplication: Only track if pathname changed OR at least 30 seconds have elapsed
+    const now = Date.now();
+    if (lastPathRef.current === location && now - lastTimeRef.current < 30000) {
+      return;
+    }
+    lastPathRef.current = location;
+    lastTimeRef.current = now;
 
     const timer = setTimeout(() => {
       const visitorId = getOrCreateVisitorId();
@@ -44,7 +56,7 @@ export function usePageViewTracker() {
           body: JSON.stringify(payload),
           keepalive: true,
         }).catch(() => {
-          // If fetch fails, attempt sendBeacon as backup
+          // If fetch fails, attempt sendBeacon as fallback
           if (typeof navigator !== "undefined" && typeof navigator.sendBeacon === "function") {
             const blob = new Blob([JSON.stringify(payload)], { type: "application/json" });
             navigator.sendBeacon(url, blob);
@@ -53,7 +65,7 @@ export function usePageViewTracker() {
       } catch {
         // Ignore background analytics logging errors
       }
-    }, 150);
+    }, 250);
 
     return () => clearTimeout(timer);
   }, [location]);
