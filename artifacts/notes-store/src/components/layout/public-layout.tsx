@@ -134,8 +134,8 @@ export function PublicLayout({ children }: { children: ReactNode }) {
               size="sm"
               onClick={toggleLanguage}
               className="h-8.5 px-2 sm:px-2.5 rounded-lg text-xs font-semibold text-[#334155] hover:bg-[#f1f5f9] border border-transparent hover:border-[#cbd5e1] flex items-center gap-1"
-              aria-label="Toggle language between English and Kannada"
-              title="Toggle language (English / ಕನ್ನಡ)"
+              aria-label={language === "en" ? "ಕನ್ನಡ - ಭಾಷೆ ಬದಲಿಸಿ" : "EN - Switch to English"}
+              title={language === "en" ? "ಕನ್ನಡಕ್ಕೆ ಬದಲಿಸಿ (Switch to Kannada)" : "Switch to English"}
             >
               <Languages className="h-3.5 w-3.5 text-[#2563eb]" />
               <span className="text-[11px] font-bold">{language === "en" ? "ಕನ್ನಡ" : "EN"}</span>

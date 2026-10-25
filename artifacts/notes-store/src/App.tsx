@@ -13,15 +13,14 @@ import { ApiWakeUpGate } from "@/components/api-wake-up-gate";
 import { lazy, Suspense } from "react";
 import { Spinner } from "@/components/ui/spinner";
 
-// Core Public Pages (bundled for fast student browsing)
+// Core Public Pages
 import Home from "@/pages/home";
-import SubjectPage from "@/pages/subject";
-import CategoryPage from "@/pages/category";
-import SectionPage from "@/pages/section";
-import CardPage from "@/pages/card";
-import Checkout from "@/pages/checkout";
-import PaymentSuccess from "@/pages/payment-success";
-import MyPurchases from "@/pages/my-purchases";
+const SubjectPage = lazy(() => import("@/pages/subject"));
+const CategoryPage = lazy(() => import("@/pages/category"));
+const CardPage = lazy(() => import("@/pages/card"));
+const Checkout = lazy(() => import("@/pages/checkout"));
+const PaymentSuccess = lazy(() => import("@/pages/payment-success"));
+const MyPurchases = lazy(() => import("@/pages/my-purchases"));
 
 // Code-split Legal Pages
 const AboutUs = lazy(() => import("@/pages/about"));
