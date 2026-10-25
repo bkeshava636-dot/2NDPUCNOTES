@@ -1,3 +1,4 @@
+import { SeoHead } from "@/components/seo-head";
 import { useState } from "react";
 import { useParams, Link, useLocation } from "wouter";
 import { useGetCard } from "@workspace/api-client-react";
@@ -132,6 +133,12 @@ export default function CardPage() {
 
   return (
     <div className="max-w-5xl mx-auto w-full px-4 py-8 sm:py-10">
+      <SeoHead
+        title={`${card.title} - 2nd PUC Notes PDF Download | 2PUC`}
+        description={`${card.title} for Karnataka 2nd PUC ${card.subject || "Science"}. ${card.description ? card.description.slice(0, 160) : "Download high-quality 2nd PUC study materials, question banks, and solutions."}`}
+        keywords={`2nd puc ${card.title.toLowerCase()}, 2nd puc ${card.subject?.toLowerCase() || "science"} notes, karnataka 2nd puc pdf, 2nd puc question bank`}
+        canonicalPath={`/card/${card.id}`}
+      />
       {/* Back button */}
       <Link href="/">
         <Button variant="ghost" size="sm" className="gap-2 text-[#475569] hover:text-[#0f172a] -ml-2 mb-6 font-medium">

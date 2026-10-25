@@ -1,3 +1,4 @@
+import { SeoHead } from "@/components/seo-head";
 import { HomeFaqAndGuide } from "@/components/home-faq-and-guide";
 import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "wouter";
@@ -127,6 +128,18 @@ export default function Home() {
 
   return (
     <div className="flex flex-col bg-white">
+      <SeoHead
+        title={t(
+          "2PUC — Karnataka 2nd PUC Science Notes, Blueprints, PYQs & Practical Manuals 2026",
+          "2PUC — ಕರ್ನಾಟಕ ದ್ವಿತೀಯ ಪಿಯುಸಿ ವಿಜ್ಞಾನ ನೋಟ್ಸ್, ಬ್ಲೂಪ್ರಿಂಟ್ & ಪ್ರಶ್ನೋತ್ತರಗಳು"
+        )}
+        description={t(
+          "Download verified Karnataka 2nd PUC Science notes, chapterwise derivations, passing packages, blueprint model papers (MQP), lab manuals, and PYQs for Physics, Chemistry, Math, and Biology.",
+          "ಕರ್ನಾಟಕ ದ್ವಿತೀಯ ಪಿಯುಸಿ ವಿಜ್ಞಾನ ನೋಟ್ಸ್, ಮಾದರಿ ಪ್ರಶ್ನೆ ಪತ್ರಿಕೆಗಳು, ಪಾಸಿಂಗ್ ಪ್ಯಾಕೇಜ್ ಹಾಗೂ ಪ್ರಾಯೋಗಿಕ ಪರೀಕ್ಷಾ ಸಾಮಗ್ರಿಗಳನ್ನು ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ."
+        )}
+        keywords="2nd puc notes, karnataka 2nd puc science notes, 2nd puc physics notes pdf, 2nd puc chemistry passing package 2026, 2nd puc biology lab manual, 2nd puc maths blueprint 2026, 2nd puc practical records, 2nd puc pyq, kseab model question papers"
+        canonicalPath="/"
+      />
       {/* ── Hero Section ── */}
       <section className="relative overflow-hidden bg-gradient-to-b from-[#f8fafc] via-[#f1f5f9]/40 to-white border-b border-[#e2e8f0]/80 pt-7 pb-8 sm:pt-10 sm:pb-11 px-4">
         <div className="max-w-2xl mx-auto text-center">

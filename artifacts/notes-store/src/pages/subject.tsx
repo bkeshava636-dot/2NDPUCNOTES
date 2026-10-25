@@ -1,3 +1,4 @@
+import { SeoHead } from "@/components/seo-head";
 import { SubjectAcademicGuide } from "@/components/subject-academic-guide";
 import { MetaNoIndex } from "@/components/meta-noindex";
 import { useState, useMemo } from "react";
@@ -257,6 +258,18 @@ export default function SubjectPage() {
 
   return (
     <div className="max-w-6xl mx-auto w-full px-4 py-8 sm:py-10">
+      <SeoHead
+        title={t(
+          `2nd PUC ${subjectName} Notes, Blueprint, Derivations & PYQ PDF - 2PUC`,
+          `ದ್ವಿತೀಯ ಪಿಯುಸಿ ${displayName} ನೋಟ್ಸ್, ಬ್ಲೂಪ್ರಿಂಟ್ & ಪ್ರಶ್ನೋತ್ತರಗಳು - 2PUC`
+        )}
+        description={t(
+          `Download Karnataka 2nd PUC ${subjectName} chapterwise notes, formulas, blueprint model question papers, practical manuals, and passing packages aligned with KSEAB 2026.`,
+          `ಕರ್ನಾಟಕ ದ್ವಿತೀಯ ಪಿಯುಸಿ ${displayName} ಪಠ್ಯಕ್ರಮ ಆಧಾರಿತ ನೋಟ್ಸ್, ಬ್ಲೂಪ್ರಿಂಟ್ ಪ್ರಶ್ನೆ ಪತ್ರಿಕೆಗಳು ಹಾಗೂ ಪರೀಕ್ಷಾ ಸಾಮಗ್ರಿಗಳು.`
+        )}
+        keywords={`2nd puc ${subjectName.toLowerCase()} notes, karnataka 2nd puc ${subjectName.toLowerCase()} blueprint 2026, 2nd puc ${subjectName.toLowerCase()} passing package, 2nd puc ${subjectName.toLowerCase()} pyq, 2nd puc ${subjectName.toLowerCase()} model question papers`}
+        canonicalPath={`/subject/${slug}`}
+      />
       {/* Back button */}
       <Link href="/">
         <Button

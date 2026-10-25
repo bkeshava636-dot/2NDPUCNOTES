@@ -1,3 +1,4 @@
+import { SeoHead } from "@/components/seo-head";
 import { CategoryAcademicGuide } from "@/components/category-academic-guide";
 import { MetaNoIndex } from "@/components/meta-noindex";
 import { useState, useMemo } from "react";
@@ -292,6 +293,18 @@ export default function CategoryPage() {
 
   return (
     <div className="max-w-6xl mx-auto w-full px-4 py-8 sm:py-10">
+      <SeoHead
+        title={t(
+          `Karnataka 2nd PUC ${meta.title} PDF - 2PUC`,
+          `ಕರ್ನಾಟಕ ದ್ವಿತೀಯ ಪಿಯುಸಿ ${displayTitle} PDF - 2PUC`
+        )}
+        description={t(
+          `${meta.description} Aligned with Karnataka 2nd PUC KSEAB 2026 syllabus for Physics, Chemistry, Math, Biology.`,
+          `${displayDescription} ಕರ್ನಾಟಕ ದ್ವಿತೀಯ ಪಿಯುಸಿ ಬೋರ್ಡ್ ಪರೀಕ್ಷಾ ಅಧ್ಯಯನ ಸಾಮಗ್ರಿಗಳು.`
+        )}
+        keywords={`2nd puc ${meta.title.toLowerCase()}, karnataka 2nd puc ${slug}, 2nd puc study material pdf, kseab 2nd puc ${slug}, 2nd puc practical records, 2nd puc pyq`}
+        canonicalPath={`/category/${slug}`}
+      />
       {/* Back button */}
       <Link href="/">
         <Button
