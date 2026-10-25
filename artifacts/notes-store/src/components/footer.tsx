@@ -91,7 +91,7 @@ export function Footer() {
                   href={TELEGRAM_LINK}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#0088cc]/10 hover:bg-[#0088cc]/20 text-[#0088cc] text-xs font-semibold transition-colors"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#0088cc]/10 hover:bg-[#0088cc]/20 text-[#006299] text-xs font-semibold transition-colors"
                 >
                   <Send className="h-3.5 w-3.5" />
                   <span>{t("Join Telegram", "ಟೆಲಿಗ್ರಾಂ ಸೇರಿ")}</span>
@@ -195,7 +195,7 @@ export function Footer() {
             <p>
               &copy; {new Date().getFullYear()} <span className="font-semibold text-[#0f172a]">2PUC</span>. {t("All rights reserved.", "ಎಲ್ಲ ಹಕ್ಕುಗಳನ್ನು ಕಾಯ್ದಿರಿಸಲಾಗಿದೆ.")}
             </p>
-            <p className="text-center sm:text-right text-[11px] text-[#94a3b8]">
+            <p className="text-center sm:text-right text-[11px] text-[#64748b]">
               {t("Aligned with Karnataka KSEAB Pre-University Curriculum", "ಕರ್ನಾಟಕ ಪದವಿ ಪೂರ್ವ ಶಿಕ್ಷಣ ಮಂಡಳಿ ಪಠ್ಯಕ್ರಮ")}
             </p>
           </div>
