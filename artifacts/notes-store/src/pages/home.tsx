@@ -209,7 +209,7 @@ export default function Home() {
       </section>
 
       {/* ── Main Content Area ── */}
-      <div className="max-w-5xl mx-auto w-full px-4 py-8 sm:py-12 flex flex-col gap-10 sm:gap-14">
+      <div className="max-w-5xl mx-auto w-full px-4 py-6 sm:py-10 flex flex-col gap-8 sm:gap-12">
         {/* Search Results */}
         {submitted && (
           <section className="scroll-mt-20">
@@ -323,7 +323,7 @@ export default function Home() {
                         onFocus={() => prefetchSubject(subj.name)}
                       >
                         <div
-                          className={`group h-full ${theme.bg} border ${theme.border} ${theme.hoverBorder} rounded-xl p-3 sm:p-3.5 transition-all cursor-pointer flex flex-col justify-between shadow-2xs hover:shadow-xs active:scale-[0.98] min-h-[92px]`}
+                          className={`group h-full ${theme.bg} border ${theme.border} ${theme.hoverBorder} rounded-xl p-3.5 sm:p-4 transition-all cursor-pointer flex flex-col justify-between shadow-2xs hover:shadow-xs active:scale-[0.98] min-h-[98px] sm:min-h-[104px]`}
                         >
                           <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
                             <div
@@ -332,10 +332,10 @@ export default function Home() {
                               <Icon className="h-4 w-4" />
                             </div>
                             <div className="min-w-0">
-                              <h3 className={`font-semibold text-xs sm:text-sm ${theme.titleColor} truncate`}>
+                              <h3 className={`font-bold text-[13px] sm:text-sm ${theme.titleColor} leading-snug line-clamp-2`}>
                                 {language === "kn" ? subj.kannadaName : subj.name}
                               </h3>
-                              <p className={`text-[10px] sm:text-[11px] ${theme.countColor} font-medium truncate`}>
+                              <p className={`text-[11px] sm:text-xs ${theme.countColor} font-medium mt-0.5`}>
                                 {subj.cardCount !== undefined
                                   ? `${subj.cardCount} resources`
                                   : t("View notes", "ನೋಟ್ಸ್ ನೋಡಿ")}
@@ -383,7 +383,7 @@ export default function Home() {
                         onFocus={() => prefetchSubject(subj.name)}
                       >
                         <div
-                          className={`group h-full ${theme.bg} border ${theme.border} ${theme.hoverBorder} rounded-xl p-3 sm:p-3.5 transition-all cursor-pointer flex flex-col justify-between shadow-2xs hover:shadow-xs active:scale-[0.98] min-h-[92px]`}
+                          className={`group h-full ${theme.bg} border ${theme.border} ${theme.hoverBorder} rounded-xl p-3.5 sm:p-4 transition-all cursor-pointer flex flex-col justify-between shadow-2xs hover:shadow-xs active:scale-[0.98] min-h-[98px] sm:min-h-[104px]`}
                         >
                           <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
                             <div
@@ -392,10 +392,10 @@ export default function Home() {
                               <Icon className="h-4 w-4" />
                             </div>
                             <div className="min-w-0">
-                              <h3 className={`font-semibold text-xs sm:text-sm ${theme.titleColor} truncate`}>
+                              <h3 className={`font-bold text-[13px] sm:text-sm ${theme.titleColor} leading-snug line-clamp-2`}>
                                 {language === "kn" ? subj.kannadaName : subj.name}
                               </h3>
-                              <p className={`text-[10px] sm:text-[11px] ${theme.countColor} font-medium truncate`}>
+                              <p className={`text-[11px] sm:text-xs ${theme.countColor} font-medium mt-0.5`}>
                                 {subj.cardCount !== undefined
                                   ? `${subj.cardCount} resources`
                                   : t("View notes", "ನೋಟ್ಸ್ ನೋಡಿ")}
@@ -462,10 +462,10 @@ export default function Home() {
                             {cat.badge}
                           </span>
                         </div>
-                        <h3 className="font-bold text-sm text-[#0f172a] dark:text-[#F1F5F9] group-hover:text-[#2563eb] dark:group-hover:text-[#818CF8] transition-colors">
+                        <h3 className="font-bold text-sm sm:text-base text-[#0f172a] dark:text-[#F1F5F9] mt-2 mb-1 group-hover:text-[#2563eb] dark:group-hover:text-[#818CF8] transition-colors">
                           {language === "kn" ? cat.kannadaTitle : cat.title}
                         </h3>
-                        <p className="text-xs text-[#64748b] dark:text-[#A1AEC2] mt-1.5 leading-relaxed line-clamp-2">
+                        <p className="text-xs sm:text-[13px] text-[#64748b] dark:text-[#A1AEC2] mt-1.5 leading-relaxed line-clamp-3">
                           {cat.desc}
                         </p>
                       </div>
@@ -511,7 +511,7 @@ export default function Home() {
         {!submitted && <HomeFaqAndGuide />}
 
         {/* ── PART 5: Community & Telegram Banner ── */}
-        <section className="bg-gradient-to-r from-[#eff6ff] via-[#f0f9ff] to-[#f8fafc] dark:from-[#111827] dark:via-[#151D2E] dark:to-[#111827] border border-[#dbeafe] dark:border-[#293548] rounded-xl p-5 sm:p-6 shadow-2xs">
+        <section className="bg-gradient-to-r from-[#eff6ff] via-[#f0f9ff] to-[#f8fafc] dark:from-[#111827] dark:via-[#151D2E] dark:to-[#111827] border border-[#dbeafe] dark:border-[#293548] rounded-xl p-5 sm:p-6 shadow-2xs mb-4 sm:mb-6">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
             <div className="flex items-center gap-3.5">
               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white dark:bg-[#1C2638] text-[#2563eb] dark:text-[#818CF8] border border-[#bfdbfe] dark:border-[#293548] shadow-2xs">

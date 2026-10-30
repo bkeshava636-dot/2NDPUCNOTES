@@ -71,7 +71,7 @@ export function FloatingFeedback() {
   return (
     <>
       {/* Floating Action Pill / Button in Right Bottom */}
-      <div className="fixed bottom-18 right-4 md:bottom-6 md:right-6 z-30 flex items-center gap-2 group print:hidden">
+      <div className="fixed bottom-[calc(3.75rem+env(safe-area-inset-bottom,0px))] right-3 sm:right-4 md:bottom-6 md:right-6 z-30 flex items-center gap-2 group print:hidden">
         <button
           type="button"
           onClick={handleOpen}

@@ -197,21 +197,21 @@ export function PublicLayout({ children }: { children: ReactNode }) {
       </header>
 
       {/* Main Page Content with safe scroll-padding so sticky header never clips section titles */}
-      <main className="flex-1 flex flex-col pb-16 md:pb-0">{children}</main>
+      <main className="flex-1 flex flex-col pb-12 md:pb-0">{children}</main>
       
       {/* Footer with built-in safe padding */}
       <Footer />
 
-      {/* Mobile Bottom Navigation Bar (md:hidden) */}
+      {/* Mobile Bottom Navigation Bar (md:hidden) — Compact, Accessible 4-Tab Navigation */}
       <nav
         aria-label="Mobile Navigation"
-        className="md:hidden fixed bottom-0 left-0 right-0 z-40 h-14 bg-white/95 dark:bg-[#0B0F19]/95 backdrop-blur-md border-t border-[#e2e8f0] dark:border-[#293548] flex items-center justify-around px-2 pb-safe shadow-lg"
+        className="md:hidden fixed bottom-0 left-0 right-0 z-40 h-[calc(3.125rem+env(safe-area-inset-bottom,0px))] bg-white/95 dark:bg-[#0B0F19]/95 backdrop-blur-md border-t border-[#e2e8f0] dark:border-[#293548] flex items-center justify-around px-2 pb-[env(safe-area-inset-bottom,0px)] shadow-lg select-none"
       >
         <Link
           href="/"
-          className={`flex flex-col items-center justify-center flex-1 py-1 text-[10px] font-medium transition-colors ${
+          className={`flex flex-col items-center justify-center flex-1 h-full py-1 text-[10px] font-medium transition-colors ${
             location === "/"
-              ? "text-[#2563eb] dark:text-[#818CF8] font-semibold"
+              ? "text-[#2563eb] dark:text-[#818CF8] font-bold"
               : "text-[#64748b] dark:text-[#A1AEC2] hover:text-[#0f172a] dark:hover:text-[#F1F5F9]"
           }`}
         >
@@ -221,7 +221,7 @@ export function PublicLayout({ children }: { children: ReactNode }) {
         <button
           type="button"
           onClick={handleSearchClick}
-          className="flex flex-col items-center justify-center flex-1 py-1 text-[10px] font-medium text-[#64748b] dark:text-[#A1AEC2] hover:text-[#0f172a] dark:hover:text-[#F1F5F9] transition-colors"
+          className="flex flex-col items-center justify-center flex-1 h-full py-1 text-[10px] font-medium text-[#64748b] dark:text-[#A1AEC2] hover:text-[#0f172a] dark:hover:text-[#F1F5F9] transition-colors"
           aria-label="Search"
         >
           <Search className="h-4 w-4 mb-0.5" />
@@ -229,9 +229,9 @@ export function PublicLayout({ children }: { children: ReactNode }) {
         </button>
         <Link
           href="/contribute"
-          className={`flex flex-col items-center justify-center flex-1 py-1 text-[10px] font-medium transition-colors ${
+          className={`flex flex-col items-center justify-center flex-1 h-full py-1 text-[10px] font-medium transition-colors ${
             location === "/contribute"
-              ? "text-[#2563eb] dark:text-[#818CF8] font-semibold"
+              ? "text-[#2563eb] dark:text-[#818CF8] font-bold"
               : "text-[#64748b] dark:text-[#A1AEC2] hover:text-[#0f172a] dark:hover:text-[#F1F5F9]"
           }`}
         >
@@ -240,25 +240,15 @@ export function PublicLayout({ children }: { children: ReactNode }) {
         </Link>
         <Link
           href="/my-purchases"
-          className={`flex flex-col items-center justify-center flex-1 py-1 text-[10px] font-medium transition-colors ${
+          className={`flex flex-col items-center justify-center flex-1 h-full py-1 text-[10px] font-medium transition-colors ${
             isPurchasesActive
-              ? "text-[#2563eb] dark:text-[#818CF8] font-semibold"
+              ? "text-[#2563eb] dark:text-[#818CF8] font-bold"
               : "text-[#64748b] dark:text-[#A1AEC2] hover:text-[#0f172a] dark:hover:text-[#F1F5F9]"
           }`}
         >
           <ShoppingBag className="h-4 w-4 mb-0.5" />
           <span>{t("Purchases", "ಖರೀದಿ")}</span>
         </Link>
-        <a
-          href={TELEGRAM_LINK}
-          target="_blank"
-          rel="noreferrer"
-          className="flex flex-col items-center justify-center flex-1 py-1 text-[10px] font-medium text-[#0088cc] dark:text-[#38bdf8] hover:opacity-80 transition-opacity"
-          aria-label="Telegram"
-        >
-          <Send className="h-4 w-4 mb-0.5" />
-          <span>Telegram</span>
-        </a>
       </nav>
 
       {/* Floating Student Feedback */}

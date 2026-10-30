@@ -226,7 +226,7 @@ export function HomeFaqAndGuide() {
         <div className="flex items-center gap-3">
           <ShieldCheck className="h-5 w-5 text-[#2563eb] dark:text-[#818CF8] shrink-0" />
           <div>
-            <span className="font-bold text-[#0f172a]">
+            <span className="font-bold text-[#0f172a] dark:text-[#F1F5F9]">
               {t("Independent Educational Portal", "ಸ್ವತಂತ್ರ ಶೈಕ್ಷಣಿಕ ವೇದಿಕೆ")}
             </span>
             <p className="text-[11px] text-[#64748b] dark:text-[#A1AEC2] mt-0.5">

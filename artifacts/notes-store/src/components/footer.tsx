@@ -21,7 +21,7 @@ export function Footer() {
   return (
     <>
       {/* Footer container with bottom padding so floating feedback pill never obstructs content */}
-      <footer className="mt-auto border-t border-[#e2e8f0] dark:border-[#293548] bg-[#f8fafc] dark:bg-[#0B0F19] text-[#5a6b82] dark:text-[#A1AEC2] pb-24 md:pb-10">
+      <footer className="mt-auto border-t border-[#e2e8f0] dark:border-[#293548] bg-[#f8fafc] dark:bg-[#0B0F19] text-[#475569] dark:text-[#A1AEC2] pb-[calc(4rem+env(safe-area-inset-bottom,0px))] md:pb-10">
         <div className="container mx-auto max-w-5xl px-4 py-8 sm:py-10">
           {/* ── Compact "Buy Me Some Paneer" Strip ── */}
           <div className="mb-8 p-3 sm:px-4 sm:py-2.5 rounded-xl bg-amber-50/70 dark:bg-amber-950/20 border border-amber-200/80 dark:border-amber-900/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
@@ -29,7 +29,7 @@ export function Footer() {
               <span className="text-base select-none">🧀</span>
               <span className="font-medium">
                 {t("Found 2PUC helpful?", "2PUC ಉಪಯುಕ್ತವೆನಿಸಿತೇ?")}{" "}
-                <span className="text-[#64748b] dark:text-[#94A3B8] dark:text-amber-300/70">
+                <span className="text-[#64748b] dark:text-[#A1AEC2] dark:text-amber-300/70">
                   {t("(Optional) Support with some paneer", "(ಐಚ್ಛಿಕ) ಪನ್ನೀರ್ ಕಳುಹಿಸಿ ಪ್ರೋತ್ಸಾಹಿಸಿ")}
                 </span>
               </span>
@@ -70,9 +70,9 @@ export function Footer() {
           </div>
 
           {/* ── Main Footer Navigation Grid (Unified with site-navigation data) ── */}
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-8 lg:gap-10 pb-12 border-b border-[#e2e8f0] dark:border-[#293548]">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-8 lg:gap-10 pb-12 border-b border-[#e2e8f0] dark:border-[#293548]">
             {/* Brand Column */}
-            <div className="col-span-2 space-y-3">
+            <div className="col-span-1 sm:col-span-2 md:col-span-2 space-y-3.5">
               <Link
                 href="/"
                 className="inline-flex items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2563eb]/30 rounded-lg transition-opacity hover:opacity-90"
@@ -80,7 +80,7 @@ export function Footer() {
               >
                 <BrandLogo size="lg" />
               </Link>
-              <p className="text-xs sm:text-sm text-[#5a6b82] leading-relaxed max-w-sm">
+              <p className="text-sm text-[#475569] dark:text-[#A1AEC2] leading-relaxed max-w-sm">
                 {t(
                   "High-quality Karnataka 2nd PUC Science notes, chapterwise solutions, blueprint model papers, and practical materials organized for confident exam preparation.",
                   "ಕರ್ನಾಟಕ ದ್ವಿತೀಯ ಪಿಯುಸಿ ವಿಜ್ಞಾನ ನೋಟ್ಸ್, ಮಾದರಿ ಪ್ರಶ್ನೆ ಪತ್ರಿಕೆಗಳು ಹಾಗೂ ಪ್ರಾಯೋಗಿಕ ಪರೀಕ್ಷಾ ಸಾಮಗ್ರಿಗಳು."
@@ -101,10 +101,10 @@ export function Footer() {
 
             {/* Science & Language Subjects Column */}
             <div className="space-y-3">
-              <h4 className="text-xs font-bold text-[#0f172a] dark:text-[#F1F5F9] uppercase tracking-wider">
+              <h4 className="text-xs sm:text-sm font-bold text-[#0f172a] dark:text-[#F1F5F9] uppercase tracking-wider mb-2.5">
                 {t("Science Subjects", "ವಿಜ್ಞಾನ ವಿಷಯಗಳು")}
               </h4>
-              <ul className="space-y-2 text-xs">
+              <ul className="space-y-2 text-sm sm:text-xs">
                 {SCIENCE_SUBJECTS.map((s) => (
                   <li key={s.slug}>
                     <Link href={`/subject/${s.slug}`} className="hover:text-[#2563eb] dark:hover:text-[#818CF8] transition-colors">
@@ -114,10 +114,10 @@ export function Footer() {
                 ))}
               </ul>
 
-              <h4 className="text-xs font-bold text-[#0f172a] dark:text-[#F1F5F9] uppercase tracking-wider pt-2">
+              <h4 className="text-xs sm:text-sm font-bold text-[#0f172a] dark:text-[#F1F5F9] uppercase tracking-wider mb-2.5 pt-1">
                 {t("Languages", "ಭಾಷೆಗಳು")}
               </h4>
-              <ul className="space-y-2 text-xs">
+              <ul className="space-y-2 text-sm sm:text-xs">
                 {LANGUAGE_SUBJECTS.map((s) => (
                   <li key={s.slug}>
                     <Link href={`/subject/${s.slug}`} className="hover:text-[#2563eb] dark:hover:text-[#818CF8] transition-colors">
@@ -130,10 +130,10 @@ export function Footer() {
 
             {/* Categories Column */}
             <div className="space-y-3">
-              <h4 className="text-xs font-bold text-[#0f172a] dark:text-[#F1F5F9] uppercase tracking-wider">
+              <h4 className="text-xs sm:text-sm font-bold text-[#0f172a] dark:text-[#F1F5F9] uppercase tracking-wider mb-2.5">
                 {t("Resource Types", "ಸಂಪನ್ಮೂಲಗಳು")}
               </h4>
-              <ul className="space-y-2 text-xs">
+              <ul className="space-y-2 text-sm sm:text-xs">
                 {RESOURCE_CATEGORIES.map((c) => (
                   <li key={c.slug}>
                     <Link href={`/category/${c.slug}`} className="hover:text-[#2563eb] dark:hover:text-[#818CF8] transition-colors">
@@ -146,10 +146,10 @@ export function Footer() {
 
             {/* Quick Links & Legal */}
             <div className="space-y-3">
-              <h4 className="text-xs font-bold text-[#0f172a] dark:text-[#F1F5F9] uppercase tracking-wider">
+              <h4 className="text-xs sm:text-sm font-bold text-[#0f172a] dark:text-[#F1F5F9] uppercase tracking-wider mb-2.5">
                 {t("Quick Links & Legal", "ಕಾನೂನು & ಸಹಾಯ")}
               </h4>
-              <ul className="space-y-2 text-xs">
+              <ul className="space-y-2 text-sm sm:text-xs">
                 <li>
                   <Link href="/my-purchases" className="hover:text-[#2563eb] dark:hover:text-[#818CF8] transition-colors">
                     {t("My Purchases", "ನನ್ನ ಖರೀದಿಗಳು")}
@@ -191,11 +191,11 @@ export function Footer() {
           </div>
 
           {/* ── Bottom Bar & Copyright ── */}
-          <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#64748b] dark:text-[#94A3B8]">
+          <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs sm:text-sm text-[#64748b] dark:text-[#A1AEC2]">
             <p>
               &copy; {new Date().getFullYear()} <span className="font-semibold text-[#0f172a] dark:text-[#F1F5F9]">2PUC</span>. {t("All rights reserved.", "ಎಲ್ಲ ಹಕ್ಕುಗಳನ್ನು ಕಾಯ್ದಿರಿಸಲಾಗಿದೆ.")}
             </p>
-            <p className="text-center sm:text-right text-[11px] text-[#64748b] dark:text-[#94A3B8]">
+            <p className="text-center sm:text-right text-[11px] text-[#64748b] dark:text-[#A1AEC2]">
               {t("Aligned with Karnataka KSEAB Pre-University Curriculum", "ಕರ್ನಾಟಕ ಪದವಿ ಪೂರ್ವ ಶಿಕ್ಷಣ ಮಂಡಳಿ ಪಠ್ಯಕ್ರಮ")}
             </p>
           </div>
