@@ -14,7 +14,7 @@ export function LegalPage({ title, description, icon: Icon, children }: LegalPag
     <div className="w-full flex-1">
       <section className="bg-[#f8fafc] dark:bg-[#111827] border-b border-[#e2e8f0] dark:border-[#293548] px-4 py-10 sm:py-12">
         <div className="mx-auto max-w-3xl">
-          <nav aria-label="Breadcrumb" className="mb-4 flex items-center gap-2 text-xs sm:text-sm text-[#64748b] dark:text-[#94A3B8]">
+          <nav aria-label="Breadcrumb" className="mb-4 flex items-center gap-2 text-xs sm:text-sm text-[#64748b] dark:text-[#A1AEC2]">
             <Link href="/" className="hover:text-[#1856b8] dark:hover:text-[#818CF8] transition-colors">Home</Link>
             <ChevronRight className="h-3.5 w-3.5 text-[#94a3b8]" />
             <span className="text-[#112542] dark:text-[#F1F5F9] font-medium">{title}</span>
@@ -25,7 +25,7 @@ export function LegalPage({ title, description, icon: Icon, children }: LegalPag
             </div>
             <div>
               <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-[#112542] dark:text-[#F1F5F9]">{title}</h1>
-              <p className="mt-1.5 max-w-2xl text-xs sm:text-sm leading-relaxed text-[#5a6b82] dark:text-[#94A3B8]">{description}</p>
+              <p className="mt-1.5 max-w-2xl text-xs sm:text-sm leading-relaxed text-[#5a6b82] dark:text-[#A1AEC2]">{description}</p>
             </div>
           </div>
         </div>
@@ -43,7 +43,7 @@ export function PolicySection({ title, children }: { title: string; children: Re
   return (
     <section className="border-b border-[#eef2f6] dark:border-[#293548] py-6 first:pt-0 last:border-0 last:pb-0">
       <h2 className="mb-3 text-lg sm:text-xl font-bold text-[#112542] dark:text-[#F1F5F9] tracking-tight">{title}</h2>
-      <div className="space-y-3 text-sm leading-relaxed text-[#5a6b82] dark:text-[#94A3B8] sm:text-base">
+      <div className="space-y-3 text-sm leading-relaxed text-[#5a6b82] dark:text-[#A1AEC2] sm:text-base">
         {children}
       </div>
     </section>

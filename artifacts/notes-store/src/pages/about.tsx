@@ -18,21 +18,21 @@ export default function AboutUs() {
         <div className="rounded-xl border border-blue-100 dark:border-blue-900/40 bg-blue-50/60 dark:bg-blue-950/20 p-4">
           <BookOpen className="h-6 w-6 text-primary mb-2" />
           <h3 className="font-bold text-gray-900 dark:text-[#F1F5F9] text-sm">{t("100% NCERT & KSEAB Aligned", "ಪೂರ್ಣ ಪಠ್ಯಕ್ರಮ ಹೊಂದಾಣಿಕೆ")}</h3>
-          <p className="text-xs text-gray-600 dark:text-[#94A3B8] mt-1">
+          <p className="text-xs text-gray-600 dark:text-[#A1AEC2] mt-1">
             {t("Strictly mapped to the Karnataka School Examination and Assessment Board revised syllabus.", "ಕರ್ನಾಟಕ ಶಾಲಾ ಪರೀಕ್ಷೆ ಮತ್ತು ಮೌಲ್ಯನಿರ್ಣಯ ಮಂಡಳಿಯ ನಿಯಮಗಳಿಗೆ ಅನುಗುಣವಾಗಿದೆ.")}
           </p>
         </div>
         <div className="rounded-xl border border-emerald-100 dark:border-emerald-900/40 bg-emerald-50/60 dark:bg-emerald-950/20 p-4">
           <Award className="h-6 w-6 text-emerald-600 mb-2" />
           <h3 className="font-bold text-gray-900 dark:text-[#F1F5F9] text-sm">{t("Curated by Educators & Toppers", "ಶಿಕ್ಷಕರು & ಟಾಪರ್ಸ್‌ಗಳಿಂದ ಪರಿಶೀಲನೆ")}</h3>
-          <p className="text-xs text-gray-600 dark:text-[#94A3B8] mt-1">
+          <p className="text-xs text-gray-600 dark:text-[#A1AEC2] mt-1">
             {t("Formulated by experienced PUC lecturers and state rank holders with clear step-by-step derivations.", "ಅನುಭವಿ ಉಪನ್ಯಾಸಕರು ಮತ್ತು ಟಾಪರ್ಸ್‌ಗಳ ಮಾರ್ಗದರ್ಶನದಲ್ಲಿ ರೂಪಿತವಾಗಿದೆ.")}
           </p>
         </div>
         <div className="rounded-xl border border-purple-100 dark:border-purple-900/40 bg-purple-50/60 dark:bg-purple-950/20 p-4">
           <HeartHandshake className="h-6 w-6 text-purple-600 mb-2" />
           <h3 className="font-bold text-gray-900 dark:text-[#F1F5F9] text-sm">{t("Accessible to All Students", "ಎಲ್ಲ ವಿದ್ಯಾರ್ಥಿಗಳಿಗೆ ಸುಲಭ ಲಭ್ಯತೆ")}</h3>
-          <p className="text-xs text-gray-600 dark:text-[#94A3B8] mt-1">
+          <p className="text-xs text-gray-600 dark:text-[#A1AEC2] mt-1">
             {t("Providing high-quality free and nominal study materials across Karnataka in both English and Kannada.", "ಕನ್ನಡ ಮತ್ತು ಇಂಗ್ಲಿಷ್ ಮಾಧ್ಯಮದ ವಿದ್ಯಾರ್ಥಿಗಳಿಗೆ ಕೈಗೆಟಕುವ ದರದಲ್ಲಿ ಉತ್ತಮ ಸಂಪನ್ಮೂಲಗಳು.")}
           </p>
         </div>

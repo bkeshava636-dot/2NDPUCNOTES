@@ -101,7 +101,7 @@ export function HomeFaqAndGuide() {
                 "ಕರ್ನಾಟಕ ದ್ವಿತೀಯ ಪಿಯುಸಿ ವಿಜ್ಞಾನ ಪರೀಕ್ಷಾ ಮಾರ್ಗದರ್ಶಿ"
               )}
             </h2>
-            <p className="text-xs sm:text-sm text-[#64748b] dark:text-[#94A3B8]">
+            <p className="text-xs sm:text-sm text-[#64748b] dark:text-[#A1AEC2]">
               {t(
                 "Master the board blueprint, chapter weightages, and step-by-step scoring strategies",
                 "ಬ್ಲೂಪ್ರಿಂಟ್ ನಿಯಮಗಳು, ಅಂಕ ಹಂಚಿಕೆ ಮತ್ತು ಗರಿಷ್ಠ ಅಂಕ ಗಳಿಸುವ ಸೂತ್ರಗಳು"
@@ -121,7 +121,7 @@ export function HomeFaqAndGuide() {
               <h3 className="font-bold text-sm text-[#0f172a] dark:text-[#F1F5F9] mb-1.5">
                 {t("15 MCQs + 5 Fill-in-the-Blanks", "15 ಬಹುಆಯ್ಕೆ + 5 ಬಿಟ್ಟ ಸ್ಥಳ")}
               </h3>
-              <p className="text-xs text-[#64748b] dark:text-[#94A3B8] leading-relaxed">
+              <p className="text-xs text-[#64748b] dark:text-[#A1AEC2] leading-relaxed">
                 {t(
                   "Part A carries zero negative marking. Focus on fundamental definitions, SI units, formula dimensions, and NCERT exemplar questions across all chapters.",
                   "ಭಾಗ ಎ ನಲ್ಲಿ ಋಣಾತ್ಮಕ ಅಂಕಗಳಿಲ್ಲ. ಮೂಲಭೂತ ವ್ಯಾಖ್ಯಾನಗಳು, ಎಸ್‌ಐ ಮಾನಗಳು ಮತ್ತು ಸೂತ್ರಗಳನ್ನು ನಿಖರವಾಗಿ ಅಭ್ಯಾಸ ಮಾಡಿ."
@@ -146,7 +146,7 @@ export function HomeFaqAndGuide() {
               <h3 className="font-bold text-sm text-[#0f172a] dark:text-[#F1F5F9] mb-1.5">
                 {t("Part C & D Scoring (40 Marks)", "ಭಾಗ ಸಿ & ಡಿ (40 ಅಂಕಗಳು)")}
               </h3>
-              <p className="text-xs text-[#64748b] dark:text-[#94A3B8] leading-relaxed">
+              <p className="text-xs text-[#64748b] dark:text-[#A1AEC2] leading-relaxed">
                 {t(
                   "Derivations in Physics and named reactions in Chemistry have fixed internal choices. Write every formula step clearly to capture full step-wise marks according to KSEAB valuation.",
                   "ಭೌತಶಾಸ್ತ್ರದ ಡೆರಿವೇಶನ್‌ಗಳು ಹಾಗೂ ರಸಾಯನಶಾಸ್ತ್ರದ ಕ್ರಿಯಾವಿಧಾನಗಳಿಗೆ ಹಂತ-ಹಂತವಾಗಿ ಅಂಕ ನೀಡಲಾಗುತ್ತದೆ. ಪ್ರತಿಯೊಂದು ಸೂತ್ರವನ್ನು ಸ್ಪಷ್ಟವಾಗಿ ಬರೆಯಿರಿ."
@@ -171,7 +171,7 @@ export function HomeFaqAndGuide() {
               <h3 className="font-bold text-sm text-[#0f172a] dark:text-[#F1F5F9] mb-1.5">
                 {t("Lab Manuals & Viva Voce", "ಲ್ಯಾಬ್ ರೆಕಾರ್ಡ್ & ವೈವಾ ಪ್ರಶ್ನೆಗಳು")}
               </h3>
-              <p className="text-xs text-[#64748b] dark:text-[#94A3B8] leading-relaxed">
+              <p className="text-xs text-[#64748b] dark:text-[#A1AEC2] leading-relaxed">
                 {t(
                   "Practicals constitute over 42% of your final Physics, Chemistry, and Biology total score. Complete your record book early and review standard viva questions.",
                   "ಪ್ರಾಯೋಗಿಕ ಪರೀಕ್ಷೆಯು ಒಟ್ಟು ಅಂಕಗಳಲ್ಲಿ ಶೇ.42 ರಷ್ಟು ಪಾಲು ಹೊಂದಿರುತ್ತದೆ. ರೆಕಾರ್ಡ್ ಪುಸ್ತಕವನ್ನು ಪೂರ್ಣಗೊಳಿಸಿ ವೈವಾ ಪ್ರಶ್ನೆಗಳನ್ನು ಅಭ್ಯಾಸ ಮಾಡಿ."
@@ -198,7 +198,7 @@ export function HomeFaqAndGuide() {
             <h2 className="text-xl sm:text-2xl font-bold text-[#0f172a] dark:text-[#F1F5F9] tracking-tight">
               {t("Frequently Asked Questions", "ಸಾಮಾನ್ಯವಾಗಿ ಕೇಳಲಾಗುವ ಪ್ರಶ್ನೆಗಳು (FAQ)")}
             </h2>
-            <p className="text-xs sm:text-sm text-[#64748b] dark:text-[#94A3B8]">
+            <p className="text-xs sm:text-sm text-[#64748b] dark:text-[#A1AEC2]">
               {t(
                 "Everything you need to know about Karnataka 2nd PUC Science syllabus, exams, and study notes",
                 "ದ್ವಿತೀಯ ಪಿಯುಸಿ ಪರೀಕ್ಷೆ, ಪಠ್ಯಕ್ರಮ ಮತ್ತು ಸಂಪನ್ಮೂಲಗಳ ಕುರಿತ ಸಾಮಾನ್ಯ ಪ್ರಶ್ನೋತ್ತರಗಳು"
@@ -210,10 +210,10 @@ export function HomeFaqAndGuide() {
         <Accordion type="single" collapsible className="w-full">
           {faqs.map((faq, index) => (
             <AccordionItem key={index} value={`item-${index}`} className="border-b border-[#f1f5f9] dark:border-[#293548] py-1">
-              <AccordionTrigger className="text-left font-semibold text-sm sm:text-base text-[#1e293b] dark:text-[#F1F5F9] hover:text-[#2563eb] dark:hover:text-[#818CF8] transition-colors py-3.5">
+              <AccordionTrigger className="text-left font-semibold text-sm sm:text-base text-[#1e293b] dark:text-[#F1F5F9] hover:text-[#2563eb] dark:hover:text-[#818CF8] transition-colors py-4 min-h-[44px]">
                 {faq.q}
               </AccordionTrigger>
-              <AccordionContent className="text-xs sm:text-sm text-[#475569] dark:text-[#94A3B8] leading-relaxed pb-4">
+              <AccordionContent className="text-xs sm:text-sm text-[#475569] dark:text-[#A1AEC2] leading-relaxed pb-4">
                 {faq.a}
               </AccordionContent>
             </AccordionItem>
@@ -222,14 +222,14 @@ export function HomeFaqAndGuide() {
       </section>
 
       {/* ── Section C: Academic Trust & Editorial Notice ── */}
-      <div className="p-4 sm:p-5 rounded-xl bg-[#f8fafc] dark:bg-[#151D2E] border border-[#e2e8f0] dark:border-[#293548] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#64748b] dark:text-[#94A3B8]">
+      <div className="p-4 sm:p-5 rounded-xl bg-[#f8fafc] dark:bg-[#151D2E] border border-[#e2e8f0] dark:border-[#293548] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#64748b] dark:text-[#A1AEC2]">
         <div className="flex items-center gap-3">
           <ShieldCheck className="h-5 w-5 text-[#2563eb] dark:text-[#818CF8] shrink-0" />
           <div>
             <span className="font-bold text-[#0f172a]">
               {t("Independent Educational Portal", "ಸ್ವತಂತ್ರ ಶೈಕ್ಷಣಿಕ ವೇದಿಕೆ")}
             </span>
-            <p className="text-[11px] text-[#64748b] dark:text-[#94A3B8] mt-0.5">
+            <p className="text-[11px] text-[#64748b] dark:text-[#A1AEC2] mt-0.5">
               {t(
                 "Aligned with Karnataka Pre-University (DPUE/KSEAB) guidelines. Curated for student academic excellence.",
                 "ಕರ್ನಾಟಕ ಶಾಲಾ ಪರೀಕ್ಷೆ ಮತ್ತು ಮೌಲ್ಯನಿರ್ಣಯ ಮಂಡಳಿಯ ಪಠ್ಯಕ್ರಮಕ್ಕೆ ಅನುಗುಣವಾಗಿ ರೂಪಿತವಾಗಿದೆ."

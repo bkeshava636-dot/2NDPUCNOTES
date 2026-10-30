@@ -21,7 +21,7 @@ export function SubjectAcademicGuide({ slug, subjectName }: SubjectGuideProps) {
             <h2 className="text-xl font-bold text-[#0f172a] dark:text-[#F1F5F9]">
               {t("Karnataka 2nd PUC Physics (PHY-33) Study & Blueprint Guide", "ಕರ್ನಾಟಕ ದ್ವಿತೀಯ ಪಿಯುಸಿ ಭೌತಶಾಸ್ತ್ರ ಪರೀಕ್ಷಾ ಮಾರ್ಗದರ್ಶಿ")}
             </h2>
-            <p className="text-xs text-[#64748b] dark:text-[#94A3B8]">
+            <p className="text-xs text-[#64748b] dark:text-[#A1AEC2]">
               {t("Theory: 70 Marks (3 Hours 15 Mins) | Practical: 30 Marks", "ಥಿಯರಿ: 70 ಅಂಕಗಳು | ಪ್ರಾಯೋಗಿಕ: 30 ಅಂಕಗಳು")}
             </p>
           </div>
@@ -33,7 +33,7 @@ export function SubjectAcademicGuide({ slug, subjectName }: SubjectGuideProps) {
               <BookOpen className="h-4 w-4" />
               <span>{t("Must-Master 5-Mark Derivations", "ಖಚಿತ 5 ಅಂಕಗಳ ಡೆರಿವೇಶನ್‌ಗಳು")}</span>
             </h3>
-            <ul className="list-disc pl-4 space-y-1 text-[#475569] dark:text-[#94A3B8]">
+            <ul className="list-disc pl-4 space-y-1 text-[#475569] dark:text-[#A1AEC2]">
               <li>Electric field due to an electric dipole on axial and equatorial lines</li>
               <li>Capacitance of a parallel plate capacitor with dielectric medium</li>
               <li>Relation between electric current and drift velocity (I = n·e·A·v)</li>
@@ -50,7 +50,7 @@ export function SubjectAcademicGuide({ slug, subjectName }: SubjectGuideProps) {
               <Award className="h-4 w-4" />
               <span>{t("High-Yield Numerical Units", "ಲೆಕ್ಕಾಚಾರದ ಪ್ರಮುಖ ಅಧ್ಯಾಯಗಳು")}</span>
             </h3>
-            <ul className="list-disc pl-4 space-y-1 text-[#475569] dark:text-[#94A3B8]">
+            <ul className="list-disc pl-4 space-y-1 text-[#475569] dark:text-[#A1AEC2]">
               <li><strong>Current Electricity:</strong> Kirchhoff&apos;s laws in bridge networks and potentiometer / meter bridge balancing</li>
               <li><strong>Moving Charges & Magnetism:</strong> Force between parallel conductors and galvanometer conversion</li>
               <li><strong>Ray Optics:</strong> Prism formula [n = sin((A+D)/2) / sin(A/2)] and combination of thin lenses</li>
@@ -81,7 +81,7 @@ export function SubjectAcademicGuide({ slug, subjectName }: SubjectGuideProps) {
             <h2 className="text-xl font-bold text-[#0f172a] dark:text-[#F1F5F9]">
               {t("Karnataka 2nd PUC Chemistry (CHEM-34) Exam Guide", "ಕರ್ನಾಟಕ ದ್ವಿತೀಯ ಪಿಯುಸಿ ರಸಾಯನಶಾಸ್ತ್ರ ಮಾರ್ಗದರ್ಶಿ")}
             </h2>
-            <p className="text-xs text-[#64748b] dark:text-[#94A3B8]">
+            <p className="text-xs text-[#64748b] dark:text-[#A1AEC2]">
               {t("Theory: 70 Marks | Practical: 30 Marks (Salt Analysis & Volumetric)", "ಥಿಯರಿ: 70 ಅಂಕಗಳು | ಪ್ರಾಯೋಗಿಕ: 30 ಅಂಕಗಳು")}
             </p>
           </div>
@@ -93,7 +93,7 @@ export function SubjectAcademicGuide({ slug, subjectName }: SubjectGuideProps) {
               <BookOpen className="h-4 w-4" />
               <span>{t("Named Reactions & Organic Mechanisms", "ಪ್ರಮುಖ ಸಾವಯವ ರಾಸಾಯನಿಕ ಕ್ರಿಯೆಗಳು")}</span>
             </h3>
-            <ul className="list-disc pl-4 space-y-1 text-[#475569] dark:text-[#94A3B8]">
+            <ul className="list-disc pl-4 space-y-1 text-[#475569] dark:text-[#A1AEC2]">
               <li>SN1 and SN2 reaction mechanisms of haloalkanes with stereochemistry</li>
               <li>Reimer-Tiemann and Kolbe&apos;s reactions of phenol</li>
               <li>Aldol condensation and Cross-aldol condensation mechanisms</li>
@@ -108,7 +108,7 @@ export function SubjectAcademicGuide({ slug, subjectName }: SubjectGuideProps) {
               <Award className="h-4 w-4" />
               <span>{t("Physical Chemistry Numerical Focus", "ಭೌತ ರಸಾಯನಶಾಸ್ತ್ರದ ಲೆಕ್ಕಾಚಾರಗಳು")}</span>
             </h3>
-            <ul className="list-disc pl-4 space-y-1 text-[#475569] dark:text-[#94A3B8]">
+            <ul className="list-disc pl-4 space-y-1 text-[#475569] dark:text-[#A1AEC2]">
               <li><strong>Solutions:</strong> Elevation of boiling point, depression of freezing point, and osmotic pressure equations</li>
               <li><strong>Electrochemistry:</strong> Nernst equation for galvanic cells [E_cell = E° - (0.059/n) log Q]</li>
               <li><strong>Chemical Kinetics:</strong> Integrated rate equation for first-order reaction and Arrhenius activation energy calculation</li>
@@ -130,7 +130,7 @@ export function SubjectAcademicGuide({ slug, subjectName }: SubjectGuideProps) {
             <h2 className="text-xl font-bold text-[#0f172a] dark:text-[#F1F5F9]">
               {t("Karnataka 2nd PUC Mathematics (MATH-35) Blueprint Guide", "ಕರ್ನಾಟಕ ದ್ವಿತೀಯ ಪಿಯುಸಿ ಗಣಿತಶಾಸ್ತ್ರ ಪರೀಕ್ಷಾ ಮಾರ್ಗದರ್ಶಿ")}
             </h2>
-            <p className="text-xs text-[#64748b] dark:text-[#94A3B8]">
+            <p className="text-xs text-[#64748b] dark:text-[#A1AEC2]">
               {t("Theory: 80 Marks | Internal Assessment: 20 Marks", "ಥಿಯರಿ: 80 ಅಂಕಗಳು | ಆಂತರಿಕ ಮೌಲ್ಯಮಾಪನ: 20 ಅಂಕಗಳು")}
             </p>
           </div>
@@ -142,7 +142,7 @@ export function SubjectAcademicGuide({ slug, subjectName }: SubjectGuideProps) {
               <BookOpen className="h-4 w-4" />
               <span>{t("Guaranteed 5-Mark Problem Types", "ಖಚಿತ 5 ಅಂಕಗಳ ಪ್ರಮುಖ ಲೆಕ್ಕಗಳು")}</span>
             </h3>
-            <ul className="list-disc pl-4 space-y-1 text-[#475569] dark:text-[#94A3B8]">
+            <ul className="list-disc pl-4 space-y-1 text-[#475569] dark:text-[#A1AEC2]">
               <li>Solving system of 3 linear equations using Matrix Inversion method (X = A⁻¹B)</li>
               <li>Linear Programming: Graphical solution to maximize/minimize objective function with feasible region</li>
               <li>Shortest distance between two skew lines in Three Dimensional Geometry</li>
@@ -156,7 +156,7 @@ export function SubjectAcademicGuide({ slug, subjectName }: SubjectGuideProps) {
               <Award className="h-4 w-4" />
               <span>{t("Calculus Scoring Strategy", "ಕ್ಯಾಲ್ಕುಲಸ್ ಅಂಕಗಳ ಗಳಿಕೆ ತಂತ್ರ")}</span>
             </h3>
-            <ul className="list-disc pl-4 space-y-1 text-[#475569] dark:text-[#94A3B8]">
+            <ul className="list-disc pl-4 space-y-1 text-[#475569] dark:text-[#A1AEC2]">
               <li>Calculus accounts for over 44% of the total mathematics paper marks.</li>
               <li>Practice standard substitutions for rational and trigonometric integrands.</li>
               <li>Differential Equations: Master homogeneous and linear differential equations.</li>
@@ -178,7 +178,7 @@ export function SubjectAcademicGuide({ slug, subjectName }: SubjectGuideProps) {
             <h2 className="text-xl font-bold text-[#0f172a] dark:text-[#F1F5F9]">
               {t("Karnataka 2nd PUC Biology (BIO-36) Examination Guide", "ಕರ್ನಾಟಕ ದ್ವಿತೀಯ ಪಿಯುಸಿ ಜೀವಶಾಸ್ತ್ರ ಪರೀಕ್ಷಾ ಮಾರ್ಗದರ್ಶಿ")}
             </h2>
-            <p className="text-xs text-[#64748b] dark:text-[#94A3B8]">
+            <p className="text-xs text-[#64748b] dark:text-[#A1AEC2]">
               {t("Theory: 70 Marks | Practical: 30 Marks (Slide Preparation & Spotting)", "ಥಿಯರಿ: 70 ಅಂಕಗಳು | ಪ್ರಾಯೋಗಿಕ: 30 ಅಂಕಗಳು")}
             </p>
           </div>
@@ -190,7 +190,7 @@ export function SubjectAcademicGuide({ slug, subjectName }: SubjectGuideProps) {
               <BookOpen className="h-4 w-4" />
               <span>{t("High-Frequency Board Diagrams", "ಪ್ರಮುಖ ರೇಖಾಚಿತ್ರಗಳು")}</span>
             </h3>
-            <ul className="list-disc pl-4 space-y-1 text-[#475569] dark:text-[#94A3B8]">
+            <ul className="list-disc pl-4 space-y-1 text-[#475569] dark:text-[#A1AEC2]">
               <li>Diagrammatic representation of transverse section of young anther and mature pollen grain</li>
               <li>Anatropous ovule with labeled embryo sac and female gametophyte</li>
               <li>Human male reproductive system and section of seminiferous tubule</li>
@@ -205,7 +205,7 @@ export function SubjectAcademicGuide({ slug, subjectName }: SubjectGuideProps) {
               <Award className="h-4 w-4" />
               <span>{t("Genetics & Biotechnology Concepts", "ತಳಿಶಾಸ್ತ್ರ & ಬಯೋಟೆಕ್ನಾಲಜಿ")}</span>
             </h3>
-            <ul className="list-disc pl-4 space-y-1 text-[#475569] dark:text-[#94A3B8]">
+            <ul className="list-disc pl-4 space-y-1 text-[#475569] dark:text-[#A1AEC2]">
               <li>Mendel&apos;s laws of inheritance: Incomplete dominance and co-dominance ratios</li>
               <li>Meselson and Stahl experiment for semi-conservative DNA replication</li>
               <li>Lac Operon model mechanism in E. coli with inducible regulation</li>
@@ -228,12 +228,12 @@ export function SubjectAcademicGuide({ slug, subjectName }: SubjectGuideProps) {
           <h2 className="text-xl font-bold text-[#0f172a] dark:text-[#F1F5F9]">
             {subjectName} — {t("Curriculum & Examination Scheme", "ಪಠ್ಯಕ್ರಮ ಮತ್ತು ಪರೀಕ್ಷಾ ವಿಧಾನ")}
           </h2>
-          <p className="text-xs text-[#64748b] dark:text-[#94A3B8]">
+          <p className="text-xs text-[#64748b] dark:text-[#A1AEC2]">
             {t("Aligned with Karnataka Pre-University Education (KSEAB) prescribed syllabus.", "ಕರ್ನಾಟಕ ಪದವಿ ಪೂರ್ವ ಶಿಕ್ಷಣ ಇಲಾಖೆಯ ನಿಯಮಗಳಿಗೆ ಅನುಗುಣವಾಗಿದೆ.")}
           </p>
         </div>
       </div>
-      <p className="text-xs text-[#475569] dark:text-[#94A3B8] leading-relaxed">
+      <p className="text-xs text-[#475569] dark:text-[#A1AEC2] leading-relaxed">
         {t(
           `Study materials, blueprints, passing packages, and model question papers for ${subjectName} are verified by educators according to the official Karnataka Pre-University Board guidelines. Review prescribed textbooks and chapterwise weightages to score high in the annual examinations.`,
           `${subjectName} ವಿಷಯದ ನೋಟ್ಸ್, ಬ್ಲೂಪ್ರಿಂಟ್ ಮತ್ತು ಮಾದರಿ ಪತ್ರಿಕೆಗಳು ಶಿಕ್ಷಣ ಮಂಡಳಿಯ ನಿಯಮಗಳಿಗೆ ಅನುಗುಣವಾಗಿ ರೂಪಿತವಾಗಿವೆ. ಪರೀಕ್ಷೆಯಲ್ಲಿ ಗರಿಷ್ಠ ಅಂಕಗಳನ್ನು ಗಳಿಸಲು ಪಠ್ಯಪುಸ್ತಕಗಳನ್ನು ನಿಯಮಿತವಾಗಿ ಅಧ್ಯಯನ ಮಾಡಿ.`

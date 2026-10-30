@@ -321,7 +321,7 @@ export default function ContributePage() {
           <h1 className="text-2xl sm:text-3xl font-black text-[#0f172a] dark:text-[#F1F5F9] dark:text-[#F1F5F9] tracking-tight">
             {t("Upload & Share Study Materials", "ಅಧ್ಯಯನ ಸಾಮಗ್ರಿಗಳನ್ನು ಅಪ್‌ಲೋಡ್ ಮಾಡಿ")}
           </h1>
-          <p className="text-sm text-[#64748b] dark:text-[#94A3B8] dark:text-[#94A3B8] mt-2 leading-relaxed">
+          <p className="text-sm text-[#64748b] dark:text-[#A1AEC2] dark:text-[#A1AEC2] mt-2 leading-relaxed">
             {t(
               "Select your PDF or Word document (.docx/.doc) notes, solutions, or model question papers. Your file is automatically saved into our Google Drive library and published for thousands of 2nd PUC students.",
               "ನಿಮ್ಮ PDF ಅಥವಾ Word ದಾಖಲೆ (.docx/.doc) ನೋಟ್ಸ್ ಅಥವಾ ಪ್ರಶ್ನೆ ಪತ್ರಿಕೆಗಳನ್ನು ಆಯ್ಕೆಮಾಡಿ. ನಿಮ್ಮ ಫೈಲ್ ನೇರವಾಗಿ ನಮ್ಮ ಗೂಗಲ್ ಡ್ರೈವ್‌ಗೆ ಅಪ್‌ಲೋಡ್ ಆಗುತ್ತದೆ."
@@ -338,7 +338,7 @@ export default function ContributePage() {
                   <HardDrive className="h-4 w-4 text-[#2563eb]" />
                   <span>{t("How to Submit Notes (3 Easy Steps)", "ನೋಟ್ಸ್ ಸಲ್ಲಿಸುವುದು ಹೇಗೆ? (3 ಸುಲಭ ಹಂತಗಳು)")}</span>
                 </CardTitle>
-                <CardDescription className="text-xs text-[#64748b] dark:text-[#94A3B8]">
+                <CardDescription className="text-xs text-[#64748b] dark:text-[#A1AEC2]">
                   {t("Follow these quick steps to share your study materials", "ನಿಮ್ಮ ನೋಟ್ಸ್ ಹಂಚಿಕೊಳ್ಳಲು ಈ ಹಂತಗಳನ್ನು ಅನುಸರಿಸಿ")}
                 </CardDescription>
               </CardHeader>
@@ -353,7 +353,7 @@ export default function ContributePage() {
                     <p className="font-semibold text-[#0f172a] dark:text-[#F1F5F9]">
                       {t("Select Your PDF or Word File", "ನಿಮ್ಮ PDF ಅಥವಾ Word ಫೈಲ್ ಆಯ್ಕೆಮಾಡಿ")}
                     </p>
-                    <p className="text-[#64748b] dark:text-[#94A3B8] leading-relaxed mt-0.5">
+                    <p className="text-[#64748b] dark:text-[#A1AEC2] leading-relaxed mt-0.5">
                       {t(
                         "Click the upload box on the right (or drag and drop). Select your PDF, DOCX, or DOC file from your phone or computer (up to 25 MB).",
                         "ಬಲಬದಿಯ ಬಾಕ್ಸ್ ಕ್ಲಿಕ್ ಮಾಡಿ ನಿಮ್ಮ ಮೊಬೈಲ್ ಅಥವಾ ಕಂಪ್ಯೂಟರ್‌ನಿಂದ PDF, DOCX ಅಥವಾ DOC ಫೈಲ್ ಆಯ್ಕೆಮಾಡಿ (ಗರಿಷ್ಠ 25 MB)."
@@ -371,7 +371,7 @@ export default function ContributePage() {
                     <p className="font-semibold text-[#0f172a] dark:text-[#F1F5F9]">
                       {t("Add Title & Choose Subject", "ಶೀರ್ಷಿಕೆ ಮತ್ತು ವಿಷಯ ಆಯ್ಕೆಮಾಡಿ")}
                     </p>
-                    <p className="text-[#64748b] dark:text-[#94A3B8] leading-relaxed mt-0.5">
+                    <p className="text-[#64748b] dark:text-[#A1AEC2] leading-relaxed mt-0.5">
                       {t(
                         "Type a clear title (e.g. Physics Chapter 3 Current Electricity) and select the subject & material type (Notes, Blueprints, PYQ).",
                         "ಅಧ್ಯಯನ ಸಾಮಗ್ರಿಯ ಶೀರ್ಷಿಕೆ ಮತ್ತು ಸೂಕ್ತ ವಿಷಯವನ್ನು ಆಯ್ಕೆಮಾಡಿ."
@@ -420,7 +420,7 @@ export default function ContributePage() {
                 <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" />
                 <span>{t("What happens after upload?", "ಅಪ್‌ಲೋಡ್ ಆದ ನಂತರ ಏನಾಗುತ್ತದೆ?")}</span>
               </span>
-              <p className="text-[#64748b] dark:text-[#94A3B8] leading-relaxed">
+              <p className="text-[#64748b] dark:text-[#A1AEC2] leading-relaxed">
                 {t(
                   "Our academic team reviews the syllabus alignment, organizes it into the correct subject & chapter, and publishes it with your name credit for all Karnataka students to read free.",
                   "ನಮ್ಮ ಅಧ್ಯಾಪಕರ ತಂಡವು ಪಠ್ಯಕ್ರಮವನ್ನು ಪರಿಶೀಲಿಸಿ, ಸೂಕ್ತ ವಿಷಯ ಮತ್ತು ಅಧ್ಯಾಯದ ಅಡಿಯಲ್ಲಿ ನಿಮ್ಮ ಹೆಸರಿನ ಕ್ರೆಡಿಟ್‌ನೊಂದಿಗೆ ಪ್ರಕಟಿಸುತ್ತದೆ."
@@ -437,7 +437,7 @@ export default function ContributePage() {
                   <UploadCloud className="h-5 w-5 text-[#2563eb]" />
                   <span>{t("Upload Study Material", "ಅಧ್ಯಯನ ಸಾಮಗ್ರಿ ಅಪ್‌ಲೋಡ್ ಮಾಡಿ")}</span>
                 </CardTitle>
-                <CardDescription className="text-xs text-[#64748b] dark:text-[#94A3B8]">
+                <CardDescription className="text-xs text-[#64748b] dark:text-[#A1AEC2]">
                   {t("File will be saved directly into 2PUC Google Drive", "ಫೈಲ್ ನೇರವಾಗಿ ಗೂಗಲ್ ಡ್ರೈವ್‌ಗೆ ಅಪ್‌ಲೋಡ್ ಆಗುತ್ತದೆ")}
                 </CardDescription>
               </CardHeader>
@@ -452,7 +452,7 @@ export default function ContributePage() {
                       <h3 className="text-lg font-bold text-[#0f172a] dark:text-[#F1F5F9]">
                         {t("File Uploaded Successfully!", "ಫೈಲ್ ಯಶಸ್ವಿಯಾಗಿ ಅಪ್‌ಲೋಡ್ ಆಗಿದೆ!")}
                       </h3>
-                      <p className="text-xs sm:text-sm text-[#64748b] dark:text-[#94A3B8] max-w-md mx-auto leading-relaxed">
+                      <p className="text-xs sm:text-sm text-[#64748b] dark:text-[#A1AEC2] max-w-md mx-auto leading-relaxed">
                         {t(
                           "Your material has been saved to our Google Drive. Our academic team will review and categorize it in the store shortly.",
                           "ನಿಮ್ಮ ಫೈಲ್ ಗೂಗಲ್ ಡ್ರೈವ್‌ನಲ್ಲಿ ಸುರಕ್ಷಿತವಾಗಿದೆ. ಪರಿಶೀಲನೆಯ ನಂತರ ಶೀಘ್ರದಲ್ಲೇ ಪ್ರಕಟಿಸಲಾಗುವುದು."
@@ -525,7 +525,7 @@ export default function ContributePage() {
                         className={`flex-1 py-1.5 px-3 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition-all ${
                           uploadMode === "file"
                             ? "bg-white text-[#0f172a] dark:text-[#F1F5F9] shadow-2xs border border-[#cbd5e1]"
-                            : "text-[#64748b] dark:text-[#94A3B8] hover:text-[#0f172a] dark:text-[#F1F5F9]"
+                            : "text-[#64748b] dark:text-[#A1AEC2] hover:text-[#0f172a] dark:text-[#F1F5F9]"
                         }`}
                       >
                         <UploadCloud className="h-3.5 w-3.5 text-[#2563eb]" />
@@ -538,7 +538,7 @@ export default function ContributePage() {
                         className={`flex-1 py-1.5 px-3 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition-all ${
                           uploadMode === "link"
                             ? "bg-white text-[#0f172a] dark:text-[#F1F5F9] shadow-2xs border border-[#cbd5e1]"
-                            : "text-[#64748b] dark:text-[#94A3B8] hover:text-[#0f172a] dark:text-[#F1F5F9]"
+                            : "text-[#64748b] dark:text-[#A1AEC2] hover:text-[#0f172a] dark:text-[#F1F5F9]"
                         }`}
                       >
                         <Link2 className="h-3.5 w-3.5 text-[#2563eb]" />
@@ -553,7 +553,7 @@ export default function ContributePage() {
                           <Label className="text-xs font-bold text-[#334155] dark:text-[#F1F5F9]">
                             {t("Select Document File (PDF, DOCX, DOC) *", "ದಾಖಲೆ ಫೈಲ್ ಆಯ್ಕೆಮಾಡಿ (PDF, DOCX, DOC) *")}
                           </Label>
-                          <span className="text-[11px] text-[#64748b] dark:text-[#94A3B8]">
+                          <span className="text-[11px] text-[#64748b] dark:text-[#A1AEC2]">
                             {t("Max 25 MB per file", "ಗರಿಷ್ಠ 25 MB")}
                           </span>
                         </div>
@@ -579,7 +579,7 @@ export default function ContributePage() {
                             <p className="text-xs sm:text-sm font-bold text-[#0f172a] dark:text-[#F1F5F9]">
                               {t("Click to browse or drag and drop your document here", "ಫೈಲ್ ಆಯ್ಕೆ ಮಾಡಲು ಕ್ಲಿಕ್ ಮಾಡಿ ಅಥವಾ ಇಲ್ಲಿ ಎಳೆಯಿರಿ")}
                             </p>
-                            <p className="text-[11px] text-[#64748b] dark:text-[#94A3B8] mt-1">
+                            <p className="text-[11px] text-[#64748b] dark:text-[#A1AEC2] mt-1">
                               {t("PDF, DOCX, DOC files up to 25 MB", "PDF, DOCX, DOC ಫೈಲ್‌ಗಳು (ಗರಿಷ್ಠ 25 MB)")}
                             </p>
                             <p className="text-[10.5px] text-[#2563eb] font-semibold mt-1.5">
@@ -596,7 +596,7 @@ export default function ContributePage() {
                                 <p className="text-xs font-bold text-[#0f172a] dark:text-[#F1F5F9] truncate">
                                   {selectedFile.name}
                                 </p>
-                                <p className="text-[11px] text-[#64748b] dark:text-[#94A3B8]">
+                                <p className="text-[11px] text-[#64748b] dark:text-[#A1AEC2]">
                                   {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB &bull; {selectedFile.name.split(".").pop()?.toUpperCase()}
                                 </p>
                               </div>
@@ -609,7 +609,7 @@ export default function ContributePage() {
                                 setSelectedFile(null);
                                 if (fileInputRef.current) fileInputRef.current.value = "";
                               }}
-                              className="h-8 w-8 p-0 text-[#64748b] dark:text-[#94A3B8] hover:text-[#e11d48] hover:bg-white rounded-lg shrink-0"
+                              className="h-8 w-8 p-0 text-[#64748b] dark:text-[#A1AEC2] hover:text-[#e11d48] hover:bg-white rounded-lg shrink-0"
                               title="Remove file"
                             >
                               <X className="h-4 w-4" />

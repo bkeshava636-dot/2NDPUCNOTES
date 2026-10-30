@@ -141,7 +141,7 @@ export default function CardPage() {
       />
       {/* Back button */}
       <Link href="/">
-        <Button variant="ghost" size="sm" className="gap-2 text-[#475569] dark:text-[#94A3B8] hover:text-[#0f172a] dark:hover:text-[#F1F5F9] -ml-2 mb-6 font-medium">
+        <Button variant="ghost" size="sm" className="gap-2 text-[#475569] dark:text-[#A1AEC2] hover:text-[#0f172a] dark:hover:text-[#F1F5F9] -ml-2 mb-6 font-medium">
           <ArrowLeft className="h-4 w-4" />
           <span>{t("Back to Notes", "ನೋಟ್ಸ್‌ಗೆ ಹಿಂತಿರುಗಿ")}</span>
         </Button>
@@ -200,7 +200,7 @@ export default function CardPage() {
           {card.description && (
             <div className="bg-white dark:bg-[#151D2E] rounded-2xl border border-[#e2e8f0] dark:border-[#293548] p-5 sm:p-6 space-y-2.5 shadow-xs">
               <h2 className="text-sm sm:text-base font-bold text-[#0f172a] dark:text-[#F1F5F9]">{t("About this Resource", "ಸಂಪನ್ಮೂಲದ ವಿವರ")}</h2>
-              <p className="text-[#64748b] dark:text-[#94A3B8] leading-relaxed text-xs sm:text-sm whitespace-pre-line">
+              <p className="text-[#64748b] dark:text-[#A1AEC2] leading-relaxed text-xs sm:text-sm whitespace-pre-line">
                 {card.description}
               </p>
             </div>
@@ -223,7 +223,7 @@ export default function CardPage() {
                     {getSubjectDisplayName(card.subject, isKn)}
                   </Badge>
                 )}
-                <Badge variant="outline" className="text-[11px] font-medium text-[#475569] dark:text-[#94A3B8] border-[#e2e8f0] dark:border-[#293548] bg-[#f8fafc] dark:bg-[#1C2638]">
+                <Badge variant="outline" className="text-[11px] font-medium text-[#475569] dark:text-[#A1AEC2] border-[#e2e8f0] dark:border-[#293548] bg-[#f8fafc] dark:bg-[#1C2638]">
                   {getResourceTypeDisplayName(card.resourceType, isKn)}
                 </Badge>
                 {card.subtype && (
@@ -232,7 +232,7 @@ export default function CardPage() {
                   </Badge>
                 )}
                 {card.classLevel && (
-                  <Badge variant="outline" className="text-[11px] font-medium text-[#475569] dark:text-[#94A3B8] border-[#e2e8f0] dark:border-[#293548] bg-[#f8fafc] dark:bg-[#1C2638]">
+                  <Badge variant="outline" className="text-[11px] font-medium text-[#475569] dark:text-[#A1AEC2] border-[#e2e8f0] dark:border-[#293548] bg-[#f8fafc] dark:bg-[#1C2638]">
                     {card.classLevel}
                   </Badge>
                 )}
@@ -260,7 +260,7 @@ export default function CardPage() {
                       href={card.officialSourceUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 text-xs font-medium text-[#475569] dark:text-[#94A3B8] hover:text-[#0f172a] dark:hover:text-[#F1F5F9] bg-[#f8fafc] dark:bg-[#1C2638] hover:bg-[#e2e8f0] dark:hover:bg-[#253248] border border-[#e2e8f0] dark:border-[#293548] px-2.5 py-1 rounded-md transition-colors"
+                      className="inline-flex items-center gap-1.5 text-xs font-medium text-[#475569] dark:text-[#A1AEC2] hover:text-[#0f172a] dark:hover:text-[#F1F5F9] bg-[#f8fafc] dark:bg-[#1C2638] hover:bg-[#e2e8f0] dark:hover:bg-[#253248] border border-[#e2e8f0] dark:border-[#293548] px-2.5 py-1 rounded-md transition-colors"
                     >
                       {t("Official Source Link →", "ಅಧಿಕೃತ ಲಿಂಕ್ →")}
                     </a>
@@ -374,7 +374,7 @@ export default function CardPage() {
 
           {/* Telegram Support prompt */}
           <div className="bg-[#eff6ff] dark:bg-[#111827] border border-[#bfdbfe]/80 dark:border-[#293548] rounded-2xl p-3.5 px-4.5 flex items-center justify-between text-xs text-[#0f172a] dark:text-[#F1F5F9] shadow-2xs">
-            <span className="font-medium text-[#475569] dark:text-[#94A3B8]">{t("Have questions about this material?", "ಈ ಸಾಮಗ್ರಿಯ ಬಗ್ಗೆ ಪ್ರಶ್ನೆಗಳಿವೆಯೇ?")}</span>
+            <span className="font-medium text-[#475569] dark:text-[#A1AEC2]">{t("Have questions about this material?", "ಈ ಸಾಮಗ್ರಿಯ ಬಗ್ಗೆ ಪ್ರಶ್ನೆಗಳಿವೆಯೇ?")}</span>
             <a
               href={card.telegramLink || TELEGRAM_LINK}
               target="_blank"

@@ -38,7 +38,7 @@ export default function MyPurchases() {
         </div>
         <div>
           <h1 className="text-xl sm:text-2xl font-bold text-[#0f172a] dark:text-[#F1F5F9] tracking-tight">{t("My Purchases", "ನನ್ನ ಖರೀದಿಗಳು")}</h1>
-          <p className="text-[#64748b] dark:text-[#94A3B8] text-xs sm:text-sm mt-0.5">{t("Enter your phone number to access and re-download your study materials", "ನಿಮ್ಮ ನೋಟ್ಸ್ ಡೌನ್‌ಲೋಡ್ ಮಾಡಲು ಮೊಬೈಲ್ ಸಂಖ್ಯೆಯನ್ನು ನಮೂದಿಸಿ")}</p>
+          <p className="text-[#64748b] dark:text-[#A1AEC2] text-xs sm:text-sm mt-0.5">{t("Enter your phone number to access and re-download your study materials", "ನಿಮ್ಮ ನೋಟ್ಸ್ ಡೌನ್‌ಲೋಡ್ ಮಾಡಲು ಮೊಬೈಲ್ ಸಂಖ್ಯೆಯನ್ನು ನಮೂದಿಸಿ")}</p>
         </div>
       </div>
 
@@ -83,7 +83,7 @@ export default function MyPurchases() {
                 <ShoppingBag className="h-7 w-7 opacity-60" />
               </div>
               <p className="font-bold text-[#0f172a] dark:text-[#F1F5F9] text-base">{t("No purchases found for this number.", "ಈ ಸಂಖ್ಯೆಗೆ ಯಾವುದೇ ಖರೀದಿಗಳು ಕಂಡುಬಂದಿಲ್ಲ.")}</p>
-              <p className="text-sm text-[#64748b] dark:text-[#94A3B8] dark:text-[#94A3B8] mt-1 max-w-sm mx-auto">
+              <p className="text-sm text-[#64748b] dark:text-[#A1AEC2] dark:text-[#A1AEC2] mt-1 max-w-sm mx-auto">
                 {t("Make sure you're using the same number you entered at checkout.", "ಖರೀದಿಯ ಸಮಯದಲ್ಲಿ ನೀಡಿದ ಮೊಬೈಲ್ ಸಂಖ್ಯೆಯನ್ನೇ ನಮೂದಿಸಿರುವುದನ್ನು ಖಚಿತಪಡಿಸಿಕೊಳ್ಳಿ.")}
               </p>
             </div>
@@ -121,7 +121,7 @@ export default function MyPurchases() {
                       )}
                     </div>
 
-                    <div className="flex items-center justify-between pt-2 border-t border-[#f1f5f9] dark:border-[#293548] text-xs text-[#64748b] dark:text-[#94A3B8]">
+                    <div className="flex items-center justify-between pt-2 border-t border-[#f1f5f9] dark:border-[#293548] text-xs text-[#64748b] dark:text-[#A1AEC2]">
                       <span className="flex items-center gap-1">
                         <Calendar className="h-3 w-3" />
                         {new Date(order.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
@@ -142,10 +142,10 @@ export default function MyPurchases() {
                 <Table>
                   <TableHeader className="bg-[#f8fafc] dark:bg-[#111827]">
                     <TableRow className="border-[#f1f5f9] dark:border-[#293548] hover:bg-transparent">
-                      <TableHead className="font-bold text-xs text-[#475569] dark:text-[#94A3B8] uppercase tracking-wider py-3.5">{t("Resource", "ಸಂಪನ್ಮೂಲ")}</TableHead>
-                      <TableHead className="font-bold text-xs text-[#475569] dark:text-[#94A3B8] uppercase tracking-wider py-3.5">{t("Amount", "ಮೊತ್ತ")}</TableHead>
-                      <TableHead className="font-bold text-xs text-[#475569] dark:text-[#94A3B8] uppercase tracking-wider py-3.5">{t("Date", "ದಿನಾಂಕ")}</TableHead>
-                      <TableHead className="font-bold text-xs text-[#475569] dark:text-[#94A3B8] uppercase tracking-wider py-3.5 text-right">{t("Action", "ಕ್ರಿಯೆ")}</TableHead>
+                      <TableHead className="font-bold text-xs text-[#475569] dark:text-[#A1AEC2] uppercase tracking-wider py-3.5">{t("Resource", "ಸಂಪನ್ಮೂಲ")}</TableHead>
+                      <TableHead className="font-bold text-xs text-[#475569] dark:text-[#A1AEC2] uppercase tracking-wider py-3.5">{t("Amount", "ಮೊತ್ತ")}</TableHead>
+                      <TableHead className="font-bold text-xs text-[#475569] dark:text-[#A1AEC2] uppercase tracking-wider py-3.5">{t("Date", "ದಿನಾಂಕ")}</TableHead>
+                      <TableHead className="font-bold text-xs text-[#475569] dark:text-[#A1AEC2] uppercase tracking-wider py-3.5 text-right">{t("Action", "ಕ್ರಿಯೆ")}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>

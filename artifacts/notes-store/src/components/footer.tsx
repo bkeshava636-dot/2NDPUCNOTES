@@ -21,7 +21,7 @@ export function Footer() {
   return (
     <>
       {/* Footer container with bottom padding so floating feedback pill never obstructs content */}
-      <footer className="mt-auto border-t border-[#e2e8f0] dark:border-[#293548] bg-[#f8fafc] dark:bg-[#0B0F19] text-[#5a6b82] dark:text-[#94A3B8] pb-16 sm:pb-8">
+      <footer className="mt-auto border-t border-[#e2e8f0] dark:border-[#293548] bg-[#f8fafc] dark:bg-[#0B0F19] text-[#5a6b82] dark:text-[#A1AEC2] pb-24 md:pb-10">
         <div className="container mx-auto max-w-5xl px-4 py-8 sm:py-10">
           {/* ── Compact "Buy Me Some Paneer" Strip ── */}
           <div className="mb-8 p-3 sm:px-4 sm:py-2.5 rounded-xl bg-amber-50/70 dark:bg-amber-950/20 border border-amber-200/80 dark:border-amber-900/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
@@ -78,7 +78,7 @@ export function Footer() {
                 className="inline-flex items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2563eb]/30 rounded-lg transition-opacity hover:opacity-90"
                 aria-label="2PUC Home"
               >
-                <BrandLogo size="md" />
+                <BrandLogo size="lg" />
               </Link>
               <p className="text-xs sm:text-sm text-[#5a6b82] leading-relaxed max-w-sm">
                 {t(

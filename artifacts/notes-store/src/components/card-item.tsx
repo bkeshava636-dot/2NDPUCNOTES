@@ -10,7 +10,7 @@ import { useLanguage } from "@/lib/language-context";
 import { getSubjectDisplayName, getResourceTypeDisplayName } from "@/lib/site-navigation";
 
 function getSubjectBadgeStyle(subject?: string) {
-  if (!subject) return "bg-[#f0f4f9] dark:bg-[#1C2638] text-[#475569] dark:text-[#94A3B8] border-[#e2e8f0] dark:border-[#293548]";
+  if (!subject) return "bg-[#f0f4f9] dark:bg-[#1C2638] text-[#475569] dark:text-[#A1AEC2] border-[#e2e8f0] dark:border-[#293548]";
   const lower = subject.toLowerCase();
   if (lower.includes("phys")) return "bg-[#ebf3ff] dark:bg-blue-950/40 text-[#1856b8] dark:text-blue-300 border-[#dce8fa] dark:border-blue-900/60";
   if (lower.includes("chem")) return "bg-[#fdece9] dark:bg-rose-950/40 text-[#b83226] dark:text-rose-300 border-[#f9dcd7] dark:border-rose-900/60";
@@ -21,7 +21,7 @@ function getSubjectBadgeStyle(subject?: string) {
   if (lower.includes("hin")) return "bg-[#fff7ed] dark:bg-orange-950/40 text-[#c2410c] dark:text-orange-300 border-[#ffedd5] dark:border-orange-900/60";
   if (lower.includes("kan")) return "bg-[#f0fdf4] dark:bg-emerald-950/40 text-[#15803d] dark:text-emerald-300 border-[#dcfce7] dark:border-emerald-900/60";
   if (lower.includes("san")) return "bg-[#fffbeb] dark:bg-amber-950/40 text-[#b45309] dark:text-amber-300 border-[#fef3c7] dark:border-amber-900/60";
-  return "bg-[#f0f4f9] dark:bg-[#1C2638] text-[#475569] dark:text-[#94A3B8] border-[#e2e8f0] dark:border-[#293548]";
+  return "bg-[#f0f4f9] dark:bg-[#1C2638] text-[#475569] dark:text-[#A1AEC2] border-[#e2e8f0] dark:border-[#293548]";
 }
 
 export function CardItem({ card }: { card: CardType }) {
@@ -96,7 +96,7 @@ export function CardItem({ card }: { card: CardType }) {
                     {getSubjectDisplayName(card.subject, isKn)}
                   </span>
                 )}
-                <Badge variant="outline" className="text-[11px] font-medium text-[#475569] dark:text-[#94A3B8] border-[#e2e8f0] dark:border-[#293548] bg-[#f8fafc] dark:bg-[#1C2638]">
+                <Badge variant="outline" className="text-[11px] font-medium text-[#475569] dark:text-[#A1AEC2] border-[#e2e8f0] dark:border-[#293548] bg-[#f8fafc] dark:bg-[#1C2638]">
                   {getResourceTypeDisplayName(card.resourceType, isKn)}
                 </Badge>
                 {card.subtype && (
@@ -151,7 +151,7 @@ export function CardItem({ card }: { card: CardType }) {
 
             {/* Chapter subtitle if present */}
             {card.chapter && (
-              <p className="text-xs text-[#64748b] dark:text-[#94A3B8] mt-1.5 line-clamp-1">
+              <p className="text-xs text-[#64748b] dark:text-[#A1AEC2] mt-1.5 line-clamp-1">
                 {card.chapter}
               </p>
             )}
@@ -190,7 +190,7 @@ export function CardItem({ card }: { card: CardType }) {
           >
             {card.isFree ? (
               <>
-                <Download className="h-3.5 w-3.5 text-[#475569] dark:text-[#94A3B8]" />
+                <Download className="h-3.5 w-3.5 text-[#475569] dark:text-[#A1AEC2]" />
                 <span>{t("Get PDF", "PDF ಪಡೆಯಿರಿ")}</span>
               </>
             ) : (

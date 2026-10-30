@@ -310,7 +310,7 @@ export default function CategoryPage() {
         <Button
           variant="ghost"
           size="sm"
-          className="gap-2 text-[#475569] dark:text-[#94A3B8] hover:text-[#0f172a] dark:hover:text-[#F1F5F9] -ml-2 mb-4 font-medium"
+          className="gap-2 text-[#475569] dark:text-[#A1AEC2] hover:text-[#0f172a] dark:hover:text-[#F1F5F9] -ml-2 mb-4 font-medium"
         >
           <ArrowLeft className="h-4 w-4" />
           <span>{t("Back to Home", "ಮುಖಪುಟಕ್ಕೆ ಹಿಂತಿರುಗಿ")}</span>
@@ -335,11 +335,11 @@ export default function CategoryPage() {
                 >
                   {t("Resource Category", "ಸಂಪನ್ಮೂಲ ವರ್ಗ")}
                 </Badge>
-                <span className="text-xs font-medium text-[#64748b] dark:text-[#94A3B8] bg-[#f8fafc] dark:bg-[#1C2638] px-2.5 py-0.5 rounded-full border border-[#e2e8f0] dark:border-[#293548]">
+                <span className="text-xs font-medium text-[#64748b] dark:text-[#A1AEC2] bg-[#f8fafc] dark:bg-[#1C2638] px-2.5 py-0.5 rounded-full border border-[#e2e8f0] dark:border-[#293548]">
                   {filteredCards.length} {filteredCards.length === 1 ? t("item", "ಐಟಂ") : t("items", "ಐಟಂಗಳು")}
                 </span>
               </div>
-              <p className="text-[#64748b] dark:text-[#94A3B8] text-xs sm:text-sm leading-relaxed max-w-2xl mt-1.5 font-normal">
+              <p className="text-[#64748b] dark:text-[#A1AEC2] text-xs sm:text-sm leading-relaxed max-w-2xl mt-1.5 font-normal">
                 {displayDescription}
               </p>
             </div>
@@ -363,7 +363,7 @@ export default function CategoryPage() {
 
       {/* Filter by Subject Toolbar */}
       <div className="space-y-3.5 mb-6">
-        <div className="flex items-center gap-2 text-xs font-bold text-[#475569] dark:text-[#94A3B8] uppercase tracking-wider">
+        <div className="flex items-center gap-2 text-xs font-bold text-[#475569] dark:text-[#A1AEC2] uppercase tracking-wider">
           <SlidersHorizontal className="h-3.5 w-3.5 text-[#2563eb]" />
           <span>{t("Filter by Subject", "ವಿಷಯವಾರು ಫಿಲ್ಟರ್")}</span>
         </div>
@@ -375,7 +375,7 @@ export default function CategoryPage() {
             className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold shrink-0 transition-all ${
               activeSubject === "all"
                 ? "bg-[#2563eb] dark:bg-[#818CF8] text-white shadow-2xs"
-                : "bg-white dark:bg-[#151D2E] text-[#475569] dark:text-[#94A3B8] border border-[#e2e8f0] dark:border-[#293548] hover:bg-[#f8fafc] dark:hover:bg-[#1C2638] hover:border-[#cbd5e1] dark:hover:border-[#293548]"
+                : "bg-white dark:bg-[#151D2E] text-[#475569] dark:text-[#A1AEC2] border border-[#e2e8f0] dark:border-[#293548] hover:bg-[#f8fafc] dark:hover:bg-[#1C2638] hover:border-[#cbd5e1] dark:hover:border-[#293548]"
             }`}
           >
             {t("All Subjects", "ಎಲ್ಲ ವಿಷಯಗಳು")}
@@ -390,7 +390,7 @@ export default function CategoryPage() {
                 className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold shrink-0 transition-all ${
                   isSelected
                     ? "bg-[#2563eb] dark:bg-[#818CF8] text-white shadow-2xs"
-                    : "bg-white dark:bg-[#151D2E] text-[#475569] dark:text-[#94A3B8] border border-[#e2e8f0] dark:border-[#293548] hover:bg-[#f8fafc] dark:hover:bg-[#1C2638] hover:border-[#cbd5e1] dark:hover:border-[#293548]"
+                    : "bg-white dark:bg-[#151D2E] text-[#475569] dark:text-[#A1AEC2] border border-[#e2e8f0] dark:border-[#293548] hover:bg-[#f8fafc] dark:hover:bg-[#1C2638] hover:border-[#cbd5e1] dark:hover:border-[#293548]"
                 }`}
               >
                 {getSubjectDisplayName(subj, isKn)}
@@ -472,14 +472,14 @@ export default function CategoryPage() {
       {/* Price Filter Toolbar */}
       <div className="flex items-center justify-between gap-4 mb-6 bg-[#f8fafc] dark:bg-[#111827] border border-[#e2e8f0] dark:border-[#293548] px-3.5 py-2 rounded-xl">
         <div className="flex items-center gap-2">
-          <span className="text-xs text-[#64748b] dark:text-[#94A3B8] font-medium">{t("Price:", "ಬೆಲೆ:")}</span>
+          <span className="text-xs text-[#64748b] dark:text-[#A1AEC2] font-medium">{t("Price:", "ಬೆಲೆ:")}</span>
           <button
             type="button"
             onClick={() => setPriceFilter("all")}
             className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-all ${
               priceFilter === "all"
                 ? "bg-[#0f172a] dark:bg-[#F1F5F9] text-white dark:text-[#0B0F19] shadow-2xs"
-                : "text-[#64748b] dark:text-[#94A3B8] hover:bg-[#e2e8f0]/60 dark:hover:bg-[#1C2638]"
+                : "text-[#64748b] dark:text-[#A1AEC2] hover:bg-[#e2e8f0]/60 dark:hover:bg-[#1C2638]"
             }`}
           >
             {t("All", "ಎಲ್ಲ")}
@@ -490,7 +490,7 @@ export default function CategoryPage() {
             className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-all ${
               priceFilter === "free"
                 ? "bg-[#16a34a] text-white shadow-2xs"
-                : "text-[#64748b] dark:text-[#94A3B8] hover:bg-[#e2e8f0]/60 dark:hover:bg-[#1C2638]"
+                : "text-[#64748b] dark:text-[#A1AEC2] hover:bg-[#e2e8f0]/60 dark:hover:bg-[#1C2638]"
             }`}
           >
             {t("Free", "ಉಚಿತ")}
@@ -501,14 +501,14 @@ export default function CategoryPage() {
             className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-all ${
               priceFilter === "paid"
                 ? "bg-[#2563eb] text-white shadow-2xs"
-                : "text-[#64748b] dark:text-[#94A3B8] hover:bg-[#e2e8f0]/60 dark:hover:bg-[#1C2638]"
+                : "text-[#64748b] dark:text-[#A1AEC2] hover:bg-[#e2e8f0]/60 dark:hover:bg-[#1C2638]"
             }`}
           >
             {t("Paid", "ಪಾವತಿಸಿದ")}
           </button>
         </div>
 
-        <span className="text-xs text-[#64748b] dark:text-[#94A3B8] font-medium">
+        <span className="text-xs text-[#64748b] dark:text-[#A1AEC2] font-medium">
           {t("Showing", "ತೋರಿಸಲಾಗುತ್ತಿದೆ")} {filteredCards.length} {filteredCards.length === 1 ? t("item", "ಐಟಂ") : t("items", "ಐಟಂಗಳು")}
         </span>
       </div>
@@ -525,7 +525,7 @@ export default function CategoryPage() {
           <MetaNoIndex />
           <FileQuestion className="h-10 w-10 text-[#94a3b8] mx-auto mb-3" />
           <h3 className="font-bold text-base text-[#112542] dark:text-[#F1F5F9] mb-1">{t("No resources found", "ಯಾವುದೇ ಸಂಪನ್ಮೂಲ ಕಂಡುಬಂದಿಲ್ಲ")}</h3>
-          <p className="text-xs sm:text-sm text-[#5a6b82] dark:text-[#94A3B8] max-w-sm mx-auto">
+          <p className="text-xs sm:text-sm text-[#5a6b82] dark:text-[#A1AEC2] max-w-sm mx-auto">
             {t(
               `No resources match the selected filters under ${meta.title}. Try selecting a different subject or resetting filters.`,
               `${displayTitle} ಅಡಿಯಲ್ಲಿ ಆಯ್ಕೆಮಾಡಿದ ಫಿಲ್ಟರ್‌ಗಳಿಗೆ ಯಾವುದೇ ಸಂಪನ್ಮೂಲ ಹೊಂದಾಣಿಕೆಯಾಗುತ್ತಿಲ್ಲ. ಬೇರೆ ವಿಷಯ ಆಯ್ಕೆಮಾಡಿ ಅಥವಾ ಫಿಲ್ಟರ್ ಮರುಹೊಂದಿಸಿ.`

@@ -204,7 +204,7 @@ export default function Checkout() {
     <div className="max-w-lg mx-auto w-full px-4 py-8 sm:py-10">
       <MetaNoIndex />
       <Link href={`/card/${cardId}`}>
-        <Button variant="ghost" size="sm" className="gap-2 text-[#475569] dark:text-[#94A3B8] hover:text-[#0f172a] dark:hover:text-[#F1F5F9] -ml-2 mb-5 font-medium">
+        <Button variant="ghost" size="sm" className="gap-2 text-[#475569] dark:text-[#A1AEC2] hover:text-[#0f172a] dark:hover:text-[#F1F5F9] -ml-2 mb-5 font-medium">
           <ArrowLeft className="h-4 w-4" />
           <span>{t("Back to Notes", "ನೋಟ್ಸ್‌ಗೆ ಹಿಂತಿರುಗಿ")}</span>
         </Button>
@@ -213,7 +213,7 @@ export default function Checkout() {
       {/* Order Summary Card */}
       <div className="bg-white dark:bg-[#151D2E] border border-[#e2e8f0] dark:border-[#293548] rounded-2xl p-4.5 sm:p-5 mb-5 shadow-xs">
         <div className="flex items-center justify-between border-b border-[#f1f5f9] dark:border-[#293548] pb-3 mb-3.5">
-          <span className="text-[11px] font-bold text-[#64748b] dark:text-[#94A3B8] uppercase tracking-wider">{t("Order Summary", "ಆರ್ಡರ್ ವಿವರ")}</span>
+          <span className="text-[11px] font-bold text-[#64748b] dark:text-[#A1AEC2] uppercase tracking-wider">{t("Order Summary", "ಆರ್ಡರ್ ವಿವರ")}</span>
           <span className="text-xs font-semibold text-[#2563eb] dark:text-[#818CF8] bg-[#eff6ff] dark:bg-[#1C2638] border border-[#bfdbfe] dark:border-[#293548] px-2.5 py-0.5 rounded-full">
             {getResourceTypeDisplayName(card.resourceType, isKn)}
           </span>
@@ -232,14 +232,14 @@ export default function Checkout() {
               {card.title}
             </h2>
             {card.chapter && (
-              <p className="text-xs text-[#64748b] dark:text-[#94A3B8] mt-1 truncate">{card.chapter}</p>
+              <p className="text-xs text-[#64748b] dark:text-[#A1AEC2] mt-1 truncate">{card.chapter}</p>
             )}
           </div>
         </div>
 
         {/* Price Row */}
         <div className="flex items-center justify-between border-t border-[#f1f5f9] dark:border-[#293548] pt-3.5 mt-3.5">
-          <span className="text-sm font-medium text-[#64748b] dark:text-[#94A3B8]">{t("Total Payable", "ಪಾವತಿಸಬೇಕಾದ ಮೊತ್ತ")}</span>
+          <span className="text-sm font-medium text-[#64748b] dark:text-[#A1AEC2]">{t("Total Payable", "ಪಾವತಿಸಬೇಕಾದ ಮೊತ್ತ")}</span>
           <div className="text-right">
             {isCardFree ? (
               <span className="text-xl font-extrabold text-[#16a34a]">{t("Free", "ಉಚಿತ")}</span>
@@ -261,7 +261,7 @@ export default function Checkout() {
           <CardTitle className="text-base sm:text-lg font-bold text-[#0f172a] dark:text-[#F1F5F9]">
             {isCardFree ? t("Free Study Resource", "ಉಚಿತ ಅಧ್ಯಯನ ಸಾಮಗ್ರಿ") : t("Complete Purchase", "ಖರೀದಿ ಪೂರ್ಣಗೊಳಿಸಿ")}
           </CardTitle>
-          <CardDescription className="text-xs sm:text-sm text-[#64748b] dark:text-[#94A3B8]">
+          <CardDescription className="text-xs sm:text-sm text-[#64748b] dark:text-[#A1AEC2]">
             {isCardFree
               ? t("This resource is completely free. Click below to download the PDF immediately.", "ಈ ಸಂಪನ್ಮೂಲ ಸಂಪೂರ್ಣ ಉಚಿತವಾಗಿದೆ. ತಕ್ಷಣವೇ PDF ಡೌನ್‌ಲೋಡ್ ಮಾಡಲು ಕೆಳಗೆ ಕ್ಲಿಕ್ ಮಾಡಿ.")
               : t("Enter your contact details to receive and access your purchased study material", "ನಿಮ್ಮ ನೋಟ್ಸ್ ಪಡೆಯಲು ಮತ್ತು ಪ್ರವೇಶಿಸಲು ಸಂಪರ್ಕ ವಿವರಗಳನ್ನು ನಮೂದಿಸಿ")}
@@ -321,7 +321,7 @@ export default function Checkout() {
                   maxLength={10}
                   className="h-10.5 rounded-lg text-sm bg-[#f8fafc] dark:bg-[#1C2638] border-[#cbd5e1] dark:border-[#293548] text-[#0f172a] dark:text-[#F1F5F9] focus-visible:ring-[#2563eb] dark:focus-visible:ring-[#818CF8]"
                 />
-                <p className="text-[11px] text-[#64748b] dark:text-[#94A3B8]">{t("Used to instantly retrieve and re-download your purchases anytime", "ನಿಮ್ಮ ಖರೀದಿಗಳನ್ನು ಯಾವುದೇ ಸಮಯದಲ್ಲಿ ಸುಲಭವಾಗಿ ಮರು-ಡೌನ್‌ಲೋಡ್ ಮಾಡಲು ಬಳಸಲಾಗುತ್ತದೆ")}</p>
+                <p className="text-[11px] text-[#64748b] dark:text-[#A1AEC2]">{t("Used to instantly retrieve and re-download your purchases anytime", "ನಿಮ್ಮ ಖರೀದಿಗಳನ್ನು ಯಾವುದೇ ಸಮಯದಲ್ಲಿ ಸುಲಭವಾಗಿ ಮರು-ಡೌನ್‌ಲೋಡ್ ಮಾಡಲು ಬಳಸಲಾಗುತ್ತದೆ")}</p>
               </div>
 
               <div className="space-y-1.5">
@@ -360,7 +360,7 @@ export default function Checkout() {
               </div>
 
               {/* Trust and security badges */}
-              <div className="pt-3 border-t border-[#f1f5f9] dark:border-[#293548] flex items-center justify-center gap-5 text-[11px] text-[#64748b] dark:text-[#94A3B8]">
+              <div className="pt-3 border-t border-[#f1f5f9] dark:border-[#293548] flex items-center justify-center gap-5 text-[11px] text-[#64748b] dark:text-[#A1AEC2]">
                 <div className="flex items-center gap-1.5">
                   <ShieldCheck className="h-3.5 w-3.5 text-[#16a34a]" />
                   <span>{t("256-bit Encrypted", "256-ಬಿಟ್ ಸುರಕ್ಷಿತ ಎನ್‌ಕ್ರಿಪ್ಶನ್")}</span>

@@ -44,7 +44,7 @@ export default function PaymentSuccess() {
         {isFree ? t("Ready to Download!", "ಡೌನ್‌ಲೋಡ್ ಮಾಡಲು ಸಿದ್ಧವಾಗಿದೆ!") : t("Payment Successful!", "ಪಾವತಿ ಯಶಸ್ವಿಯಾಗಿದೆ!")}
       </h1>
 
-      <p className="text-sm text-[#5a6b82] dark:text-[#94A3B8] mb-7 max-w-sm mx-auto leading-relaxed">
+      <p className="text-sm text-[#5a6b82] dark:text-[#A1AEC2] mb-7 max-w-sm mx-auto leading-relaxed">
         {isFree
           ? t("Your free resource is ready.", "ನಿಮ್ಮ ಉಚಿತ ಸಂಪನ್ಮೂಲ ಸಿದ್ಧವಾಗಿದೆ.")
           : t("Your purchase is confirmed and your resource is ready to download.", "ನಿಮ್ಮ ಖರೀದಿ ಖಚಿತವಾಗಿದೆ ಮತ್ತು ಸಂಪನ್ಮೂಲ ಡೌನ್‌ಲೋಡ್ ಮಾಡಲು ಸಿದ್ಧವಾಗಿದೆ.")}
@@ -73,7 +73,7 @@ export default function PaymentSuccess() {
             <div className="mt-3.5 pt-3 border-t border-[#f1f5f9] dark:border-[#293548] flex items-center justify-between">
               <div>
                 <p className="text-[11px] font-bold text-[#94a3b8] uppercase tracking-wider mb-0.5">{t("Order Reference", "ಆರ್ಡರ್ ಸಂಖ್ಯೆ")}</p>
-                <p className="font-mono text-xs text-[#64748b] dark:text-[#94A3B8] break-all">{orderId}</p>
+                <p className="font-mono text-xs text-[#64748b] dark:text-[#A1AEC2] break-all">{orderId}</p>
               </div>
               <button
                 type="button"
@@ -118,7 +118,7 @@ export default function PaymentSuccess() {
         </Button>
       </a>
 
-      <p className="text-xs text-[#64748b] dark:text-[#94A3B8] mb-7">
+      <p className="text-xs text-[#64748b] dark:text-[#A1AEC2] mb-7">
         {t(
           "You can re-download this resource anytime using your phone number in My Purchases.",
           "ನಿಮ್ಮ ಮೊಬೈಲ್ ಸಂಖ್ಯೆಯನ್ನು ಬಳಸಿಕೊಂಡು 'ನನ್ನ ಖರೀದಿಗಳು' ಪುಟದಲ್ಲಿ ಯಾವಾಗ ಬೇಕಾದರೂ ಇದನ್ನು ಮರು-ಡೌನ್‌ಲೋಡ್ ಮಾಡಿಕೊಳ್ಳಬಹುದು."
@@ -134,7 +134,7 @@ export default function PaymentSuccess() {
           </Button>
         </Link>
         <Link href="/" className="flex-1">
-          <Button variant="ghost" className="w-full gap-2 rounded-xl text-xs font-semibold h-10 text-[#475569] dark:text-[#94A3B8] hover:text-[#0f172a] dark:hover:text-[#F1F5F9] hover:bg-[#f8fafc] dark:hover:bg-[#1C2638]">
+          <Button variant="ghost" className="w-full gap-2 rounded-xl text-xs font-semibold h-10 text-[#475569] dark:text-[#A1AEC2] hover:text-[#0f172a] dark:hover:text-[#F1F5F9] hover:bg-[#f8fafc] dark:hover:bg-[#1C2638]">
             <Home className="h-3.5 w-3.5" />
             <span>{t("Home", "ಮುಖಪುಟ")}</span>
           </Button>

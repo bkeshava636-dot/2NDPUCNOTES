@@ -20,13 +20,13 @@ export function CategoryAcademicGuide({ slug, categoryTitle }: CategoryGuideProp
           <h2 className="text-xl font-bold text-[#0f172a] dark:text-[#F1F5F9]">
             {categoryTitle} — {t("Study Method & Board Strategy", "ಅಧ್ಯಯನ ವಿಧಾನ & ಪರೀಕ್ಷಾ ತಂತ್ರ")}
           </h2>
-          <p className="text-xs text-[#64748b] dark:text-[#94A3B8]">
+          <p className="text-xs text-[#64748b] dark:text-[#A1AEC2]">
             {t("How to effectively prepare using these materials for Karnataka 2nd PUC", "ಕರ್ನಾಟಕ ದ್ವಿತೀಯ ಪಿಯುಸಿ ಪರೀಕ್ಷೆಯಲ್ಲಿ ಉತ್ತಮ ಅಂಕ ಪಡೆಯಲು ಇವುಗಳ ಸದ್ಬಳಕೆ")}
           </p>
         </div>
       </div>
 
-      <div className="text-xs text-[#475569] dark:text-[#94A3B8] leading-relaxed space-y-3">
+      <div className="text-xs text-[#475569] dark:text-[#A1AEC2] leading-relaxed space-y-3">
         <p>
           {lowerSlug === "notes" &&
             t(
