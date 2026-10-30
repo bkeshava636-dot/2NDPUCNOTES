@@ -292,7 +292,7 @@ export default function CategoryPage() {
   const displayDescription = getCategoryDisplayDescription(slug, isKn) || meta.description;
 
   return (
-    <div className="max-w-6xl mx-auto w-full px-4 py-8 sm:py-10">
+    <div className="max-w-6xl mx-auto w-full min-w-0 overflow-x-hidden px-4 py-6 sm:py-10 pb-8 sm:pb-12">
       <SeoHead
         title={t(
           `Karnataka 2nd PUC ${meta.title} PDF - 2PUC`,
@@ -362,19 +362,19 @@ export default function CategoryPage() {
       </div>
 
       {/* Filter by Subject Toolbar */}
-      <div className="space-y-3.5 mb-6">
+      <div className="space-y-3.5 mb-6 w-full min-w-0 overflow-hidden">
         <div className="flex items-center gap-2 text-xs font-bold text-[#475569] dark:text-[#A1AEC2] uppercase tracking-wider">
           <SlidersHorizontal className="h-3.5 w-3.5 text-[#2563eb]" />
           <span>{t("Filter by Subject", "ವಿಷಯವಾರು ಫಿಲ್ಟರ್")}</span>
         </div>
 
-        <div className="flex items-center gap-2 overflow-x-auto pb-1.5 scrollbar-none">
+        <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none scroll-smooth w-full touch-pan-x -mx-4 px-4 sm:mx-0 sm:px-0">
           <button
             type="button"
             onClick={() => setActiveSubject("all")}
             className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold shrink-0 transition-all ${
               activeSubject === "all"
-                ? "bg-[#2563eb] dark:bg-[#818CF8] text-white shadow-2xs"
+                ? "bg-[#2563eb] dark:bg-[#818CF8] text-white dark:text-[#0B0F19] dark:font-bold shadow-2xs ring-1 ring-[#2563eb] dark:ring-[#818CF8]"
                 : "bg-white dark:bg-[#151D2E] text-[#475569] dark:text-[#A1AEC2] border border-[#e2e8f0] dark:border-[#293548] hover:bg-[#f8fafc] dark:hover:bg-[#1C2638] hover:border-[#cbd5e1] dark:hover:border-[#293548]"
             }`}
           >
@@ -389,7 +389,7 @@ export default function CategoryPage() {
                 onClick={() => setActiveSubject(subj)}
                 className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold shrink-0 transition-all ${
                   isSelected
-                    ? "bg-[#2563eb] dark:bg-[#818CF8] text-white shadow-2xs"
+                    ? "bg-[#2563eb] dark:bg-[#818CF8] text-white dark:text-[#0B0F19] dark:font-bold shadow-2xs ring-1 ring-[#2563eb] dark:ring-[#818CF8]"
                     : "bg-white dark:bg-[#151D2E] text-[#475569] dark:text-[#A1AEC2] border border-[#e2e8f0] dark:border-[#293548] hover:bg-[#f8fafc] dark:hover:bg-[#1C2638] hover:border-[#cbd5e1] dark:hover:border-[#293548]"
                 }`}
               >
@@ -410,7 +410,7 @@ export default function CategoryPage() {
               onClick={() => setActiveSubtype("all")}
               className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-all ${
                 activeSubtype === "all"
-                  ? "bg-[#2563eb] dark:bg-[#818CF8] text-white shadow-2xs"
+                  ? "bg-[#2563eb] dark:bg-[#818CF8] text-white dark:text-[#0B0F19] dark:font-bold shadow-2xs ring-1 ring-[#2563eb] dark:ring-[#818CF8]"
                   : "bg-white dark:bg-[#151D2E] text-[#2563eb] dark:text-[#818CF8] border border-[#bfdbfe] dark:border-[#293548] hover:bg-[#dbeafe] dark:hover:bg-[#253248]"
               }`}
             >

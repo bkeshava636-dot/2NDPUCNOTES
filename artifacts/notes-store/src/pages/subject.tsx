@@ -257,7 +257,7 @@ export default function SubjectPage() {
   const displayName = getSubjectDisplayName(section?.name || subjectName, isKn);
 
   return (
-    <div className="max-w-6xl mx-auto w-full px-4 py-8 sm:py-10">
+    <div className="max-w-6xl mx-auto w-full min-w-0 overflow-x-hidden px-4 py-6 sm:py-10 pb-8 sm:pb-12">
       <SeoHead
         title={t(
           `2nd PUC ${subjectName} Notes, Blueprint, Derivations & PYQ PDF - 2PUC`,
@@ -283,15 +283,15 @@ export default function SubjectPage() {
       </Link>
 
       {/* Header Banner */}
-      <div className="bg-white dark:bg-[#151D2E] border border-[#e2e8f0] dark:border-[#293548] rounded-2xl p-6 sm:p-7 mb-6 shadow-xs">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-5">
-          <div className="flex items-start gap-4">
+      <div className="bg-white dark:bg-[#151D2E] border border-[#e2e8f0] dark:border-[#293548] rounded-2xl p-5 sm:p-7 mb-6 shadow-xs">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-5">
+          <div className="flex items-start gap-3.5 sm:gap-4 min-w-0 flex-1">
             <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#eff6ff] to-[#dbeafe] dark:from-[#1C2638] dark:to-[#151D2E] text-[#2563eb] dark:text-[#818CF8] border border-[#bfdbfe]/80 dark:border-[#293548] shadow-2xs">
               <Icon className="h-6 w-6" />
             </div>
             <div>
               <div className="flex items-center gap-2.5 flex-wrap">
-                <h1 className="text-2xl sm:text-3xl font-bold text-[#0f172a] dark:text-[#F1F5F9] tracking-tight">
+                <h1 className="text-xl sm:text-2xl md:text-3xl font-black text-[#0f172a] dark:text-[#F1F5F9] tracking-tight">
                   {displayName}
                 </h1>
                 <Badge
@@ -337,13 +337,13 @@ export default function SubjectPage() {
       </div>
 
       {/* Resource Type Tabs */}
-      <div className="space-y-3.5 mb-6">
+      <div className="space-y-3.5 mb-6 w-full min-w-0 overflow-hidden">
         <div className="flex items-center gap-2 text-xs font-bold text-[#475569] dark:text-[#A1AEC2] uppercase tracking-wider">
           <Layers className="h-3.5 w-3.5 text-[#2563eb]" />
           <span>{t("Resource Types", "ಸಂಪನ್ಮೂಲ ಪ್ರಕಾರಗಳು")}</span>
         </div>
 
-        <div className="flex items-center gap-2 overflow-x-auto pb-1.5 scrollbar-none">
+        <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none scroll-smooth w-full touch-pan-x -mx-4 px-4 sm:mx-0 sm:px-0">
           <button
             type="button"
             onClick={() => {
@@ -352,7 +352,7 @@ export default function SubjectPage() {
             }}
             className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold shrink-0 transition-all ${
               activeType === "all"
-                ? "bg-[#2563eb] dark:bg-[#818CF8] text-white shadow-2xs"
+                ? "bg-[#2563eb] dark:bg-[#818CF8] text-white dark:text-[#0B0F19] dark:font-bold shadow-2xs ring-1 ring-[#2563eb] dark:ring-[#818CF8]"
                 : "bg-white dark:bg-[#151D2E] text-[#475569] dark:text-[#A1AEC2] border border-[#e2e8f0] dark:border-[#293548] hover:bg-[#f8fafc] dark:hover:bg-[#1C2638] hover:border-[#cbd5e1] dark:hover:border-[#293548]"
             }`}
           >
@@ -370,7 +370,7 @@ export default function SubjectPage() {
                 }}
                 className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold shrink-0 transition-all ${
                   isSelected
-                    ? "bg-[#2563eb] dark:bg-[#818CF8] text-white shadow-2xs"
+                    ? "bg-[#2563eb] dark:bg-[#818CF8] text-white dark:text-[#0B0F19] dark:font-bold shadow-2xs ring-1 ring-[#2563eb] dark:ring-[#818CF8]"
                     : "bg-white dark:bg-[#151D2E] text-[#475569] dark:text-[#A1AEC2] border border-[#e2e8f0] dark:border-[#293548] hover:bg-[#f8fafc] dark:hover:bg-[#1C2638] hover:border-[#cbd5e1] dark:hover:border-[#293548]"
                 }`}
               >
@@ -391,7 +391,7 @@ export default function SubjectPage() {
               onClick={() => setActiveSubtype("all")}
               className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-all ${
                 activeSubtype === "all"
-                  ? "bg-[#2563eb] dark:bg-[#818CF8] text-white shadow-2xs"
+                  ? "bg-[#2563eb] dark:bg-[#818CF8] text-white dark:text-[#0B0F19] dark:font-bold shadow-2xs ring-1 ring-[#2563eb] dark:ring-[#818CF8]"
                   : "bg-white dark:bg-[#151D2E] text-[#2563eb] dark:text-[#818CF8] border border-[#bfdbfe] dark:border-[#293548] hover:bg-[#dbeafe] dark:hover:bg-[#253248]"
               }`}
             >
@@ -451,7 +451,7 @@ export default function SubjectPage() {
       </div>
 
       {/* Price Filter Toolbar */}
-      <div className="flex items-center justify-between gap-4 mb-6 bg-[#f8fafc] dark:bg-[#111827] border border-[#e2e8f0] dark:border-[#293548] px-3.5 py-2 rounded-xl">
+      <div className="flex items-center justify-between gap-2 sm:gap-4 mb-6 bg-[#f8fafc] dark:bg-[#111827] border border-[#e2e8f0] dark:border-[#293548] px-3.5 py-2 rounded-xl flex-wrap">
         <div className="flex items-center gap-2">
           <span className="text-xs text-[#64748b] dark:text-[#A1AEC2] font-medium">{t("Price:", "ಬೆಲೆ:")}</span>
           <button
@@ -480,8 +480,7 @@ export default function SubjectPage() {
             type="button"
             onClick={() => setPriceFilter("paid")}
             className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-all ${
-              priceFilter === "paid"
-                ? "bg-[#2563eb] text-white shadow-2xs"
+              priceFilter === "paid" ? "bg-[#2563eb] dark:bg-[#818CF8] text-white dark:text-[#0B0F19] dark:font-bold shadow-2xs"
                 : "text-[#64748b] dark:text-[#A1AEC2] hover:bg-[#e2e8f0]/60 dark:hover:bg-[#1C2638]"
             }`}
           >

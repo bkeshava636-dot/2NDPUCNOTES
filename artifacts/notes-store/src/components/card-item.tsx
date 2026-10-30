@@ -86,7 +86,7 @@ export function CardItem({ card }: { card: CardType }) {
         )}
 
         {/* Content */}
-        <CardContent className="flex-1 p-4.5 flex flex-col justify-between">
+        <CardContent className="flex-1 p-4 sm:p-4.5 flex flex-col justify-between min-h-[115px]">
           <div>
             {/* Top metadata tags */}
             <div className="flex items-center justify-between gap-1.5 flex-wrap mb-2.5">
@@ -145,7 +145,7 @@ export function CardItem({ card }: { card: CardType }) {
             )}
 
             {/* Title */}
-            <h3 className="font-semibold text-sm sm:text-base leading-snug text-[#0f172a] dark:text-[#F1F5F9] group-hover:text-[#2563eb] dark:group-hover:text-[#818CF8] transition-colors line-clamp-2">
+            <h3 className="font-semibold text-sm sm:text-base leading-snug text-[#0f172a] dark:text-[#F1F5F9] group-hover:text-[#2563eb] dark:group-hover:text-[#818CF8] transition-colors line-clamp-2 min-h-[2.5rem] sm:min-h-[2.75rem]">
               {card.title}
             </h3>
 

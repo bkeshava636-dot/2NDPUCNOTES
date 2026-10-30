@@ -197,7 +197,7 @@ export function PublicLayout({ children }: { children: ReactNode }) {
       </header>
 
       {/* Main Page Content with safe scroll-padding so sticky header never clips section titles */}
-      <main className="flex-1 flex flex-col pb-12 md:pb-0">{children}</main>
+      <main className="flex-1 flex flex-col min-w-0 w-full pb-[calc(4.5rem+env(safe-area-inset-bottom,0px))] md:pb-0">{children}</main>
       
       {/* Footer with built-in safe padding */}
       <Footer />

@@ -1,5 +1,5 @@
 import { useLanguage } from "@/lib/language-context";
-import { BookOpen, GraduationCap, Award, CheckCircle2, FileText, Sparkles, Layers } from "lucide-react";
+import { BookOpen, GraduationCap, Award, CheckCircle2, FileText, Sparkles, Layers, Cpu } from "lucide-react";
 
 interface SubjectGuideProps {
   slug: string;
@@ -10,15 +10,16 @@ export function SubjectAcademicGuide({ slug, subjectName }: SubjectGuideProps) {
   const { language, t } = useLanguage();
   const lowerSlug = slug.toLowerCase();
 
+  // 1. Physics Guide
   if (lowerSlug === "physics") {
     return (
-      <div className="mt-12 bg-white dark:bg-[#151D2E] border border-[#e2e8f0] dark:border-[#293548] rounded-2xl p-6 sm:p-8 space-y-6 shadow-xs text-[#1e293b] dark:text-[#F1F5F9]">
+      <div className="mt-8 sm:mt-12 mb-6 sm:mb-8 bg-white dark:bg-[#151D2E] border border-[#e2e8f0] dark:border-[#293548] rounded-2xl p-5 sm:p-8 space-y-6 shadow-xs text-[#1e293b] dark:text-[#F1F5F9]">
         <div className="flex items-center gap-3 border-b border-[#f1f5f9] dark:border-[#293548] pb-4">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 dark:bg-[#1C2638] text-[#2563eb] dark:text-[#818CF8] border border-blue-100 dark:border-[#293548]">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 dark:bg-[#1C2638] text-[#2563eb] dark:text-[#818CF8] border border-blue-100 dark:border-[#293548]">
             <GraduationCap className="h-5 w-5" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-[#0f172a] dark:text-[#F1F5F9]">
+            <h2 className="text-lg sm:text-xl font-bold text-[#0f172a] dark:text-[#F1F5F9]">
               {t("Karnataka 2nd PUC Physics (PHY-33) Study & Blueprint Guide", "ಕರ್ನಾಟಕ ದ್ವಿತೀಯ ಪಿಯುಸಿ ಭೌತಶಾಸ್ತ್ರ ಪರೀಕ್ಷಾ ಮಾರ್ಗದರ್ಶಿ")}
             </h2>
             <p className="text-xs text-[#64748b] dark:text-[#A1AEC2]">
@@ -29,7 +30,7 @@ export function SubjectAcademicGuide({ slug, subjectName }: SubjectGuideProps) {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
           <div className="p-4 rounded-xl bg-[#f8fafc] dark:bg-[#1C2638] border border-[#e2e8f0] dark:border-[#293548] space-y-2">
-            <h3 className="font-bold text-sm text-[#2563eb] flex items-center gap-1.5">
+            <h3 className="font-bold text-sm text-[#2563eb] dark:text-[#818CF8] flex items-center gap-1.5">
               <BookOpen className="h-4 w-4" />
               <span>{t("Must-Master 5-Mark Derivations", "ಖಚಿತ 5 ಅಂಕಗಳ ಡೆರಿವೇಶನ್‌ಗಳು")}</span>
             </h3>
@@ -46,7 +47,7 @@ export function SubjectAcademicGuide({ slug, subjectName }: SubjectGuideProps) {
           </div>
 
           <div className="p-4 rounded-xl bg-[#f8fafc] dark:bg-[#1C2638] border border-[#e2e8f0] dark:border-[#293548] space-y-2">
-            <h3 className="font-bold text-sm text-emerald-700 flex items-center gap-1.5">
+            <h3 className="font-bold text-sm text-emerald-700 dark:text-emerald-400 flex items-center gap-1.5">
               <Award className="h-4 w-4" />
               <span>{t("High-Yield Numerical Units", "ಲೆಕ್ಕಾಚಾರದ ಪ್ರಮುಖ ಅಧ್ಯಾಯಗಳು")}</span>
             </h3>
@@ -70,15 +71,16 @@ export function SubjectAcademicGuide({ slug, subjectName }: SubjectGuideProps) {
     );
   }
 
+  // 2. Chemistry Guide
   if (lowerSlug === "chemistry") {
     return (
-      <div className="mt-12 bg-white dark:bg-[#151D2E] border border-[#e2e8f0] dark:border-[#293548] rounded-2xl p-6 sm:p-8 space-y-6 shadow-xs text-[#1e293b] dark:text-[#F1F5F9]">
+      <div className="mt-8 sm:mt-12 mb-6 sm:mb-8 bg-white dark:bg-[#151D2E] border border-[#e2e8f0] dark:border-[#293548] rounded-2xl p-5 sm:p-8 space-y-6 shadow-xs text-[#1e293b] dark:text-[#F1F5F9]">
         <div className="flex items-center gap-3 border-b border-[#f1f5f9] dark:border-[#293548] pb-4">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-rose-50 text-rose-600 border border-rose-100">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-rose-50 dark:bg-[#1C2638] text-rose-600 dark:text-rose-400 border border-rose-100 dark:border-[#293548]">
             <GraduationCap className="h-5 w-5" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-[#0f172a] dark:text-[#F1F5F9]">
+            <h2 className="text-lg sm:text-xl font-bold text-[#0f172a] dark:text-[#F1F5F9]">
               {t("Karnataka 2nd PUC Chemistry (CHEM-34) Exam Guide", "ಕರ್ನಾಟಕ ದ್ವಿತೀಯ ಪಿಯುಸಿ ರಸಾಯನಶಾಸ್ತ್ರ ಮಾರ್ಗದರ್ಶಿ")}
             </h2>
             <p className="text-xs text-[#64748b] dark:text-[#A1AEC2]">
@@ -89,7 +91,7 @@ export function SubjectAcademicGuide({ slug, subjectName }: SubjectGuideProps) {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
           <div className="p-4 rounded-xl bg-[#f8fafc] dark:bg-[#1C2638] border border-[#e2e8f0] dark:border-[#293548] space-y-2">
-            <h3 className="font-bold text-sm text-rose-700 flex items-center gap-1.5">
+            <h3 className="font-bold text-sm text-rose-700 dark:text-rose-400 flex items-center gap-1.5">
               <BookOpen className="h-4 w-4" />
               <span>{t("Named Reactions & Organic Mechanisms", "ಪ್ರಮುಖ ಸಾವಯವ ರಾಸಾಯನಿಕ ಕ್ರಿಯೆಗಳು")}</span>
             </h3>
@@ -104,7 +106,7 @@ export function SubjectAcademicGuide({ slug, subjectName }: SubjectGuideProps) {
           </div>
 
           <div className="p-4 rounded-xl bg-[#f8fafc] dark:bg-[#1C2638] border border-[#e2e8f0] dark:border-[#293548] space-y-2">
-            <h3 className="font-bold text-sm text-amber-700 flex items-center gap-1.5">
+            <h3 className="font-bold text-sm text-amber-700 dark:text-amber-400 flex items-center gap-1.5">
               <Award className="h-4 w-4" />
               <span>{t("Physical Chemistry Numerical Focus", "ಭೌತ ರಸಾಯನಶಾಸ್ತ್ರದ ಲೆಕ್ಕಾಚಾರಗಳು")}</span>
             </h3>
@@ -119,15 +121,16 @@ export function SubjectAcademicGuide({ slug, subjectName }: SubjectGuideProps) {
     );
   }
 
+  // 3. Mathematics Guide
   if (lowerSlug === "mathematics") {
     return (
-      <div className="mt-12 bg-white dark:bg-[#151D2E] border border-[#e2e8f0] dark:border-[#293548] rounded-2xl p-6 sm:p-8 space-y-6 shadow-xs text-[#1e293b] dark:text-[#F1F5F9]">
+      <div className="mt-8 sm:mt-12 mb-6 sm:mb-8 bg-white dark:bg-[#151D2E] border border-[#e2e8f0] dark:border-[#293548] rounded-2xl p-5 sm:p-8 space-y-6 shadow-xs text-[#1e293b] dark:text-[#F1F5F9]">
         <div className="flex items-center gap-3 border-b border-[#f1f5f9] dark:border-[#293548] pb-4">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-50 dark:bg-[#1C2638] text-emerald-600 dark:text-emerald-400 border border-emerald-100 dark:border-[#293548]">
             <GraduationCap className="h-5 w-5" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-[#0f172a] dark:text-[#F1F5F9]">
+            <h2 className="text-lg sm:text-xl font-bold text-[#0f172a] dark:text-[#F1F5F9]">
               {t("Karnataka 2nd PUC Mathematics (MATH-35) Blueprint Guide", "ಕರ್ನಾಟಕ ದ್ವಿತೀಯ ಪಿಯುಸಿ ಗಣಿತಶಾಸ್ತ್ರ ಪರೀಕ್ಷಾ ಮಾರ್ಗದರ್ಶಿ")}
             </h2>
             <p className="text-xs text-[#64748b] dark:text-[#A1AEC2]">
@@ -138,7 +141,7 @@ export function SubjectAcademicGuide({ slug, subjectName }: SubjectGuideProps) {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
           <div className="p-4 rounded-xl bg-[#f8fafc] dark:bg-[#1C2638] border border-[#e2e8f0] dark:border-[#293548] space-y-2">
-            <h3 className="font-bold text-sm text-emerald-700 flex items-center gap-1.5">
+            <h3 className="font-bold text-sm text-emerald-700 dark:text-emerald-400 flex items-center gap-1.5">
               <BookOpen className="h-4 w-4" />
               <span>{t("Guaranteed 5-Mark Problem Types", "ಖಚಿತ 5 ಅಂಕಗಳ ಪ್ರಮುಖ ಲೆಕ್ಕಗಳು")}</span>
             </h3>
@@ -152,7 +155,7 @@ export function SubjectAcademicGuide({ slug, subjectName }: SubjectGuideProps) {
           </div>
 
           <div className="p-4 rounded-xl bg-[#f8fafc] dark:bg-[#1C2638] border border-[#e2e8f0] dark:border-[#293548] space-y-2">
-            <h3 className="font-bold text-sm text-[#2563eb] flex items-center gap-1.5">
+            <h3 className="font-bold text-sm text-[#2563eb] dark:text-[#818CF8] flex items-center gap-1.5">
               <Award className="h-4 w-4" />
               <span>{t("Calculus Scoring Strategy", "ಕ್ಯಾಲ್ಕುಲಸ್ ಅಂಕಗಳ ಗಳಿಕೆ ತಂತ್ರ")}</span>
             </h3>
@@ -167,15 +170,16 @@ export function SubjectAcademicGuide({ slug, subjectName }: SubjectGuideProps) {
     );
   }
 
+  // 4. Biology Guide
   if (lowerSlug === "biology") {
     return (
-      <div className="mt-12 bg-white dark:bg-[#151D2E] border border-[#e2e8f0] dark:border-[#293548] rounded-2xl p-6 sm:p-8 space-y-6 shadow-xs text-[#1e293b] dark:text-[#F1F5F9]">
+      <div className="mt-8 sm:mt-12 mb-6 sm:mb-8 bg-white dark:bg-[#151D2E] border border-[#e2e8f0] dark:border-[#293548] rounded-2xl p-5 sm:p-8 space-y-6 shadow-xs text-[#1e293b] dark:text-[#F1F5F9]">
         <div className="flex items-center gap-3 border-b border-[#f1f5f9] dark:border-[#293548] pb-4">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-50 text-amber-600 border border-amber-100">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-50 dark:bg-[#1C2638] text-amber-600 dark:text-amber-400 border border-amber-100 dark:border-[#293548]">
             <GraduationCap className="h-5 w-5" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-[#0f172a] dark:text-[#F1F5F9]">
+            <h2 className="text-lg sm:text-xl font-bold text-[#0f172a] dark:text-[#F1F5F9]">
               {t("Karnataka 2nd PUC Biology (BIO-36) Examination Guide", "ಕರ್ನಾಟಕ ದ್ವಿತೀಯ ಪಿಯುಸಿ ಜೀವಶಾಸ್ತ್ರ ಪರೀಕ್ಷಾ ಮಾರ್ಗದರ್ಶಿ")}
             </h2>
             <p className="text-xs text-[#64748b] dark:text-[#A1AEC2]">
@@ -186,7 +190,7 @@ export function SubjectAcademicGuide({ slug, subjectName }: SubjectGuideProps) {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
           <div className="p-4 rounded-xl bg-[#f8fafc] dark:bg-[#1C2638] border border-[#e2e8f0] dark:border-[#293548] space-y-2">
-            <h3 className="font-bold text-sm text-amber-700 flex items-center gap-1.5">
+            <h3 className="font-bold text-sm text-amber-700 dark:text-amber-400 flex items-center gap-1.5">
               <BookOpen className="h-4 w-4" />
               <span>{t("High-Frequency Board Diagrams", "ಪ್ರಮುಖ ರೇಖಾಚಿತ್ರಗಳು")}</span>
             </h3>
@@ -201,7 +205,7 @@ export function SubjectAcademicGuide({ slug, subjectName }: SubjectGuideProps) {
           </div>
 
           <div className="p-4 rounded-xl bg-[#f8fafc] dark:bg-[#1C2638] border border-[#e2e8f0] dark:border-[#293548] space-y-2">
-            <h3 className="font-bold text-sm text-emerald-700 flex items-center gap-1.5">
+            <h3 className="font-bold text-sm text-emerald-700 dark:text-emerald-400 flex items-center gap-1.5">
               <Award className="h-4 w-4" />
               <span>{t("Genetics & Biotechnology Concepts", "ತಳಿಶಾಸ್ತ್ರ & ಬಯೋಟೆಕ್ನಾಲಜಿ")}</span>
             </h3>
@@ -217,15 +221,70 @@ export function SubjectAcademicGuide({ slug, subjectName }: SubjectGuideProps) {
     );
   }
 
-  // General Subject Guide fallback (Languages and Computer Science)
+  // 5. Computer Science Guide (Specific, complete dark mode and rich syllabus details)
+  if (lowerSlug.includes("comp") || lowerSlug.includes("cs")) {
+    return (
+      <div className="mt-8 sm:mt-12 mb-6 sm:mb-8 bg-white dark:bg-[#151D2E] border border-[#e2e8f0] dark:border-[#293548] rounded-2xl p-5 sm:p-8 space-y-6 shadow-xs text-[#1e293b] dark:text-[#F1F5F9]">
+        <div className="flex items-center gap-3 border-b border-[#f1f5f9] dark:border-[#293548] pb-4">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-cyan-50 dark:bg-[#1C2638] text-[#0284c7] dark:text-[#818CF8] border border-cyan-100 dark:border-[#293548]">
+            <Cpu className="h-5 w-5" />
+          </div>
+          <div>
+            <h2 className="text-lg sm:text-xl font-bold text-[#0f172a] dark:text-[#F1F5F9]">
+              {t("Karnataka 2nd PUC Computer Science (CS-41) Blueprint & Guide", "ಕರ್ನಾಟಕ ದ್ವಿತೀಯ ಪಿಯುಸಿ ಗಣಕವಿಜ್ಞಾನ (Computer Science) ಪರೀಕ್ಷಾ ಮಾರ್ಗದರ್ಶಿ")}
+            </h2>
+            <p className="text-xs text-[#64748b] dark:text-[#A1AEC2]">
+              {t("Theory: 70 Marks (3 Hours 15 Mins) | Practical: 30 Marks (C++ & SQL)", "ಥಿಯರಿ: 70 ಅಂಕಗಳು | ಪ್ರಾಯೋಗಿಕ: 30 ಅಂಕಗಳು (C++ & SQL)")}
+            </p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+          <div className="p-4 rounded-xl bg-[#f8fafc] dark:bg-[#1C2638] border border-[#e2e8f0] dark:border-[#293548] space-y-2">
+            <h3 className="font-bold text-sm text-[#0284c7] dark:text-[#818CF8] flex items-center gap-1.5">
+              <BookOpen className="h-4 w-4" />
+              <span>{t("High-Weightage Theory Units", "ಹೆಚ್ಚು ಅಂಕಗಳ ಮುಖ್ಯ ಅಧ್ಯಾಯಗಳು")}</span>
+            </h3>
+            <ul className="list-disc pl-4 space-y-1 text-[#475569] dark:text-[#A1AEC2]">
+              <li><strong>Data Structures (14 Marks):</strong> Stack operations (PUSH and POP algorithms with overflow/underflow checks), Queue operations, and Linked Lists.</li>
+              <li><strong>Database Concepts & SQL (13 Marks):</strong> SQL commands (DDL, DML), group functions, constraints, and relational algebra.</li>
+              <li><strong>Boolean Algebra (9 Marks):</strong> Karnaugh Map (K-Map 5-mark reduction: 4-variable SOP/POS), logic gates, and Boolean theorems.</li>
+              <li><strong>Networking & Open Source (10 Marks):</strong> OSI vs TCP/IP reference layers, network topologies, transmission media, and cyber law essentials.</li>
+            </ul>
+          </div>
+
+          <div className="p-4 rounded-xl bg-[#f8fafc] dark:bg-[#1C2638] border border-[#e2e8f0] dark:border-[#293548] space-y-2">
+            <h3 className="font-bold text-sm text-emerald-700 dark:text-emerald-400 flex items-center gap-1.5">
+              <Award className="h-4 w-4" />
+              <span>{t("C++ OOP & Practical Scoring Strategy", "C++ & ಪ್ರಾಯೋಗಿಕ ಪರೀಕ್ಷಾ ತಂತ್ರ")}</span>
+            </h3>
+            <ul className="list-disc pl-4 space-y-1 text-[#475569] dark:text-[#A1AEC2]">
+              <li><strong>Classes & Inheritance:</strong> Characteristics of OOPs, Function Overloading, Constructors, Destructors, and Single/Multilevel Inheritance syntax.</li>
+              <li><strong>Practical Exam (30 Marks):</strong> Writing and executing one C++ program (15 marks), SQL query execution (5 marks), Viva voce (5 marks), and Lab record journal (5 marks).</li>
+              <li><strong>Pointers:</strong> Memory allocation (new and delete operators) and pointer arithmetic.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div className="p-4 rounded-xl bg-cyan-50/60 dark:bg-cyan-950/30 border border-cyan-100 dark:border-cyan-900/40 text-xs text-[#334155] dark:text-[#F1F5F9] leading-relaxed">
+          <strong>{t("Exam Scoring Advice:", "ಪರೀಕ್ಷಾ ಸಲಹೆ:")}</strong> {t(
+            "Under the revised KSEAB blueprint, Part A (20 marks) includes 15 MCQs and 5 Fill-in-the-blanks. Always write correct algorithmic steps for Stack and Queue operations with proper pointer updates (top = top + 1). In K-Maps, cleanly group 1s into octets, quads, and pairs, stating the reduced minterm expression clearly.",
+            "ಭಾಗ ಎ ನಲ್ಲಿ 20 ಅಂಕಗಳಿದ್ದು (15 ಎಂಸಿಕ್ಯೂ ಮತ್ತು 5 ಬಿಟ್ಟ ಸ್ಥಳ), ಮೂಲಭೂತ ವ್ಯಾಖ್ಯಾನಗಳನ್ನು ಸರಿಯಾಗಿ ಅಭ್ಯಾಸ ಮಾಡಿ. ಸ್ಟಾಕ್ ಮತ್ತು ಕ್ಯೂ ಅಲ್ಗಾರಿದಂಗಳನ್ನು ಹಂತ-ಹಂತವಾಗಿ ಬರೆಯಿರಿ ಮತ್ತು ಕೆ-ಮ್ಯಾಪ್ (K-Map) ಲೆಕ್ಕಗಳಲ್ಲಿ ಗುಂಪುಗಳನ್ನು ಸ್ಪಷ್ಟವಾಗಿ ಗುರುತಿಸಿ."
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  // 6. General Subject Guide fallback (Languages and other subjects) with full Dark Mode support
   return (
-    <div className="mt-12 bg-white border border-[#e2e8f0] rounded-2xl p-6 sm:p-8 space-y-4 shadow-xs text-[#1e293b]">
+    <div className="mt-8 sm:mt-12 mb-6 sm:mb-8 bg-white dark:bg-[#151D2E] border border-[#e2e8f0] dark:border-[#293548] rounded-2xl p-5 sm:p-8 space-y-4 shadow-xs text-[#1e293b] dark:text-[#F1F5F9]">
       <div className="flex items-center gap-3 border-b border-[#f1f5f9] dark:border-[#293548] pb-4">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 dark:bg-[#1C2638] text-[#2563eb] dark:text-[#818CF8] border border-blue-100 dark:border-[#293548]">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 dark:bg-[#1C2638] text-[#2563eb] dark:text-[#818CF8] border border-blue-100 dark:border-[#293548]">
           <BookOpen className="h-5 w-5" />
         </div>
         <div>
-          <h2 className="text-xl font-bold text-[#0f172a] dark:text-[#F1F5F9]">
+          <h2 className="text-lg sm:text-xl font-bold text-[#0f172a] dark:text-[#F1F5F9]">
             {subjectName} — {t("Curriculum & Examination Scheme", "ಪಠ್ಯಕ್ರಮ ಮತ್ತು ಪರೀಕ್ಷಾ ವಿಧಾನ")}
           </h2>
           <p className="text-xs text-[#64748b] dark:text-[#A1AEC2]">
