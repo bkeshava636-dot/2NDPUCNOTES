@@ -11,22 +11,22 @@ export function CategoryAcademicGuide({ slug, categoryTitle }: CategoryGuideProp
   const lowerSlug = slug.toLowerCase();
 
   return (
-    <div className="mt-12 bg-white border border-[#e2e8f0] rounded-2xl p-6 sm:p-8 space-y-4 shadow-xs text-[#1e293b]">
-      <div className="flex items-center gap-3 border-b border-[#f1f5f9] pb-4">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-[#2563eb] border border-blue-100">
+    <div className="mt-12 bg-white dark:bg-[#151D2E] border border-[#e2e8f0] dark:border-[#293548] rounded-2xl p-6 sm:p-8 space-y-4 shadow-xs text-[#1e293b] dark:text-[#F1F5F9]">
+      <div className="flex items-center gap-3 border-b border-[#f1f5f9] dark:border-[#293548] pb-4">
+        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 dark:bg-[#1C2638] text-[#2563eb] dark:text-[#818CF8] border border-blue-100 dark:border-[#293548]">
           <BookOpen className="h-5 w-5" />
         </div>
         <div>
-          <h2 className="text-xl font-bold text-[#0f172a]">
+          <h2 className="text-xl font-bold text-[#0f172a] dark:text-[#F1F5F9]">
             {categoryTitle} — {t("Study Method & Board Strategy", "ಅಧ್ಯಯನ ವಿಧಾನ & ಪರೀಕ್ಷಾ ತಂತ್ರ")}
           </h2>
-          <p className="text-xs text-[#64748b]">
+          <p className="text-xs text-[#64748b] dark:text-[#94A3B8]">
             {t("How to effectively prepare using these materials for Karnataka 2nd PUC", "ಕರ್ನಾಟಕ ದ್ವಿತೀಯ ಪಿಯುಸಿ ಪರೀಕ್ಷೆಯಲ್ಲಿ ಉತ್ತಮ ಅಂಕ ಪಡೆಯಲು ಇವುಗಳ ಸದ್ಬಳಕೆ")}
           </p>
         </div>
       </div>
 
-      <div className="text-xs text-[#475569] leading-relaxed space-y-3">
+      <div className="text-xs text-[#475569] dark:text-[#94A3B8] leading-relaxed space-y-3">
         <p>
           {lowerSlug === "notes" &&
             t(
@@ -65,8 +65,8 @@ export function CategoryAcademicGuide({ slug, categoryTitle }: CategoryGuideProp
             )}
         </p>
 
-        <div className="p-3 bg-[#f8fafc] rounded-lg border border-[#e2e8f0]">
-          <span className="font-semibold text-[#0f172a]">{t("Curriculum Note:", "ಪಠ್ಯಕ್ರಮ ಸೂಚನೆ:")}</span>{" "}
+        <div className="p-3 bg-[#f8fafc] dark:bg-[#1C2638] rounded-lg border border-[#e2e8f0] dark:border-[#293548]">
+          <span className="font-semibold text-[#0f172a] dark:text-[#F1F5F9]">{t("Curriculum Note:", "ಪಠ್ಯಕ್ರಮ ಸೂಚನೆ:")}</span>{" "}
           {t(
             "All resources are regularly cross-checked with the latest Department of Pre-University Education circulars and rationalized NCERT syllabi.",
             "ಎಲ್ಲ ಸಂಪನ್ಮೂಲಗಳು ಕರ್ನಾಟಕ ಪದವಿ ಪೂರ್ವ ಶಿಕ್ಷಣ ಇಲಾಖೆಯ ಇತ್ತೀಚಿನ ನಿಯಮಗಳಿಗೆ ಅನುಗುಣವಾಗಿವೆ."

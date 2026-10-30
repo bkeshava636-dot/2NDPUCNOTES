@@ -22,7 +22,7 @@ export function usePageViewTracker() {
 
   useEffect(() => {
     // Ignore hidden or prerendering tabs
-    if (typeof document !== "undefined" && document.visibilityState === "prerender") {
+    if (typeof document !== "undefined" && (document.visibilityState as string) === "prerender") {
       return;
     }
 

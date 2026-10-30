@@ -169,26 +169,26 @@ export function SiteAccessPassModal() {
         </div>
 
         {/* Modal Body */}
-        <div className="p-5 sm:p-6 space-y-5 bg-white">
+        <div className="p-5 sm:p-6 space-y-5 bg-white dark:bg-[#151D2E]">
           {!isWatchingAd ? (
             <>
               {/* Feature Highlights Grid */}
               <div className="space-y-2.5 text-xs text-[#334155]">
-                <div className="flex items-center gap-2.5 p-2.5 rounded-xl bg-[#f8fafc] border border-[#e2e8f0]">
+                <div className="flex items-center gap-2.5 p-2.5 rounded-xl bg-[#f8fafc] dark:bg-[#1C2638] border border-[#e2e8f0] dark:border-[#293548]">
                   <Clock className="h-4 w-4 text-[#2563eb] shrink-0" />
-                  <span className="font-semibold text-[#0f172a]">
+                  <span className="font-semibold text-[#0f172a] dark:text-[#F1F5F9]">
                     {t("5 Hours of uninterrupted access across the whole site", "ಇಡೀ ಸೈಟ್‌ನಲ್ಲಿ 5 ಗಂಟೆಗಳ ಕಾಲ ನಿರಂತರ ಪ್ರವೇಶ")}
                   </span>
                 </div>
-                <div className="flex items-center gap-2.5 p-2.5 rounded-xl bg-[#f8fafc] border border-[#e2e8f0]">
+                <div className="flex items-center gap-2.5 p-2.5 rounded-xl bg-[#f8fafc] dark:bg-[#1C2638] border border-[#e2e8f0] dark:border-[#293548]">
                   <Sparkles className="h-4 w-4 text-[#16a34a] shrink-0" />
-                  <span className="font-medium text-[#475569]">
+                  <span className="font-medium text-[#475569] dark:text-[#94A3B8]">
                     {t("All Science & Language subjects included", "ಎಲ್ಲ ವಿಜ್ಞಾನ ಮತ್ತು ಭಾಷಾ ವಿಷಯಗಳ ನೋಟ್ಸ್ ಲಭ್ಯ")}
                   </span>
                 </div>
-                <div className="flex items-center gap-2.5 p-2.5 rounded-xl bg-[#f8fafc] border border-[#e2e8f0]">
+                <div className="flex items-center gap-2.5 p-2.5 rounded-xl bg-[#f8fafc] dark:bg-[#1C2638] border border-[#e2e8f0] dark:border-[#293548]">
                   <ShieldCheck className="h-4 w-4 text-[#0284c7] shrink-0" />
-                  <span className="font-medium text-[#475569]">
+                  <span className="font-medium text-[#475569] dark:text-[#94A3B8]">
                     {t("Instant PDF downloads with official blueprints", "ಬ್ಲೂಪ್ರಿಂಟ್ ಸಹಿತ ತಕ್ಷಣದ PDF ಡೌನ್‌ಲೋಡ್")}
                   </span>
                 </div>
@@ -199,7 +199,7 @@ export function SiteAccessPassModal() {
                 <Button
                   onClick={handleStartAd}
                   size="lg"
-                  className="w-full gap-2.5 h-12 rounded-xl text-sm font-bold bg-[#2563eb] hover:bg-[#1d4ed8] text-white shadow-md hover:shadow-lg transition-all active:scale-[0.99]"
+                  className="w-full gap-2.5 h-12 rounded-xl text-sm font-bold bg-[#2563eb] hover:bg-[#1d4ed8] dark:bg-[#818CF8] dark:hover:bg-[#6366F1] text-white shadow-md hover:shadow-lg transition-all active:scale-[0.99]"
                 >
                   <PlayCircle className="h-5 w-5" />
                   <span>{t("Watch Ad to Unlock (15 sec)", "ಜಾಹೀರಾತು ನೋಡಿ ಅನ್‌ಲಾಕ್ ಮಾಡಿ (15 ಸೆ)")}</span>

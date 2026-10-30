@@ -133,21 +133,24 @@ function Router() {
 
 import { LanguageProvider } from "@/lib/language-context";
 import { SitePassProvider } from "@/lib/site-pass-context";
+import { ThemeProvider } from "@/lib/theme-context";
 
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <LanguageProvider>
-          <SitePassProvider>
-            <ApiWakeUpGate>
-              <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
-                <Router />
-              </WouterRouter>
-              <Toaster />
-            </ApiWakeUpGate>
-          </SitePassProvider>
-        </LanguageProvider>
+        <ThemeProvider>
+          <LanguageProvider>
+            <SitePassProvider>
+              <ApiWakeUpGate>
+                <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
+                  <Router />
+                </WouterRouter>
+                <Toaster />
+              </ApiWakeUpGate>
+            </SitePassProvider>
+          </LanguageProvider>
+        </ThemeProvider>
       </TooltipProvider>
     </QueryClientProvider>
   );

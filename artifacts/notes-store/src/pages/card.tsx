@@ -141,7 +141,7 @@ export default function CardPage() {
       />
       {/* Back button */}
       <Link href="/">
-        <Button variant="ghost" size="sm" className="gap-2 text-[#475569] hover:text-[#0f172a] -ml-2 mb-6 font-medium">
+        <Button variant="ghost" size="sm" className="gap-2 text-[#475569] dark:text-[#94A3B8] hover:text-[#0f172a] dark:hover:text-[#F1F5F9] -ml-2 mb-6 font-medium">
           <ArrowLeft className="h-4 w-4" />
           <span>{t("Back to Notes", "ನೋಟ್ಸ್‌ಗೆ ಹಿಂತಿರುಗಿ")}</span>
         </Button>
@@ -151,9 +151,9 @@ export default function CardPage() {
         {/* Left Column: Image Preview (only if available) & Description */}
         <div className={`space-y-6 ${currentPreview || card.description ? "lg:col-span-7" : "hidden"}`}>
           {currentPreview && (
-            <div className="bg-white rounded-2xl border border-[#e2e8f0] overflow-hidden shadow-xs">
+            <div className="bg-white dark:bg-[#151D2E] rounded-2xl border border-[#e2e8f0] dark:border-[#293548] overflow-hidden shadow-xs">
               {/* Main Preview Container */}
-              <div className="aspect-[16/10] sm:aspect-video bg-[#f8fafc] relative flex items-center justify-center overflow-hidden border-b border-[#eef2f6]">
+              <div className="aspect-[16/10] sm:aspect-video bg-[#f8fafc] dark:bg-[#111827] relative flex items-center justify-center overflow-hidden border-b border-[#eef2f6] dark:border-[#293548]">
                 <img
                   src={currentPreview}
                   alt={card.title}
@@ -177,15 +177,15 @@ export default function CardPage() {
 
               {/* Thumbnail carousel selector */}
               {previewImages.length > 1 && (
-                <div className="flex gap-2 p-3 overflow-x-auto bg-[#f8fafc]/50 border-t border-[#eef2f6]">
+                <div className="flex gap-2 p-3 overflow-x-auto bg-[#f8fafc]/50 dark:bg-[#111827]/50 border-t border-[#eef2f6] dark:border-[#293548]">
                   {previewImages.map((url, i) => (
                     <button
                       key={i}
                       onClick={() => setPreviewIdx(i)}
                       className={`shrink-0 w-14 h-14 rounded-lg border-2 overflow-hidden transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2563eb] ${
                         i === previewIdx
-                          ? "border-[#2563eb]"
-                          : "border-[#e2e8f0] hover:border-[#cbd5e1] opacity-70 hover:opacity-100"
+                          ? "border-[#2563eb] dark:border-[#818CF8]"
+                          : "border-[#e2e8f0] dark:border-[#293548] hover:border-[#cbd5e1] dark:hover:border-[#818CF8]/60 opacity-70 hover:opacity-100"
                       }`}
                     >
                       <img src={url} alt={`Preview ${i + 1}`} className="w-full h-full object-cover" />
@@ -198,9 +198,9 @@ export default function CardPage() {
 
           {/* Description Card */}
           {card.description && (
-            <div className="bg-white rounded-2xl border border-[#e2e8f0] p-5 sm:p-6 space-y-2.5 shadow-xs">
-              <h2 className="text-sm sm:text-base font-bold text-[#0f172a]">{t("About this Resource", "ಸಂಪನ್ಮೂಲದ ವಿವರ")}</h2>
-              <p className="text-[#64748b] leading-relaxed text-xs sm:text-sm whitespace-pre-line">
+            <div className="bg-white dark:bg-[#151D2E] rounded-2xl border border-[#e2e8f0] dark:border-[#293548] p-5 sm:p-6 space-y-2.5 shadow-xs">
+              <h2 className="text-sm sm:text-base font-bold text-[#0f172a] dark:text-[#F1F5F9]">{t("About this Resource", "ಸಂಪನ್ಮೂಲದ ವಿವರ")}</h2>
+              <p className="text-[#64748b] dark:text-[#94A3B8] leading-relaxed text-xs sm:text-sm whitespace-pre-line">
                 {card.description}
               </p>
             </div>
@@ -209,7 +209,7 @@ export default function CardPage() {
 
         {/* Right Column: Title, Metadata Chips, Pricing & Purchase CTA */}
         <div className="lg:col-span-5 space-y-5 lg:sticky lg:top-24">
-          <div className="bg-white rounded-2xl border border-[#e2e8f0] p-5 sm:p-6 space-y-5 shadow-xs">
+          <div className="bg-white dark:bg-[#151D2E] rounded-2xl border border-[#e2e8f0] dark:border-[#293548] p-5 sm:p-6 space-y-5 shadow-xs">
             {/* Subject and tags */}
             <div className="space-y-3">
               <div className="flex flex-wrap items-center gap-1.5">
@@ -219,26 +219,26 @@ export default function CardPage() {
                   </Badge>
                 )}
                 {card.subject && (
-                  <Badge variant="secondary" className="font-semibold text-[11px] bg-[#eff6ff] text-[#2563eb] border border-[#bfdbfe]">
+                  <Badge variant="secondary" className="font-semibold text-[11px] bg-[#eff6ff] dark:bg-[#1C2638] text-[#2563eb] dark:text-[#818CF8] border border-[#bfdbfe] dark:border-[#293548]">
                     {getSubjectDisplayName(card.subject, isKn)}
                   </Badge>
                 )}
-                <Badge variant="outline" className="text-[11px] font-medium text-[#475569] border-[#e2e8f0] bg-[#f8fafc]">
+                <Badge variant="outline" className="text-[11px] font-medium text-[#475569] dark:text-[#94A3B8] border-[#e2e8f0] dark:border-[#293548] bg-[#f8fafc] dark:bg-[#1C2638]">
                   {getResourceTypeDisplayName(card.resourceType, isKn)}
                 </Badge>
                 {card.subtype && (
-                  <Badge variant="outline" className="text-[10px] font-medium text-[#0284c7] border-[#bae6fd] bg-[#f0f9ff]">
+                  <Badge variant="outline" className="text-[10px] font-medium text-[#0284c7] dark:text-sky-300 border-[#bae6fd] dark:border-sky-800/50 bg-[#f0f9ff] dark:bg-sky-950/40">
                     {card.subtype}
                   </Badge>
                 )}
                 {card.classLevel && (
-                  <Badge variant="outline" className="text-[11px] font-medium text-[#475569] border-[#e2e8f0] bg-[#f8fafc]">
+                  <Badge variant="outline" className="text-[11px] font-medium text-[#475569] dark:text-[#94A3B8] border-[#e2e8f0] dark:border-[#293548] bg-[#f8fafc] dark:bg-[#1C2638]">
                     {card.classLevel}
                   </Badge>
                 )}
               </div>
 
-              <h1 className="text-xl sm:text-2xl font-bold text-[#0f172a] leading-snug tracking-tight">
+              <h1 className="text-xl sm:text-2xl font-bold text-[#0f172a] dark:text-[#F1F5F9] leading-snug tracking-tight">
                 {card.title}
               </h1>
 
@@ -249,7 +249,7 @@ export default function CardPage() {
                       href={card.answerKeyUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#0284c7] bg-[#f0f9ff] hover:bg-[#e0f2fe] border border-[#bae6fd] px-2.5 py-1 rounded-md transition-colors"
+                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#0284c7] dark:text-sky-300 bg-[#f0f9ff] dark:bg-sky-950/40 hover:bg-[#e0f2fe] dark:hover:bg-sky-900/50 border border-[#bae6fd] dark:border-sky-800/50 px-2.5 py-1 rounded-md transition-colors"
                     >
                       <CheckCircle2 className="h-3.5 w-3.5" />
                       {t("View Linked Answer Key", "ಲಿಂಕ್ ಮಾಡಲಾದ ಕೀ ಉತ್ತರಗಳು")}
@@ -260,7 +260,7 @@ export default function CardPage() {
                       href={card.officialSourceUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 text-xs font-medium text-[#475569] hover:text-[#0f172a] bg-[#f8fafc] hover:bg-[#e2e8f0] border border-[#e2e8f0] px-2.5 py-1 rounded-md transition-colors"
+                      className="inline-flex items-center gap-1.5 text-xs font-medium text-[#475569] dark:text-[#94A3B8] hover:text-[#0f172a] dark:hover:text-[#F1F5F9] bg-[#f8fafc] dark:bg-[#1C2638] hover:bg-[#e2e8f0] dark:hover:bg-[#253248] border border-[#e2e8f0] dark:border-[#293548] px-2.5 py-1 rounded-md transition-colors"
                     >
                       {t("Official Source Link →", "ಅಧಿಕೃತ ಲಿಂಕ್ →")}
                     </a>
@@ -272,32 +272,32 @@ export default function CardPage() {
             {/* Structured Metadata Chips Grid */}
             <div className="grid grid-cols-2 gap-2 pt-1">
               {card.chapter && (
-                <div className="flex items-center gap-2 p-2.5 rounded-xl bg-[#f8fafc] border border-[#e2e8f0] text-xs text-[#334155]">
-                  <BookOpen className="h-3.5 w-3.5 text-[#2563eb] shrink-0" />
+                <div className="flex items-center gap-2 p-2.5 rounded-xl bg-[#f8fafc] dark:bg-[#1C2638] border border-[#e2e8f0] dark:border-[#293548] text-xs text-[#334155] dark:text-[#F1F5F9]">
+                  <BookOpen className="h-3.5 w-3.5 text-[#2563eb] dark:text-[#818CF8] shrink-0" />
                   <span className="truncate font-semibold">{card.chapter}</span>
                 </div>
               )}
               {card.board && (
-                <div className="flex items-center gap-2 p-2.5 rounded-xl bg-[#f8fafc] border border-[#e2e8f0] text-xs text-[#334155]">
-                  <ShieldCheck className="h-3.5 w-3.5 text-[#2563eb] shrink-0" />
+                <div className="flex items-center gap-2 p-2.5 rounded-xl bg-[#f8fafc] dark:bg-[#1C2638] border border-[#e2e8f0] dark:border-[#293548] text-xs text-[#334155] dark:text-[#F1F5F9]">
+                  <ShieldCheck className="h-3.5 w-3.5 text-[#2563eb] dark:text-[#818CF8] shrink-0" />
                   <span className="truncate font-semibold">{card.board} {t("Board", "ಮಂಡಳಿ")}</span>
                 </div>
               )}
               {card.semester && (
-                <div className="flex items-center gap-2 p-2.5 rounded-xl bg-[#f8fafc] border border-[#e2e8f0] text-xs text-[#334155]">
-                  <Hash className="h-3.5 w-3.5 text-[#2563eb] shrink-0" />
+                <div className="flex items-center gap-2 p-2.5 rounded-xl bg-[#f8fafc] dark:bg-[#1C2638] border border-[#e2e8f0] dark:border-[#293548] text-xs text-[#334155] dark:text-[#F1F5F9]">
+                  <Hash className="h-3.5 w-3.5 text-[#2563eb] dark:text-[#818CF8] shrink-0" />
                   <span className="truncate font-semibold">{card.semester}</span>
                 </div>
               )}
               {card.pageCount && (
-                <div className="flex items-center gap-2 p-2.5 rounded-xl bg-[#f8fafc] border border-[#e2e8f0] text-xs text-[#334155]">
-                  <FileText className="h-3.5 w-3.5 text-[#2563eb] shrink-0" />
+                <div className="flex items-center gap-2 p-2.5 rounded-xl bg-[#f8fafc] dark:bg-[#1C2638] border border-[#e2e8f0] dark:border-[#293548] text-xs text-[#334155] dark:text-[#F1F5F9]">
+                  <FileText className="h-3.5 w-3.5 text-[#2563eb] dark:text-[#818CF8] shrink-0" />
                   <span className="font-semibold">{card.pageCount} {t("pages", "ಪುಟಗಳು")}</span>
                 </div>
               )}
               {card.fileSizeKb ? (
-                <div className="flex items-center gap-2 p-2.5 rounded-xl bg-[#f8fafc] border border-[#e2e8f0] text-xs text-[#334155]">
-                  <FileDown className="h-3.5 w-3.5 text-[#2563eb] shrink-0" />
+                <div className="flex items-center gap-2 p-2.5 rounded-xl bg-[#f8fafc] dark:bg-[#1C2638] border border-[#e2e8f0] dark:border-[#293548] text-xs text-[#334155] dark:text-[#F1F5F9]">
+                  <FileDown className="h-3.5 w-3.5 text-[#2563eb] dark:text-[#818CF8] shrink-0" />
                   <span className="font-semibold">{(card.fileSizeKb / 1024).toFixed(1)} MB PDF</span>
                 </div>
               ) : card.pdfFileKey?.startsWith("http") ? (
@@ -315,7 +315,7 @@ export default function CardPage() {
             </div>
 
             {/* Pricing Section */}
-            <div className="pt-4 border-t border-[#f1f5f9] space-y-4">
+            <div className="pt-4 border-t border-[#f1f5f9] dark:border-[#293548] space-y-4">
               <div className="flex items-baseline justify-between">
                 <div>
                   <span className="text-[11px] font-bold uppercase tracking-wider text-[#94a3b8] block mb-0.5">{t("Price", "ಬೆಲೆ")}</span>
@@ -323,7 +323,7 @@ export default function CardPage() {
                     <span className="text-2xl sm:text-3xl font-extrabold text-[#16a34a]">{t("Free", "ಉಚಿತ")}</span>
                   ) : hasDiscount ? (
                     <div className="flex items-baseline gap-2">
-                      <span className="text-2xl sm:text-3xl font-extrabold text-[#0f172a]">
+                      <span className="text-2xl sm:text-3xl font-extrabold text-[#0f172a] dark:text-[#F1F5F9]">
                         {formatRupees(card.discountPricePaise!)}
                       </span>
                       <span className="text-sm text-[#94a3b8] line-through">
@@ -331,14 +331,14 @@ export default function CardPage() {
                       </span>
                     </div>
                   ) : (
-                    <span className="text-2xl sm:text-3xl font-extrabold text-[#0f172a]">
+                    <span className="text-2xl sm:text-3xl font-extrabold text-[#0f172a] dark:text-[#F1F5F9]">
                       {formatRupees(card.pricePaise)}
                     </span>
                   )}
                 </div>
 
                 {hasDiscount && (
-                  <span className="bg-[#eff6ff] text-[#2563eb] border border-[#bfdbfe] text-xs font-bold px-2 py-0.5 rounded-full">
+                  <span className="bg-[#eff6ff] dark:bg-[#1C2638] text-[#2563eb] dark:text-[#818CF8] border border-[#bfdbfe] dark:border-[#293548] text-xs font-bold px-2 py-0.5 rounded-full">
                     {t("Discounted", "ರಿಯಾಯಿತಿ")}
                   </span>
                 )}
@@ -365,7 +365,7 @@ export default function CardPage() {
                   )}
                 </Button>
               ) : (
-                <Button onClick={handleBuy} size="lg" className="w-full gap-2 rounded-xl text-sm font-semibold h-11 bg-[#2563eb] hover:bg-[#1d4ed8] text-white shadow-2xs transition-all">
+                <Button onClick={handleBuy} size="lg" className="w-full gap-2 rounded-xl text-sm font-semibold h-11 bg-[#2563eb] hover:bg-[#1d4ed8] dark:bg-[#818CF8] dark:hover:bg-[#6366F1] text-white shadow-2xs transition-all">
                   <span>{t("Buy Now →", "ಈಗಲೇ ಖರೀದಿಸಿ →")}</span>
                 </Button>
               )}
@@ -373,13 +373,13 @@ export default function CardPage() {
           </div>
 
           {/* Telegram Support prompt */}
-          <div className="bg-[#eff6ff] border border-[#bfdbfe]/80 rounded-2xl p-3.5 px-4.5 flex items-center justify-between text-xs text-[#0f172a] shadow-2xs">
-            <span className="font-medium text-[#475569]">{t("Have questions about this material?", "ಈ ಸಾಮಗ್ರಿಯ ಬಗ್ಗೆ ಪ್ರಶ್ನೆಗಳಿವೆಯೇ?")}</span>
+          <div className="bg-[#eff6ff] dark:bg-[#111827] border border-[#bfdbfe]/80 dark:border-[#293548] rounded-2xl p-3.5 px-4.5 flex items-center justify-between text-xs text-[#0f172a] dark:text-[#F1F5F9] shadow-2xs">
+            <span className="font-medium text-[#475569] dark:text-[#94A3B8]">{t("Have questions about this material?", "ಈ ಸಾಮಗ್ರಿಯ ಬಗ್ಗೆ ಪ್ರಶ್ನೆಗಳಿವೆಯೇ?")}</span>
             <a
               href={card.telegramLink || TELEGRAM_LINK}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-1 font-semibold text-[#2563eb] hover:text-[#1d4ed8] transition-colors"
+              className="inline-flex items-center gap-1 font-semibold text-[#2563eb] dark:text-[#818CF8] hover:text-[#1d4ed8] dark:hover:text-[#a5b4fc] transition-colors"
             >
               <Send className="h-3 w-3" />
               <span>{t("Ask Support", "ಸಹಾಯ ಪಡೆಯಿರಿ")}</span>

@@ -127,7 +127,7 @@ export default function Home() {
   });
 
   return (
-    <div className="flex flex-col bg-white">
+    <div className="flex flex-col bg-white dark:bg-[#0B0F19]">
       <SeoHead
         title={t(
           "2PUC — Karnataka 2nd PUC Science Notes, Blueprints, PYQs & Practical Manuals 2026",
@@ -141,12 +141,12 @@ export default function Home() {
         canonicalPath="/"
       />
       {/* ── Hero Section ── */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-[#f8fafc] via-[#f1f5f9]/40 to-white border-b border-[#e2e8f0]/80 pt-7 pb-8 sm:pt-10 sm:pb-11 px-4">
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#f8fafc] via-[#f1f5f9]/40 to-white dark:from-[#0B0F19] dark:via-[#111827] dark:to-[#0B0F19] border-b border-[#e2e8f0]/80 dark:border-[#293548] pt-7 pb-8 sm:pt-10 sm:pb-11 px-4">
         <div className="max-w-2xl mx-auto text-center">
           {/* Main 2PUC Brand Heading */}
           <div className="inline-flex items-center justify-center gap-2 mb-4">
-            <h1 className="text-4xl sm:text-5xl font-black text-[#0f172a] tracking-tight select-none inline-flex items-baseline justify-center">
-              <span className="text-[#2563eb]">2</span>
+            <h1 className="text-4xl sm:text-5xl font-black text-[#0f172a] dark:text-[#F1F5F9] tracking-tight select-none inline-flex items-baseline justify-center">
+              <span className="text-[#2563eb] dark:text-[#818CF8]">2</span>
               <span>PUC</span>
             </h1>
           </div>
@@ -154,15 +154,15 @@ export default function Home() {
           {/* Search Form */}
           <form
             onSubmit={handleSearch}
-            className="relative max-w-lg mx-auto flex items-center bg-white rounded-xl border border-[#cbd5e1] p-1 shadow-xs focus-within:border-[#2563eb] focus-within:ring-2 focus-within:ring-[#2563eb]/20 transition-all"
+            className="relative max-w-lg mx-auto flex items-center bg-white dark:bg-[#151D2E] rounded-xl border border-[#cbd5e1] dark:border-[#293548] p-1 shadow-xs focus-within:border-[#2563eb] dark:focus-within:border-[#818CF8] focus-within:ring-2 focus-within:ring-[#2563eb]/20 dark:focus-within:ring-[#818CF8]/20 transition-all"
           >
-            <div className="pl-3 sm:pl-3.5 text-[#94a3b8]">
+            <div className="pl-3 sm:pl-3.5 text-[#94a3b8] dark:text-[#64748b]">
               <Search className="h-4 w-4" />
             </div>
             <Input
               id="home-search-input"
               ref={searchInputRef}
-              className="bg-transparent text-[#0f172a] placeholder:text-[#94a3b8] border-0 focus-visible:ring-0 focus-visible:ring-offset-0 h-10 text-sm shadow-none font-medium"
+              className="bg-transparent text-[#0f172a] dark:text-[#F1F5F9] placeholder:text-[#94a3b8] dark:placeholder:text-[#64748b] border-0 focus-visible:ring-0 focus-visible:ring-offset-0 h-10 text-sm shadow-none font-medium"
               placeholder={t("Search by subject, chapter, or question bank...", "ವಿಷಯ, ಅಧ್ಯಾಯ ಅಥವಾ ಪ್ರಶ್ನೆ ಕೋಶ ಹುಡುಕಿ...")}
               value={search}
               onChange={(e) => {
@@ -174,7 +174,7 @@ export default function Home() {
               <button
                 type="button"
                 onClick={handleClearSearch}
-                className="p-1 text-[#94a3b8] hover:text-[#475569] transition-colors mr-1"
+                className="p-1 text-[#94a3b8] hover:text-[#475569] dark:hover:text-[#F1F5F9] transition-colors mr-1"
                 aria-label="Clear search text"
               >
                 <X className="h-4 w-4" />
@@ -183,7 +183,7 @@ export default function Home() {
             <Button
               type="submit"
               size="sm"
-              className="shrink-0 rounded-lg px-4 sm:px-5 h-8.5 text-xs font-semibold bg-[#2563eb] hover:bg-[#1d4ed8] text-white shadow-2xs transition-all"
+              className="shrink-0 rounded-lg px-4 sm:px-5 h-8.5 text-xs font-semibold bg-[#2563eb] hover:bg-[#1d4ed8] dark:bg-[#818CF8] dark:hover:bg-[#6366F1] text-white shadow-2xs transition-all"
             >
               {t("Search", "ಹುಡುಕಿ")}
             </Button>
@@ -191,7 +191,7 @@ export default function Home() {
 
           {/* Quick Access Chips */}
           <div className="flex items-center justify-center flex-wrap gap-1.5 mt-3 sm:mt-4 text-xs">
-            <span className="text-[11px] font-semibold text-[#64748b] mr-1 hidden sm:inline">
+            <span className="text-[11px] font-semibold text-[#64748b] dark:text-[#94A3B8] mr-1 hidden sm:inline">
               {t("Quick jump:", "ತ್ವರಿತ ಆಯ್ಕೆ:")}
             </span>
             {SCIENCE_SUBJECTS.map((subj) => (
@@ -199,7 +199,7 @@ export default function Home() {
                 key={subj.slug}
                 type="button"
                 onClick={() => handleChipSearch(subj.name)}
-                className="px-2.5 py-0.5 rounded-full bg-white hover:bg-[#eff6ff] text-[#334155] hover:text-[#2563eb] border border-[#cbd5e1] hover:border-[#bfdbfe] text-[11px] font-medium transition-all shadow-2xs active:scale-95"
+                className="px-2.5 py-0.5 rounded-full bg-white dark:bg-[#151D2E] hover:bg-[#eff6ff] dark:hover:bg-[#1C2638] text-[#334155] dark:text-[#F1F5F9] hover:text-[#2563eb] dark:hover:text-[#818CF8] border border-[#cbd5e1] dark:border-[#293548] hover:border-[#bfdbfe] dark:hover:border-[#818CF8]/40 text-[11px] font-medium transition-all shadow-2xs active:scale-95"
               >
                 {language === "kn" ? subj.kannadaName : subj.name}
               </button>
@@ -213,15 +213,15 @@ export default function Home() {
         {/* Search Results */}
         {submitted && (
           <section className="scroll-mt-20">
-            <div className="flex items-center justify-between mb-5 border-b border-[#e2e8f0] pb-3">
-              <h2 className="text-lg sm:text-xl font-bold text-[#0f172a]">
+            <div className="flex items-center justify-between mb-5 border-b border-[#e2e8f0] dark:border-[#293548] pb-3">
+              <h2 className="text-lg sm:text-xl font-bold text-[#0f172a] dark:text-[#F1F5F9]">
                 {t("Results for", "ಫಲಿತಾಂಶಗಳು:")} "{submitted}"
               </h2>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={handleClearSearch}
-                className="text-[#2563eb] hover:text-[#1d4ed8] text-xs font-semibold"
+                className="text-[#2563eb] dark:text-[#818CF8] hover:text-[#1d4ed8] dark:hover:text-[#a5b4fc] text-xs font-semibold"
               >
                 {t("Clear", "ರದ್ದುಮಾಡಿ")}
               </Button>
@@ -233,9 +233,9 @@ export default function Home() {
                 ))}
               </div>
             ) : searchResults?.length === 0 ? (
-              <div className="text-center py-16 bg-[#f8fafc] border border-[#e2e8f0] rounded-xl p-8">
+              <div className="text-center py-16 bg-[#f8fafc] dark:bg-[#151D2E] border border-[#e2e8f0] dark:border-[#293548] rounded-xl p-8">
                 <BookOpen className="h-9 w-9 text-[#94a3b8] mx-auto mb-2" />
-                <p className="text-[#64748b] font-medium text-sm">
+                <p className="text-[#64748b] dark:text-[#94A3B8] font-medium text-sm">
                   {t(
                     "No study materials found for this search. Try searching by subject or chapter name.",
                     "ಯಾವುದೇ ಫಲಿತಾಂಶ ಕಂಡುಬಂದಿಲ್ಲ. ಬೇರೆ ವಿಷಯ ಅಥವಾ ಅಧ್ಯಾಯವನ್ನು ಹುಡುಕಿ."
@@ -281,11 +281,11 @@ export default function Home() {
         {/* ── PART 1: Browse by Subject ── */}
         {!submitted && (
           <section id="browse-by-subject" className="space-y-6 scroll-mt-20">
-            <div className="border-b border-[#eef2f6] pb-3">
-              <h2 className="text-xl sm:text-2xl font-bold text-[#0f172a] tracking-tight">
+            <div className="border-b border-[#eef2f6] dark:border-[#293548] pb-3">
+              <h2 className="text-xl sm:text-2xl font-bold text-[#0f172a] dark:text-[#F1F5F9] tracking-tight">
                 {t("Browse by Subject", "ವಿಷಯವಾರು ಅಧ್ಯಯನ ಸಾಮಗ್ರಿಗಳು")}
               </h2>
-              <p className="text-xs sm:text-sm text-[#64748b] mt-0.5">
+              <p className="text-xs sm:text-sm text-[#64748b] dark:text-[#94A3B8] mt-0.5">
                 {t(
                   "Curriculum-aligned 2nd PUC Science notes, formulas, schemes, and literature guides",
                   "ಕರ್ನಾಟಕ ದ್ವಿತೀಯ ಪಿಯುಸಿ ಪಠ್ಯಕ್ರಮಕ್ಕೆ ಅನುಗುಣವಾದ ಅಧ್ಯಯನ ನೋಟ್ಸ್‌ಗಳು"
@@ -296,10 +296,10 @@ export default function Home() {
             {/* A. Science Subjects (5 items balanced on grid) */}
             <div className="space-y-3">
               <div className="flex items-center justify-between flex-wrap gap-2">
-                <span className="text-xs font-bold uppercase tracking-wider text-[#2563eb] bg-[#eff6ff] px-2.5 py-0.5 rounded border border-[#bfdbfe]">
+                <span className="text-xs font-bold uppercase tracking-wider text-[#2563eb] dark:text-[#818CF8] bg-[#eff6ff] dark:bg-[#1C2638] px-2.5 py-0.5 rounded border border-[#bfdbfe] dark:border-[#293548]">
                   {t("Science Subjects", "ವಿಜ್ಞಾನ ವಿಷಯಗಳು")}
                 </span>
-                <span className="text-xs text-[#64748b]">
+                <span className="text-xs text-[#64748b] dark:text-[#94A3B8]">
                   {t("Physics, Chemistry, Mathematics, Biology & Computer Science", "ಭೌತ, ರಸಾಯನ, ಗಣಿತ, ಜೀವಶಾಸ್ತ್ರ & ಗಣಕ ವಿಜ್ಞಾನ")}
                 </span>
               </div>
@@ -342,7 +342,7 @@ export default function Home() {
                               </p>
                             </div>
                           </div>
-                          <div className="flex items-center justify-end text-[10px] font-semibold text-[#2563eb] mt-1.5 opacity-80 group-hover:opacity-100 transition-opacity">
+                          <div className="flex items-center justify-end text-[10px] font-semibold text-[#2563eb] dark:text-[#818CF8] mt-1.5 opacity-80 group-hover:opacity-100 transition-opacity">
                             <ArrowRight className="h-3 w-3 group-hover:translate-x-0.5 transition-transform" />
                           </div>
                         </div>
@@ -356,10 +356,10 @@ export default function Home() {
             {/* B. Languages (4 items balanced in 4 columns) */}
             <div className="space-y-3 pt-2">
               <div className="flex items-center justify-between flex-wrap gap-2">
-                <span className="text-xs font-bold uppercase tracking-wider text-[#6d28d9] bg-[#f5f3ff] px-2.5 py-0.5 rounded border border-[#ede9fe]">
+                <span className="text-xs font-bold uppercase tracking-wider text-[#6d28d9] dark:text-[#a78bfa] bg-[#f5f3ff] dark:bg-[#1C2638] px-2.5 py-0.5 rounded border border-[#ede9fe] dark:border-[#293548]">
                   {t("Languages", "ಭಾಷಾ ವಿಷಯಗಳು")}
                 </span>
-                <span className="text-xs text-[#64748b]">
+                <span className="text-xs text-[#64748b] dark:text-[#94A3B8]">
                   {t("Kannada, English, Hindi & Sanskrit Literature and Grammar", "ಕನ್ನಡ, ಇಂಗ್ಲಿಷ್, ಹಿಂದಿ & ಸಂಸ್ಕೃತ ಸಾಹಿತ್ಯ ಮತ್ತು ವ್ಯಾಕರಣ")}
                 </span>
               </div>
@@ -402,7 +402,7 @@ export default function Home() {
                               </p>
                             </div>
                           </div>
-                          <div className="flex items-center justify-end text-[10px] font-semibold text-[#6d28d9] mt-1.5 opacity-80 group-hover:opacity-100 transition-opacity">
+                          <div className="flex items-center justify-end text-[10px] font-semibold text-[#6d28d9] dark:text-[#a78bfa] mt-1.5 opacity-80 group-hover:opacity-100 transition-opacity">
                             <ArrowRight className="h-3 w-3 group-hover:translate-x-0.5 transition-transform" />
                           </div>
                         </div>
@@ -418,16 +418,16 @@ export default function Home() {
         {/* ── PART 2: Browse by Resource Type (Explicit Heading & Balanced 7 Cards) ── */}
         {!submitted && (
           <section id="resource-types" className="space-y-5 scroll-mt-20">
-            <div className="border-b border-[#eef2f6] pb-3">
+            <div className="border-b border-[#eef2f6] dark:border-[#293548] pb-3">
               <div className="flex items-center gap-2">
-                <h2 className="text-xl sm:text-2xl font-bold text-[#0f172a] tracking-tight">
+                <h2 className="text-xl sm:text-2xl font-bold text-[#0f172a] dark:text-[#F1F5F9] tracking-tight">
                   {t("Browse by Resource Type", "ಸಂಪನ್ಮೂಲ ಪ್ರಕಾರವಾರು ಹುಡುಕಿ")}
                 </h2>
-                <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-[#eff6ff] text-[#2563eb] border border-[#bfdbfe]">
+                <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-[#eff6ff] dark:bg-[#1C2638] text-[#2563eb] dark:text-[#818CF8] border border-[#bfdbfe] dark:border-[#293548]">
                   {RESOURCE_CATEGORIES.length} {t("Formats", "ಪ್ರಕಾರಗಳು")}
                 </span>
               </div>
-              <p className="text-xs sm:text-sm text-[#64748b] mt-0.5">
+              <p className="text-xs sm:text-sm text-[#64748b] dark:text-[#94A3B8] mt-0.5">
                 {t(
                   "Filter Karnataka 2nd PUC materials by notes, exam format, blueprint paper, or question bank",
                   "ಪರೀಕ್ಷಾ ಮಾದರಿ, ಬ್ಲೂಪ್ರಿಂಟ್ ಅಥವಾ ಹಿಂದಿನ ವರ್ಷದ ಪತ್ರಿಕೆಗಳ ಪ್ರಕಾರ ಹುಡುಕಿ"
@@ -447,12 +447,12 @@ export default function Home() {
                     onFocus={prefetchCategory}
                   >
                     <div
-                      className={`group h-full bg-white border border-[#e2e8f0] ${cat.theme.hoverBorder} hover:bg-[#fafcff] rounded-xl p-4 transition-all cursor-pointer flex flex-col justify-between shadow-2xs hover:shadow-xs active:scale-[0.99]`}
+                      className={`group h-full bg-white dark:bg-[#151D2E] border border-[#e2e8f0] dark:border-[#293548] ${cat.theme.hoverBorder} dark:hover:border-[#818CF8]/50 hover:bg-[#fafcff] dark:hover:bg-[#1C2638] rounded-xl p-4 transition-all cursor-pointer flex flex-col justify-between shadow-2xs hover:shadow-xs active:scale-[0.99]`}
                     >
                       <div>
                         <div className="flex items-center justify-between mb-2.5">
                           <div
-                            className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${cat.theme.iconBg} ${cat.theme.iconText} border border-slate-100 shadow-2xs`}
+                            className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${cat.theme.iconBg} ${cat.theme.iconText} border border-slate-100 dark:border-transparent shadow-2xs`}
                           >
                             <Icon className="h-4.5 w-4.5" />
                           </div>
@@ -462,14 +462,14 @@ export default function Home() {
                             {cat.badge}
                           </span>
                         </div>
-                        <h3 className="font-bold text-sm text-[#0f172a] group-hover:text-[#2563eb] transition-colors">
+                        <h3 className="font-bold text-sm text-[#0f172a] dark:text-[#F1F5F9] group-hover:text-[#2563eb] dark:group-hover:text-[#818CF8] transition-colors">
                           {language === "kn" ? cat.kannadaTitle : cat.title}
                         </h3>
-                        <p className="text-xs text-[#64748b] mt-1 leading-relaxed line-clamp-2">
+                        <p className="text-xs text-[#64748b] dark:text-[#94A3B8] mt-1 leading-relaxed line-clamp-2">
                           {cat.desc}
                         </p>
                       </div>
-                      <div className="flex items-center justify-end pt-3 mt-3 border-t border-[#f1f5f9] text-xs font-semibold text-[#2563eb]">
+                      <div className="flex items-center justify-end pt-3 mt-3 border-t border-[#f1f5f9] dark:border-[#293548] text-xs font-semibold text-[#2563eb] dark:text-[#818CF8]">
                         <span className="flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
                           <span>{t("Explore", "ವೀಕ್ಷಿಸಿ")}</span>
                           <ArrowRight className="h-3 w-3" />
@@ -486,12 +486,12 @@ export default function Home() {
         {/* ── PART 3: Featured Resources ── */}
         {!submitted && Array.isArray(featuredCards) && featuredCards.length > 0 && (
           <section className="space-y-4 scroll-mt-20">
-            <div className="border-b border-[#eef2f6] pb-3 flex items-center justify-between">
+            <div className="border-b border-[#eef2f6] dark:border-[#293548] pb-3 flex items-center justify-between">
               <div className="flex items-center gap-2.5">
-                <h2 className="text-xl sm:text-2xl font-bold text-[#0f172a] tracking-tight">
+                <h2 className="text-xl sm:text-2xl font-bold text-[#0f172a] dark:text-[#F1F5F9] tracking-tight">
                   {t("Featured Resources", "ಪ್ರಮುಖ ಸಂಪನ್ಮೂಲಗಳು")}
                 </h2>
-                <span className="bg-[#fef3c7] text-[#92400e] border border-[#fde68a] text-xs font-semibold px-2 py-0.5 rounded-md flex items-center gap-1">
+                <span className="bg-[#fef3c7] dark:bg-amber-950/40 text-[#92400e] dark:text-amber-300 border border-[#fde68a] dark:border-amber-800/50 text-xs font-semibold px-2 py-0.5 rounded-md flex items-center gap-1">
                   <TrendingUp className="h-3 w-3" />
                   <span>{t("Trending", "ಟ್ರೆಂಡಿಂಗ್")}</span>
                 </span>
@@ -511,17 +511,17 @@ export default function Home() {
         {!submitted && <HomeFaqAndGuide />}
 
         {/* ── PART 5: Community & Telegram Banner ── */}
-        <section className="bg-gradient-to-r from-[#eff6ff] via-[#f0f9ff] to-[#f8fafc] border border-[#dbeafe] rounded-xl p-5 sm:p-6 shadow-2xs">
+        <section className="bg-gradient-to-r from-[#eff6ff] via-[#f0f9ff] to-[#f8fafc] dark:from-[#111827] dark:via-[#151D2E] dark:to-[#111827] border border-[#dbeafe] dark:border-[#293548] rounded-xl p-5 sm:p-6 shadow-2xs">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
             <div className="flex items-center gap-3.5">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white text-[#2563eb] border border-[#bfdbfe] shadow-2xs">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white dark:bg-[#1C2638] text-[#2563eb] dark:text-[#818CF8] border border-[#bfdbfe] dark:border-[#293548] shadow-2xs">
                 <MessageCircle className="h-5 w-5" />
               </div>
               <div>
-                <h3 className="font-bold text-[#0f172a] text-sm sm:text-base">
+                <h3 className="font-bold text-[#0f172a] dark:text-[#F1F5F9] text-sm sm:text-base">
                   {t("Need help or have questions?", "ಸಹಾಯ ಬೇಕೇ ಅಥವಾ ಪ್ರಶ್ನೆಗಳಿವೆಯೇ?")}
                 </h3>
-                <p className="text-[#64748b] text-xs sm:text-sm mt-0.5">
+                <p className="text-[#64748b] dark:text-[#94A3B8] text-xs sm:text-sm mt-0.5">
                   {t(
                     "Reach out on Telegram for prompt student support, study discussion, and updates",
                     "ತ್ವರಿತ ಸಹಾಯ ಮತ್ತು ನವೀಕರಣಗಳಿಗಾಗಿ ನಮ್ಮ ಟೆಲಿಗ್ರಾಂ ಗುಂಪಿಗೆ ಸೇರಿ"
@@ -537,7 +537,7 @@ export default function Home() {
             >
               <Button
                 size="sm"
-                className="w-full sm:w-auto gap-2 px-4 h-9 font-semibold text-xs rounded-lg bg-[#2563eb] hover:bg-[#1d4ed8] text-white shadow-2xs transition-all"
+                className="w-full sm:w-auto gap-2 px-4 h-9 font-semibold text-xs rounded-lg bg-[#2563eb] hover:bg-[#1d4ed8] dark:bg-[#818CF8] dark:hover:bg-[#6366F1] text-white shadow-2xs transition-all"
               >
                 <MessageCircle className="h-3.5 w-3.5" />
                 <span>{t("Join 2PUC Community", "ಟೆಲಿಗ್ರಾಂನಲ್ಲಿ ಸಂಪರ್ಕಿಸಿ")}</span>

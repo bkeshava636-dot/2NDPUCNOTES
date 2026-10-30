@@ -275,7 +275,7 @@ export default function SubjectPage() {
         <Button
           variant="ghost"
           size="sm"
-          className="gap-2 text-[#475569] hover:text-[#0f172a] -ml-2 mb-4 font-medium"
+          className="gap-2 text-[#475569] dark:text-[#94A3B8] hover:text-[#0f172a] dark:hover:text-[#F1F5F9] -ml-2 mb-4 font-medium"
         >
           <ArrowLeft className="h-4 w-4" />
           <span>{t("Back to Home", "ಮುಖಪುಟಕ್ಕೆ ಹಿಂತಿರುಗಿ")}</span>
@@ -283,34 +283,34 @@ export default function SubjectPage() {
       </Link>
 
       {/* Header Banner */}
-      <div className="bg-white border border-[#e2e8f0] rounded-2xl p-6 sm:p-7 mb-6 shadow-xs">
+      <div className="bg-white dark:bg-[#151D2E] border border-[#e2e8f0] dark:border-[#293548] rounded-2xl p-6 sm:p-7 mb-6 shadow-xs">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-5">
           <div className="flex items-start gap-4">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#eff6ff] to-[#dbeafe] text-[#2563eb] border border-[#bfdbfe]/80 shadow-2xs">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#eff6ff] to-[#dbeafe] dark:from-[#1C2638] dark:to-[#151D2E] text-[#2563eb] dark:text-[#818CF8] border border-[#bfdbfe]/80 dark:border-[#293548] shadow-2xs">
               <Icon className="h-6 w-6" />
             </div>
             <div>
               <div className="flex items-center gap-2.5 flex-wrap">
-                <h1 className="text-2xl sm:text-3xl font-bold text-[#0f172a] tracking-tight">
+                <h1 className="text-2xl sm:text-3xl font-bold text-[#0f172a] dark:text-[#F1F5F9] tracking-tight">
                   {displayName}
                 </h1>
                 <Badge
                   variant="outline"
                   className={`text-xs font-semibold px-2.5 py-0.5 rounded-full ${
                     isCoreSubject
-                      ? "bg-[#eff6ff] text-[#2563eb] border-[#bfdbfe]"
-                      : "bg-[#f5f3ff] text-[#6d28d9] border-[#ede9fe]"
+                      ? "bg-[#eff6ff] dark:bg-[#1C2638] text-[#2563eb] dark:text-[#818CF8] border-[#bfdbfe] dark:border-[#293548]"
+                      : "bg-[#f5f3ff] dark:bg-[#1C2638] text-[#6d28d9] dark:text-[#a78bfa] border-[#ede9fe] dark:border-[#293548]"
                   }`}
                 >
                   {isCoreSubject ? t("Core Subject", "ಪ್ರಮುಖ ವಿಜ್ಞಾನ ವಿಷಯ") : t("Language & Other Subject", "ಭಾಷಾ ವಿಷಯ")}
                 </Badge>
                 {cards && (
-                  <span className="text-xs font-medium text-[#64748b] bg-[#f8fafc] px-2.5 py-0.5 rounded-full border border-[#e2e8f0]">
+                  <span className="text-xs font-medium text-[#64748b] dark:text-[#94A3B8] bg-[#f8fafc] dark:bg-[#1C2638] px-2.5 py-0.5 rounded-full border border-[#e2e8f0] dark:border-[#293548]">
                     {cards.length} {cards.length === 1 ? t("resource", "ಸಂಪನ್ಮೂಲ") : t("resources", "ಸಂಪನ್ಮೂಲಗಳು")}
                   </span>
                 )}
               </div>
-              <p className="text-[#64748b] text-xs sm:text-sm leading-relaxed max-w-2xl mt-1.5 font-normal">
+              <p className="text-[#64748b] dark:text-[#94A3B8] text-xs sm:text-sm leading-relaxed max-w-2xl mt-1.5 font-normal">
                 {section?.description ||
                   t(
                     `Curriculum-aligned 2nd PUC ${section?.name || subjectName} notes, blueprint question papers, and study resources.`,
@@ -326,7 +326,7 @@ export default function SubjectPage() {
                 href={section.officialSourceUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#0284c7] bg-[#f0f9ff] hover:bg-[#e0f2fe] border border-[#bae6fd] px-3.5 py-2 rounded-lg transition-colors shadow-2xs"
+                className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#0284c7] dark:text-sky-400 bg-[#f0f9ff] dark:bg-[#1C2638] hover:bg-[#e0f2fe] dark:hover:bg-[#253248] border border-[#bae6fd] dark:border-[#293548] px-3.5 py-2 rounded-lg transition-colors shadow-2xs"
               >
                 <span>{t("Official Source", "ಅಧಿಕೃತ ಮೂಲ")}</span>
                 <ExternalLink className="h-3.5 w-3.5" />
@@ -338,7 +338,7 @@ export default function SubjectPage() {
 
       {/* Resource Type Tabs */}
       <div className="space-y-3.5 mb-6">
-        <div className="flex items-center gap-2 text-xs font-bold text-[#475569] uppercase tracking-wider">
+        <div className="flex items-center gap-2 text-xs font-bold text-[#475569] dark:text-[#94A3B8] uppercase tracking-wider">
           <Layers className="h-3.5 w-3.5 text-[#2563eb]" />
           <span>{t("Resource Types", "ಸಂಪನ್ಮೂಲ ಪ್ರಕಾರಗಳು")}</span>
         </div>
@@ -352,8 +352,8 @@ export default function SubjectPage() {
             }}
             className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold shrink-0 transition-all ${
               activeType === "all"
-                ? "bg-[#2563eb] text-white shadow-2xs"
-                : "bg-white text-[#475569] border border-[#e2e8f0] hover:bg-[#f8fafc] hover:border-[#cbd5e1]"
+                ? "bg-[#2563eb] dark:bg-[#818CF8] text-white shadow-2xs"
+                : "bg-white dark:bg-[#151D2E] text-[#475569] dark:text-[#94A3B8] border border-[#e2e8f0] dark:border-[#293548] hover:bg-[#f8fafc] dark:hover:bg-[#1C2638] hover:border-[#cbd5e1] dark:hover:border-[#293548]"
             }`}
           >
             {t("All Resources", "ಎಲ್ಲ ಸಂಪನ್ಮೂಲಗಳು")}
@@ -370,8 +370,8 @@ export default function SubjectPage() {
                 }}
                 className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold shrink-0 transition-all ${
                   isSelected
-                    ? "bg-[#2563eb] text-white shadow-2xs"
-                    : "bg-white text-[#475569] border border-[#e2e8f0] hover:bg-[#f8fafc] hover:border-[#cbd5e1]"
+                    ? "bg-[#2563eb] dark:bg-[#818CF8] text-white shadow-2xs"
+                    : "bg-white dark:bg-[#151D2E] text-[#475569] dark:text-[#94A3B8] border border-[#e2e8f0] dark:border-[#293548] hover:bg-[#f8fafc] dark:hover:bg-[#1C2638] hover:border-[#cbd5e1] dark:hover:border-[#293548]"
                 }`}
               >
                 {getResourceTypeDisplayName(type, isKn)}
@@ -382,7 +382,7 @@ export default function SubjectPage() {
 
         {/* Subtype Filter Pills (Only when Practical or PYQs is active) */}
         {(isPracticalActive || isPyqActive) && (
-          <div className="bg-[#eff6ff]/70 border border-[#bfdbfe]/80 rounded-xl p-3 flex flex-wrap items-center gap-2">
+          <div className="bg-[#eff6ff]/70 dark:bg-[#1C2638]/70 border border-[#bfdbfe]/80 dark:border-[#293548] rounded-xl p-3 flex flex-wrap items-center gap-2">
             <span className="text-xs font-bold text-[#2563eb] mr-1">
               {isPracticalActive ? t("Practical Subtypes:", "ಪ್ರಾಯೋಗಿಕ ಉಪವಿಭಾಗಗಳು:") : t("Exam Category:", "ಪರೀಕ್ಷಾ ವರ್ಗ:")}
             </span>
@@ -391,8 +391,8 @@ export default function SubjectPage() {
               onClick={() => setActiveSubtype("all")}
               className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-all ${
                 activeSubtype === "all"
-                  ? "bg-[#2563eb] text-white shadow-2xs"
-                  : "bg-white text-[#2563eb] border border-[#bfdbfe] hover:bg-[#dbeafe]"
+                  ? "bg-[#2563eb] dark:bg-[#818CF8] text-white shadow-2xs"
+                  : "bg-white dark:bg-[#151D2E] text-[#2563eb] dark:text-[#818CF8] border border-[#bfdbfe] dark:border-[#293548] hover:bg-[#dbeafe] dark:hover:bg-[#253248]"
               }`}
             >
               {t("All", "ಎಲ್ಲ")}
@@ -405,7 +405,7 @@ export default function SubjectPage() {
                 className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-all ${
                   activeSubtype.toLowerCase() === sub.toLowerCase()
                     ? "bg-[#2563eb] text-white shadow-2xs"
-                    : "bg-white text-[#2563eb] border border-[#bfdbfe] hover:bg-[#dbeafe]"
+                    : "bg-white dark:bg-[#151D2E] text-[#2563eb] dark:text-[#818CF8] border border-[#bfdbfe] dark:border-[#293548] hover:bg-[#dbeafe] dark:hover:bg-[#253248]"
                 }`}
               >
                 {getSubtypeDisplayName(sub, isKn)}
@@ -416,7 +416,7 @@ export default function SubjectPage() {
 
         {/* Year-Wise Filter Pills (Only when PYQs is active) */}
         {isPyqActive && (
-          <div className="bg-[#f0fdf4] border border-[#bbf7d0] rounded-xl p-3 flex flex-wrap items-center gap-2">
+          <div className="bg-[#f0fdf4] dark:bg-emerald-950/20 border border-[#bbf7d0] dark:border-emerald-800/40 rounded-xl p-3 flex flex-wrap items-center gap-2">
             <div className="flex items-center gap-1.5 mr-1 text-[#15803d]">
               <Calendar className="h-3.5 w-3.5" />
               <span className="text-xs font-bold">{t("Exam Year:", "ಪರೀಕ್ಷೆಯ ವರ್ಷ:")}</span>
@@ -427,7 +427,7 @@ export default function SubjectPage() {
               className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-all ${
                 activeYear === "all"
                   ? "bg-[#16a34a] text-white shadow-2xs"
-                  : "bg-white text-[#15803d] border border-[#86efac] hover:bg-[#dcfce7]"
+                  : "bg-white dark:bg-[#151D2E] text-[#15803d] dark:text-emerald-400 border border-[#86efac] dark:border-emerald-800/40 hover:bg-[#dcfce7] dark:hover:bg-emerald-950/40"
               }`}
             >
               {t("All Years", "ಎಲ್ಲ ವರ್ಷಗಳು")}
@@ -440,7 +440,7 @@ export default function SubjectPage() {
                 className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-all ${
                   activeYear === yr
                     ? "bg-[#16a34a] text-white shadow-2xs"
-                    : "bg-white text-[#15803d] border border-[#86efac] hover:bg-[#dcfce7]"
+                    : "bg-white dark:bg-[#151D2E] text-[#15803d] dark:text-emerald-400 border border-[#86efac] dark:border-emerald-800/40 hover:bg-[#dcfce7] dark:hover:bg-emerald-950/40"
                 }`}
               >
                 {yr}
@@ -451,16 +451,16 @@ export default function SubjectPage() {
       </div>
 
       {/* Price Filter Toolbar */}
-      <div className="flex items-center justify-between gap-4 mb-6 bg-[#f8fafc] border border-[#e2e8f0] px-3.5 py-2 rounded-xl">
+      <div className="flex items-center justify-between gap-4 mb-6 bg-[#f8fafc] dark:bg-[#111827] border border-[#e2e8f0] dark:border-[#293548] px-3.5 py-2 rounded-xl">
         <div className="flex items-center gap-2">
-          <span className="text-xs text-[#64748b] font-medium">{t("Price:", "ಬೆಲೆ:")}</span>
+          <span className="text-xs text-[#64748b] dark:text-[#94A3B8] font-medium">{t("Price:", "ಬೆಲೆ:")}</span>
           <button
             type="button"
             onClick={() => setPriceFilter("all")}
             className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-all ${
               priceFilter === "all"
-                ? "bg-[#0f172a] text-white shadow-2xs"
-                : "text-[#64748b] hover:bg-[#e2e8f0]/60"
+                ? "bg-[#0f172a] dark:bg-[#F1F5F9] text-white dark:text-[#0B0F19] shadow-2xs"
+                : "text-[#64748b] dark:text-[#94A3B8] hover:bg-[#e2e8f0]/60 dark:hover:bg-[#1C2638]"
             }`}
           >
             {t("All", "ಎಲ್ಲ")}
@@ -471,7 +471,7 @@ export default function SubjectPage() {
             className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-all ${
               priceFilter === "free"
                 ? "bg-[#16a34a] text-white shadow-2xs"
-                : "text-[#64748b] hover:bg-[#e2e8f0]/60"
+                : "text-[#64748b] dark:text-[#94A3B8] hover:bg-[#e2e8f0]/60 dark:hover:bg-[#1C2638]"
             }`}
           >
             {t("Free", "ಉಚಿತ")}
@@ -482,14 +482,14 @@ export default function SubjectPage() {
             className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-all ${
               priceFilter === "paid"
                 ? "bg-[#2563eb] text-white shadow-2xs"
-                : "text-[#64748b] hover:bg-[#e2e8f0]/60"
+                : "text-[#64748b] dark:text-[#94A3B8] hover:bg-[#e2e8f0]/60 dark:hover:bg-[#1C2638]"
             }`}
           >
             {t("Paid", "ಪಾವತಿಸಿದ")}
           </button>
         </div>
 
-        <span className="text-xs text-[#64748b] font-medium">
+        <span className="text-xs text-[#64748b] dark:text-[#94A3B8] font-medium">
           {t("Showing", "ತೋರಿಸಲಾಗುತ್ತಿದೆ")} {filteredCards.length} {filteredCards.length === 1 ? t("item", "ಐಟಂ") : t("items", "ಐಟಂಗಳು")}
         </span>
       </div>
@@ -502,11 +502,11 @@ export default function SubjectPage() {
           ))}
         </div>
       ) : filteredCards.length === 0 ? (
-        <div className="bg-white border border-[#e2e8f0] rounded-xl p-12 text-center">
+        <div className="bg-white dark:bg-[#151D2E] border border-[#e2e8f0] dark:border-[#293548] rounded-xl p-12 text-center">
           <MetaNoIndex />
           <FileQuestion className="h-10 w-10 text-[#94a3b8] mx-auto mb-3" />
-          <h3 className="font-bold text-base text-[#112542] mb-1">{t("No resources found", "ಯಾವುದೇ ಸಂಪನ್ಮೂಲ ಕಂಡುಬಂದಿಲ್ಲ")}</h3>
-          <p className="text-xs sm:text-sm text-[#5a6b82] max-w-sm mx-auto">
+          <h3 className="font-bold text-base text-[#112542] dark:text-[#F1F5F9] mb-1">{t("No resources found", "ಯಾವುದೇ ಸಂಪನ್ಮೂಲ ಕಂಡುಬಂದಿಲ್ಲ")}</h3>
+          <p className="text-xs sm:text-sm text-[#5a6b82] dark:text-[#94A3B8] max-w-sm mx-auto">
             {activeType !== "all" || activeSubtype !== "all" || priceFilter !== "all"
               ? t(
                   "No resources match the selected filters. Try choosing a different tab or resetting filters.",
@@ -526,7 +526,7 @@ export default function SubjectPage() {
                 setActiveSubtype("all");
                 setPriceFilter("all");
               }}
-              className="mt-4 text-xs h-8"
+              className="mt-4 text-xs h-8 dark:border-[#293548] dark:bg-[#1C2638] dark:text-[#F1F5F9] dark:hover:bg-[#253248]"
             >
               {t("Reset Filters", "ಫಿಲ್ಟರ್ ತೆರವುಗೊಳಿಸಿ")}
             </Button>

@@ -89,19 +89,19 @@ export function HomeFaqAndGuide() {
   return (
     <div className="space-y-10">
       {/* ── Section A: Academic Blueprint & Preparation Guide ── */}
-      <section className="bg-white border border-[#e2e8f0] rounded-2xl p-6 sm:p-8 shadow-xs">
+      <section className="bg-white dark:bg-[#151D2E] border border-[#e2e8f0] dark:border-[#293548] rounded-2xl p-6 sm:p-8 shadow-xs">
         <div className="flex items-center gap-3 mb-4">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-[#2563eb] border border-blue-100 shadow-2xs">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 dark:bg-[#1C2638] text-[#2563eb] dark:text-[#818CF8] border border-blue-100 dark:border-[#293548] shadow-2xs">
             <GraduationCap className="h-5 w-5" />
           </div>
           <div>
-            <h2 className="text-xl sm:text-2xl font-bold text-[#0f172a] tracking-tight">
+            <h2 className="text-xl sm:text-2xl font-bold text-[#0f172a] dark:text-[#F1F5F9] dark:text-[#F1F5F9] tracking-tight">
               {t(
                 "Karnataka 2nd PUC Science Exam Blueprint & Scoring Guide",
                 "ಕರ್ನಾಟಕ ದ್ವಿತೀಯ ಪಿಯುಸಿ ವಿಜ್ಞಾನ ಪರೀಕ್ಷಾ ಮಾರ್ಗದರ್ಶಿ"
               )}
             </h2>
-            <p className="text-xs sm:text-sm text-[#64748b]">
+            <p className="text-xs sm:text-sm text-[#64748b] dark:text-[#94A3B8]">
               {t(
                 "Master the board blueprint, chapter weightages, and step-by-step scoring strategies",
                 "ಬ್ಲೂಪ್ರಿಂಟ್ ನಿಯಮಗಳು, ಅಂಕ ಹಂಚಿಕೆ ಮತ್ತು ಗರಿಷ್ಠ ಅಂಕ ಗಳಿಸುವ ಸೂತ್ರಗಳು"
@@ -112,24 +112,24 @@ export function HomeFaqAndGuide() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
           {/* Card 1 */}
-          <div className="p-4 rounded-xl bg-[#f8fafc] border border-[#e2e8f0] flex flex-col justify-between">
+          <div className="p-4 rounded-xl bg-[#f8fafc] dark:bg-[#1C2638] border border-[#e2e8f0] dark:border-[#293548] flex flex-col justify-between">
             <div>
-              <div className="flex items-center gap-2 text-xs font-bold text-[#2563eb] uppercase tracking-wider mb-2">
+              <div className="flex items-center gap-2 text-xs font-bold text-[#2563eb] dark:text-[#818CF8] uppercase tracking-wider mb-2">
                 <FileText className="h-4 w-4" />
                 <span>{t("Part A Mastery (20 Marks)", "ಭಾಗ ಎ ತಂತ್ರ (20 ಅಂಕ)")}</span>
               </div>
-              <h3 className="font-bold text-sm text-[#0f172a] mb-1.5">
+              <h3 className="font-bold text-sm text-[#0f172a] dark:text-[#F1F5F9] mb-1.5">
                 {t("15 MCQs + 5 Fill-in-the-Blanks", "15 ಬಹುಆಯ್ಕೆ + 5 ಬಿಟ್ಟ ಸ್ಥಳ")}
               </h3>
-              <p className="text-xs text-[#64748b] leading-relaxed">
+              <p className="text-xs text-[#64748b] dark:text-[#94A3B8] leading-relaxed">
                 {t(
                   "Part A carries zero negative marking. Focus on fundamental definitions, SI units, formula dimensions, and NCERT exemplar questions across all chapters.",
                   "ಭಾಗ ಎ ನಲ್ಲಿ ಋಣಾತ್ಮಕ ಅಂಕಗಳಿಲ್ಲ. ಮೂಲಭೂತ ವ್ಯಾಖ್ಯಾನಗಳು, ಎಸ್‌ಐ ಮಾನಗಳು ಮತ್ತು ಸೂತ್ರಗಳನ್ನು ನಿಖರವಾಗಿ ಅಭ್ಯಾಸ ಮಾಡಿ."
                 )}
               </p>
             </div>
-            <div className="mt-3 pt-3 border-t border-[#e2e8f0]">
-              <Link href="/category/mcq" className="text-xs font-semibold text-[#2563eb] hover:underline flex items-center gap-1">
+            <div className="mt-3 pt-3 border-t border-[#e2e8f0] dark:border-[#293548]">
+              <Link href="/category/mcq" className="text-xs font-semibold text-[#2563eb] dark:text-[#818CF8] hover:underline flex items-center gap-1">
                 <span>{t("Practice MCQ Banks", "ಎಂಸಿಕ್ಯೂ ಅಭ್ಯಾಸ")}</span>
                 <ArrowRight className="h-3 w-3" />
               </Link>
@@ -137,24 +137,24 @@ export function HomeFaqAndGuide() {
           </div>
 
           {/* Card 2 */}
-          <div className="p-4 rounded-xl bg-[#f8fafc] border border-[#e2e8f0] flex flex-col justify-between">
+          <div className="p-4 rounded-xl bg-[#f8fafc] dark:bg-[#1C2638] border border-[#e2e8f0] dark:border-[#293548] flex flex-col justify-between">
             <div>
-              <div className="flex items-center gap-2 text-xs font-bold text-emerald-700 uppercase tracking-wider mb-2">
+              <div className="flex items-center gap-2 text-xs font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider mb-2">
                 <BookOpen className="h-4 w-4" />
                 <span>{t("Derivations & Numericals", "ಡೆರಿವೇಶನ್‌ಗಳು & ಲೆಕ್ಕಗಳು")}</span>
               </div>
-              <h3 className="font-bold text-sm text-[#0f172a] mb-1.5">
+              <h3 className="font-bold text-sm text-[#0f172a] dark:text-[#F1F5F9] mb-1.5">
                 {t("Part C & D Scoring (40 Marks)", "ಭಾಗ ಸಿ & ಡಿ (40 ಅಂಕಗಳು)")}
               </h3>
-              <p className="text-xs text-[#64748b] leading-relaxed">
+              <p className="text-xs text-[#64748b] dark:text-[#94A3B8] leading-relaxed">
                 {t(
                   "Derivations in Physics and named reactions in Chemistry have fixed internal choices. Write every formula step clearly to capture full step-wise marks according to KSEAB valuation.",
                   "ಭೌತಶಾಸ್ತ್ರದ ಡೆರಿವೇಶನ್‌ಗಳು ಹಾಗೂ ರಸಾಯನಶಾಸ್ತ್ರದ ಕ್ರಿಯಾವಿಧಾನಗಳಿಗೆ ಹಂತ-ಹಂತವಾಗಿ ಅಂಕ ನೀಡಲಾಗುತ್ತದೆ. ಪ್ರತಿಯೊಂದು ಸೂತ್ರವನ್ನು ಸ್ಪಷ್ಟವಾಗಿ ಬರೆಯಿರಿ."
                 )}
               </p>
             </div>
-            <div className="mt-3 pt-3 border-t border-[#e2e8f0]">
-              <Link href="/category/notes" className="text-xs font-semibold text-emerald-700 hover:underline flex items-center gap-1">
+            <div className="mt-3 pt-3 border-t border-[#e2e8f0] dark:border-[#293548]">
+              <Link href="/category/notes" className="text-xs font-semibold text-emerald-700 dark:text-emerald-400 hover:underline flex items-center gap-1">
                 <span>{t("Browse Chapter Notes", "ಅಧ್ಯಾಯ ನೋಟ್ಸ್ ವೀಕ್ಷಿಸಿ")}</span>
                 <ArrowRight className="h-3 w-3" />
               </Link>
@@ -162,24 +162,24 @@ export function HomeFaqAndGuide() {
           </div>
 
           {/* Card 3 */}
-          <div className="p-4 rounded-xl bg-[#f8fafc] border border-[#e2e8f0] flex flex-col justify-between">
+          <div className="p-4 rounded-xl bg-[#f8fafc] dark:bg-[#1C2638] border border-[#e2e8f0] dark:border-[#293548] flex flex-col justify-between">
             <div>
-              <div className="flex items-center gap-2 text-xs font-bold text-purple-700 uppercase tracking-wider mb-2">
+              <div className="flex items-center gap-2 text-xs font-bold text-purple-700 dark:text-purple-400 uppercase tracking-wider mb-2">
                 <Award className="h-4 w-4" />
                 <span>{t("Practical Records (30 Marks)", "ಪ್ರಾಯೋಗಿಕ ಪರೀಕ್ಷೆ (30 ಅಂಕ)")}</span>
               </div>
-              <h3 className="font-bold text-sm text-[#0f172a] mb-1.5">
+              <h3 className="font-bold text-sm text-[#0f172a] dark:text-[#F1F5F9] mb-1.5">
                 {t("Lab Manuals & Viva Voce", "ಲ್ಯಾಬ್ ರೆಕಾರ್ಡ್ & ವೈವಾ ಪ್ರಶ್ನೆಗಳು")}
               </h3>
-              <p className="text-xs text-[#64748b] leading-relaxed">
+              <p className="text-xs text-[#64748b] dark:text-[#94A3B8] leading-relaxed">
                 {t(
                   "Practicals constitute over 42% of your final Physics, Chemistry, and Biology total score. Complete your record book early and review standard viva questions.",
                   "ಪ್ರಾಯೋಗಿಕ ಪರೀಕ್ಷೆಯು ಒಟ್ಟು ಅಂಕಗಳಲ್ಲಿ ಶೇ.42 ರಷ್ಟು ಪಾಲು ಹೊಂದಿರುತ್ತದೆ. ರೆಕಾರ್ಡ್ ಪುಸ್ತಕವನ್ನು ಪೂರ್ಣಗೊಳಿಸಿ ವೈವಾ ಪ್ರಶ್ನೆಗಳನ್ನು ಅಭ್ಯಾಸ ಮಾಡಿ."
                 )}
               </p>
             </div>
-            <div className="mt-3 pt-3 border-t border-[#e2e8f0]">
-              <Link href="/category/practical" className="text-xs font-semibold text-purple-700 hover:underline flex items-center gap-1">
+            <div className="mt-3 pt-3 border-t border-[#e2e8f0] dark:border-[#293548]">
+              <Link href="/category/practical" className="text-xs font-semibold text-purple-700 dark:text-purple-400 hover:underline flex items-center gap-1">
                 <span>{t("Practical Guides", "ಪ್ರಾಯೋಗಿಕ ಮಾರ್ಗದರ್ಶಿ")}</span>
                 <ArrowRight className="h-3 w-3" />
               </Link>
@@ -189,16 +189,16 @@ export function HomeFaqAndGuide() {
       </section>
 
       {/* ── Section B: Frequently Asked Questions (Accordion) ── */}
-      <section className="bg-white border border-[#e2e8f0] rounded-2xl p-6 sm:p-8 shadow-xs">
+      <section className="bg-white dark:bg-[#151D2E] border border-[#e2e8f0] dark:border-[#293548] rounded-2xl p-6 sm:p-8 shadow-xs">
         <div className="flex items-center gap-3 mb-6">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-50 text-amber-700 border border-amber-100 shadow-2xs">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border border-amber-100 dark:border-amber-800/50 shadow-2xs">
             <HelpCircle className="h-5 w-5" />
           </div>
           <div>
-            <h2 className="text-xl sm:text-2xl font-bold text-[#0f172a] tracking-tight">
+            <h2 className="text-xl sm:text-2xl font-bold text-[#0f172a] dark:text-[#F1F5F9] tracking-tight">
               {t("Frequently Asked Questions", "ಸಾಮಾನ್ಯವಾಗಿ ಕೇಳಲಾಗುವ ಪ್ರಶ್ನೆಗಳು (FAQ)")}
             </h2>
-            <p className="text-xs sm:text-sm text-[#64748b]">
+            <p className="text-xs sm:text-sm text-[#64748b] dark:text-[#94A3B8]">
               {t(
                 "Everything you need to know about Karnataka 2nd PUC Science syllabus, exams, and study notes",
                 "ದ್ವಿತೀಯ ಪಿಯುಸಿ ಪರೀಕ್ಷೆ, ಪಠ್ಯಕ್ರಮ ಮತ್ತು ಸಂಪನ್ಮೂಲಗಳ ಕುರಿತ ಸಾಮಾನ್ಯ ಪ್ರಶ್ನೋತ್ತರಗಳು"
@@ -209,11 +209,11 @@ export function HomeFaqAndGuide() {
 
         <Accordion type="single" collapsible className="w-full">
           {faqs.map((faq, index) => (
-            <AccordionItem key={index} value={`item-${index}`} className="border-b border-[#f1f5f9] py-1">
-              <AccordionTrigger className="text-left font-semibold text-sm sm:text-base text-[#1e293b] hover:text-[#2563eb] transition-colors py-3.5">
+            <AccordionItem key={index} value={`item-${index}`} className="border-b border-[#f1f5f9] dark:border-[#293548] py-1">
+              <AccordionTrigger className="text-left font-semibold text-sm sm:text-base text-[#1e293b] dark:text-[#F1F5F9] hover:text-[#2563eb] dark:hover:text-[#818CF8] transition-colors py-3.5">
                 {faq.q}
               </AccordionTrigger>
-              <AccordionContent className="text-xs sm:text-sm text-[#475569] leading-relaxed pb-4">
+              <AccordionContent className="text-xs sm:text-sm text-[#475569] dark:text-[#94A3B8] leading-relaxed pb-4">
                 {faq.a}
               </AccordionContent>
             </AccordionItem>
@@ -222,14 +222,14 @@ export function HomeFaqAndGuide() {
       </section>
 
       {/* ── Section C: Academic Trust & Editorial Notice ── */}
-      <div className="p-4 sm:p-5 rounded-xl bg-[#f8fafc] border border-[#e2e8f0] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#64748b]">
+      <div className="p-4 sm:p-5 rounded-xl bg-[#f8fafc] dark:bg-[#151D2E] border border-[#e2e8f0] dark:border-[#293548] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#64748b] dark:text-[#94A3B8]">
         <div className="flex items-center gap-3">
-          <ShieldCheck className="h-5 w-5 text-[#2563eb] shrink-0" />
+          <ShieldCheck className="h-5 w-5 text-[#2563eb] dark:text-[#818CF8] shrink-0" />
           <div>
             <span className="font-bold text-[#0f172a]">
               {t("Independent Educational Portal", "ಸ್ವತಂತ್ರ ಶೈಕ್ಷಣಿಕ ವೇದಿಕೆ")}
             </span>
-            <p className="text-[11px] text-[#64748b] mt-0.5">
+            <p className="text-[11px] text-[#64748b] dark:text-[#94A3B8] mt-0.5">
               {t(
                 "Aligned with Karnataka Pre-University (DPUE/KSEAB) guidelines. Curated for student academic excellence.",
                 "ಕರ್ನಾಟಕ ಶಾಲಾ ಪರೀಕ್ಷೆ ಮತ್ತು ಮೌಲ್ಯನಿರ್ಣಯ ಮಂಡಳಿಯ ಪಠ್ಯಕ್ರಮಕ್ಕೆ ಅನುಗುಣವಾಗಿ ರೂಪಿತವಾಗಿದೆ."
@@ -237,7 +237,7 @@ export function HomeFaqAndGuide() {
             </p>
           </div>
         </div>
-        <Link href="/about" className="shrink-0 font-semibold text-[#2563eb] hover:underline flex items-center gap-1">
+        <Link href="/about" className="shrink-0 font-semibold text-[#2563eb] dark:text-[#818CF8] hover:underline flex items-center gap-1">
           <span>{t("Read Our Editorial Mission", "ನಮ್ಮ ಧ್ಯೇಯ ತಿಳಿಯಿರಿ")}</span>
           <ArrowRight className="h-3 w-3" />
         </Link>

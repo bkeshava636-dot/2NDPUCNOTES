@@ -163,15 +163,15 @@ export function BuyPaneerModal({ open, onOpenChange, defaultAmount = 50 }: BuyPa
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="max-w-md p-6 rounded-2xl bg-white border border-[#e2e8f0] shadow-xl sm:rounded-2xl">
+      <DialogContent className="max-w-md p-6 rounded-2xl bg-white dark:bg-[#151D2E] border border-[#e2e8f0] dark:border-[#293548] shadow-xl sm:rounded-2xl">
         <DialogHeader className="space-y-1.5 text-left">
-          <DialogTitle className="text-lg font-bold text-[#0f172a] flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-amber-50 text-amber-600 border border-amber-200">
+          <DialogTitle className="text-lg font-bold text-[#0f172a] dark:text-[#F1F5F9] flex items-center gap-2">
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-300 border border-amber-200 dark:border-amber-800/50">
               <span className="text-base">🧀</span>
             </div>
             <span>Buy Me Some Paneer!</span>
           </DialogTitle>
-          <DialogDescription className="text-xs text-[#64748b]">
+          <DialogDescription className="text-xs text-[#64748b] dark:text-[#94A3B8]">
             Found 2PUC study materials helpful? Fuel the creator with a paneer treat to keep server costs covered & notes 100% free!
           </DialogDescription>
         </DialogHeader>
@@ -181,16 +181,16 @@ export function BuyPaneerModal({ open, onOpenChange, defaultAmount = 50 }: BuyPa
             <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#f0fdf4] text-[#16a34a] border border-[#bbf7d0]">
               <CheckCircle2 className="h-7 w-7" />
             </div>
-            <h3 className="font-bold text-base text-[#0f172a]">
+            <h3 className="font-bold text-base text-[#0f172a] dark:text-[#F1F5F9]">
               Paneer Feast Received! 🧀
             </h3>
-            <p className="text-xs text-[#64748b] max-w-xs mx-auto leading-relaxed">
+            <p className="text-xs text-[#64748b] dark:text-[#94A3B8] max-w-xs mx-auto leading-relaxed">
               Thank you {paidDetails?.name || "generous student"} for your ₹{paidDetails?.amount} contribution! You are directly helping thousands of Karnataka 2nd PUC students get free, high-yield notes and question papers.
             </p>
             <div className="pt-2">
               <Button
                 onClick={handleClose}
-                className="rounded-xl text-xs h-9 px-6 font-semibold bg-[#2563eb] text-white hover:bg-[#1d4ed8]"
+                className="rounded-xl text-xs h-9 px-6 font-semibold bg-[#2563eb] hover:bg-[#1d4ed8] dark:bg-[#818CF8] dark:hover:bg-[#6366F1] text-white"
               >
                 Done
               </Button>
@@ -200,7 +200,7 @@ export function BuyPaneerModal({ open, onOpenChange, defaultAmount = 50 }: BuyPa
           <form onSubmit={handleCheckout} className="space-y-4 pt-2">
             {/* Amount Tiers */}
             <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-[#334155]">Select a Paneer Treat</Label>
+              <Label className="text-xs font-bold text-[#334155] dark:text-[#F1F5F9]">Select a Paneer Treat</Label>
               <div className="grid grid-cols-2 gap-2">
                 {PANEER_TIERS.map((tier) => {
                   const isSelected = selectedTier === tier.amount;
@@ -211,8 +211,8 @@ export function BuyPaneerModal({ open, onOpenChange, defaultAmount = 50 }: BuyPa
                       onClick={() => setSelectedTier(tier.amount)}
                       className={`relative flex items-center justify-between p-2.5 rounded-xl border text-left transition-all ${
                         isSelected
-                          ? "bg-[#eff6ff] border-[#2563eb] text-[#2563eb] shadow-2xs ring-1 ring-[#2563eb]"
-                          : "bg-[#f8fafc] border-[#e2e8f0] text-[#334155] hover:bg-[#f1f5f9]"
+                          ? "bg-[#eff6ff] dark:bg-[#1C2638] border-[#2563eb] dark:border-[#818CF8] text-[#2563eb] dark:text-[#818CF8] shadow-2xs ring-1 ring-[#2563eb]"
+                          : "bg-[#f8fafc] dark:bg-[#1C2638] border-[#e2e8f0] dark:border-[#293548] text-[#334155] dark:text-[#F1F5F9] hover:bg-[#f1f5f9]"
                       }`}
                     >
                       <div className="flex items-center gap-2">
@@ -226,7 +226,7 @@ export function BuyPaneerModal({ open, onOpenChange, defaultAmount = 50 }: BuyPa
                               </span>
                             )}
                           </div>
-                          <p className="text-[10px] text-[#64748b]">{tier.label}</p>
+                          <p className="text-[10px] text-[#64748b] dark:text-[#94A3B8]">{tier.label}</p>
                         </div>
                       </div>
                     </button>
@@ -241,8 +241,8 @@ export function BuyPaneerModal({ open, onOpenChange, defaultAmount = 50 }: BuyPa
                   onClick={() => setSelectedTier("custom")}
                   className={`w-full py-1.5 px-3 rounded-lg border text-xs font-semibold text-center transition-all ${
                     selectedTier === "custom"
-                      ? "bg-[#eff6ff] border-[#2563eb] text-[#2563eb] ring-1 ring-[#2563eb]"
-                      : "bg-[#f8fafc] border-[#e2e8f0] text-[#64748b] hover:bg-[#f1f5f9]"
+                      ? "bg-[#eff6ff] dark:bg-[#1C2638] border-[#2563eb] dark:border-[#818CF8] text-[#2563eb] dark:text-[#818CF8] ring-1 ring-[#2563eb]"
+                      : "bg-[#f8fafc] dark:bg-[#1C2638] border-[#e2e8f0] dark:border-[#293548] text-[#64748b] dark:text-[#94A3B8] hover:bg-[#f1f5f9]"
                   }`}
                 >
                   Custom Amount
@@ -252,7 +252,7 @@ export function BuyPaneerModal({ open, onOpenChange, defaultAmount = 50 }: BuyPa
               {selectedTier === "custom" && (
                 <div className="pt-1">
                   <div className="relative">
-                    <span className="absolute left-3 top-2.5 text-xs text-[#64748b] font-bold">₹</span>
+                    <span className="absolute left-3 top-2.5 text-xs text-[#64748b] dark:text-[#94A3B8] font-bold">₹</span>
                     <Input
                       type="number"
                       min={10}
@@ -323,7 +323,7 @@ export function BuyPaneerModal({ open, onOpenChange, defaultAmount = 50 }: BuyPa
                 )}
               </Button>
 
-              <div className="flex items-center justify-center gap-2 text-[10px] text-[#64748b]">
+              <div className="flex items-center justify-center gap-2 text-[10px] text-[#64748b] dark:text-[#94A3B8]">
                 <ShieldCheck className="h-3 w-3 text-[#16a34a]" />
                 <span>100% Secure via Razorpay (UPI, GPay, Paytm, Cards, NetBanking)</span>
               </div>
