@@ -368,10 +368,10 @@ export default function AdminSections() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-[#112542] tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-bold text-[#112542] dark:text-[#F1F5F9] tracking-tight">
             Subjects & Categories
           </h1>
-          <p className="text-[#5a6b82] text-xs sm:text-sm mt-0.5">
+          <p className="text-[#5a6b82] dark:text-[#A1AEC2] text-xs sm:text-sm mt-0.5">
             Configure curriculum subjects, resource categories, official government links, and display order
           </p>
         </div>
@@ -381,7 +381,7 @@ export default function AdminSections() {
             size="sm"
             onClick={() => refetch()}
             disabled={isFetching}
-            className="h-9 gap-1.5 text-xs text-[#5a6b82] border-[#e2e8f0]"
+            className="h-9 gap-1.5 text-xs text-[#5a6b82] dark:text-[#A1AEC2] hover:text-[#112542] dark:hover:text-[#F1F5F9] border-[#e2e8f0] dark:border-[#293548] dark:hover:bg-[#1C2638]"
           >
             <RefreshCw className={`h-3.5 w-3.5 ${isFetching ? "animate-spin text-[#1856b8]" : ""}`} />
             <span>Refresh</span>
@@ -390,7 +390,7 @@ export default function AdminSections() {
           <Button 
             onClick={() => openCreate()} 
             size="sm"
-            className="h-9 gap-1.5 text-xs font-semibold bg-[#1856b8] hover:bg-[#124494] text-white shadow-2xs"
+            className="h-9 gap-1.5 text-xs font-semibold bg-[#1856b8] hover:bg-[#124494] dark:bg-[#818CF8] dark:hover:bg-[#6366F1] text-white dark:text-[#0B0F19] dark:font-bold shadow-2xs"
           >
             <Plus className="h-4 w-4" />
             <span>Add Item</span>
@@ -399,16 +399,16 @@ export default function AdminSections() {
       </div>
 
       {/* Tabs & Search Toolbar */}
-      <div className="bg-white p-3.5 sm:p-4 rounded-xl border border-[#e2e8f0] flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between">
+      <div className="bg-white dark:bg-[#151D2E] p-3.5 sm:p-4 rounded-xl border border-[#e2e8f0] dark:border-[#293548] flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between">
         {/* Navigation Tabs */}
-        <div className="flex items-center gap-1.5 p-1 bg-[#f1f5f9] rounded-lg">
+        <div className="flex items-center gap-1.5 p-1 bg-[#f1f5f9] dark:bg-[#1C2638] rounded-lg border border-[#e2e8f0] dark:border-[#293548]">
           <button
             type="button"
             onClick={() => setActiveTab("all")}
             className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
               activeTab === "all"
-                ? "bg-white text-[#112542] shadow-2xs"
-                : "text-[#64748b] hover:text-[#112542]"
+                ? "bg-white dark:bg-[#151D2E] text-[#112542] dark:text-[#F1F5F9] shadow-2xs"
+                : "text-[#64748b] dark:text-[#A1AEC2] hover:text-[#112542] dark:hover:text-[#F1F5F9]"
             }`}
           >
             All Items ({sections?.length ?? 0})
@@ -418,8 +418,8 @@ export default function AdminSections() {
             onClick={() => setActiveTab("subjects")}
             className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
               activeTab === "subjects"
-                ? "bg-white text-[#1856b8] shadow-2xs"
-                : "text-[#64748b] hover:text-[#112542]"
+                ? "bg-white dark:bg-[#151D2E] text-[#1856b8] dark:text-[#818CF8] shadow-2xs"
+                : "text-[#64748b] dark:text-[#A1AEC2] hover:text-[#112542] dark:hover:text-[#F1F5F9]"
             }`}
           >
             Curriculum Subjects ({subjectCount})
@@ -429,8 +429,8 @@ export default function AdminSections() {
             onClick={() => setActiveTab("categories")}
             className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
               activeTab === "categories"
-                ? "bg-white text-[#0284c7] shadow-2xs"
-                : "text-[#64748b] hover:text-[#112542]"
+                ? "bg-white dark:bg-[#151D2E] text-[#0284c7] dark:text-[#818CF8] shadow-2xs"
+                : "text-[#64748b] dark:text-[#A1AEC2] hover:text-[#112542] dark:hover:text-[#F1F5F9]"
             }`}
           >
             Browse by Category ({categoryCount})
@@ -444,14 +444,14 @@ export default function AdminSections() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search items or links..."
-            className="pl-9 h-8 text-xs bg-[#f8fafc] border-[#e2e8f0]"
+            className="pl-9 h-8 text-xs bg-[#f8fafc] dark:bg-[#1C2638] border-[#e2e8f0] dark:border-[#293548] text-[#112542] dark:text-[#F1F5F9]"
           />
         </div>
       </div>
 
       {/* Missing Categories Quick Seed Alert */}
       {missingCategories.length > 0 && (
-        <div className="p-4 rounded-xl border border-sky-200 bg-sky-50 text-sky-950 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="p-4 rounded-xl border border-sky-200 dark:border-sky-800 bg-sky-50 dark:bg-sky-950/40 text-sky-950 dark:text-sky-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-start gap-2.5">
             <Sparkles className="h-4 w-4 text-[#0284c7] shrink-0 mt-0.5" />
             <div>
@@ -487,7 +487,7 @@ export default function AdminSections() {
             <AlertCircle className="h-6 w-6" />
           </div>
           <h3 className="text-base font-bold text-[#112542]">Failed to load categories</h3>
-          <p className="text-xs text-[#64748b] mt-1 mb-5">
+          <p className="text-xs text-[#64748b] dark:text-[#A1AEC2] mt-1 mb-5">
             {(error as any)?.message || "A network or server error occurred."}
           </p>
           <Button onClick={() => refetch()} className="gap-2 text-xs bg-[#1856b8] text-white">
@@ -497,17 +497,17 @@ export default function AdminSections() {
         </div>
       ) : (
         /* Data Table */
-        <div className="bg-white rounded-xl border border-[#e2e8f0] overflow-hidden shadow-2xs">
+        <div className="bg-white dark:bg-[#151D2E] rounded-xl border border-[#e2e8f0] dark:border-[#293548] overflow-hidden shadow-2xs">
           <Table>
             <TableHeader className="bg-[#f8fafc]/80 border-b border-[#e2e8f0]">
               <TableRow>
                 <TableHead className="w-10 pl-4"></TableHead>
-                <TableHead className="text-xs font-semibold text-[#64748b] py-3">Type & Name</TableHead>
-                <TableHead className="text-xs font-semibold text-[#64748b] py-3">Slug & Target</TableHead>
-                <TableHead className="text-xs font-semibold text-[#64748b] py-3">Official Source Link</TableHead>
-                <TableHead className="text-xs font-semibold text-[#64748b] py-3 text-center">Resources</TableHead>
-                <TableHead className="text-xs font-semibold text-[#64748b] py-3 text-center">Visibility</TableHead>
-                <TableHead className="text-xs font-semibold text-[#64748b] py-3 pr-5 text-right">Actions</TableHead>
+                <TableHead className="text-xs font-semibold text-[#64748b] dark:text-[#A1AEC2] py-3">Type & Name</TableHead>
+                <TableHead className="text-xs font-semibold text-[#64748b] dark:text-[#A1AEC2] py-3">Slug & Target</TableHead>
+                <TableHead className="text-xs font-semibold text-[#64748b] dark:text-[#A1AEC2] py-3">Official Source Link</TableHead>
+                <TableHead className="text-xs font-semibold text-[#64748b] dark:text-[#A1AEC2] py-3 text-center">Resources</TableHead>
+                <TableHead className="text-xs font-semibold text-[#64748b] dark:text-[#A1AEC2] py-3 text-center">Visibility</TableHead>
+                <TableHead className="text-xs font-semibold text-[#64748b] dark:text-[#A1AEC2] py-3 pr-5 text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -532,8 +532,8 @@ export default function AdminSections() {
                       onDragStart={() => handleDragStart(sec.id)}
                       onDragOver={(e) => handleDragOver(e, sec.id)}
                       onDrop={() => handleDrop(sec.id)}
-                      className={`border-[#eef2f6] transition-colors ${
-                        isDragging ? "opacity-30 bg-[#f8fafc]" : isOver ? "bg-[#ebf3ff]/40" : "hover:bg-[#f8fafc]/60"
+                      className={`border-[#eef2f6] dark:border-[#293548] transition-colors ${
+                        isDragging ? "opacity-30 bg-[#f8fafc]" : isOver ? "bg-[#ebf3ff]/40" : "hover:bg-[#f8fafc]/60 dark:hover:bg-[#1C2638]/60"
                       }`}
                     >
                       {/* Drag Handle */}
@@ -553,7 +553,7 @@ export default function AdminSections() {
                           </div>
                           <div className="min-w-0 max-w-[260px]">
                             <div className="flex items-center gap-1.5">
-                              <p className="font-bold text-xs text-[#112542]">{sec.name}</p>
+                              <p className="font-bold text-xs text-[#112542] dark:text-[#F1F5F9]">{sec.name}</p>
                               <span className={`text-[9px] font-semibold px-1.5 py-0.2 rounded ${
                                 isCat
                                   ? "bg-[#f0f9ff] text-[#0369a1] border border-[#bae6fd]"
@@ -563,7 +563,7 @@ export default function AdminSections() {
                               </span>
                             </div>
                             {sec.description && (
-                              <p className="text-[11px] text-[#64748b] truncate mt-0.5" title={sec.description}>
+                              <p className="text-[11px] text-[#64748b] dark:text-[#A1AEC2] truncate mt-0.5" title={sec.description}>
                                 {sec.description}
                               </p>
                             )}
@@ -614,7 +614,7 @@ export default function AdminSections() {
                           <button
                             type="button"
                             onClick={() => setQuickLinkEdit({ id: sec.id, name: sec.name, url: "" })}
-                            className="inline-flex items-center gap-1 text-[10px] text-[#94a3b8] hover:text-[#0284c7] border border-dashed border-[#cbd5e1] hover:border-[#0284c7] px-2 py-0.5 rounded transition-colors"
+                            className="inline-flex items-center gap-1 text-[10px] text-[#94a3b8] dark:text-[#8291A8] hover:text-[#0284c7] border border-dashed border-[#cbd5e1] hover:border-[#0284c7] px-2 py-0.5 rounded transition-colors"
                           >
                             <Plus className="h-2.5 w-2.5" />
                             <span>Add Official Link</span>
@@ -678,11 +678,11 @@ export default function AdminSections() {
       <Dialog open={!!quickLinkEdit} onOpenChange={(open) => !open && setQuickLinkEdit(null)}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle className="text-base font-bold text-[#112542] flex items-center gap-2">
+            <DialogTitle className="text-base font-bold text-[#112542] dark:text-[#F1F5F9] flex items-center gap-2">
               <Link2 className="h-4 w-4 text-[#0284c7]" />
               Official Source Link
             </DialogTitle>
-            <DialogDescription className="text-xs text-[#64748b]">
+            <DialogDescription className="text-xs text-[#64748b] dark:text-[#A1AEC2] dark:text-[#A1AEC2]">
               Attach or change the official Karnataka Board (KSEAB) or government source link for{" "}
               <strong className="text-[#112542]">{quickLinkEdit?.name}</strong>.
             </DialogDescription>
@@ -698,7 +698,7 @@ export default function AdminSections() {
                 className="h-9 text-xs"
               />
             </div>
-            <p className="text-[11px] text-[#64748b]">
+            <p className="text-[11px] text-[#64748b] dark:text-[#A1AEC2]">
               Students viewing this category/subject will see a verified badge pointing directly to this official resource link.
             </p>
           </div>
@@ -732,7 +732,7 @@ export default function AdminSections() {
             <DialogTitle className="text-base font-bold text-[#112542]">
               {editId ? "Edit Section / Category" : "Add New Subject or Category"}
             </DialogTitle>
-            <DialogDescription className="text-xs text-[#64748b]">
+            <DialogDescription className="text-xs text-[#64748b] dark:text-[#A1AEC2]">
               Configure taxonomy item, description, and official verification source
             </DialogDescription>
           </DialogHeader>
@@ -743,7 +743,7 @@ export default function AdminSections() {
               <Label className="text-xs font-bold text-[#112542] block">
                 Type of Item *
               </Label>
-              <p className="text-[11px] text-[#64748b] mb-2">
+              <p className="text-[11px] text-[#64748b] dark:text-[#A1AEC2] mb-2">
                 Choose whether this item belongs to Curriculum Subjects or Browse by Category
               </p>
               <div className="grid grid-cols-2 gap-2">
@@ -857,7 +857,7 @@ export default function AdminSections() {
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle className="text-base text-[#112542]">Delete section?</AlertDialogTitle>
-            <AlertDialogDescription className="text-xs text-[#64748b]">
+            <AlertDialogDescription className="text-xs text-[#64748b] dark:text-[#A1AEC2]">
               This will remove this taxonomy section from the store. Any study resources currently linked will remain intact.
             </AlertDialogDescription>
           </AlertDialogHeader>

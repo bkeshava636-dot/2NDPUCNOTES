@@ -239,8 +239,8 @@ export default function AdminCards() {
       <div className="space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-[#112542] tracking-tight">Resources Management</h1>
-            <p className="text-[#5a6b82] text-xs sm:text-sm mt-0.5">
+            <h1 className="text-2xl sm:text-3xl font-bold text-[#112542] dark:text-[#F1F5F9] tracking-tight">Resources Management</h1>
+            <p className="text-[#5a6b82] dark:text-[#A1AEC2] text-xs sm:text-sm mt-0.5">
               Manage notes, sample papers, pricing, and downloadable PDFs
             </p>
           </div>
@@ -278,7 +278,7 @@ export default function AdminCards() {
           </p>
         </div>
         <Link href="/admin/cards/new">
-          <Button className="h-9 gap-1.5 text-xs font-semibold bg-[#2f74de] hover:bg-[#1f63c8] text-white shadow-none transition-colors">
+          <Button className="h-9 gap-1.5 text-xs font-semibold bg-[#2f74de] hover:bg-[#1f63c8] dark:bg-[#818CF8] dark:hover:bg-[#6366F1] text-white dark:text-[#0B0F19] dark:font-bold shadow-none transition-colors">
             <Plus className="h-4 w-4" />
             <span>Add Resource</span>
           </Button>
@@ -286,7 +286,7 @@ export default function AdminCards() {
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="bg-white p-3.5 sm:p-4 rounded-xl border border-[#e2e8f0] space-y-3">
+      <div className="bg-white dark:bg-[#151D2E] p-3.5 sm:p-4 rounded-xl border border-[#e2e8f0] dark:border-[#293548] dark:border-[#293548] space-y-3">
         <div className="flex flex-col sm:flex-row gap-2.5 items-stretch sm:items-center">
           {/* Search Input */}
           <div className="relative flex-1">
@@ -295,13 +295,13 @@ export default function AdminCards() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search by title, subject, chapter..."
-              className="pl-9 h-9 text-xs sm:text-sm bg-[#f8fafc] border-[#e2e8f0] text-[#112542] focus-visible:border-[#1856b8]"
+              className="pl-9 h-9 text-xs sm:text-sm bg-[#f8fafc] dark:bg-[#1C2638] border-[#e2e8f0] dark:border-[#293548] dark:border-[#293548] text-[#112542] dark:text-[#F1F5F9] placeholder:text-[#94a3b8] dark:placeholder:text-[#8291A8] focus-visible:border-[#1856b8] dark:focus-visible:border-[#818CF8]"
             />
             {searchQuery && (
               <button
                 type="button"
                 onClick={() => setSearchQuery("")}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#94a3b8] hover:text-[#112542]"
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#94a3b8] dark:text-[#8291A8] hover:text-[#112542] dark:hover:text-[#F1F5F9]"
               >
                 <X className="h-3.5 w-3.5" />
               </button>
@@ -311,7 +311,7 @@ export default function AdminCards() {
           {/* Section Filter */}
           <div className="w-full sm:w-44 shrink-0">
             <Select value={selectedSection} onValueChange={setSelectedSection}>
-              <SelectTrigger className="h-9 text-xs bg-[#f8fafc] border-[#e2e8f0] text-[#112542]">
+              <SelectTrigger className="h-9 text-xs bg-[#f8fafc] dark:bg-[#1C2638] border-[#e2e8f0] dark:border-[#293548] dark:border-[#293548] text-[#112542] dark:text-[#F1F5F9]">
                 <SelectValue placeholder="All Categories" />
               </SelectTrigger>
               <SelectContent>
@@ -328,7 +328,7 @@ export default function AdminCards() {
           {/* Status Filter */}
           <div className="w-full sm:w-40 shrink-0">
             <Select value={selectedStatus} onValueChange={setSelectedStatus}>
-              <SelectTrigger className="h-9 text-xs bg-[#f8fafc] border-[#e2e8f0] text-[#112542]">
+              <SelectTrigger className="h-9 text-xs bg-[#f8fafc] dark:bg-[#1C2638] border-[#e2e8f0] dark:border-[#293548] dark:border-[#293548] text-[#112542] dark:text-[#F1F5F9]">
                 <SelectValue placeholder="All Statuses" />
               </SelectTrigger>
               <SelectContent>
@@ -349,7 +349,7 @@ export default function AdminCards() {
               variant="ghost"
               size="sm"
               onClick={clearFilters}
-              className="h-9 text-xs text-[#5a6b82] hover:text-[#112542] shrink-0"
+              className="h-9 text-xs text-[#5a6b82] dark:text-[#A1AEC2] hover:text-[#112542] dark:hover:text-[#F1F5F9] dark:hover:bg-[#1C2638] shrink-0"
             >
               Clear All
             </Button>
@@ -357,10 +357,10 @@ export default function AdminCards() {
         </div>
 
         {/* Secondary Filter Row: Subject, Resource Type, Subtype, Free/Paid */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-1 border-t border-[#f1f5f9]">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-1 border-t border-[#f1f5f9] dark:border-[#293548]">
           {/* Subject Filter */}
           <Select value={selectedSubject} onValueChange={setSelectedSubject}>
-            <SelectTrigger className="h-8 text-xs bg-[#f8fafc] border-[#e2e8f0] text-[#112542]">
+            <SelectTrigger className="h-8 text-xs bg-[#f8fafc] dark:bg-[#1C2638] border-[#e2e8f0] dark:border-[#293548] dark:border-[#293548] text-[#112542] dark:text-[#F1F5F9]">
               <SelectValue placeholder="Subject: All" />
             </SelectTrigger>
             <SelectContent>
@@ -379,7 +379,7 @@ export default function AdminCards() {
 
           {/* Resource Type Filter */}
           <Select value={selectedResourceType} onValueChange={setSelectedResourceType}>
-            <SelectTrigger className="h-8 text-xs bg-[#f8fafc] border-[#e2e8f0] text-[#112542]">
+            <SelectTrigger className="h-8 text-xs bg-[#f8fafc] dark:bg-[#1C2638] border-[#e2e8f0] dark:border-[#293548] dark:border-[#293548] text-[#112542] dark:text-[#F1F5F9]">
               <SelectValue placeholder="Type: All" />
             </SelectTrigger>
             <SelectContent>
@@ -397,7 +397,7 @@ export default function AdminCards() {
 
           {/* Subtype Filter */}
           <Select value={selectedSubtype} onValueChange={setSelectedSubtype}>
-            <SelectTrigger className="h-8 text-xs bg-[#f8fafc] border-[#e2e8f0] text-[#112542]">
+            <SelectTrigger className="h-8 text-xs bg-[#f8fafc] dark:bg-[#1C2638] border-[#e2e8f0] dark:border-[#293548] dark:border-[#293548] text-[#112542] dark:text-[#F1F5F9]">
               <SelectValue placeholder="Subtype: All" />
             </SelectTrigger>
             <SelectContent>
@@ -414,7 +414,7 @@ export default function AdminCards() {
 
           {/* Price Filter */}
           <Select value={selectedPrice} onValueChange={setSelectedPrice}>
-            <SelectTrigger className="h-8 text-xs bg-[#f8fafc] border-[#e2e8f0] text-[#112542]">
+            <SelectTrigger className="h-8 text-xs bg-[#f8fafc] dark:bg-[#1C2638] border-[#e2e8f0] dark:border-[#293548] dark:border-[#293548] text-[#112542] dark:text-[#F1F5F9]">
               <SelectValue placeholder="Price: All" />
             </SelectTrigger>
             <SelectContent>
@@ -426,28 +426,28 @@ export default function AdminCards() {
         </div>
 
         {/* Counter Info Row */}
-        <div className="flex items-center justify-between text-xs text-[#64748b] pt-1">
+        <div className="flex items-center justify-between text-xs text-[#64748b] dark:text-[#A1AEC2] pt-1">
           <span>
-            Showing <strong className="text-[#112542]">{filteredCards.length}</strong> of{" "}
-            <strong className="text-[#112542]">{cards?.length ?? 0}</strong> resources
+            Showing <strong className="text-[#112542] dark:text-[#F1F5F9]">{filteredCards.length}</strong> of{" "}
+            <strong className="text-[#112542] dark:text-[#F1F5F9]">{cards?.length ?? 0}</strong> resources
           </span>
           {hasActiveFilters && (
-            <span className="text-[11px] text-[#1856b8] font-medium">Filtered results active</span>
+            <span className="text-[11px] text-[#1856b8] dark:text-[#818CF8] font-medium">Filtered results active</span>
           )}
         </div>
       </div>
 
       {/* Desktop Table View (Hidden on mobile) */}
-      <div className="hidden md:block bg-white rounded-xl border border-[#e2e8f0] overflow-hidden shadow-none">
+      <div className="hidden md:block bg-white dark:bg-[#151D2E] rounded-xl border border-[#e2e8f0] dark:border-[#293548] dark:border-[#293548] overflow-hidden shadow-none">
         <Table>
-          <TableHeader className="bg-[#f8fafc]">
-            <TableRow className="border-[#eef2f6] hover:bg-transparent">
-              <TableHead className="text-xs font-semibold text-[#64748b] py-3 pl-5">Resource</TableHead>
-              <TableHead className="text-xs font-semibold text-[#64748b] py-3">Category</TableHead>
-              <TableHead className="text-xs font-semibold text-[#64748b] py-3">Price</TableHead>
-              <TableHead className="text-xs font-semibold text-[#64748b] py-3">PDF File</TableHead>
-              <TableHead className="text-xs font-semibold text-[#64748b] py-3 text-center">Flags</TableHead>
-              <TableHead className="text-xs font-semibold text-[#64748b] py-3 pr-5 text-right">Actions</TableHead>
+          <TableHeader className="bg-[#f8fafc] dark:bg-[#1C2638]">
+            <TableRow className="border-[#eef2f6] dark:border-[#293548] hover:bg-transparent">
+              <TableHead className="text-xs font-semibold text-[#64748b] dark:text-[#A1AEC2] py-3 pl-5">Resource</TableHead>
+              <TableHead className="text-xs font-semibold text-[#64748b] dark:text-[#A1AEC2] py-3">Category</TableHead>
+              <TableHead className="text-xs font-semibold text-[#64748b] dark:text-[#A1AEC2] py-3">Price</TableHead>
+              <TableHead className="text-xs font-semibold text-[#64748b] dark:text-[#A1AEC2] py-3">PDF File</TableHead>
+              <TableHead className="text-xs font-semibold text-[#64748b] dark:text-[#A1AEC2] py-3 text-center">Flags</TableHead>
+              <TableHead className="text-xs font-semibold text-[#64748b] dark:text-[#A1AEC2] py-3 pr-5 text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -460,11 +460,11 @@ export default function AdminCards() {
               </TableRow>
             ) : (
               filteredCards.map((card) => (
-                <TableRow key={card.id} className="border-[#eef2f6] hover:bg-[#f8fafc]/60 transition-colors">
+                <TableRow key={card.id} className="border-[#eef2f6] dark:border-[#293548] hover:bg-[#f8fafc]/60 dark:hover:bg-[#1C2638]/60 transition-colors">
                   {/* Resource Column */}
                   <TableCell className="pl-5 py-3.5">
                     <div className="flex items-start gap-3">
-                      <div className="h-10 w-10 rounded-lg bg-[#f8fafc] border border-[#e2e8f0] overflow-hidden shrink-0 flex items-center justify-center mt-0.5">
+                      <div className="h-10 w-10 rounded-lg bg-[#f8fafc] dark:bg-[#1C2638] border border-[#e2e8f0] dark:border-[#293548] dark:border-[#293548] overflow-hidden shrink-0 flex items-center justify-center mt-0.5">
                         {card.thumbnailUrl ? (
                           <img src={card.thumbnailUrl} alt={card.title} className="w-full h-full object-cover" />
                         ) : (
@@ -472,7 +472,7 @@ export default function AdminCards() {
                         )}
                       </div>
                       <div className="min-w-0 max-w-[280px]">
-                        <p className="font-bold text-xs text-[#112542] leading-tight truncate" title={card.title}>
+                        <p className="font-bold text-xs text-[#112542] dark:text-[#F1F5F9] leading-tight truncate" title={card.title}>
                           {card.title}
                         </p>
                         <div className="flex items-center gap-1.5 mt-1 flex-wrap">
@@ -482,25 +482,25 @@ export default function AdminCards() {
                             </span>
                           )}
                           {card.subject && (
-                            <span className="text-[10px] font-medium bg-[#ebf3ff] text-[#1856b8] border border-[#dce8fa] px-1.5 py-0.2 rounded">
+                            <span className="text-[10px] font-medium bg-[#ebf3ff] dark:bg-[#1C2638] text-[#1856b8] dark:text-[#818CF8] border border-[#dce8fa] dark:border-[#293548] px-1.5 py-0.2 rounded">
                               {card.subject}
                             </span>
                           )}
                           {card.subtype && (
-                            <span className="text-[10px] font-semibold bg-[#f0f9ff] text-[#0369a1] border border-[#bae6fd] px-1.5 py-0.2 rounded">
+                            <span className="text-[10px] font-semibold bg-[#f0f9ff] dark:bg-sky-950/40 text-[#0369a1] dark:text-sky-300 border border-[#bae6fd] dark:border-sky-800 px-1.5 py-0.2 rounded">
                               {card.subtype}
                             </span>
                           )}
                           {card.chapter && (
-                            <span className="text-[10px] text-[#64748b] truncate max-w-[120px]">
+                            <span className="text-[10px] text-[#64748b] dark:text-[#A1AEC2] truncate max-w-[120px]">
                               {card.chapter}
                             </span>
                           )}
-                          <span className="text-[10px] text-[#94a3b8] border border-[#e2e8f0] px-1.5 py-0.2 rounded">
+                          <span className="text-[10px] text-[#94a3b8] dark:text-[#8291A8] border border-[#e2e8f0] dark:border-[#293548] dark:border-[#293548] px-1.5 py-0.2 rounded">
                             {card.resourceType}
                           </span>
                           {card.answerKeyUrl && (
-                            <span className="text-[9px] font-semibold bg-[#e0f2fe] text-[#0284c7] border border-[#bae6fd] px-1 py-0.2 rounded" title="Answer key linked">
+                            <span className="text-[9px] font-semibold bg-[#e0f2fe] dark:bg-sky-950/40 text-[#0284c7] dark:text-sky-300 border border-[#bae6fd] dark:border-sky-800 px-1 py-0.2 rounded" title="Answer key linked">
                               Key Linked
                             </span>
                           )}
@@ -508,7 +508,7 @@ export default function AdminCards() {
                             <button
                               type="button"
                               onClick={() => setEditingOfficialLink({ id: card.id, title: card.title, url: card.officialSourceUrl || "" })}
-                              className="inline-flex items-center gap-1 text-[9px] font-semibold text-[#0284c7] bg-[#e0f2fe] hover:bg-[#bae6fd] border border-[#bae6fd] px-1.5 py-0.2 rounded transition-colors group"
+                              className="inline-flex items-center gap-1 text-[9px] font-semibold text-[#0284c7] dark:text-sky-300 bg-[#e0f2fe] dark:bg-sky-950/40 hover:bg-[#bae6fd] dark:hover:bg-sky-950/60 border border-[#bae6fd] dark:border-sky-800 px-1.5 py-0.2 rounded transition-colors group"
                               title={`Official Source: ${card.officialSourceUrl} (Click to change)`}
                             >
                               <ExternalLink className="h-2.5 w-2.5" />
@@ -532,7 +532,7 @@ export default function AdminCards() {
 
                   {/* Section Column */}
                   <TableCell className="py-3.5">
-                    <span className="text-xs font-medium text-[#475569] bg-[#f8fafc] border border-[#e2e8f0] px-2 py-0.5 rounded">
+                    <span className="text-xs font-medium text-[#475569] dark:text-[#A1AEC2] bg-[#f8fafc] dark:bg-[#1C2638] border border-[#e2e8f0] dark:border-[#293548] dark:border-[#293548] px-2 py-0.5 rounded">
                       {card.sectionName || "Unassigned"}
                     </span>
                   </TableCell>
@@ -540,16 +540,16 @@ export default function AdminCards() {
                   {/* Price Column */}
                   <TableCell className="py-3.5">
                     {card.isFree ? (
-                      <span className="text-xs font-bold text-[#16a34a] bg-[#eaf5ec] border border-[#d7ecdc] px-2 py-0.5 rounded inline-block">
+                      <span className="text-xs font-bold text-[#16a34a] dark:text-emerald-400 dark:text-emerald-400 bg-[#eaf5ec] dark:bg-emerald-950/40 border border-[#d7ecdc] dark:border-emerald-800 px-2 py-0.5 rounded inline-block">
                         Free
                       </span>
                     ) : (
                       <div>
-                        <div className="text-xs font-bold text-[#112542]">
+                        <div className="text-xs font-bold text-[#112542] dark:text-[#F1F5F9]">
                           {formatRupees(card.discountPricePaise ?? card.pricePaise)}
                         </div>
                         {card.discountPricePaise && card.discountPricePaise < card.pricePaise && (
-                          <div className="text-[10px] text-[#94a3b8] line-through">
+                          <div className="text-[10px] text-[#94a3b8] dark:text-[#8291A8] line-through">
                             {formatRupees(card.pricePaise)}
                           </div>
                         )}
@@ -565,20 +565,20 @@ export default function AdminCards() {
                           href={card.pdfFileKey}
                           target="_blank"
                           rel="noreferrer"
-                          className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#1856b8] bg-[#ebf3ff] border border-[#dce8fa] px-2 py-0.5 rounded hover:bg-[#dce8fa] transition-colors"
+                          className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#1856b8] dark:text-[#818CF8] bg-[#ebf3ff] dark:bg-[#1C2638] border border-[#dce8fa] dark:border-[#293548] px-2 py-0.5 rounded hover:bg-[#dce8fa] dark:hover:bg-[#253248] transition-colors"
                           title="Open Drive link"
                         >
                           <Link2 className="h-3 w-3 text-[#1856b8]" />
                           Drive Link
                         </a>
                       ) : (
-                        <span className="inline-flex items-center gap-1 text-[11px] font-medium text-[#167035] bg-[#eaf5ec] border border-[#d7ecdc] px-2 py-0.5 rounded">
+                        <span className="inline-flex items-center gap-1 text-[11px] font-medium text-[#167035] dark:text-emerald-400 bg-[#eaf5ec] dark:bg-emerald-950/40 border border-[#d7ecdc] dark:border-emerald-800 px-2 py-0.5 rounded">
                           <CheckCircle2 className="h-3 w-3 text-[#167035]" />
                           Attached
                         </span>
                       )
                     ) : (
-                      <span className="inline-flex items-center gap-1 text-[11px] font-medium text-[#b83226] bg-[#fdece9] border border-[#f9dcd7] px-2 py-0.5 rounded">
+                      <span className="inline-flex items-center gap-1 text-[11px] font-medium text-[#b83226] dark:text-red-400 bg-[#fdece9] dark:bg-red-950/40 border border-[#f9dcd7] dark:border-red-900/50 px-2 py-0.5 rounded">
                         <AlertCircle className="h-3 w-3 text-[#b83226]" />
                         Missing
                       </span>
@@ -587,14 +587,14 @@ export default function AdminCards() {
 
                   {/* Flags (Visibility & Featured) */}
                   <TableCell className="py-3.5 text-center">
-                    <div className="inline-flex items-center gap-1 bg-[#f8fafc] border border-[#e2e8f0] p-0.5 rounded-lg">
+                    <div className="inline-flex items-center gap-1 bg-[#f8fafc] dark:bg-[#1C2638] border border-[#e2e8f0] dark:border-[#293548] dark:border-[#293548] p-0.5 rounded-lg">
                       <button
                         type="button"
                         onClick={() => handleToggleVisibility(card.id, card.isVisible)}
                         className={`p-1 rounded transition-colors ${
                           card.isVisible
-                            ? "text-[#1856b8] bg-[#ebf3ff]"
-                            : "text-[#94a3b8] hover:text-[#112542]"
+                            ? "text-[#1856b8] dark:text-[#818CF8] bg-[#ebf3ff] dark:bg-[#1C2638]"
+                            : "text-[#94a3b8] dark:text-[#8291A8] hover:text-[#112542] dark:hover:text-[#F1F5F9]"
                         }`}
                         title={card.isVisible ? "Visible to students (Click to hide)" : "Hidden (Click to publish)"}
                         aria-label={card.isVisible ? "Visible" : "Hidden"}
@@ -607,7 +607,7 @@ export default function AdminCards() {
                         className={`p-1 rounded transition-colors ${
                           card.isFeatured
                             ? "text-amber-500 bg-amber-50"
-                            : "text-[#94a3b8] hover:text-[#112542]"
+                            : "text-[#94a3b8] dark:text-[#8291A8] hover:text-[#112542] dark:hover:text-[#F1F5F9]"
                         }`}
                         title={card.isFeatured ? "Featured resource (Click to unfeature)" : "Not featured (Click to feature)"}
                         aria-label={card.isFeatured ? "Featured" : "Not featured"}
@@ -629,7 +629,7 @@ export default function AdminCards() {
                         href={`/card/${card.id}`}
                         target="_blank"
                         rel="noreferrer"
-                        className="p-1.5 text-[#64748b] hover:text-[#1856b8] rounded-md hover:bg-[#ebf3ff] transition-colors"
+                        className="p-1.5 text-[#64748b] dark:text-[#A1AEC2] hover:text-[#1856b8] dark:hover:text-[#818CF8] rounded-md hover:bg-[#ebf3ff] dark:hover:bg-[#1C2638] transition-colors"
                         title="View Public Card"
                         aria-label="View Public Card"
                       >
@@ -663,7 +663,7 @@ export default function AdminCards() {
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="h-7 w-7 text-[#64748b] hover:text-[#1856b8] hover:bg-[#ebf3ff]"
+                          className="h-7 w-7 text-[#64748b] dark:text-[#A1AEC2] hover:text-[#1856b8] dark:hover:text-[#818CF8] hover:bg-[#ebf3ff] dark:hover:bg-[#1C2638]"
                           title="Edit Resource"
                           aria-label="Edit Resource"
                         >
@@ -692,18 +692,16 @@ export default function AdminCards() {
       {/* Mobile Card List View (Visible on screens < 768px) */}
       <div className="grid grid-cols-1 gap-3 md:hidden">
         {filteredCards.length === 0 ? (
-          <div className="text-center py-12 bg-white rounded-xl border border-[#e2e8f0] p-6 text-[#64748b] text-xs">
+          <div className="text-center py-12 bg-white rounded-xl border border-[#e2e8f0] dark:border-[#293548] p-6 text-[#64748b] text-xs">
             <FileText className="h-8 w-8 text-[#cbd5e1] mx-auto mb-2" />
             No resources matched your filters.
           </div>
         ) : (
           filteredCards.map((card) => (
-            <div
-              key={card.id}
-              className="bg-white border border-[#e2e8f0] rounded-xl p-4 space-y-3 shadow-none"
+            <div key={card.id} className="bg-white dark:bg-[#151D2E] border border-[#e2e8f0] dark:border-[#293548] dark:border-[#293548] rounded-xl p-4 space-y-3 shadow-none"
             >
               <div className="flex items-start gap-3">
-                <div className="h-12 w-12 rounded-lg bg-[#f8fafc] border border-[#e2e8f0] overflow-hidden shrink-0 flex items-center justify-center">
+                <div className="h-12 w-12 rounded-lg bg-[#f8fafc] dark:bg-[#1C2638] border border-[#e2e8f0] dark:border-[#293548] dark:border-[#293548] overflow-hidden shrink-0 flex items-center justify-center">
                   {card.thumbnailUrl ? (
                     <img src={card.thumbnailUrl} alt={card.title} className="w-full h-full object-cover" />
                   ) : (
@@ -711,7 +709,7 @@ export default function AdminCards() {
                   )}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <h3 className="font-bold text-xs sm:text-sm text-[#112542] leading-tight line-clamp-2">
+                  <h3 className="font-bold text-xs sm:text-sm text-[#112542] dark:text-[#F1F5F9] leading-tight line-clamp-2">
                     {card.title}
                   </h3>
                   <div className="flex items-center gap-1.5 mt-1 flex-wrap">
@@ -721,20 +719,20 @@ export default function AdminCards() {
                       </span>
                     )}
                     {card.subject && (
-                      <span className="text-[10px] font-medium bg-[#ebf3ff] text-[#1856b8] border border-[#dce8fa] px-1.5 py-0.2 rounded">
+                      <span className="text-[10px] font-medium bg-[#ebf3ff] dark:bg-[#1C2638] text-[#1856b8] dark:text-[#818CF8] border border-[#dce8fa] dark:border-[#293548] px-1.5 py-0.2 rounded">
                         {card.subject}
                       </span>
                     )}
                     {card.subtype && (
-                      <span className="text-[10px] font-semibold bg-[#f0f9ff] text-[#0369a1] border border-[#bae6fd] px-1.5 py-0.2 rounded">
+                      <span className="text-[10px] font-semibold bg-[#f0f9ff] dark:bg-sky-950/40 text-[#0369a1] dark:text-sky-300 border border-[#bae6fd] dark:border-sky-800 px-1.5 py-0.2 rounded">
                         {card.subtype}
                       </span>
                     )}
-                    <span className="text-[10px] text-[#64748b] bg-[#f8fafc] border border-[#e2e8f0] px-1.5 py-0.2 rounded">
+                    <span className="text-[10px] text-[#64748b] dark:text-[#A1AEC2] bg-[#f8fafc] dark:bg-[#1C2638] border border-[#e2e8f0] dark:border-[#293548] dark:border-[#293548] px-1.5 py-0.2 rounded">
                       {card.sectionName || "Unassigned"}
                     </span>
                     {card.answerKeyUrl && (
-                      <span className="text-[9px] font-semibold bg-[#e0f2fe] text-[#0284c7] border border-[#bae6fd] px-1 py-0.2 rounded">
+                      <span className="text-[9px] font-semibold bg-[#e0f2fe] dark:bg-sky-950/40 text-[#0284c7] dark:text-sky-300 border border-[#bae6fd] dark:border-sky-800 px-1 py-0.2 rounded">
                         Key Linked
                       </span>
                     )}
@@ -742,7 +740,7 @@ export default function AdminCards() {
                       <button
                         type="button"
                         onClick={() => setEditingOfficialLink({ id: card.id, title: card.title, url: card.officialSourceUrl || "" })}
-                        className="inline-flex items-center gap-1 text-[9px] font-semibold text-[#0284c7] bg-[#e0f2fe] border border-[#bae6fd] px-1.5 py-0.2 rounded"
+                        className="inline-flex items-center gap-1 text-[9px] font-semibold text-[#0284c7] dark:text-sky-300 bg-[#e0f2fe] dark:bg-sky-950/40 border border-[#bae6fd] dark:border-sky-800 px-1.5 py-0.2 rounded"
                       >
                         <ExternalLink className="h-2.5 w-2.5" />
                         <span>Official Link</span>
@@ -752,7 +750,7 @@ export default function AdminCards() {
                       <button
                         type="button"
                         onClick={() => setEditingOfficialLink({ id: card.id, title: card.title, url: "" })}
-                        className="text-[9px] text-[#94a3b8] hover:text-[#0284c7] border border-dashed border-[#cbd5e1] px-1.5 py-0.2 rounded"
+                        className="text-[9px] text-[#94a3b8] dark:text-[#8291A8] hover:text-[#0284c7] dark:hover:text-sky-300 border border-dashed border-[#cbd5e1] dark:border-[#293548] px-1.5 py-0.2 rounded"
                       >
                         + Official Link
                       </button>
@@ -762,11 +760,11 @@ export default function AdminCards() {
               </div>
 
               {/* Price and PDF status row */}
-              <div className="flex items-center justify-between text-xs pt-2 border-t border-[#eef2f6]">
+              <div className="flex items-center justify-between text-xs pt-2 border-t border-[#eef2f6] dark:border-[#293548]">
                 <div>
-                  <span className="text-[11px] text-[#64748b] mr-1.5">Price:</span>
+                  <span className="text-[11px] text-[#64748b] dark:text-[#A1AEC2] mr-1.5">Price:</span>
                   {card.isFree ? (
-                    <span className="font-bold text-[#16a34a]">Free</span>
+                    <span className="font-bold text-[#16a34a] dark:text-emerald-400">Free</span>
                   ) : (
                     <span className="font-bold text-[#112542]">
                       {formatRupees(card.discountPricePaise ?? card.pricePaise)}
@@ -793,13 +791,13 @@ export default function AdminCards() {
               </div>
 
               {/* Action Buttons Row */}
-              <div className="flex items-center justify-between pt-2 border-t border-[#eef2f6]">
+              <div className="flex items-center justify-between pt-2 border-t border-[#eef2f6] dark:border-[#293548]">
                 <div className="flex items-center gap-1">
                   <Button
                     variant="outline"
                     size="sm"
-                    className={`h-8 px-2.5 text-xs gap-1 border-[#e2e8f0] ${
-                      card.isVisible ? "text-[#1856b8] bg-[#ebf3ff]" : "text-[#64748b]"
+                    className={`h-8 px-2.5 text-xs gap-1 border-[#e2e8f0] dark:border-[#293548] ${
+                      card.isVisible ? "text-[#1856b8] dark:text-[#818CF8] bg-[#ebf3ff] dark:bg-[#1C2638]" : "text-[#64748b]"
                     }`}
                     onClick={() => handleToggleVisibility(card.id, card.isVisible)}
                   >
@@ -809,7 +807,7 @@ export default function AdminCards() {
                   <Button
                     variant="outline"
                     size="sm"
-                    className={`h-8 px-2 text-xs border-[#e2e8f0] ${
+                    className={`h-8 px-2 text-xs border-[#e2e8f0] dark:border-[#293548] ${
                       card.isFeatured ? "text-amber-500 bg-amber-50" : "text-[#64748b]"
                     }`}
                     onClick={() => handleToggleFeatured(card.id, card.isFeatured)}
@@ -823,7 +821,7 @@ export default function AdminCards() {
                   <Button
                     variant="outline"
                     size="sm"
-                    className={`h-8 px-2 text-xs border-[#e2e8f0] ${
+                    className={`h-8 px-2 text-xs border-[#e2e8f0] dark:border-[#293548] ${
                       card.officialSourceUrl ? "text-[#0284c7] bg-[#e0f2fe]" : "text-[#64748b]"
                     }`}
                     onClick={() =>
@@ -838,7 +836,7 @@ export default function AdminCards() {
                     <Link2 className="h-3.5 w-3.5" />
                   </Button>
                   <Link href={`/admin/cards/${card.id}/edit`}>
-                    <Button variant="outline" size="sm" className="h-8 px-3 text-xs gap-1 border-[#e2e8f0] text-[#112542]">
+                    <Button variant="outline" size="sm" className="h-8 px-3 text-xs gap-1 border-[#e2e8f0] dark:border-[#293548] dark:border-[#293548] text-[#112542] dark:text-[#F1F5F9]">
                       <Edit className="h-3 w-3" />
                       <span>Edit</span>
                     </Button>
@@ -861,29 +859,29 @@ export default function AdminCards() {
 
       {/* Quick Edit Official Link Dialog */}
       <Dialog open={!!editingOfficialLink} onOpenChange={(open) => !open && setEditingOfficialLink(null)}>
-        <DialogContent className="border-[#e2e8f0] rounded-xl max-w-md">
+        <DialogContent className="border-[#e2e8f0] dark:border-[#293548] rounded-xl max-w-md">
           <DialogHeader>
-            <DialogTitle className="text-base font-bold text-[#112542] flex items-center gap-2">
+            <DialogTitle className="text-base font-bold text-[#112542] dark:text-[#F1F5F9] flex items-center gap-2">
               <Link2 className="h-4 w-4 text-[#0284c7]" />
               <span>Edit Official Source Link</span>
             </DialogTitle>
-            <DialogDescription className="text-xs text-[#64748b] truncate max-w-[380px]">
+            <DialogDescription className="text-xs text-[#64748b] dark:text-[#A1AEC2] truncate max-w-[380px]">
               {editingOfficialLink?.title}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-3 py-2">
             <div className="space-y-1.5">
-              <Label className="text-xs font-semibold text-[#334155]">Official Government / Board URL</Label>
+              <Label className="text-xs font-semibold text-[#334155] dark:text-[#F1F5F9]">Official Government / Board URL</Label>
               <Input
                 value={editingOfficialLink?.url || ""}
                 onChange={(e) =>
                   setEditingOfficialLink((prev) => (prev ? { ...prev, url: e.target.value } : null))
                 }
                 placeholder="https://kseab.karnataka.gov.in/..."
-                className="h-9 text-xs sm:text-sm bg-[#f8fafc] border-[#e2e8f0] text-[#112542] focus-visible:border-[#0284c7]"
+                className="h-9 text-xs sm:text-sm bg-[#f8fafc] border-[#e2e8f0] dark:border-[#293548] dark:border-[#293548] text-[#112542] dark:text-[#F1F5F9] focus-visible:border-[#0284c7]"
                 autoFocus
               />
-              <p className="text-[11px] text-[#64748b]">
+              <p className="text-[11px] text-[#64748b] dark:text-[#A1AEC2]">
                 Link to official government/board resource page. Leave empty and save to remove the link.
               </p>
             </div>
@@ -906,7 +904,7 @@ export default function AdminCards() {
               size="sm"
               disabled={isSavingOfficialLink}
               onClick={() => setEditingOfficialLink(null)}
-              className="h-9 text-xs border-[#e2e8f0]"
+              className="h-9 text-xs border-[#e2e8f0] dark:border-[#293548]"
             >
               Cancel
             </Button>
@@ -931,17 +929,17 @@ export default function AdminCards() {
 
       {/* Delete Confirmation Alert Dialog */}
       <AlertDialog open={!!deleteId} onOpenChange={(open) => !open && setDeleteId(null)}>
-        <AlertDialogContent className="border-[#e2e8f0] rounded-xl">
+        <AlertDialogContent className="border-[#e2e8f0] dark:border-[#293548] rounded-xl">
           <AlertDialogHeader>
-            <AlertDialogTitle className="text-base font-bold text-[#112542]">
+            <AlertDialogTitle className="text-base font-bold text-[#112542] dark:text-[#F1F5F9]">
               Delete Study Resource?
             </AlertDialogTitle>
-            <AlertDialogDescription className="text-xs text-[#64748b] leading-relaxed">
+            <AlertDialogDescription className="text-xs text-[#64748b] dark:text-[#A1AEC2] leading-relaxed">
               This will remove the resource from your public store and delete any associated private PDF storage file. Existing student purchase history will remain intact.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="text-xs h-9 border-[#e2e8f0]">Cancel</AlertDialogCancel>
+            <AlertDialogCancel className="text-xs h-9 border-[#e2e8f0] dark:border-[#293548]">Cancel</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDelete}
               className="text-xs h-9 bg-red-600 hover:bg-red-700 text-white"

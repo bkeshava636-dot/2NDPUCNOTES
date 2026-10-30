@@ -17,7 +17,7 @@ export default function AdminCardEdit() {
     </div>
   );
 
-  if (!card) return <div className="text-center py-16 text-gray-500">Card not found.</div>;
+  if (!card) return <div className="text-center py-16 text-gray-500 dark:text-[#8291A8]">Card not found.</div>;
 
   return (
     <CardForm

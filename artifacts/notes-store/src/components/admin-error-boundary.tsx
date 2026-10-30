@@ -52,47 +52,39 @@ export class AdminErrorBoundary extends Component<Props, State> {
     if (this.state.hasError) {
       return (
         <div className="py-12 px-4 flex flex-col items-center justify-center">
-          <div className="bg-white rounded-2xl border border-[#e2e8f0] p-6 sm:p-8 max-w-lg w-full text-center shadow-xs space-y-5">
-            <div className="h-12 w-12 rounded-full bg-red-50 text-red-600 border border-red-100 flex items-center justify-center mx-auto">
+          <div className="bg-white dark:bg-[#151D2E] rounded-2xl border border-[#e2e8f0] dark:border-[#293548] p-6 sm:p-8 max-w-lg w-full text-center shadow-xs space-y-5">
+            <div className="h-12 w-12 rounded-full bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400 border border-red-100 dark:border-red-900/50 flex items-center justify-center mx-auto">
               <ShieldAlert className="h-6 w-6" />
             </div>
 
             <div>
-              <h2 className="text-base sm:text-lg font-bold text-[#112542] tracking-tight">
-                {this.props.fallbackTitle || "Admin Panel Encountered an Issue"}
+              <h2 className="text-lg font-bold text-[#112542] dark:text-[#F1F5F9]">
+                {this.props.fallbackTitle || "An unexpected error occurred"}
               </h2>
-              <p className="text-xs sm:text-sm text-[#64748b] mt-1.5 leading-relaxed">
-                A component error or outdated script chunk prevented this page from rendering smoothly.
+              <p className="text-xs text-[#64748b] dark:text-[#A1AEC2] mt-1.5 leading-relaxed">
+                {this.state.error?.message || "A rendering or runtime exception occurred in the admin workspace."}
               </p>
             </div>
 
-            {this.state.error && (
-              <div className="p-3 bg-[#f8fafc] border border-[#e2e8f0] rounded-lg text-left">
-                <p className="text-[11px] font-mono text-[#dc2626] break-all line-clamp-3">
-                  {this.state.error.message || String(this.state.error)}
-                </p>
-              </div>
-            )}
-
             <div className="flex flex-col sm:flex-row items-center justify-center gap-2 pt-2">
               <Button
-                onClick={this.handleReset}
+                variant="outline"
                 size="sm"
-                className="w-full sm:w-auto h-9 gap-1.5 text-xs bg-[#1856b8] hover:bg-[#124494] text-white shadow-2xs font-semibold"
+                onClick={this.handleReset}
+                className="w-full sm:w-auto text-xs border-[#e2e8f0] dark:border-[#293548] text-[#112542] dark:text-[#F1F5F9] dark:hover:bg-[#1C2638] gap-1.5"
               >
                 <RefreshCw className="h-3.5 w-3.5" />
                 <span>Reload Page</span>
               </Button>
-
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => (window.location.href = "/admin/dashboard")}
-                className="w-full sm:w-auto h-9 gap-1.5 text-xs text-[#5a6b82] border-[#e2e8f0]"
-              >
-                <Home className="h-3.5 w-3.5" />
-                <span>Back to Dashboard</span>
-              </Button>
+              <a href="/admin/dashboard" className="w-full sm:w-auto">
+                <Button
+                  size="sm"
+                  className="w-full text-xs bg-[#1856b8] hover:bg-[#124494] dark:bg-[#818CF8] dark:hover:bg-[#6366F1] text-white dark:text-[#0B0F19] dark:font-bold gap-1.5"
+                >
+                  <Home className="h-3.5 w-3.5" />
+                  <span>Return to Dashboard</span>
+                </Button>
+              </a>
             </div>
           </div>
         </div>

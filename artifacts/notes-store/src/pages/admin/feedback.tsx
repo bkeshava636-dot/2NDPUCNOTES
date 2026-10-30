@@ -110,11 +110,11 @@ export default function AdminFeedback() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold text-[#0f172a] tracking-tight flex items-center gap-2">
+          <h1 className="text-xl sm:text-2xl font-bold text-[#0f172a] dark:text-[#F1F5F9] tracking-tight flex items-center gap-2">
             <MessageSquarePlus className="h-6 w-6 text-[#2563eb]" />
             <span>Student Feedback & Bug Reports</span>
           </h1>
-          <p className="text-xs sm:text-sm text-[#64748b] mt-0.5">
+          <p className="text-xs sm:text-sm text-[#64748b] dark:text-[#A1AEC2] mt-0.5">
             Monitor real-time feedback, issue reports, and how well study materials are working for students.
           </p>
         </div>
@@ -123,7 +123,7 @@ export default function AdminFeedback() {
           size="sm"
           onClick={() => refetch()}
           disabled={isFetching}
-          className="gap-1.5 rounded-lg text-xs font-semibold h-9"
+          className="gap-1.5 rounded-lg text-xs font-semibold h-9 border-[#e2e8f0] dark:border-[#293548] text-[#5a6b82] dark:text-[#A1AEC2] hover:text-[#112542] dark:hover:text-[#F1F5F9] dark:hover:bg-[#1C2638]"
         >
           <RefreshCw className={`h-3.5 w-3.5 ${isFetching ? "animate-spin" : ""}`} />
           <span>Refresh</span>
@@ -132,21 +132,21 @@ export default function AdminFeedback() {
 
       {/* Metric Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <Card className="rounded-xl border-[#e2e8f0] shadow-2xs">
+        <Card className="rounded-xl border-[#e2e8f0] dark:border-[#293548] bg-white dark:bg-[#151D2E] shadow-2xs">
           <CardHeader className="pb-2 pt-4 px-4.5">
-            <CardDescription className="text-xs font-bold text-[#64748b] uppercase tracking-wider">
+            <CardDescription className="text-xs font-bold text-[#64748b] dark:text-[#A1AEC2] uppercase tracking-wider">
               Total Submissions
             </CardDescription>
-            <CardTitle className="text-2xl font-black text-[#0f172a]">
+            <CardTitle className="text-2xl font-black text-[#0f172a] dark:text-[#F1F5F9]">
               {isLoading ? "..." : stats.total}
             </CardTitle>
           </CardHeader>
-          <CardContent className="px-4.5 pb-4 text-xs text-[#64748b]">
+          <CardContent className="px-4.5 pb-4 text-xs text-[#64748b] dark:text-[#A1AEC2]">
             All-time student suggestions and reports
           </CardContent>
         </Card>
 
-        <Card className="rounded-xl border-[#e2e8f0] shadow-2xs">
+        <Card className="rounded-xl border-[#e2e8f0] dark:border-[#293548] bg-white dark:bg-[#151D2E] shadow-2xs">
           <CardHeader className="pb-2 pt-4 px-4.5">
             <CardDescription className="text-xs font-bold text-[#d97706] uppercase tracking-wider flex items-center gap-1.5">
               <Clock className="h-3.5 w-3.5" />
@@ -156,12 +156,12 @@ export default function AdminFeedback() {
               {isLoading ? "..." : stats.newCount}
             </CardTitle>
           </CardHeader>
-          <CardContent className="px-4.5 pb-4 text-xs text-[#64748b]">
+          <CardContent className="px-4.5 pb-4 text-xs text-[#64748b] dark:text-[#A1AEC2]">
             New submissions requiring administrative attention
           </CardContent>
         </Card>
 
-        <Card className="rounded-xl border-[#e2e8f0] shadow-2xs">
+        <Card className="rounded-xl border-[#e2e8f0] dark:border-[#293548] bg-white dark:bg-[#151D2E] shadow-2xs">
           <CardHeader className="pb-2 pt-4 px-4.5">
             <CardDescription className="text-xs font-bold text-[#e11d48] uppercase tracking-wider flex items-center gap-1.5">
               <Flag className="h-3.5 w-3.5" />
@@ -171,24 +171,24 @@ export default function AdminFeedback() {
               {isLoading ? "..." : stats.reportsCount}
             </CardTitle>
           </CardHeader>
-          <CardContent className="px-4.5 pb-4 text-xs text-[#64748b]">
+          <CardContent className="px-4.5 pb-4 text-xs text-[#64748b] dark:text-[#A1AEC2]">
             Bug reports and broken link reports
           </CardContent>
         </Card>
       </div>
 
       {/* Filter Tabs */}
-      <div className="flex flex-wrap items-center justify-between gap-3 bg-white p-3 rounded-xl border border-[#e2e8f0] shadow-2xs">
+      <div className="flex flex-wrap items-center justify-between gap-3 bg-white dark:bg-[#151D2E] p-3 rounded-xl border border-[#e2e8f0] dark:border-[#293548] shadow-2xs">
         <div className="flex items-center gap-1.5 overflow-x-auto">
-          <span className="text-xs font-bold text-[#64748b] mr-1">Type:</span>
+          <span className="text-xs font-bold text-[#64748b] dark:text-[#A1AEC2] mr-1">Type:</span>
           {["all", "contribution", "feedback", "bug_report", "broken_link", "content_error"].map((t) => (
             <button
               key={t}
               onClick={() => setFilterType(t)}
               className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-all ${
                 filterType === t
-                  ? "bg-[#2563eb] text-white shadow-2xs"
-                  : "text-[#64748b] hover:bg-[#f1f5f9]"
+                  ? "bg-[#2563eb] dark:bg-[#818CF8] text-white dark:text-[#0B0F19] dark:font-bold shadow-2xs"
+                  : "text-[#64748b] dark:text-[#A1AEC2] hover:bg-[#f1f5f9] dark:hover:bg-[#1C2638]"
               }`}
             >
               {t === "all" ? "All Types" : t.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}
@@ -197,15 +197,15 @@ export default function AdminFeedback() {
         </div>
 
         <div className="flex items-center gap-1.5">
-          <span className="text-xs font-bold text-[#64748b] mr-1">Status:</span>
+          <span className="text-xs font-bold text-[#64748b] dark:text-[#A1AEC2] mr-1">Status:</span>
           {["all", "new", "reviewed", "resolved"].map((s) => (
             <button
               key={s}
               onClick={() => setFilterStatus(s)}
               className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-all ${
                 filterStatus === s
-                  ? "bg-[#0f172a] text-white shadow-2xs"
-                  : "text-[#64748b] hover:bg-[#f1f5f9]"
+                  ? "bg-[#0f172a] dark:bg-[#818CF8] text-white dark:text-[#0B0F19] dark:font-bold shadow-2xs"
+                  : "text-[#64748b] dark:text-[#A1AEC2] hover:bg-[#f1f5f9] dark:hover:bg-[#1C2638]"
               }`}
             >
               {s.toUpperCase()}
@@ -215,7 +215,7 @@ export default function AdminFeedback() {
       </div>
 
       {/* Submissions Table */}
-      <Card className="rounded-xl border-[#e2e8f0] overflow-hidden shadow-2xs">
+      <Card className="rounded-xl border-[#e2e8f0] dark:border-[#293548] bg-white dark:bg-[#151D2E] overflow-hidden shadow-2xs">
         {isLoading ? (
           <div className="p-6 space-y-3">
             {[1, 2, 3, 4].map((i) => (
@@ -224,25 +224,25 @@ export default function AdminFeedback() {
           </div>
         ) : filtered.length === 0 ? (
           <div className="text-center py-16 px-4">
-            <MessageSquarePlus className="h-10 w-10 text-[#94a3b8] mx-auto mb-3" />
-            <h3 className="font-bold text-sm text-[#0f172a]">No feedback submissions match filters</h3>
-            <p className="text-xs text-[#64748b] mt-1">Student submissions will appear here in real time.</p>
+            <MessageSquarePlus className="h-10 w-10 text-[#94a3b8] dark:text-[#8291A8] mx-auto mb-3" />
+            <h3 className="font-bold text-sm text-[#0f172a] dark:text-[#F1F5F9]">No feedback submissions match filters</h3>
+            <p className="text-xs text-[#64748b] dark:text-[#A1AEC2] mt-1">Student submissions will appear here in real time.</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <Table>
-              <TableHeader className="bg-[#f8fafc]">
+              <TableHeader className="bg-[#f8fafc] dark:bg-[#1C2638]">
                 <TableRow className="border-[#f1f5f9]">
-                  <TableHead className="text-xs font-bold text-[#475569] uppercase tracking-wider py-3.5">Type & Health</TableHead>
-                  <TableHead className="text-xs font-bold text-[#475569] uppercase tracking-wider py-3.5">Message / Details</TableHead>
-                  <TableHead className="text-xs font-bold text-[#475569] uppercase tracking-wider py-3.5">Contact</TableHead>
-                  <TableHead className="text-xs font-bold text-[#475569] uppercase tracking-wider py-3.5">Date & Page</TableHead>
-                  <TableHead className="text-xs font-bold text-[#475569] uppercase tracking-wider py-3.5 text-right">Status Action</TableHead>
+                  <TableHead className="text-xs font-bold text-[#475569] dark:text-[#A1AEC2] uppercase tracking-wider py-3.5">Type & Health</TableHead>
+                  <TableHead className="text-xs font-bold text-[#475569] dark:text-[#A1AEC2] uppercase tracking-wider py-3.5">Message / Details</TableHead>
+                  <TableHead className="text-xs font-bold text-[#475569] dark:text-[#A1AEC2] uppercase tracking-wider py-3.5">Contact</TableHead>
+                  <TableHead className="text-xs font-bold text-[#475569] dark:text-[#A1AEC2] uppercase tracking-wider py-3.5">Date & Page</TableHead>
+                  <TableHead className="text-xs font-bold text-[#475569] dark:text-[#A1AEC2] uppercase tracking-wider py-3.5 text-right">Status Action</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {filtered.map((item) => (
-                  <TableRow key={item.id} className="border-[#f1f5f9] hover:bg-[#f8fafc]/60">
+                  <TableRow key={item.id} className="border-[#f1f5f9] dark:border-[#293548] hover:bg-[#f8fafc]/60 dark:hover:bg-[#1C2638]/60">
                     <TableCell className="py-3.5 align-top">
                       <div className="space-y-1">
                         <Badge
@@ -285,16 +285,16 @@ export default function AdminFeedback() {
                           {(() => {
                             const parsed = parseContribution(item.message);
                             return (
-                              <div className="p-3 rounded-lg bg-emerald-50/60 border border-emerald-200/80 space-y-1.5">
+                              <div className="p-3 rounded-lg bg-emerald-50/60 dark:bg-emerald-950/30 border border-emerald-200/80 dark:border-emerald-800/60 space-y-1.5">
                                 <div className="flex items-center justify-between">
-                                  <span className="font-bold text-[#0f172a] text-sm">{parsed.title || "Untitled Contribution"}</span>
+                                  <span className="font-bold text-[#0f172a] dark:text-[#F1F5F9] text-sm">{parsed.title || "Untitled Contribution"}</span>
                                   <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-semibold text-[10px]">
                                     {parsed.subject || "General"}
                                   </span>
                                 </div>
                                 <div className="text-[#475569] text-[11px] flex items-center gap-1.5 font-medium">
                                   <span className="text-[#64748b]">Type:</span>
-                                  <span className="bg-white px-1.5 py-0.5 rounded border border-emerald-200 font-semibold">
+                                  <span className="bg-white dark:bg-[#1C2638] px-1.5 py-0.5 rounded border border-emerald-200 dark:border-emerald-800 font-semibold">
                                     {parsed.resourceType || "Notes"}
                                   </span>
                                 </div>
@@ -321,7 +321,7 @@ export default function AdminFeedback() {
                           })()}
                         </div>
                       ) : (
-                        <p className="text-xs sm:text-sm text-[#0f172a] whitespace-pre-wrap leading-relaxed font-normal">
+                        <p className="text-xs sm:text-sm text-[#0f172a] dark:text-[#F1F5F9] whitespace-pre-wrap leading-relaxed font-normal">
                           {item.message}
                         </p>
                       )}
@@ -329,7 +329,7 @@ export default function AdminFeedback() {
 
                     <TableCell className="py-3.5 align-top text-xs font-medium text-[#475569]">
                       {item.contact ? (
-                        <span className="font-mono bg-[#f1f5f9] px-2 py-0.5 rounded text-[11px]">
+                        <span className="font-mono bg-[#f1f5f9] dark:bg-[#1C2638] text-[#475569] dark:text-[#F1F5F9] px-2 py-0.5 rounded text-[11px]">
                           {item.contact}
                         </span>
                       ) : (
@@ -337,7 +337,7 @@ export default function AdminFeedback() {
                       )}
                     </TableCell>
 
-                    <TableCell className="py-3.5 align-top text-xs text-[#64748b]">
+                    <TableCell className="py-3.5 align-top text-xs text-[#64748b] dark:text-[#A1AEC2]">
                       <div>
                         {new Date(item.createdAt).toLocaleDateString("en-IN", {
                           day: "numeric",

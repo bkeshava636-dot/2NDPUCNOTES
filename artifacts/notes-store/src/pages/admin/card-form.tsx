@@ -443,31 +443,31 @@ export default function CardForm({ initialData, cardId }: { initialData?: Partia
       {/* Top Navigation */}
       <div>
         <Link href="/admin/cards">
-          <Button variant="ghost" size="sm" className="gap-2 text-[#5a6b82] hover:text-[#112542] mb-3 -ml-2 text-xs">
+          <Button variant="ghost" size="sm" className="gap-2 text-[#5a6b82] dark:text-[#A1AEC2] hover:text-[#112542] dark:hover:text-[#F1F5F9] dark:hover:bg-[#1C2638] mb-3 -ml-2 text-xs">
             <ArrowLeft className="h-4 w-4" />
             <span>Back to Resources</span>
           </Button>
         </Link>
-        <h1 className="text-2xl sm:text-3xl font-bold text-[#112542] tracking-tight">
+        <h1 className="text-2xl sm:text-3xl font-bold text-[#112542] dark:text-[#F1F5F9] tracking-tight">
           {cardId ? "Edit Study Resource" : "Create New Study Resource"}
         </h1>
-        <p className="text-[#5a6b82] text-xs sm:text-sm mt-0.5">
+        <p className="text-[#5a6b82] dark:text-[#A1AEC2] text-xs sm:text-sm mt-0.5">
           Configure details, dynamic resource types, pricing, and link downloadable files without duplication
         </p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-5">
         {/* Section 1: Basic Information & Dynamic Subject/Type Selection */}
-        <Card className="rounded-xl border-[#e2e8f0] shadow-none bg-white">
-          <CardHeader className="pb-3 pt-5 px-5 border-b border-[#eef2f6]">
-            <CardTitle className="text-sm font-bold text-[#112542]">1. Subject & Classification</CardTitle>
-            <CardDescription className="text-xs text-[#64748b]">Select subject to dynamically unlock compatible resource types</CardDescription>
+        <Card className="rounded-xl border-[#e2e8f0] dark:border-[#293548] shadow-none bg-white dark:bg-[#151D2E]">
+          <CardHeader className="pb-3 pt-5 px-5 border-b border-[#eef2f6] dark:border-[#293548]">
+            <CardTitle className="text-sm font-bold text-[#112542] dark:text-[#F1F5F9]">1. Subject & Classification</CardTitle>
+            <CardDescription className="text-xs text-[#64748b] dark:text-[#A1AEC2]">Select subject to dynamically unlock compatible resource types</CardDescription>
           </CardHeader>
           <CardContent className="p-5 space-y-4">
             {/* Subject Selector */}
             <div className="space-y-1.5">
               <div className="flex items-center justify-between">
-                <Label className="text-xs font-semibold text-[#334155]">Subject *</Label>
+                <Label className="text-xs font-semibold text-[#334155] dark:text-[#F1F5F9]">Subject *</Label>
                 <span className={`text-[10px] font-semibold px-2 py-0.5 rounded border ${
                   isCoreSubject 
                     ? "bg-[#ebf3ff] text-[#1856b8] border-[#dce8fa]" 
@@ -484,8 +484,8 @@ export default function CardForm({ initialData, cardId }: { initialData?: Partia
                     onClick={() => handleSubjectChange(subj)}
                     className={`text-xs px-2.5 py-1 rounded-lg border transition-all ${
                       form.subject.toLowerCase() === subj.toLowerCase()
-                        ? "bg-[#1856b8] text-white border-[#1856b8] font-semibold shadow-2xs"
-                        : "bg-[#f8fafc] text-[#5a6b82] border-[#e2e8f0] hover:bg-white hover:text-[#112542]"
+                        ? "bg-[#1856b8] dark:bg-[#818CF8] text-white dark:text-[#0B0F19] dark:font-bold border-[#1856b8] dark:border-[#818CF8] font-semibold shadow-2xs"
+                        : "bg-[#f8fafc] dark:bg-[#1C2638] text-[#5a6b82] dark:text-[#A1AEC2] border-[#e2e8f0] dark:border-[#293548] hover:bg-white dark:hover:bg-[#151D2E] hover:text-[#112542] dark:hover:text-[#F1F5F9]"
                     }`}
                   >
                     {subj}
@@ -496,9 +496,9 @@ export default function CardForm({ initialData, cardId }: { initialData?: Partia
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1.5">
-                <Label className="text-xs font-semibold text-[#334155]">Store Category / Section *</Label>
+                <Label className="text-xs font-semibold text-[#334155] dark:text-[#F1F5F9]">Store Category / Section *</Label>
                 <Select value={form.sectionId} onValueChange={v => set("sectionId", v)}>
-                  <SelectTrigger className="h-9 text-xs bg-[#f8fafc] border-[#e2e8f0] text-[#112542]">
+                  <SelectTrigger className="h-9 text-xs bg-[#f8fafc] dark:bg-[#1C2638] border-[#e2e8f0] dark:border-[#293548] text-[#112542] dark:text-[#F1F5F9]">
                     <SelectValue placeholder="Select section..." />
                   </SelectTrigger>
                   <SelectContent>
@@ -511,9 +511,9 @@ export default function CardForm({ initialData, cardId }: { initialData?: Partia
 
               {/* Dynamic Resource Type */}
               <div className="space-y-1.5">
-                <Label className="text-xs font-semibold text-[#334155]">Resource Type *</Label>
+                <Label className="text-xs font-semibold text-[#334155] dark:text-[#F1F5F9]">Resource Type *</Label>
                 <Select value={form.resourceType} onValueChange={handleResourceTypeChange}>
-                  <SelectTrigger className="h-9 text-xs bg-[#f8fafc] border-[#e2e8f0] text-[#112542]">
+                  <SelectTrigger className="h-9 text-xs bg-[#f8fafc] dark:bg-[#1C2638] border-[#e2e8f0] dark:border-[#293548] text-[#112542] dark:text-[#F1F5F9]">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -637,7 +637,7 @@ export default function CardForm({ initialData, cardId }: { initialData?: Partia
             {/* MQP & Question Bank: Answer Key URL */}
             {isMqpOrQBank && (
               <div className="space-y-1.5 p-3 rounded-xl bg-[#f8fafc] border border-[#e2e8f0]">
-                <Label className="text-xs font-semibold text-[#334155]">Linked Answer Key URL (Optional)</Label>
+                <Label className="text-xs font-semibold text-[#334155] dark:text-[#F1F5F9]">Linked Answer Key URL (Optional)</Label>
                 <Input
                   value={form.answerKeyUrl}
                   onChange={e => set("answerKeyUrl", e.target.value)}
@@ -650,48 +650,48 @@ export default function CardForm({ initialData, cardId }: { initialData?: Partia
 
             {/* Official Source Link */}
             <div className="space-y-1.5">
-              <Label className="text-xs font-semibold text-[#334155]">Official Government Source URL (Optional)</Label>
+              <Label className="text-xs font-semibold text-[#334155] dark:text-[#F1F5F9]">Official Government Source URL (Optional)</Label>
               <Input
                 value={form.officialSourceUrl}
                 onChange={e => set("officialSourceUrl", e.target.value)}
                 placeholder="https://kseab.karnataka.gov.in/..."
-                className="h-9 text-xs bg-[#f8fafc] border-[#e2e8f0] text-[#112542]"
+                className="h-9 text-xs bg-[#f8fafc] dark:bg-[#1C2638] border-[#e2e8f0] dark:border-[#293548] text-[#112542] dark:text-[#F1F5F9]"
               />
               <p className="text-[11px] text-[#94a3b8]">Used to display official reference link at the top of category & subject pages</p>
             </div>
 
             {/* Title */}
             <div className="space-y-1.5">
-              <Label className="text-xs font-semibold text-[#334155]">Resource Title *</Label>
+              <Label className="text-xs font-semibold text-[#334155] dark:text-[#F1F5F9]">Resource Title *</Label>
               <Input 
                 value={form.title} 
                 onChange={e => set("title", e.target.value)} 
                 placeholder="e.g. Physics Chapter 1: Electric Charges and Fields Complete Notes" 
                 required 
-                className="h-9 text-xs sm:text-sm bg-[#f8fafc] border-[#e2e8f0] text-[#112542] focus-visible:border-[#1856b8]"
+                className="h-9 text-xs sm:text-sm bg-[#f8fafc] dark:bg-[#1C2638] border-[#e2e8f0] dark:border-[#293548] text-[#112542] dark:text-[#F1F5F9] placeholder:text-[#94a3b8] dark:placeholder:text-[#8291A8] focus-visible:border-[#1856b8] dark:focus-visible:border-[#818CF8]"
               />
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="space-y-1.5">
-                <Label className="text-xs font-semibold text-[#334155]">Chapter / Topic</Label>
+                <Label className="text-xs font-semibold text-[#334155] dark:text-[#F1F5F9]">Chapter / Topic</Label>
                 <Input 
                   value={form.chapter} 
                   onChange={e => set("chapter", e.target.value)} 
                   placeholder="e.g. Chapter 1 or Complete Syllabus" 
-                  className="h-9 text-xs bg-[#f8fafc] border-[#e2e8f0] text-[#112542]"
+                  className="h-9 text-xs bg-[#f8fafc] dark:bg-[#1C2638] border-[#e2e8f0] dark:border-[#293548] text-[#112542] dark:text-[#F1F5F9]"
                 />
               </div>
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between">
-                  <Label className="text-xs font-semibold text-[#334155]">Examination / Academic Year</Label>
+                  <Label className="text-xs font-semibold text-[#334155] dark:text-[#F1F5F9]">Examination / Academic Year</Label>
                   <span className="text-[10px] text-[#64748b]">e.g. 2025, 2024</span>
                 </div>
                 <Input 
                   value={form.semester} 
                   onChange={e => set("semester", e.target.value)} 
                   placeholder="e.g. 2025, 2024, or 2nd PUC" 
-                  className="h-9 text-xs bg-[#f8fafc] border-[#e2e8f0] text-[#112542]"
+                  className="h-9 text-xs bg-[#f8fafc] dark:bg-[#1C2638] border-[#e2e8f0] dark:border-[#293548] text-[#112542] dark:text-[#F1F5F9]"
                 />
                 <div className="flex items-center gap-1 flex-wrap pt-0.5">
                   {["2025", "2024", "2023", "2022", "2021", "2020", "2019"].map((yr) => (
@@ -713,7 +713,7 @@ export default function CardForm({ initialData, cardId }: { initialData?: Partia
             </div>
 
             <div className="space-y-1.5">
-              <Label className="text-xs font-semibold text-[#334155]">Description (Optional)</Label>
+              <Label className="text-xs font-semibold text-[#334155] dark:text-[#F1F5F9]">Description (Optional)</Label>
               <Textarea 
                 value={form.description} 
                 onChange={e => set("description", e.target.value)} 
@@ -726,10 +726,10 @@ export default function CardForm({ initialData, cardId }: { initialData?: Partia
         </Card>
 
         {/* Section 2: Pricing */}
-        <Card className="rounded-xl border-[#e2e8f0] shadow-none bg-white">
-          <CardHeader className="pb-3 pt-5 px-5 border-b border-[#eef2f6]">
-            <CardTitle className="text-sm font-bold text-[#112542]">2. Pricing & Access</CardTitle>
-            <CardDescription className="text-xs text-[#64748b]">Set whether this resource is free or paid</CardDescription>
+        <Card className="rounded-xl border-[#e2e8f0] dark:border-[#293548] shadow-none bg-white dark:bg-[#151D2E]">
+          <CardHeader className="pb-3 pt-5 px-5 border-b border-[#eef2f6] dark:border-[#293548]">
+            <CardTitle className="text-sm font-bold text-[#112542] dark:text-[#F1F5F9]">2. Pricing & Access</CardTitle>
+            <CardDescription className="text-xs text-[#64748b] dark:text-[#A1AEC2]">Set whether this resource is free or paid</CardDescription>
           </CardHeader>
           <CardContent className="p-5 space-y-4">
             <div className="inline-flex rounded-lg border border-[#e2e8f0] p-1 bg-[#f8fafc]">
@@ -760,7 +760,7 @@ export default function CardForm({ initialData, cardId }: { initialData?: Partia
             {!form.isFree && (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
                 <div className="space-y-1.5">
-                  <Label className="text-xs font-semibold text-[#334155]">Regular Price (₹) *</Label>
+                  <Label className="text-xs font-semibold text-[#334155] dark:text-[#F1F5F9]">Regular Price (₹) *</Label>
                   <div className="relative">
                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-bold text-[#64748b]">₹</span>
                     <Input 
@@ -778,7 +778,7 @@ export default function CardForm({ initialData, cardId }: { initialData?: Partia
                 </div>
 
                 <div className="space-y-1.5">
-                  <Label className="text-xs font-semibold text-[#334155]">Discount Price (₹, optional)</Label>
+                  <Label className="text-xs font-semibold text-[#334155] dark:text-[#F1F5F9]">Discount Price (₹, optional)</Label>
                   <div className="relative">
                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-bold text-[#64748b]">₹</span>
                     <Input 
@@ -797,27 +797,27 @@ export default function CardForm({ initialData, cardId }: { initialData?: Partia
             )}
 
             <div className="space-y-1.5 pt-1">
-              <Label className="text-xs font-semibold text-[#334155]">Telegram Channel Link (Optional)</Label>
+              <Label className="text-xs font-semibold text-[#334155] dark:text-[#F1F5F9]">Telegram Channel Link (Optional)</Label>
               <Input 
                 value={form.telegramLink} 
                 onChange={e => set("telegramLink", e.target.value)} 
                 placeholder="https://t.me/secondpuscience" 
-                className="h-9 text-xs bg-[#f8fafc] border-[#e2e8f0] text-[#112542]"
+                className="h-9 text-xs bg-[#f8fafc] dark:bg-[#1C2638] border-[#e2e8f0] dark:border-[#293548] text-[#112542] dark:text-[#F1F5F9]"
               />
             </div>
           </CardContent>
         </Card>
 
         {/* Section 3: Files & Resource Linking (Avoid Duplicate Uploads!) */}
-        <Card className="rounded-xl border-[#e2e8f0] shadow-none bg-white">
-          <CardHeader className="pb-3 pt-5 px-5 border-b border-[#eef2f6]">
-            <CardTitle className="text-sm font-bold text-[#112542]">3. Resource Document & Linking</CardTitle>
-            <CardDescription className="text-xs text-[#64748b]">Upload a new PDF, paste a Drive URL, or link an already-uploaded file to prevent duplication</CardDescription>
+        <Card className="rounded-xl border-[#e2e8f0] dark:border-[#293548] shadow-none bg-white dark:bg-[#151D2E]">
+          <CardHeader className="pb-3 pt-5 px-5 border-b border-[#eef2f6] dark:border-[#293548]">
+            <CardTitle className="text-sm font-bold text-[#112542] dark:text-[#F1F5F9]">3. Resource Document & Linking</CardTitle>
+            <CardDescription className="text-xs text-[#64748b] dark:text-[#A1AEC2]">Upload a new PDF, paste a Drive URL, or link an already-uploaded file to prevent duplication</CardDescription>
           </CardHeader>
           <CardContent className="p-5 space-y-4">
             <div className="space-y-2">
               <div className="flex items-center justify-between flex-wrap gap-2">
-                <Label className="text-xs font-semibold text-[#334155]">Document Attachment</Label>
+                <Label className="text-xs font-semibold text-[#334155] dark:text-[#F1F5F9]">Document Attachment</Label>
                 <div className="inline-flex rounded-lg border border-[#e2e8f0] p-0.5 bg-[#f8fafc]">
                   <button
                     type="button"
@@ -1156,7 +1156,7 @@ export default function CardForm({ initialData, cardId }: { initialData?: Partia
 
             {/* Thumbnail Image Upload */}
             <div className="space-y-2">
-              <Label className="text-xs font-semibold text-[#334155]">Resource Cover / Thumbnail</Label>
+              <Label className="text-xs font-semibold text-[#334155] dark:text-[#F1F5F9]">Resource Cover / Thumbnail</Label>
               {form.thumbnailUrl ? (
                 <div className="flex items-center justify-between p-3 border rounded-lg bg-[#ebf3ff] border-[#dce8fa]">
                   <div className="flex items-center gap-3 min-w-0">
@@ -1215,25 +1215,25 @@ export default function CardForm({ initialData, cardId }: { initialData?: Partia
             {/* Metadata Numbers */}
             <div className="grid grid-cols-2 gap-4 pt-1">
               <div className="space-y-1.5">
-                <Label className="text-xs font-semibold text-[#334155]">Page Count</Label>
+                <Label className="text-xs font-semibold text-[#334155] dark:text-[#F1F5F9]">Page Count</Label>
                 <Input 
                   type="number" 
                   min="1" 
                   value={form.pageCount} 
                   onChange={e => set("pageCount", e.target.value)} 
                   placeholder="e.g. 18" 
-                  className="h-9 text-xs bg-[#f8fafc] border-[#e2e8f0] text-[#112542]"
+                  className="h-9 text-xs bg-[#f8fafc] dark:bg-[#1C2638] border-[#e2e8f0] dark:border-[#293548] text-[#112542] dark:text-[#F1F5F9]"
                 />
               </div>
               <div className="space-y-1.5">
-                <Label className="text-xs font-semibold text-[#334155]">File Size (KB)</Label>
+                <Label className="text-xs font-semibold text-[#334155] dark:text-[#F1F5F9]">File Size (KB)</Label>
                 <Input 
                   type="number" 
                   min="1" 
                   value={form.fileSizeKb} 
                   onChange={e => set("fileSizeKb", e.target.value)} 
                   placeholder="e.g. 1540" 
-                  className="h-9 text-xs bg-[#f8fafc] border-[#e2e8f0] text-[#112542]"
+                  className="h-9 text-xs bg-[#f8fafc] dark:bg-[#1C2638] border-[#e2e8f0] dark:border-[#293548] text-[#112542] dark:text-[#F1F5F9]"
                 />
               </div>
             </div>
@@ -1241,10 +1241,10 @@ export default function CardForm({ initialData, cardId }: { initialData?: Partia
         </Card>
 
         {/* Section 4: Visibility & Badges */}
-        <Card className="rounded-xl border-[#e2e8f0] shadow-none bg-white">
-          <CardHeader className="pb-3 pt-5 px-5 border-b border-[#eef2f6]">
-            <CardTitle className="text-sm font-bold text-[#112542]">4. Store Visibility & Flags</CardTitle>
-            <CardDescription className="text-xs text-[#64748b]">Control resource discoverability</CardDescription>
+        <Card className="rounded-xl border-[#e2e8f0] dark:border-[#293548] shadow-none bg-white dark:bg-[#151D2E]">
+          <CardHeader className="pb-3 pt-5 px-5 border-b border-[#eef2f6] dark:border-[#293548]">
+            <CardTitle className="text-sm font-bold text-[#112542] dark:text-[#F1F5F9]">4. Store Visibility & Flags</CardTitle>
+            <CardDescription className="text-xs text-[#64748b] dark:text-[#A1AEC2]">Control resource discoverability</CardDescription>
           </CardHeader>
           <CardContent className="p-5 space-y-3.5">
             <div className="flex items-center justify-between p-2.5 rounded-lg bg-[#f8fafc] border border-[#eef2f6]">

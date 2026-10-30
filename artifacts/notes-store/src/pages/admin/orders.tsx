@@ -85,18 +85,18 @@ export default function AdminOrders() {
       <div className="space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-[#112542] tracking-tight">Customer Orders</h1>
-            <p className="text-[#5a6b82] text-xs sm:text-sm mt-0.5">
+            <h1 className="text-2xl sm:text-3xl font-bold text-[#112542] dark:text-[#F1F5F9] tracking-tight">Customer Orders</h1>
+            <p className="text-[#5a6b82] dark:text-[#A1AEC2] text-xs sm:text-sm mt-0.5">
               Monitor incoming purchases, student transactions, and payment statuses
             </p>
           </div>
         </div>
 
-        <div className="bg-white rounded-xl border border-red-200 p-8 text-center max-w-lg mx-auto">
+        <div className="bg-white dark:bg-[#151D2E] rounded-xl border border-red-200 dark:border-red-900/40 p-8 text-center max-w-lg mx-auto">
           <div className="h-12 w-12 rounded-full bg-red-100 text-red-600 mx-auto flex items-center justify-center mb-4">
             <CreditCard className="h-6 w-6" />
           </div>
-          <h3 className="text-base font-bold text-[#112542]">Failed to load customer orders</h3>
+          <h3 className="text-base font-bold text-[#112542] dark:text-[#F1F5F9]">Failed to load customer orders</h3>
           <p className="text-xs text-[#64748b] mt-1 mb-5">
             {(error as any)?.message || "A network or database error occurred while retrieving order history."}
           </p>
@@ -124,14 +124,14 @@ export default function AdminOrders() {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-xs font-semibold px-3 py-1.5 rounded-lg bg-white border border-[#e2e8f0] text-[#112542] shadow-2xs">
+          <span className="text-xs font-semibold px-3 py-1.5 rounded-lg bg-white dark:bg-[#151D2E] border border-[#e2e8f0] dark:border-[#293548] text-[#112542] dark:text-[#F1F5F9] shadow-2xs">
             {data?.total ?? 0} Total Orders
           </span>
         </div>
       </div>
 
       {/* Search & Filter Toolbar */}
-      <div className="bg-white p-3.5 sm:p-4 rounded-xl border border-[#e2e8f0] space-y-3">
+      <div className="bg-white dark:bg-[#151D2E] p-3.5 sm:p-4 rounded-xl border border-[#e2e8f0] dark:border-[#293548] space-y-3">
         <div className="flex flex-col sm:flex-row gap-2.5 items-stretch sm:items-center">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-[#94a3b8]" />
@@ -139,7 +139,7 @@ export default function AdminOrders() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search by customer name, phone, email, order ID, or note title..."
-              className="pl-9 h-9 text-xs sm:text-sm bg-[#f8fafc] border-[#e2e8f0] text-[#112542] focus-visible:border-[#1856b8]"
+              className="pl-9 h-9 text-xs sm:text-sm bg-[#f8fafc] dark:bg-[#1C2638] border-[#e2e8f0] dark:border-[#293548] text-[#112542] dark:text-[#F1F5F9] placeholder:text-[#94a3b8] dark:placeholder:text-[#8291A8] focus-visible:border-[#1856b8] dark:focus-visible:border-[#818CF8]"
             />
             {searchQuery && (
               <button
@@ -154,7 +154,7 @@ export default function AdminOrders() {
 
           <div className="w-full sm:w-44 shrink-0">
             <Select value={selectedStatus} onValueChange={setSelectedStatus}>
-              <SelectTrigger className="h-9 text-xs bg-[#f8fafc] border-[#e2e8f0] text-[#112542]">
+              <SelectTrigger className="h-9 text-xs bg-[#f8fafc] dark:bg-[#1C2638] border-[#e2e8f0] dark:border-[#293548] text-[#112542] dark:text-[#F1F5F9]">
                 <SelectValue placeholder="All Statuses" />
               </SelectTrigger>
               <SelectContent>
@@ -171,7 +171,7 @@ export default function AdminOrders() {
               variant="ghost"
               size="sm"
               onClick={() => { setSearchQuery(""); setSelectedStatus("all"); }}
-              className="h-9 text-xs text-[#5a6b82] hover:text-[#112542] shrink-0"
+              className="h-9 text-xs text-[#5a6b82] dark:text-[#A1AEC2] hover:text-[#112542] dark:hover:text-[#F1F5F9] dark:hover:bg-[#1C2638] shrink-0"
             >
               Clear
             </Button>
@@ -180,16 +180,16 @@ export default function AdminOrders() {
       </div>
 
       {/* Desktop Orders Table */}
-      <div className="hidden md:block bg-white rounded-xl border border-[#e2e8f0] overflow-hidden shadow-none">
+      <div className="hidden md:block bg-white dark:bg-[#151D2E] rounded-xl border border-[#e2e8f0] dark:border-[#293548] overflow-hidden shadow-none">
         <Table>
-          <TableHeader className="bg-[#f8fafc]">
-            <TableRow className="border-[#eef2f6] hover:bg-transparent">
-              <TableHead className="text-xs font-semibold text-[#64748b] py-3 pl-5">Order ID</TableHead>
-              <TableHead className="text-xs font-semibold text-[#64748b] py-3">Customer</TableHead>
-              <TableHead className="text-xs font-semibold text-[#64748b] py-3">Resource</TableHead>
-              <TableHead className="text-xs font-semibold text-[#64748b] py-3">Amount</TableHead>
-              <TableHead className="text-xs font-semibold text-[#64748b] py-3">Status</TableHead>
-              <TableHead className="text-xs font-semibold text-[#64748b] py-3 pr-5 text-right">Date & Time</TableHead>
+          <TableHeader className="bg-[#f8fafc] dark:bg-[#1C2638]">
+            <TableRow className="border-[#eef2f6] dark:border-[#293548] hover:bg-transparent">
+              <TableHead className="text-xs font-semibold text-[#64748b] dark:text-[#A1AEC2] py-3 pl-5">Order ID</TableHead>
+              <TableHead className="text-xs font-semibold text-[#64748b] dark:text-[#A1AEC2] py-3">Customer</TableHead>
+              <TableHead className="text-xs font-semibold text-[#64748b] dark:text-[#A1AEC2] py-3">Resource</TableHead>
+              <TableHead className="text-xs font-semibold text-[#64748b] dark:text-[#A1AEC2] py-3">Amount</TableHead>
+              <TableHead className="text-xs font-semibold text-[#64748b] dark:text-[#A1AEC2] py-3">Status</TableHead>
+              <TableHead className="text-xs font-semibold text-[#64748b] dark:text-[#A1AEC2] py-3 pr-5 text-right">Date & Time</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -204,15 +204,15 @@ export default function AdminOrders() {
               filteredOrders.map((order) => {
                 const isCopied = copiedId === order.id;
                 return (
-                  <TableRow key={order.id} className="border-[#eef2f6] hover:bg-[#f8fafc]/60 transition-colors">
+                  <TableRow key={order.id} className="border-[#eef2f6] dark:border-[#293548] hover:bg-[#f8fafc]/60 dark:hover:bg-[#1C2638]/60 transition-colors">
                     {/* Order ID */}
                     <TableCell className="pl-5 py-3.5">
                       <div className="flex items-center gap-1.5">
-                        <span className="font-mono text-xs text-[#64748b]">{order.id.slice(0, 8)}…</span>
+                        <span className="font-mono text-xs text-[#64748b] dark:text-[#A1AEC2]">{order.id.slice(0, 8)}…</span>
                         <button
                           type="button"
                           onClick={() => handleCopyId(order.id)}
-                          className="p-1 text-[#94a3b8] hover:text-[#1856b8] rounded hover:bg-[#ebf3ff] transition-colors"
+                          className="p-1 text-[#94a3b8] dark:text-[#8291A8] hover:text-[#1856b8] dark:hover:text-[#818CF8] dark:hover:text-[#818CF8] rounded hover:bg-[#ebf3ff] dark:hover:bg-[#1C2638] transition-colors"
                           title="Copy full Order ID"
                           aria-label="Copy Order ID"
                         >
@@ -224,7 +224,7 @@ export default function AdminOrders() {
                         </button>
                       </div>
                       {order.razorpayOrderId && (
-                        <div className="text-[10px] text-[#94a3b8] font-mono truncate max-w-[120px] mt-0.5">
+                        <div className="text-[10px] text-[#94a3b8] dark:text-[#8291A8] font-mono truncate max-w-[120px] mt-0.5">
                           {order.razorpayOrderId}
                         </div>
                       )}
@@ -232,11 +232,11 @@ export default function AdminOrders() {
 
                     {/* Customer */}
                     <TableCell className="py-3.5">
-                      <div className="font-semibold text-xs text-[#112542] leading-tight">{order.customerName}</div>
-                      <div className="text-[11px] text-[#64748b] mt-1 flex items-center gap-2.5">
+                      <div className="font-semibold text-xs text-[#112542] dark:text-[#F1F5F9] leading-tight">{order.customerName}</div>
+                      <div className="text-[11px] text-[#64748b] dark:text-[#A1AEC2] mt-1 flex items-center gap-2.5">
                         <a 
                           href={`tel:${order.customerPhone}`}
-                          className="hover:text-[#1856b8] flex items-center gap-1"
+                          className="hover:text-[#1856b8] dark:hover:text-[#818CF8] flex items-center gap-1"
                           title="Call customer"
                         >
                           <Phone className="h-3 w-3 text-[#94a3b8]" />
@@ -245,7 +245,7 @@ export default function AdminOrders() {
                         {order.customerEmail && (
                           <a 
                             href={`mailto:${order.customerEmail}`}
-                            className="hover:text-[#1856b8] flex items-center gap-1 truncate max-w-[140px]"
+                            className="hover:text-[#1856b8] dark:hover:text-[#818CF8] flex items-center gap-1 truncate max-w-[140px]"
                             title="Email customer"
                           >
                             <Mail className="h-3 w-3 text-[#94a3b8]" />
@@ -257,7 +257,7 @@ export default function AdminOrders() {
 
                     {/* Resource */}
                     <TableCell className="py-3.5 max-w-[240px]">
-                      <div className="font-medium text-xs text-[#112542] truncate" title={order.cardTitle}>
+                      <div className="font-medium text-xs text-[#112542] dark:text-[#F1F5F9] truncate" title={order.cardTitle}>
                         {order.cardTitle || "—"}
                       </div>
                     </TableCell>
@@ -269,7 +269,7 @@ export default function AdminOrders() {
                           Free
                         </span>
                       ) : (
-                        <span className="font-bold text-xs text-[#112542]">
+                        <span className="font-bold text-xs text-[#112542] dark:text-[#F1F5F9]">
                           {formatRupees(order.amountPaise)}
                         </span>
                       )}
@@ -280,9 +280,9 @@ export default function AdminOrders() {
                       <span
                         className={`inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium border ${
                           order.status === "paid"
-                            ? "bg-[#eaf5ec] text-[#167035] border-[#d7ecdc]"
+                            ? "bg-[#eaf5ec] dark:bg-emerald-950/40 text-[#167035] dark:text-emerald-400 border-[#d7ecdc] dark:border-emerald-800"
                             : order.status === "pending"
-                            ? "bg-[#fdf5e2] text-[#9e5e00] border-[#f9ecc8]"
+                            ? "bg-[#fdf5e2] dark:bg-amber-950/40 text-[#9e5e00] dark:text-amber-400 border-[#f9ecc8] dark:border-amber-800"
                             : "bg-red-50 text-red-700 border-red-200"
                         }`}
                       >
@@ -291,7 +291,7 @@ export default function AdminOrders() {
                     </TableCell>
 
                     {/* Date */}
-                    <TableCell className="pr-5 py-3.5 text-right text-xs text-[#64748b]">
+                    <TableCell className="pr-5 py-3.5 text-right text-xs text-[#64748b] dark:text-[#A1AEC2]">
                       <div>
                         {new Date(order.createdAt).toLocaleDateString("en-IN", {
                           day: "numeric",
@@ -299,7 +299,7 @@ export default function AdminOrders() {
                           year: "numeric",
                         })}
                       </div>
-                      <div className="text-[10px] text-[#94a3b8] mt-0.5">
+                      <div className="text-[10px] text-[#94a3b8] dark:text-[#8291A8] mt-0.5">
                         {new Date(order.createdAt).toLocaleTimeString("en-IN", {
                           hour: "2-digit",
                           minute: "2-digit",
@@ -328,16 +328,16 @@ export default function AdminOrders() {
             return (
               <div
                 key={order.id}
-                className="bg-white border border-[#e2e8f0] rounded-xl p-4 space-y-3 shadow-none"
+                className="bg-white dark:bg-[#151D2E] border border-[#e2e8f0] dark:border-[#293548] rounded-xl p-4 space-y-3 shadow-none"
               >
                 {/* Header: ID and Status */}
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-1.5">
-                    <span className="font-mono text-xs text-[#64748b]">{order.id.slice(0, 10)}…</span>
+                    <span className="font-mono text-xs text-[#64748b] dark:text-[#A1AEC2]">{order.id.slice(0, 10)}…</span>
                     <button
                       type="button"
                       onClick={() => handleCopyId(order.id)}
-                      className="p-1 text-[#94a3b8] hover:text-[#1856b8]"
+                      className="p-1 text-[#94a3b8] hover:text-[#1856b8] dark:hover:text-[#818CF8]"
                       aria-label="Copy ID"
                     >
                       {isCopied ? <Check className="h-3 w-3 text-emerald-600" /> : <Copy className="h-3 w-3" />}
@@ -346,9 +346,9 @@ export default function AdminOrders() {
                   <span
                     className={`inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium border ${
                       order.status === "paid"
-                        ? "bg-[#eaf5ec] text-[#167035] border-[#d7ecdc]"
+                        ? "bg-[#eaf5ec] dark:bg-emerald-950/40 text-[#167035] dark:text-emerald-400 border-[#d7ecdc] dark:border-emerald-800"
                         : order.status === "pending"
-                        ? "bg-[#fdf5e2] text-[#9e5e00] border-[#f9ecc8]"
+                        ? "bg-[#fdf5e2] dark:bg-amber-950/40 text-[#9e5e00] dark:text-amber-400 border-[#f9ecc8] dark:border-amber-800"
                         : "bg-red-50 text-red-700 border-red-200"
                     }`}
                   >
@@ -358,10 +358,10 @@ export default function AdminOrders() {
 
                 {/* Resource Title */}
                 <div>
-                  <h4 className="font-bold text-xs sm:text-sm text-[#112542] line-clamp-1">
+                  <h4 className="font-bold text-xs sm:text-sm text-[#112542] dark:text-[#F1F5F9] line-clamp-1">
                     {order.cardTitle}
                   </h4>
-                  <div className="text-xs font-bold text-[#112542] mt-1">
+                  <div className="text-xs font-bold text-[#112542] dark:text-[#F1F5F9] mt-1">
                     {order.amountPaise === 0 ? (
                       <span className="text-emerald-600">Free</span>
                     ) : (
@@ -371,15 +371,15 @@ export default function AdminOrders() {
                 </div>
 
                 {/* Customer Details */}
-                <div className="pt-2 border-t border-[#eef2f6] text-xs space-y-1">
-                  <div className="font-semibold text-[#112542]">{order.customerName}</div>
-                  <div className="flex items-center gap-3 text-[#64748b]">
-                    <a href={`tel:${order.customerPhone}`} className="hover:text-[#1856b8] flex items-center gap-1">
+                <div className="pt-2 border-t border-[#eef2f6] dark:border-[#293548] text-xs space-y-1">
+                  <div className="font-semibold text-[#112542] dark:text-[#F1F5F9]">{order.customerName}</div>
+                  <div className="flex items-center gap-3 text-[#64748b] dark:text-[#A1AEC2]">
+                    <a href={`tel:${order.customerPhone}`} className="hover:text-[#1856b8] dark:hover:text-[#818CF8] flex items-center gap-1">
                       <Phone className="h-3 w-3 text-[#94a3b8]" />
                       <span>{order.customerPhone}</span>
                     </a>
                     {order.customerEmail && (
-                      <a href={`mailto:${order.customerEmail}`} className="hover:text-[#1856b8] flex items-center gap-1 truncate">
+                      <a href={`mailto:${order.customerEmail}`} className="hover:text-[#1856b8] dark:hover:text-[#818CF8] flex items-center gap-1 truncate">
                         <Mail className="h-3 w-3 text-[#94a3b8]" />
                         <span className="truncate">{order.customerEmail}</span>
                       </a>
@@ -388,7 +388,7 @@ export default function AdminOrders() {
                 </div>
 
                 {/* Date */}
-                <div className="pt-2 border-t border-[#eef2f6] text-[11px] text-[#94a3b8] flex items-center justify-between">
+                <div className="pt-2 border-t border-[#eef2f6] dark:border-[#293548] text-[11px] text-[#94a3b8] dark:text-[#8291A8] flex items-center justify-between">
                   <span>
                     {new Date(order.createdAt).toLocaleDateString("en-IN", {
                       day: "numeric",
@@ -413,8 +413,8 @@ export default function AdminOrders() {
       {/* Pagination Controls */}
       {totalPages > 1 && (
         <div className="flex items-center justify-between pt-2">
-          <p className="text-xs text-[#64748b]">
-            Page <strong className="text-[#112542]">{page}</strong> of <strong className="text-[#112542]">{totalPages}</strong>
+          <p className="text-xs text-[#64748b] dark:text-[#A1AEC2]">
+            Page <strong className="text-[#112542] dark:text-[#F1F5F9]">{page}</strong> of <strong className="text-[#112542] dark:text-[#F1F5F9]">{totalPages}</strong>
           </p>
           <div className="flex gap-2">
             <Button
@@ -422,7 +422,7 @@ export default function AdminOrders() {
               size="sm"
               onClick={() => setPage(p => Math.max(1, p - 1))}
               disabled={page === 1}
-              className="h-8 gap-1 text-xs border-[#e2e8f0] text-[#112542]"
+              className="h-8 gap-1 text-xs border-[#e2e8f0] dark:border-[#293548] text-[#112542] dark:text-[#F1F5F9] dark:hover:bg-[#1C2638]"
             >
               <ChevronLeft className="h-3.5 w-3.5" />
               <span>Previous</span>
@@ -432,7 +432,7 @@ export default function AdminOrders() {
               size="sm"
               onClick={() => setPage(p => Math.min(totalPages, p + 1))}
               disabled={page === totalPages}
-              className="h-8 gap-1 text-xs border-[#e2e8f0] text-[#112542]"
+              className="h-8 gap-1 text-xs border-[#e2e8f0] dark:border-[#293548] text-[#112542] dark:text-[#F1F5F9] dark:hover:bg-[#1C2638]"
             >
               <span>Next</span>
               <ChevronRight className="h-3.5 w-3.5" />

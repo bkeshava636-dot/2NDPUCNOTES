@@ -141,21 +141,21 @@ export default function AdminAnalytics() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl sm:text-3xl font-bold text-[#112542] tracking-tight">
+            <h1 className="text-2xl sm:text-3xl font-bold text-[#112542] dark:text-[#F1F5F9] tracking-tight">
               Site Traffic & Views Analysis
             </h1>
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#e0f2fe] text-[#0369a1] border border-[#bae6fd]">
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#e0f2fe] dark:bg-sky-950/40 text-[#0369a1] dark:text-sky-300 border border-[#bae6fd] dark:border-sky-800">
               Live Analytics
             </span>
           </div>
-          <p className="text-[#5a6b82] text-xs sm:text-sm mt-0.5">
+          <p className="text-[#5a6b82] dark:text-[#A1AEC2] text-xs sm:text-sm mt-0.5">
             Monitor real-time visitors, per-day unique students, and popular Karnataka 2nd PUC study resources
           </p>
         </div>
 
         {/* Range Selector & Actions */}
         <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
-          <div className="flex items-center bg-[#f1f5f9] p-1 rounded-lg border border-[#e2e8f0]">
+          <div className="flex items-center bg-[#f1f5f9] dark:bg-[#1C2638] p-1 rounded-lg border border-[#e2e8f0] dark:border-[#293548]">
             {(["24h", "7d", "30d", "all"] as const).map((r) => (
               <button
                 key={r}
@@ -163,8 +163,8 @@ export default function AdminAnalytics() {
                 onClick={() => setRange(r)}
                 className={`text-xs px-2.5 py-1 rounded-md font-semibold transition-all ${
                   range === r
-                    ? "bg-white text-[#1856b8] shadow-2xs"
-                    : "text-[#64748b] hover:text-[#112542]"
+                    ? "bg-white dark:bg-[#151D2E] text-[#1856b8] dark:text-[#818CF8] shadow-2xs"
+                    : "text-[#64748b] dark:text-[#A1AEC2] hover:text-[#112542] dark:hover:text-[#F1F5F9]"
                 }`}
               >
                 {r.toUpperCase()}
@@ -177,7 +177,7 @@ export default function AdminAnalytics() {
             size="sm"
             onClick={handleSendTestPing}
             disabled={isSendingPing || isFetching}
-            className="h-8 gap-1.5 text-xs text-[#0369a1] bg-[#f0f9ff] border-[#bae6fd] hover:bg-[#e0f2fe]"
+            className="h-8 gap-1.5 text-xs text-[#0369a1] dark:text-sky-300 bg-[#f0f9ff] dark:bg-sky-950/40 border-[#bae6fd] dark:border-sky-800 hover:bg-[#e0f2fe] dark:hover:bg-sky-950/60"
             title="Simulate a real-time visit to verify logging"
           >
             <Send className={`h-3 w-3 ${isSendingPing ? "animate-spin" : ""}`} />
@@ -189,7 +189,7 @@ export default function AdminAnalytics() {
             size="sm"
             onClick={() => refetch()}
             disabled={isFetching}
-            className="h-8 gap-1.5 text-xs text-[#5a6b82] border-[#e2e8f0]"
+            className="h-8 gap-1.5 text-xs text-[#5a6b82] dark:text-[#A1AEC2] border-[#e2e8f0] dark:border-[#293548] dark:hover:bg-[#1C2638]"
           >
             <RefreshCw className={`h-3.5 w-3.5 ${isFetching ? "animate-spin text-[#1856b8]" : ""}`} />
             <span>Refresh</span>
@@ -220,41 +220,41 @@ export default function AdminAnalytics() {
       {/* KPI Cards: 5 Responsive Metric Blocks */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
         {/* Card 1: Unique Visitors (Range) */}
-        <Card className="rounded-xl border-[#e2e8f0] shadow-none bg-white border-l-4 border-l-[#0284c7]">
+        <Card className="rounded-xl border-[#e2e8f0] dark:border-[#293548] shadow-none bg-white dark:bg-[#151D2E] border-l-4 border-l-[#0284c7]">
           <CardContent className="p-4 sm:p-5">
             <div className="flex items-center justify-between">
-              <span className="text-[11px] font-semibold text-[#64748b] uppercase tracking-wider">
+              <span className="text-[11px] font-semibold text-[#64748b] dark:text-[#A1AEC2] uppercase tracking-wider">
                 Unique Visitors
               </span>
-              <div className="p-1.5 rounded-lg bg-sky-50 text-[#0284c7]">
+              <div className="p-1.5 rounded-lg bg-sky-50 dark:bg-sky-950/40 text-[#0284c7] dark:text-sky-300">
                 <Users className="w-4 h-4" />
               </div>
             </div>
             <div className="mt-2 flex items-baseline gap-1.5">
-              <span className="text-2xl sm:text-3xl font-extrabold text-[#112542] tracking-tight">
+              <span className="text-2xl sm:text-3xl font-extrabold text-[#112542] dark:text-[#F1F5F9] tracking-tight">
                 {isLoading ? <Skeleton className="h-8 w-16 inline-block" /> : (data?.uniqueVisitors ?? 0).toLocaleString()}
               </span>
-              <span className="text-[11px] text-[#64748b]">students</span>
+              <span className="text-[11px] text-[#64748b] dark:text-[#A1AEC2]">students</span>
             </div>
-            <p className="text-[11px] text-[#64748b] mt-1 truncate">
+            <p className="text-[11px] text-[#64748b] dark:text-[#A1AEC2] mt-1 truncate">
               Avg. <span className="font-semibold text-[#0284c7]">~{avgVisitorsPerDay}</span> / day
             </p>
           </CardContent>
         </Card>
 
         {/* Card 2: Today's Unique Visitors (NEW) */}
-        <Card className="rounded-xl border-[#e2e8f0] shadow-none bg-white border-l-4 border-l-[#16a34a]">
+        <Card className="rounded-xl border-[#e2e8f0] dark:border-[#293548] shadow-none bg-white dark:bg-[#151D2E] border-l-4 border-l-[#16a34a]">
           <CardContent className="p-4 sm:p-5">
             <div className="flex items-center justify-between">
-              <span className="text-[11px] font-semibold text-[#64748b] uppercase tracking-wider">
+              <span className="text-[11px] font-semibold text-[#64748b] dark:text-[#A1AEC2] uppercase tracking-wider">
                 Today's Visitors
               </span>
-              <div className="p-1.5 rounded-lg bg-emerald-50 text-[#16a34a]">
+              <div className="p-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-[#16a34a] dark:text-emerald-400">
                 <UserCheck className="w-4 h-4" />
               </div>
             </div>
             <div className="mt-2 flex items-baseline gap-1.5">
-              <span className="text-2xl sm:text-3xl font-extrabold text-[#112542] tracking-tight text-emerald-700">
+              <span className="text-2xl sm:text-3xl font-extrabold text-emerald-700 dark:text-emerald-400 tracking-tight">
                 {isLoading ? (
                   <Skeleton className="h-8 w-16 inline-block" />
                 ) : (
@@ -270,69 +270,69 @@ export default function AdminAnalytics() {
         </Card>
 
         {/* Card 3: Today's Total Views */}
-        <Card className="rounded-xl border-[#e2e8f0] shadow-none bg-white border-l-4 border-l-[#1856b8]">
+        <Card className="rounded-xl border-[#e2e8f0] dark:border-[#293548] shadow-none bg-white dark:bg-[#151D2E] border-l-4 border-l-[#1856b8]">
           <CardContent className="p-4 sm:p-5">
             <div className="flex items-center justify-between">
-              <span className="text-[11px] font-semibold text-[#64748b] uppercase tracking-wider">
+              <span className="text-[11px] font-semibold text-[#64748b] dark:text-[#A1AEC2] uppercase tracking-wider">
                 Today's Views
               </span>
-              <div className="p-1.5 rounded-lg bg-blue-50 text-[#1856b8]">
+              <div className="p-1.5 rounded-lg bg-blue-50 dark:bg-blue-950/40 text-[#1856b8] dark:text-[#818CF8]">
                 <TrendingUp className="w-4 h-4" />
               </div>
             </div>
             <div className="mt-2 flex items-baseline gap-1.5">
-              <span className="text-2xl sm:text-3xl font-extrabold text-[#112542] tracking-tight">
+              <span className="text-2xl sm:text-3xl font-extrabold text-[#112542] dark:text-[#F1F5F9] tracking-tight">
                 {isLoading ? <Skeleton className="h-8 w-16 inline-block" /> : (data?.todayViews ?? 0).toLocaleString()}
               </span>
-              <span className="text-[11px] text-[#64748b]">views</span>
+              <span className="text-[11px] text-[#64748b] dark:text-[#A1AEC2]">views</span>
             </div>
-            <p className="text-[11px] text-[#64748b] mt-1">
+            <p className="text-[11px] text-[#64748b] dark:text-[#A1AEC2] mt-1">
               Since 12:00 AM midnight
             </p>
           </CardContent>
         </Card>
 
         {/* Card 4: Total Views (Range) */}
-        <Card className="rounded-xl border-[#e2e8f0] shadow-none bg-white border-l-4 border-l-[#4f46e5]">
+        <Card className="rounded-xl border-[#e2e8f0] dark:border-[#293548] shadow-none bg-white dark:bg-[#151D2E] border-l-4 border-l-[#4f46e5]">
           <CardContent className="p-4 sm:p-5">
             <div className="flex items-center justify-between">
-              <span className="text-[11px] font-semibold text-[#64748b] uppercase tracking-wider">
+              <span className="text-[11px] font-semibold text-[#64748b] dark:text-[#A1AEC2] uppercase tracking-wider">
                 Total Views ({range.toUpperCase()})
               </span>
-              <div className="p-1.5 rounded-lg bg-indigo-50 text-[#4f46e5]">
+              <div className="p-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-950/40 text-[#4f46e5] dark:text-indigo-400">
                 <Eye className="w-4 h-4" />
               </div>
             </div>
             <div className="mt-2 flex items-baseline gap-1.5">
-              <span className="text-2xl sm:text-3xl font-extrabold text-[#112542] tracking-tight">
+              <span className="text-2xl sm:text-3xl font-extrabold text-[#112542] dark:text-[#F1F5F9] tracking-tight">
                 {isLoading ? <Skeleton className="h-8 w-16 inline-block" /> : (data?.rangeTotal ?? 0).toLocaleString()}
               </span>
-              <span className="text-[11px] text-[#64748b]">impressions</span>
+              <span className="text-[11px] text-[#64748b] dark:text-[#A1AEC2]">impressions</span>
             </div>
-            <p className="text-[11px] text-[#64748b] mt-1 truncate">
-              All time: <span className="font-semibold text-[#112542]">{(data?.allTimeTotal ?? 0).toLocaleString()}</span>
+            <p className="text-[11px] text-[#64748b] dark:text-[#A1AEC2] mt-1 truncate">
+              All time: <span className="font-semibold text-[#112542] dark:text-[#F1F5F9]">{(data?.allTimeTotal ?? 0).toLocaleString()}</span>
             </p>
           </CardContent>
         </Card>
 
         {/* Card 5: Active Sites & Pages */}
-        <Card className="rounded-xl border-[#e2e8f0] shadow-none bg-white border-l-4 border-l-[#9333ea] col-span-2 sm:col-span-1">
+        <Card className="rounded-xl border-[#e2e8f0] dark:border-[#293548] shadow-none bg-white dark:bg-[#151D2E] border-l-4 border-l-[#9333ea] col-span-2 sm:col-span-1">
           <CardContent className="p-4 sm:p-5">
             <div className="flex items-center justify-between">
-              <span className="text-[11px] font-semibold text-[#64748b] uppercase tracking-wider">
+              <span className="text-[11px] font-semibold text-[#64748b] dark:text-[#A1AEC2] uppercase tracking-wider">
                 Active Pages
               </span>
-              <div className="p-1.5 rounded-lg bg-purple-50 text-[#9333ea]">
+              <div className="p-1.5 rounded-lg bg-purple-50 dark:bg-purple-950/40 text-[#9333ea] dark:text-purple-400">
                 <Globe className="w-4 h-4" />
               </div>
             </div>
             <div className="mt-2 flex items-baseline gap-1.5">
-              <span className="text-2xl sm:text-3xl font-extrabold text-[#112542] tracking-tight">
+              <span className="text-2xl sm:text-3xl font-extrabold text-[#112542] dark:text-[#F1F5F9] tracking-tight">
                 {isLoading ? <Skeleton className="h-8 w-16 inline-block" /> : (data?.topPages?.length ?? 0).toLocaleString()}
               </span>
-              <span className="text-[11px] text-[#64748b]">routes</span>
+              <span className="text-[11px] text-[#64748b] dark:text-[#A1AEC2]">routes</span>
             </div>
-            <p className="text-[11px] text-[#64748b] mt-1 truncate">
+            <p className="text-[11px] text-[#64748b] dark:text-[#A1AEC2] mt-1 truncate">
               In {rangeLabels[range]}
             </p>
           </CardContent>
@@ -340,15 +340,15 @@ export default function AdminAnalytics() {
       </div>
 
       {/* Daily Traffic Activity Chart with Dual Views & Unique Visitors */}
-      <Card className="rounded-xl border-[#e2e8f0] shadow-none bg-white">
-        <CardHeader className="p-5 border-b border-[#eef2f6]">
+      <Card className="rounded-xl border-[#e2e8f0] dark:border-[#293548] shadow-none bg-white dark:bg-[#151D2E]">
+        <CardHeader className="p-5 border-b border-[#eef2f6] dark:border-[#293548]">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <CardTitle className="text-base font-bold text-[#112542] flex items-center gap-2">
+              <CardTitle className="text-base font-bold text-[#112542] dark:text-[#F1F5F9] flex items-center gap-2">
                 <BarChart3 className="w-4 h-4 text-[#1856b8]" />
                 Daily Traffic & Unique Visitors ({rangeLabels[range]})
               </CardTitle>
-              <CardDescription className="text-xs text-[#64748b] mt-0.5">
+              <CardDescription className="text-xs text-[#64748b] dark:text-[#A1AEC2] mt-0.5">
                 Comparison of daily total page views versus distinct unique visitors
               </CardDescription>
             </div>
@@ -366,7 +366,7 @@ export default function AdminAnalytics() {
                 </span>
               </div>
 
-              <div className="hidden sm:flex items-center bg-[#f1f5f9] p-0.5 rounded-md border border-[#e2e8f0]">
+              <div className="hidden sm:flex items-center bg-[#f1f5f9] dark:bg-[#1C2638] p-0.5 rounded-md border border-[#e2e8f0] dark:border-[#293548]">
                 {(["both", "visitors", "views"] as const).map((m) => (
                   <button
                     key={m}
@@ -374,8 +374,8 @@ export default function AdminAnalytics() {
                     onClick={() => setMetricMode(m)}
                     className={`text-[10px] px-2 py-0.5 rounded font-semibold transition-all capitalize ${
                       metricMode === m
-                        ? "bg-white text-[#112542] shadow-2xs"
-                        : "text-[#64748b] hover:text-[#112542]"
+                        ? "bg-white dark:bg-[#151D2E] text-[#112542] dark:text-[#F1F5F9] shadow-2xs"
+                        : "text-[#64748b] dark:text-[#A1AEC2] hover:text-[#112542] dark:hover:text-[#F1F5F9]"
                     }`}
                   >
                     {m}
@@ -402,7 +402,7 @@ export default function AdminAnalytics() {
             </div>
           ) : (
             <div className="space-y-4">
-              <div className="h-48 flex items-end gap-2 pt-4 pb-2 border-b border-[#f1f5f9]">
+              <div className="h-48 flex items-end gap-2 pt-4 pb-2 border-b border-[#f1f5f9] dark:border-[#293548]">
                 {dailyTrend.map((d) => {
                   const viewHeight = Math.max(Math.round((d.views / maxViews) * 100), 6);
                   const visitorHeight = Math.max(Math.round((d.visitors / (metricMode === "visitors" ? maxVisitors : maxViews)) * 100), 6);
@@ -454,19 +454,19 @@ export default function AdminAnalytics() {
       </Card>
 
       {/* Per-Day Breakdown Table (Explicit Per-Day Unique Visitors List) */}
-      <Card className="rounded-xl border-[#e2e8f0] shadow-none bg-white">
-        <CardHeader className="p-5 border-b border-[#eef2f6]">
+      <Card className="rounded-xl border-[#e2e8f0] dark:border-[#293548] shadow-none bg-white dark:bg-[#151D2E]">
+        <CardHeader className="p-5 border-b border-[#eef2f6] dark:border-[#293548]">
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle className="text-base font-bold text-[#112542] flex items-center gap-2">
+              <CardTitle className="text-base font-bold text-[#112542] dark:text-[#F1F5F9] flex items-center gap-2">
                 <CalendarDays className="w-4 h-4 text-[#16a34a]" />
                 Per-Day Unique Visitors Breakdown
               </CardTitle>
-              <CardDescription className="text-xs text-[#64748b]">
+              <CardDescription className="text-xs text-[#64748b] dark:text-[#A1AEC2]">
                 Daily history of distinct student devices, total views, and engagement depth
               </CardDescription>
             </div>
-            <span className="text-xs text-[#64748b] bg-[#f8fafc] px-2.5 py-1 rounded border border-[#e2e8f0]">
+            <span className="text-xs text-[#64748b] dark:text-[#A1AEC2] bg-[#f8fafc] dark:bg-[#1C2638] px-2.5 py-1 rounded border border-[#e2e8f0] dark:border-[#293548]">
               {dailyTrend.length} Active {dailyTrend.length === 1 ? "Day" : "Days"}
             </span>
           </div>
@@ -486,12 +486,12 @@ export default function AdminAnalytics() {
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
-                  <TableRow className="border-b border-[#eef2f6] bg-[#f8fafc]">
-                    <TableHead className="text-xs font-semibold text-[#64748b]">Date</TableHead>
-                    <TableHead className="text-xs font-semibold text-[#64748b] text-right">Unique Visitors</TableHead>
-                    <TableHead className="text-xs font-semibold text-[#64748b] text-right">Total Views</TableHead>
-                    <TableHead className="text-xs font-semibold text-[#64748b] text-right">Views / Visitor</TableHead>
-                    <TableHead className="text-xs font-semibold text-[#64748b] text-right">Daily Share</TableHead>
+                  <TableRow className="border-b border-[#eef2f6] dark:border-[#293548] bg-[#f8fafc] dark:bg-[#1C2638]">
+                    <TableHead className="text-xs font-semibold text-[#64748b] dark:text-[#A1AEC2]">Date</TableHead>
+                    <TableHead className="text-xs font-semibold text-[#64748b] dark:text-[#A1AEC2] text-right">Unique Visitors</TableHead>
+                    <TableHead className="text-xs font-semibold text-[#64748b] dark:text-[#A1AEC2] text-right">Total Views</TableHead>
+                    <TableHead className="text-xs font-semibold text-[#64748b] dark:text-[#A1AEC2] text-right">Views / Visitor</TableHead>
+                    <TableHead className="text-xs font-semibold text-[#64748b] dark:text-[#A1AEC2] text-right">Daily Share</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -504,11 +504,11 @@ export default function AdminAnalytics() {
                     const viewsPerStudent = (d.views / (d.visitors || 1)).toFixed(1);
 
                     return (
-                      <TableRow key={d.date} className="border-b border-[#eef2f6] hover:bg-[#f8fafc]/60">
-                        <TableCell className="py-2.5 font-medium text-xs text-[#112542]">
+                      <TableRow key={d.date} className="border-b border-[#eef2f6] dark:border-[#293548] hover:bg-[#f8fafc]/60 dark:hover:bg-[#1C2638]/60">
+                        <TableCell className="py-2.5 font-medium text-xs text-[#112542] dark:text-[#F1F5F9]">
                           <div className="flex items-center gap-2">
                             <span className="font-mono font-semibold">{d.date}</span>
-                            <span className="text-[11px] text-[#64748b]">({formatDailyDate(d.date)})</span>
+                            <span className="text-[11px] text-[#64748b] dark:text-[#A1AEC2]">({formatDailyDate(d.date)})</span>
                           </div>
                         </TableCell>
                         <TableCell className="text-right py-2.5">
@@ -524,13 +524,13 @@ export default function AdminAnalytics() {
                             </div>
                           </div>
                         </TableCell>
-                        <TableCell className="text-right py-2.5 font-mono text-xs font-semibold text-[#1856b8]">
+                        <TableCell className="text-right py-2.5 font-mono text-xs font-semibold text-[#1856b8] dark:text-[#818CF8]">
                           {d.views.toLocaleString()} views
                         </TableCell>
-                        <TableCell className="text-right py-2.5 text-xs text-[#64748b] font-mono">
+                        <TableCell className="text-right py-2.5 text-xs text-[#64748b] dark:text-[#A1AEC2] font-mono">
                           {viewsPerStudent}x
                         </TableCell>
-                        <TableCell className="text-right py-2.5 text-xs font-medium text-[#64748b]">
+                        <TableCell className="text-right py-2.5 text-xs font-medium text-[#64748b] dark:text-[#A1AEC2]">
                           {shareOfRange}%
                         </TableCell>
                       </TableRow>
@@ -546,13 +546,13 @@ export default function AdminAnalytics() {
       {/* Pages & Live Activity Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Top Sites & Pages breakdown */}
-        <Card className="rounded-xl border-[#e2e8f0] shadow-none bg-white">
-          <CardHeader className="p-5 border-b border-[#eef2f6]">
-            <CardTitle className="text-base font-bold text-[#112542] flex items-center gap-2">
+        <Card className="rounded-xl border-[#e2e8f0] dark:border-[#293548] shadow-none bg-white dark:bg-[#151D2E]">
+          <CardHeader className="p-5 border-b border-[#eef2f6] dark:border-[#293548]">
+            <CardTitle className="text-base font-bold text-[#112542] dark:text-[#F1F5F9] flex items-center gap-2">
               <MousePointerClick className="w-4 h-4 text-[#0284c7]" />
               Most Visited Pages & Routes
             </CardTitle>
-            <CardDescription className="text-xs text-[#64748b]">
+            <CardDescription className="text-xs text-[#64748b] dark:text-[#A1AEC2]">
               Top URLs visited by students and viewers
             </CardDescription>
           </CardHeader>
@@ -570,18 +570,18 @@ export default function AdminAnalytics() {
             ) : (
               <Table>
                 <TableHeader>
-                  <TableRow className="border-b border-[#eef2f6] bg-[#f8fafc]">
-                    <TableHead className="text-xs font-semibold text-[#64748b]">Page / URL</TableHead>
-                    <TableHead className="text-xs font-semibold text-[#64748b] text-right">Views</TableHead>
-                    <TableHead className="text-xs font-semibold text-[#64748b] text-right">Visitors</TableHead>
+                  <TableRow className="border-b border-[#eef2f6] dark:border-[#293548] bg-[#f8fafc] dark:bg-[#1C2638]">
+                    <TableHead className="text-xs font-semibold text-[#64748b] dark:text-[#A1AEC2]">Page / URL</TableHead>
+                    <TableHead className="text-xs font-semibold text-[#64748b] dark:text-[#A1AEC2] text-right">Views</TableHead>
+                    <TableHead className="text-xs font-semibold text-[#64748b] dark:text-[#A1AEC2] text-right">Visitors</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {data.topPages.map((p, idx) => (
-                    <TableRow key={idx} className="border-b border-[#eef2f6] hover:bg-[#f8fafc]/60">
+                    <TableRow key={idx} className="border-b border-[#eef2f6] dark:border-[#293548] hover:bg-[#f8fafc]/60 dark:hover:bg-[#1C2638]/60">
                       <TableCell className="py-2.5">
                         <div className="flex items-center gap-2">
-                          <code className="text-xs font-mono font-semibold text-[#1856b8] bg-[#ebf3ff] px-1.5 py-0.5 rounded border border-[#dce8fa]">
+                          <code className="text-xs font-mono font-semibold text-[#1856b8] dark:text-[#818CF8] bg-[#ebf3ff] dark:bg-[#1C2638] px-1.5 py-0.5 rounded border border-[#dce8fa] dark:border-[#293548]">
                             {p.path}
                           </code>
                           <a
@@ -600,10 +600,10 @@ export default function AdminAnalytics() {
                           </p>
                         )}
                       </TableCell>
-                      <TableCell className="text-right text-xs font-bold text-[#112542] py-2.5">
+                      <TableCell className="text-right text-xs font-bold text-[#112542] dark:text-[#F1F5F9] py-2.5">
                         {p.views.toLocaleString()}
                       </TableCell>
-                      <TableCell className="text-right text-xs text-[#64748b] py-2.5">
+                      <TableCell className="text-right text-xs text-[#64748b] dark:text-[#A1AEC2] py-2.5">
                         {p.uniqueVisitors.toLocaleString()}
                       </TableCell>
                     </TableRow>
@@ -615,13 +615,13 @@ export default function AdminAnalytics() {
         </Card>
 
         {/* Live Visitor Log */}
-        <Card className="rounded-xl border-[#e2e8f0] shadow-none bg-white">
-          <CardHeader className="p-5 border-b border-[#eef2f6]">
-            <CardTitle className="text-base font-bold text-[#112542] flex items-center gap-2">
+        <Card className="rounded-xl border-[#e2e8f0] dark:border-[#293548] shadow-none bg-white dark:bg-[#151D2E]">
+          <CardHeader className="p-5 border-b border-[#eef2f6] dark:border-[#293548]">
+            <CardTitle className="text-base font-bold text-[#112542] dark:text-[#F1F5F9] flex items-center gap-2">
               <Clock className="w-4 h-4 text-[#16a34a]" />
               Real-Time Activity Log
             </CardTitle>
-            <CardDescription className="text-xs text-[#64748b]">
+            <CardDescription className="text-xs text-[#64748b] dark:text-[#A1AEC2]">
               Most recent student page visits recorded
             </CardDescription>
           </CardHeader>
@@ -637,12 +637,12 @@ export default function AdminAnalytics() {
                 No recent pageviews recorded yet.
               </div>
             ) : (
-              <div className="divide-y divide-[#eef2f6] max-h-[380px] overflow-y-auto">
+              <div className="divide-y divide-[#eef2f6] dark:divide-[#293548] max-h-[380px] overflow-y-auto">
                 {data.recentViews.map((rv) => (
-                  <div key={rv.id} className="p-3 hover:bg-[#f8fafc] flex items-center justify-between gap-3 text-xs">
+                  <div key={rv.id} className="p-3 hover:bg-[#f8fafc] dark:hover:bg-[#1C2638] flex items-center justify-between gap-3 text-xs">
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2">
-                        <span className="font-mono font-semibold text-[#112542] truncate">
+                        <span className="font-mono font-semibold text-[#112542] dark:text-[#F1F5F9] truncate">
                           {rv.path}
                         </span>
                         {rv.referrer && rv.referrer.includes("t.me") && (
@@ -656,11 +656,11 @@ export default function AdminAnalytics() {
                           </span>
                         )}
                       </div>
-                      <p className="text-[10px] text-[#94a3b8] truncate mt-0.5">
+                      <p className="text-[10px] text-[#94a3b8] dark:text-[#8291A8] truncate mt-0.5">
                         {rv.userAgent ? rv.userAgent.split(" ")[0] : "Browser"} • {rv.ipAddress || "Visitor"}
                       </p>
                     </div>
-                    <span className="text-[11px] text-[#64748b] shrink-0 font-medium">
+                    <span className="text-[11px] text-[#64748b] dark:text-[#A1AEC2] shrink-0 font-medium">
                       {new Date(rv.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                     </span>
                   </div>
