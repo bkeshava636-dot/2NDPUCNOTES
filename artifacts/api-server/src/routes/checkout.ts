@@ -3,7 +3,7 @@ import Razorpay from "razorpay";
 import crypto from "crypto";
 import { v4 as uuidv4 } from "uuid";
 import { db } from "@workspace/db";
-import { cardsTable, ordersTable, customersTable, donationsTable } from "@workspace/db";
+import { cardsTable, ordersTable, customersTable, donationsTable, downloadsTable } from "@workspace/db";
 import { eq, and } from "drizzle-orm";
 import { supabase, BUCKET_NOTES } from "../supabase.js";
 import { ensureDefaultSections } from "../lib/ensure-sections.js";
@@ -170,8 +170,8 @@ router.post("/checkout/free-download", async (req, res) => {
       customerPhone: phone,
       customerEmail: customerEmail || null,
       amountPaise: 0,
-      status: "paid",
-      paidAt: new Date(),
+      status: "free",
+      paidAt: null,
     });
     let downloadUrl: string;
     if (card.pdfFileKey.startsWith("http://") || card.pdfFileKey.startsWith("https://")) {
@@ -188,6 +188,16 @@ router.post("/checkout/free-download", async (req, res) => {
       }
       downloadUrl = data.signedUrl;
     }
+
+    // Record the successful free download in downloadsTable
+    const ipAddress = (req.headers["x-forwarded-for"] as string)?.split(",")[0]?.trim() || req.ip || null;
+    const deviceInfo = (req.headers["user-agent"] as string) || null;
+    await db.insert(downloadsTable).values({
+      orderId,
+      cardId: card.id,
+      ipAddress,
+      deviceInfo,
+    }).catch((e) => req.log?.error?.(e, "Failed to record free download event"));
 
     res.json({
       orderId,

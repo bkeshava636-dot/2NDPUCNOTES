@@ -71,12 +71,31 @@
       rel="stylesheet"
     />
 
-    <!-- Google AdSense -->
-    <script
-      async
-      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2516613029504029"
-      crossorigin="anonymous"
-    ></script>
+    <!-- Google AdSense Policy Compliance: Conditionally load only on publisher content routes -->
+    <script>
+      (function() {
+        try {
+          var p = window.location.pathname.toLowerCase().replace(/\/+$/, '') || '/';
+          var isExcluded = p.indexOf('/admin') === 0 ||
+                           p.indexOf('/checkout') === 0 ||
+                           p.indexOf('/payment-success') === 0 ||
+                           p.indexOf('/my-purchases') === 0 ||
+                           p.indexOf('/contribute') === 0 ||
+                           p.indexOf('/contact') === 0 ||
+                           p.indexOf('/login') === 0 ||
+                           p.indexOf('/register') === 0 ||
+                           p === '/404';
+          if (!isExcluded) {
+            var s = document.createElement('script');
+            s.id = 'google-adsense-script';
+            s.async = true;
+            s.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2516613029504029';
+            s.crossOrigin = 'anonymous';
+            document.head.appendChild(s);
+          }
+        } catch(e) {}
+      })();
+    </script>
 
     <!-- Schema.org JSON-LD Structured Data for Educational Organization & Courses -->
     <script type="application/ld+json">

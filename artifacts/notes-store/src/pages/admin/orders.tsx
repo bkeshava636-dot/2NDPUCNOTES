@@ -58,7 +58,12 @@ export default function AdminOrders() {
         (order.razorpayOrderId && order.razorpayOrderId.toLowerCase().includes(q))
       );
 
-      const matchesStatus = selectedStatus === "all" || order.status === selectedStatus;
+      const matchesStatus =
+        selectedStatus === "all" ||
+        (selectedStatus === "paid" && order.status === "paid" && order.amountPaise > 0) ||
+        (selectedStatus === "free" && (order.status === "free" || order.amountPaise === 0)) ||
+        (selectedStatus === "pending" && order.status === "pending") ||
+        (selectedStatus === "failed" && order.status === "failed");
       return matchesSearch && matchesStatus;
     });
   }, [data?.orders, searchQuery, selectedStatus]);
@@ -159,7 +164,8 @@ export default function AdminOrders() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Statuses</SelectItem>
-                <SelectItem value="paid">Paid Only</SelectItem>
+                <SelectItem value="paid">Paid Orders</SelectItem>
+                <SelectItem value="free">Free Downloads</SelectItem>
                 <SelectItem value="pending">Pending Only</SelectItem>
                 <SelectItem value="failed">Failed Only</SelectItem>
               </SelectContent>
@@ -277,17 +283,25 @@ export default function AdminOrders() {
 
                     {/* Status */}
                     <TableCell className="py-3.5">
-                      <span
-                        className={`inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium border ${
-                          order.status === "paid"
-                            ? "bg-[#eaf5ec] dark:bg-emerald-950/40 text-[#167035] dark:text-emerald-400 border-[#d7ecdc] dark:border-emerald-800"
-                            : order.status === "pending"
-                            ? "bg-[#fdf5e2] dark:bg-amber-950/40 text-[#9e5e00] dark:text-amber-400 border-[#f9ecc8] dark:border-amber-800"
-                            : "bg-red-50 text-red-700 border-red-200"
-                        }`}
-                      >
-                        {order.status}
-                      </span>
+                      {(() => {
+                        const isOrderPaid = order.status === "paid" && order.amountPaise > 0;
+                        const isOrderFree = order.status === "free" || order.amountPaise === 0;
+                        return (
+                          <span
+                            className={`inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium border ${
+                              isOrderPaid
+                                ? "bg-[#eaf5ec] dark:bg-emerald-950/40 text-[#167035] dark:text-emerald-400 border-[#d7ecdc] dark:border-emerald-800"
+                                : isOrderFree
+                                ? "bg-[#eff6ff] dark:bg-blue-950/40 text-[#1d4ed8] dark:text-blue-400 border-[#bfdbfe] dark:border-blue-800"
+                                : order.status === "pending"
+                                ? "bg-[#fdf5e2] dark:bg-amber-950/40 text-[#9e5e00] dark:text-amber-400 border-[#f9ecc8] dark:border-amber-800"
+                                : "bg-red-50 text-red-700 border-red-200"
+                            }`}
+                          >
+                            {isOrderFree ? "free" : order.status}
+                          </span>
+                        );
+                      })()}
                     </TableCell>
 
                     {/* Date */}
@@ -343,17 +357,25 @@ export default function AdminOrders() {
                       {isCopied ? <Check className="h-3 w-3 text-emerald-600" /> : <Copy className="h-3 w-3" />}
                     </button>
                   </div>
-                  <span
-                    className={`inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium border ${
-                      order.status === "paid"
-                        ? "bg-[#eaf5ec] dark:bg-emerald-950/40 text-[#167035] dark:text-emerald-400 border-[#d7ecdc] dark:border-emerald-800"
-                        : order.status === "pending"
-                        ? "bg-[#fdf5e2] dark:bg-amber-950/40 text-[#9e5e00] dark:text-amber-400 border-[#f9ecc8] dark:border-amber-800"
-                        : "bg-red-50 text-red-700 border-red-200"
-                    }`}
-                  >
-                    {order.status}
-                  </span>
+                  {(() => {
+                    const isOrderPaid = order.status === "paid" && order.amountPaise > 0;
+                    const isOrderFree = order.status === "free" || order.amountPaise === 0;
+                    return (
+                      <span
+                        className={`inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium border ${
+                          isOrderPaid
+                            ? "bg-[#eaf5ec] dark:bg-emerald-950/40 text-[#167035] dark:text-emerald-400 border-[#d7ecdc] dark:border-emerald-800"
+                            : isOrderFree
+                            ? "bg-[#eff6ff] dark:bg-blue-950/40 text-[#1d4ed8] dark:text-blue-400 border-[#bfdbfe] dark:border-blue-800"
+                            : order.status === "pending"
+                            ? "bg-[#fdf5e2] dark:bg-amber-950/40 text-[#9e5e00] dark:text-amber-400 border-[#f9ecc8] dark:border-amber-800"
+                            : "bg-red-50 text-red-700 border-red-200"
+                        }`}
+                      >
+                        {isOrderFree ? "free" : order.status}
+                      </span>
+                    );
+                  })()}
                 </div>
 
                 {/* Resource Title */}

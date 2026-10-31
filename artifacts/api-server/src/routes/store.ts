@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { db } from "@workspace/db";
 import { sectionsTable, cardsTable, ordersTable, pageViewsTable, feedbackTable } from "@workspace/db";
-import { eq, and, ilike, or, sql, asc, inArray } from "drizzle-orm";
+import { eq, and, ilike, or, sql, asc, inArray, gt } from "drizzle-orm";
 import { ensureDefaultSections, DEFAULT_CORE_SECTIONS } from "../lib/ensure-sections.js";
 
 const router = Router();
@@ -32,7 +32,7 @@ router.get("/store/stats", async (req, res) => {
     const [freeResources] = await db.select({ count: sql<number>`count(*)::int` }).from(cardsTable).where(and(eq(cardsTable.isVisible, true), eq(cardsTable.isDeleted, false), eq(cardsTable.isFree, true)));
     const [paidResources] = await db.select({ count: sql<number>`count(*)::int` }).from(cardsTable).where(and(eq(cardsTable.isVisible, true), eq(cardsTable.isDeleted, false), eq(cardsTable.isFree, false)));
     const [totalSections] = await db.select({ count: sql<number>`count(*)::int` }).from(sectionsTable).where(eq(sectionsTable.isVisible, true));
-    const [totalOrders] = await db.select({ count: sql<number>`count(*)::int` }).from(ordersTable).where(eq(ordersTable.status, "paid"));
+    const [totalOrders] = await db.select({ count: sql<number>`count(*)::int` }).from(ordersTable).where(and(eq(ordersTable.status, "paid"), gt(ordersTable.amountPaise, 0)));
     const [totalViews] = await db.select({ count: sql<number>`count(*)::int` }).from(pageViewsTable);
     res.json({
       totalResources: totalResources.count,

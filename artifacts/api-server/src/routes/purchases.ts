@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { db } from "@workspace/db";
 import { ordersTable, cardsTable, downloadsTable } from "@workspace/db";
-import { eq, and } from "drizzle-orm";
+import { eq, and, or } from "drizzle-orm";
 import { supabase, BUCKET_NOTES } from "../supabase.js";
 
 const router = Router();
@@ -17,7 +17,7 @@ router.get("/purchases", async (req, res) => {
       .select({ order: ordersTable, cardTitle: cardsTable.title })
       .from(ordersTable)
       .leftJoin(cardsTable, eq(ordersTable.cardId, cardsTable.id))
-      .where(and(eq(ordersTable.customerPhone, phone), eq(ordersTable.status, "paid")));
+      .where(and(eq(ordersTable.customerPhone, phone), or(eq(ordersTable.status, "paid"), eq(ordersTable.status, "free"))));
     res.json(
       orders.map(({ order, cardTitle }) => ({
         id: order.id,
@@ -50,7 +50,7 @@ router.get("/purchases/:orderId/download/:cardId", async (req, res) => {
     const [order] = await db
       .select()
       .from(ordersTable)
-      .where(and(eq(ordersTable.id, orderId), eq(ordersTable.cardId, cardIdNum), eq(ordersTable.status, "paid")));
+      .where(and(eq(ordersTable.id, orderId), eq(ordersTable.cardId, cardIdNum), or(eq(ordersTable.status, "paid"), eq(ordersTable.status, "free"))));
     if (!order) {
       res.status(403).json({ error: "Purchase not found or unauthorized" });
       return;

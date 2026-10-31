@@ -64,6 +64,18 @@ export default function TermsAndConditions() {
         </p>
       </PolicySection>
 
+      <PolicySection title="Intellectual Property, Attribution & Educational Fair Use">
+        <p>
+          2nd PUC Notes respects intellectual property rights and complies with applicable copyright laws. Original revision summaries, handwritten derivations, formula guides, and solutions created by our contributing educators are proprietary works protected by copyright.
+        </p>
+        <p>
+          Official syllabi, public examination question papers, blueprint marks distributions, and government circulars referenced or linked on this platform remain the intellectual property of the Karnataka School Examination and Assessment Board (KSEAB) and the Department of Pre-University Education (DPUE), Government of Karnataka. Publicly available examination papers and official blueprints are referenced strictly for non-commercial student study and educational guidance under fair-use doctrines. We do not claim ownership of official government documents, and unaugmented official question papers are provided free of charge.
+        </p>
+        <p>
+          Nominal convenience fees charged on select materials apply solely to original, educator-authored study guides, curated step-by-step solutions, formatting, and platform infrastructure/hosting costs. Third-party publication materials, reference books, or copyrighted works requiring explicit publisher authorization are cited with proper attribution. If any author, publisher, or copyright owner believes that their material has been included without appropriate attribution or licensing, please contact us via Telegram or support for immediate review, attribution, or removal.
+        </p>
+      </PolicySection>
+
       <PolicySection title="Limitation of Liability">
         <p>
           While we make every effort to provide accurate and useful study

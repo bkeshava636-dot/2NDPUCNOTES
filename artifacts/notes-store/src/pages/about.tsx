@@ -69,22 +69,22 @@ export default function AboutUs() {
 
       <PolicySection title={t("Core Academic Subjects Covered", "ಒಳಗೊಂಡಿರುವ ಪ್ರಮುಖ ವಿಷಯಗಳು")}>
         <div className="grid gap-3 sm:grid-cols-2 text-sm">
-          <div className="p-3 bg-gray-50 rounded-lg border border-gray-200">
+          <div className="p-3 bg-gray-50 dark:bg-[#151D2E] rounded-lg border border-gray-200 dark:border-[#293548] text-gray-800 dark:text-[#E2E8F0]">
             <strong>Physics (PHY-33):</strong> Mechanics, Electrostatics, Magnetism, Optics, Modern Physics & Semiconductor Electronics with standard board derivations and numerical problems.
           </div>
-          <div className="p-3 bg-gray-50 rounded-lg border border-gray-200">
+          <div className="p-3 bg-gray-50 dark:bg-[#151D2E] rounded-lg border border-gray-200 dark:border-[#293548] text-gray-800 dark:text-[#E2E8F0]">
             <strong>Chemistry (CHEM-34):</strong> Physical, Inorganic, and Organic Chemistry with reaction mechanisms, conversions, IUPAC naming, and reasoning questions.
           </div>
-          <div className="p-3 bg-gray-50 rounded-lg border border-gray-200">
+          <div className="p-3 bg-gray-50 dark:bg-[#151D2E] rounded-lg border border-gray-200 dark:border-[#293548] text-gray-800 dark:text-[#E2E8F0]">
             <strong>Mathematics (MATH-35):</strong> Calculus, Linear Algebra, Vectors, 3D Geometry, Linear Programming, and Probability with step-by-step solutions.
           </div>
-          <div className="p-3 bg-gray-50 rounded-lg border border-gray-200">
+          <div className="p-3 bg-gray-50 dark:bg-[#151D2E] rounded-lg border border-gray-200 dark:border-[#293548] text-gray-800 dark:text-[#E2E8F0]">
             <strong>Biology (BIO-36):</strong> Genetics, Biotechnology, Human Physiology, Ecology, and labelled diagrams compliant with board evaluation standards.
           </div>
-          <div className="p-3 bg-gray-50 rounded-lg border border-gray-200">
+          <div className="p-3 bg-gray-50 dark:bg-[#151D2E] rounded-lg border border-gray-200 dark:border-[#293548] text-gray-800 dark:text-[#E2E8F0]">
             <strong>Computer Science (CS-41):</strong> C++, OOPs concepts, Data Structures, DBMS & SQL queries, Boolean algebra, and computer networking.
           </div>
-          <div className="p-3 bg-gray-50 rounded-lg border border-gray-200">
+          <div className="p-3 bg-gray-50 dark:bg-[#151D2E] rounded-lg border border-gray-200 dark:border-[#293548] text-gray-800 dark:text-[#E2E8F0]">
             <strong>Languages (Kannada, English, Hindi, Sanskrit):</strong> Grammar, textbook summaries, essay structures, and comprehension passages.
           </div>
         </div>

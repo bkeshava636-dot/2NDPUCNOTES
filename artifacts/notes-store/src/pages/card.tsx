@@ -1,4 +1,5 @@
 import { SeoHead } from "@/components/seo-head";
+import { CardAcademicDetails } from "@/components/card-academic-details";
 import { useState } from "react";
 import { useParams, Link, useLocation } from "wouter";
 import { useGetCard } from "@workspace/api-client-react";
@@ -148,9 +149,9 @@ export default function CardPage() {
       </Link>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
-        {/* Left Column: Image Preview (only if available) & Description */}
-        <div className={`space-y-6 ${currentPreview || card.description ? "lg:col-span-7" : "hidden"}`}>
-          {currentPreview && (
+        {/* Left Column: Image Preview / Cover, Description & Detailed Academic Guide */}
+        <div className="lg:col-span-7 space-y-6">
+          {currentPreview ? (
             <div className="bg-white dark:bg-[#151D2E] rounded-2xl border border-[#e2e8f0] dark:border-[#293548] overflow-hidden shadow-xs">
               {/* Main Preview Container */}
               <div className="aspect-[16/10] sm:aspect-video bg-[#f8fafc] dark:bg-[#111827] relative flex items-center justify-center overflow-hidden border-b border-[#eef2f6] dark:border-[#293548]">
@@ -194,17 +195,52 @@ export default function CardPage() {
                 </div>
               )}
             </div>
+          ) : (
+            /* Cover Placeholder when no preview image is uploaded */
+            <div className="bg-white dark:bg-[#151D2E] rounded-2xl border border-[#e2e8f0] dark:border-[#293548] p-6 sm:p-8 text-center space-y-4 shadow-xs">
+              <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-50 dark:bg-[#1C2638] text-[#2563eb] dark:text-[#818CF8] border border-blue-100 dark:border-[#293548] mx-auto">
+                <BookOpen className="h-8 w-8" />
+              </div>
+              <div className="space-y-1.5 max-w-md mx-auto">
+                <Badge className="bg-[#2563eb] dark:bg-[#818CF8] text-white border-0 text-xs font-semibold">
+                  {card.classLevel || "2nd PUC"} • {card.board || "Karnataka KSEAB"}
+                </Badge>
+                <h2 className="text-lg sm:text-xl font-bold text-[#0f172a] dark:text-[#F1F5F9]">
+                  {card.title}
+                </h2>
+                <p className="text-xs text-[#64748b] dark:text-[#A1AEC2]">
+                  {card.chapter ? `${card.chapter} • ` : ""}{card.subject || "Karnataka Pre-University"} • {card.resourceType}
+                </p>
+              </div>
+              <div className="inline-flex items-center gap-2 text-xs font-medium text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-100 dark:border-emerald-900/40 px-3 py-1.5 rounded-full">
+                <ShieldCheck className="h-4 w-4" />
+                <span>{t("Verified Academic Study Material", "ಪರಿಶೀಲಿಸಿದ ಶೈಕ್ಷಣಿಕ ಅಧ್ಯಯನ ಸಾಮಗ್ರಿ")}</span>
+              </div>
+            </div>
           )}
 
           {/* Description Card */}
-          {card.description && (
+          {card.description ? (
             <div className="bg-white dark:bg-[#151D2E] rounded-2xl border border-[#e2e8f0] dark:border-[#293548] p-5 sm:p-6 space-y-2.5 shadow-xs">
               <h2 className="text-sm sm:text-base font-bold text-[#0f172a] dark:text-[#F1F5F9]">{t("About this Resource", "ಸಂಪನ್ಮೂಲದ ವಿವರ")}</h2>
               <p className="text-[#64748b] dark:text-[#A1AEC2] leading-relaxed text-xs sm:text-sm whitespace-pre-line">
                 {card.description}
               </p>
             </div>
+          ) : (
+            <div className="bg-white dark:bg-[#151D2E] rounded-2xl border border-[#e2e8f0] dark:border-[#293548] p-5 sm:p-6 space-y-2.5 shadow-xs">
+              <h2 className="text-sm sm:text-base font-bold text-[#0f172a] dark:text-[#F1F5F9]">{t("About this Resource", "ಸಂಪನ್ಮೂಲದ ವಿವರ")}</h2>
+              <p className="text-[#64748b] dark:text-[#A1AEC2] leading-relaxed text-xs sm:text-sm">
+                {t(
+                  `Standard Karnataka 2nd PUC examination resource for ${card.subject || "Core Subjects"}. Curated to assist students with focused revision, important questions, and authentic board presentation standards.`,
+                  `ಕರ್ನಾಟಕ ದ್ವಿತೀಯ ಪಿಯುಸಿ ${card.subject || "ವಿಷಯಗಳ"} ಪರೀಕ್ಷಾ ತಯಾರಿಗಾಗಿ ರಚಿಸಲಾದ ಅಧಿಕೃತ ಸಂಪನ್ಮೂಲ. ಪರೀಕ್ಷೆಯಲ್ಲಿ ಗರಿಷ್ಠ ಅಂಕ ಗಳಿಸಲು ಇದು ಸಹಕಾರಿಯಾಗಿದೆ.`
+                )}
+              </p>
+            </div>
           )}
+
+          {/* Substantive Academic Context & Curriculum Breakdown */}
+          <CardAcademicDetails card={card} />
         </div>
 
         {/* Right Column: Title, Metadata Chips, Pricing & Purchase CTA */}
@@ -384,6 +420,28 @@ export default function CardPage() {
               <Send className="h-3 w-3" />
               <span>{t("Ask Support", "ಸಹಾಯ ಪಡೆಯಿರಿ")}</span>
             </a>
+          </div>
+
+          {/* Academic Quality Assurance */}
+          <div className="bg-white dark:bg-[#151D2E] rounded-2xl border border-[#e2e8f0] dark:border-[#293548] p-4.5 space-y-3 text-xs shadow-xs">
+            <h3 className="font-bold text-[#0f172a] dark:text-[#F1F5F9] flex items-center gap-2 text-xs">
+              <ShieldCheck className="h-4 w-4 text-[#2563eb] dark:text-[#818CF8]" />
+              <span>{t("Academic Quality Assurance", "ಶೈಕ್ಷಣಿಕ ಗುಣಮಟ್ಟದ ಭರವಸೆ")}</span>
+            </h3>
+            <ul className="space-y-2 text-[#475569] dark:text-[#A1AEC2] text-[11px]">
+              <li className="flex items-center gap-2">
+                <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                <span>{t("100% KSEAB Revised Syllabus Aligned", "ಪೂರ್ಣ ಕೆಎಸ್‌ಇಎಬಿ ಪಠ್ಯಕ್ರಮ ಹೊಂದಾಣಿಕೆ")}</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                <span>{t("High-Resolution Printable PDF Document", "ಮುದ್ರಣಕ್ಕೆ ಸೂಕ್ತವಾದ ಸ್ಪಷ್ಟ PDF ಡಾಕ್ಯುಮೆಂಟ್")}</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                <span>{t("Instant Download & Telegram Support", "ತಕ್ಷಣದ ಡೌನ್‌ಲೋಡ್ & ಟೆಲಿಗ್ರಾಂ ಬೆಂಬಲ")}</span>
+              </li>
+            </ul>
           </div>
         </div>
       </div>

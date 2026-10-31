@@ -4,7 +4,7 @@ import crypto from "crypto";
 import { v4 as uuidv4 } from "uuid";
 import { db } from "@workspace/db";
 import { sectionsTable, cardsTable, ordersTable, customersTable, downloadsTable, pageViewsTable, feedbackTable } from "@workspace/db";
-import { eq, sql, asc, desc, and } from "drizzle-orm";
+import { eq, sql, asc, desc, and, gt, or } from "drizzle-orm";
 import { supabase, BUCKET_NOTES, BUCKET_IMAGES } from "../supabase.js";
 import { ensureDefaultSections, DEFAULT_CORE_SECTIONS } from "../lib/ensure-sections.js";
 
@@ -129,23 +129,36 @@ router.get("/admin/stats", requireAdmin, async (req, res) => {
     await ensureDefaultSections();
 
     // Query each metric with safe fallbacks so one missing or empty table doesn't cause a 500
+    // 1. Total Revenue: ONLY genuine paid orders with amount > 0
     const revenuePromise = db
       .select({ total: sql<number>`coalesce(sum(amount_paise), 0)::int` })
       .from(ordersTable)
-      .where(eq(ordersTable.status, "paid"))
+      .where(and(eq(ordersTable.status, "paid"), gt(ordersTable.amountPaise, 0)))
       .then((rows) => rows[0]?.total ?? 0)
       .catch((err) => {
         req.log?.error?.(err, "Failed to query total revenue");
         return 0;
       });
 
+    // 2. Paid Orders: ONLY successfully paid orders (free downloads must never be included)
     const ordersPromise = db
       .select({ count: sql<number>`count(*)::int` })
       .from(ordersTable)
-      .where(eq(ordersTable.status, "paid"))
+      .where(and(eq(ordersTable.status, "paid"), gt(ordersTable.amountPaise, 0)))
       .then((rows) => rows[0]?.count ?? 0)
       .catch((err) => {
-        req.log?.error?.(err, "Failed to query orders count");
+        req.log?.error?.(err, "Failed to query paid orders count");
+        return 0;
+      });
+
+    // 2b. Free Downloads: Count successful free downloads separately
+    const freeDownloadsPromise = db
+      .select({ count: sql<number>`count(*)::int` })
+      .from(ordersTable)
+      .where(or(eq(ordersTable.status, "free"), eq(ordersTable.amountPaise, 0)))
+      .then((rows) => rows[0]?.count ?? 0)
+      .catch((err) => {
+        req.log?.error?.(err, "Failed to query free downloads count");
         return 0;
       });
 
@@ -168,16 +181,18 @@ router.get("/admin/stats", requireAdmin, async (req, res) => {
         return 0;
       });
 
+    // 5. Unique Student Customers: Paid buyers
     const customersPromise = db
       .select({ count: sql<number>`count(distinct customer_phone)::int` })
       .from(ordersTable)
-      .where(eq(ordersTable.status, "paid"))
+      .where(and(eq(ordersTable.status, "paid"), gt(ordersTable.amountPaise, 0)))
       .then((rows) => rows[0]?.count ?? 0)
       .catch((err) => {
         req.log?.error?.(err, "Failed to query customers count");
         return 0;
       });
 
+    // 6. Total Downloads: ALL successful downloads (free + paid accesses in downloadsTable)
     const downloadsPromise = db
       .select({ count: sql<number>`count(*)::int` })
       .from(downloadsTable)
@@ -207,10 +222,11 @@ router.get("/admin/stats", requireAdmin, async (req, res) => {
         return 0;
       });
 
-    const [totalRevenuePaise, totalOrders, totalCards, totalSections, totalCustomers, totalDownloads, totalPageViews, recentOrders] =
+    const [totalRevenuePaise, totalOrders, freeDownloads, totalCards, totalSections, totalCustomers, totalDownloads, totalPageViews, recentOrders] =
       await Promise.all([
         revenuePromise,
         ordersPromise,
+        freeDownloadsPromise,
         cardsPromise,
         sectionsPromise,
         customersPromise,
@@ -222,6 +238,7 @@ router.get("/admin/stats", requireAdmin, async (req, res) => {
     res.json({
       totalRevenuePaise,
       totalOrders,
+      freeDownloads,
       totalCards,
       totalSections,
       totalCustomers,
@@ -491,16 +508,35 @@ router.delete("/admin/cards/:id", requireAdmin, async (req, res) => {
 router.get("/admin/orders", requireAdmin, async (req, res) => {
   try {
     const page = parseInt((req.query.page as string) || "1") || 1;
+    const statusParam = ((req.query.status as string) || "all").toLowerCase().trim();
     const limit = 20;
     const offset = (page - 1) * limit;
-    const [total] = await db.select({ count: sql<number>`count(*)::int` }).from(ordersTable);
+
+    let filterCondition = undefined;
+    if (statusParam === "paid") {
+      filterCondition = and(eq(ordersTable.status, "paid"), gt(ordersTable.amountPaise, 0));
+    } else if (statusParam === "free") {
+      filterCondition = or(eq(ordersTable.status, "free"), eq(ordersTable.amountPaise, 0));
+    } else if (statusParam === "pending") {
+      filterCondition = eq(ordersTable.status, "pending");
+    } else if (statusParam === "failed") {
+      filterCondition = eq(ordersTable.status, "failed");
+    }
+
+    const [total] = await db
+      .select({ count: sql<number>`count(*)::int` })
+      .from(ordersTable)
+      .where(filterCondition);
+
     const rows = await db
       .select({ order: ordersTable, cardTitle: cardsTable.title })
       .from(ordersTable)
       .leftJoin(cardsTable, eq(ordersTable.cardId, cardsTable.id))
+      .where(filterCondition)
       .orderBy(desc(ordersTable.createdAt))
       .limit(limit)
       .offset(offset);
+
     res.json({
       orders: rows.map(({ order, cardTitle }) => ({
         id: order.id,
@@ -561,8 +597,8 @@ router.get("/admin/customers", requireAdmin, async (req, res) => {
       const orderStats = await db
         .select({
           customerId: ordersTable.customerId,
-          paidOrdersCount: sql<number>`count(case when ${ordersTable.status} = 'paid' then 1 end)::int`,
-          totalSpentPaise: sql<number>`coalesce(sum(case when ${ordersTable.status} = 'paid' then ${ordersTable.amountPaise} else 0 end), 0)::int`,
+          paidOrdersCount: sql<number>`count(case when ${ordersTable.status} = 'paid' and ${ordersTable.amountPaise} > 0 then 1 end)::int`,
+          totalSpentPaise: sql<number>`coalesce(sum(case when ${ordersTable.status} = 'paid' and ${ordersTable.amountPaise} > 0 then ${ordersTable.amountPaise} else 0 end), 0)::int`,
         })
         .from(ordersTable)
         .where(sql`${ordersTable.customerId} IN ${customerIds}`)

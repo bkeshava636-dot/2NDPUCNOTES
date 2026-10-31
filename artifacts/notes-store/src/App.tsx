@@ -109,6 +109,9 @@ function PublicRoutes() {
           <Route path="/terms" component={TermsAndConditions} />
           <Route path="/refund-policy" component={RefundPolicy} />
           <Route path="/contact" component={ContactUs} />
+          <Route path="/contact-us" component={() => <Redirect to="/contact" />} />
+          <Route path="/login" component={() => <Redirect to="/admin/login" />} />
+          <Route path="/register" component={() => <Redirect to="/admin/login" />} />
           <Route path="/contribute" component={ContributePage} />
           <Route component={NotFound} />
         </Switch>
@@ -134,6 +137,7 @@ function Router() {
 import { LanguageProvider } from "@/lib/language-context";
 import { SitePassProvider } from "@/lib/site-pass-context";
 import { ThemeProvider } from "@/lib/theme-context";
+import { AdSenseController } from "@/components/adsense-controller";
 
 function App() {
   return (
@@ -144,6 +148,7 @@ function App() {
             <SitePassProvider>
               <ApiWakeUpGate>
                 <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
+                  <AdSenseController />
                   <Router />
                 </WouterRouter>
                 <Toaster />

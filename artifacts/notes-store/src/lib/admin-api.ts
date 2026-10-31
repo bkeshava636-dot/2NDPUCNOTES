@@ -7,6 +7,8 @@ export interface AdminStatsResponse {
   totalSections: number;
   totalCustomers: number;
   totalDownloads?: number;
+  freeDownloads?: number;
+  totalPageViews?: number;
   recentOrders: Array<{
     id: string;
     cardId: number;

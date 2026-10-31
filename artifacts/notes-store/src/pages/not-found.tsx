@@ -3,8 +3,24 @@ import { AlertCircle, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { MetaNoIndex } from "@/components/meta-noindex";
+import { useEffect } from "react";
 
 export default function NotFound() {
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      try {
+        (window as any).adsbygoogle = (window as any).adsbygoogle || [];
+        (window as any).adsbygoogle.pauseAdRequests = 1;
+        const autoPlacedAds = document.querySelectorAll(".google-auto-placed, ins.adsbygoogle");
+        autoPlacedAds.forEach((ad) => {
+          try {
+            ad.remove();
+          } catch {}
+        });
+      } catch {}
+    }
+  }, []);
+
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-gray-50 dark:bg-[#0B0F19] p-4">
       <MetaNoIndex />

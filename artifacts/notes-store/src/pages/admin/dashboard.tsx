@@ -61,6 +61,22 @@ export default function AdminDashboard() {
       accent: "border-l-blue-500",
     },
     {
+      title: "Free Downloads",
+      value: (stats as any)?.freeDownloads !== undefined ? (stats as any).freeDownloads.toLocaleString() : "0",
+      description: "Complimentary study materials",
+      icon: DownloadCloud,
+      color: "text-cyan-600 dark:text-cyan-400 bg-cyan-50 dark:bg-cyan-950/40 border-cyan-100 dark:border-cyan-800",
+      accent: "border-l-cyan-500",
+    },
+    {
+      title: "Total Downloads",
+      value: (stats as any)?.totalDownloads !== undefined ? (stats as any).totalDownloads.toLocaleString() : "0",
+      description: "All audited material accesses",
+      icon: DownloadCloud,
+      color: "text-teal-600 dark:text-teal-400 bg-teal-50 dark:bg-teal-950/40 border-teal-100 dark:border-teal-800",
+      accent: "border-l-teal-500",
+    },
+    {
       title: "Study Resources",
       value: stats ? stats.totalCards.toLocaleString() : "0",
       description: "Active notes, papers & blueprints",
@@ -83,14 +99,6 @@ export default function AdminDashboard() {
       icon: Users,
       color: "text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 border-amber-100 dark:border-amber-800",
       accent: "border-l-amber-500",
-    },
-    {
-      title: "Total Downloads",
-      value: (stats as any)?.totalDownloads !== undefined ? (stats as any).totalDownloads.toLocaleString() : "0",
-      description: "Audited material accesses",
-      icon: DownloadCloud,
-      color: "text-teal-600 dark:text-teal-400 bg-teal-50 dark:bg-teal-950/40 border-teal-100 dark:border-teal-800",
-      accent: "border-l-teal-500",
     },
     {
       title: "Site Views & Traffic",
@@ -219,7 +227,7 @@ export default function AdminDashboard() {
       )}
 
       {/* Metric KPI Cards (Responsive Grid without truncated labels) */}
-      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-7 gap-3.5 sm:gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-8 gap-3.5 sm:gap-4">
         {statCards.map((card) => {
           const Icon = card.icon;
           return (
@@ -341,7 +349,8 @@ export default function AdminDashboard() {
                 </TableHeader>
                 <TableBody>
                   {stats.recentOrders.map((order) => {
-                    const isPaid = order.status === "paid";
+                    const isPaid = order.status === "paid" && order.amountPaise > 0;
+                    const isFree = order.status === "free" || order.amountPaise === 0;
                     return (
                       <TableRow key={order.id} className="hover:bg-[#f8fafc]/60 dark:hover:bg-[#1C2638]/60 border-b border-[#eef2f6] dark:border-[#293548]">
                         <TableCell className="font-mono text-xs text-[#5a6b82] dark:text-[#A1AEC2] pl-4 py-3">
@@ -377,12 +386,14 @@ export default function AdminDashboard() {
                             className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold border ${
                               isPaid
                                 ? "bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800"
+                                : isFree
+                                ? "bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-800"
                                 : order.status === "pending"
                                 ? "bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-800"
                                 : "bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-400 border-red-200 dark:border-red-800"
                             }`}
                           >
-                            {order.status.toUpperCase()}
+                            {isFree ? "FREE" : order.status.toUpperCase()}
                           </span>
                         </TableCell>
                         <TableCell className="text-xs text-[#64748b] dark:text-[#A1AEC2] whitespace-nowrap pr-4 py-3 text-right">
