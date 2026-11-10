@@ -10,6 +10,7 @@ import {
   ArrowLeft,
   FileText,
   Download,
+  Eye,
   BookOpen,
   Hash,
   FileDown,
@@ -19,6 +20,7 @@ import {
   Sparkles,
   Loader2
 } from "lucide-react";
+import { FreePdfPreviewDialog } from "@/components/free-pdf-preview-dialog";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatRupees } from "@/lib/utils";
 import { TELEGRAM_LINK } from "@/lib/site-config";
@@ -31,6 +33,7 @@ export default function CardPage() {
   const id = parseInt(params.id || "0");
   const [, setLocation] = useLocation();
   const [previewIdx, setPreviewIdx] = useState(0);
+  const [previewOpen, setPreviewOpen] = useState(false);
   const [downloading, setDownloading] = useState(false);
   const { toast } = useToast();
   const { language, t } = useLanguage();
@@ -380,26 +383,41 @@ export default function CardPage() {
                 )}
               </div>
 
-              {/* Purchase / Download Button */}
+              {/* Purchase / View / Download Buttons */}
               {card.isFree ? (
-                <Button 
-                  onClick={handleFreeDownload} 
-                  disabled={downloading}
-                  size="lg" 
-                  className="w-full gap-2 rounded-xl text-sm font-semibold h-11 bg-[#16a34a] hover:bg-[#15803d] text-white shadow-2xs transition-all"
-                >
-                  {downloading ? (
-                    <>
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                      <span>{t("Opening PDF...", "PDF ತೆರೆಯಲಾಗುತ್ತಿದೆ...")}</span>
-                    </>
-                  ) : (
-                    <>
-                      <Download className="h-4 w-4" />
-                      <span>{t("Download Free PDF", "ಉಚಿತ PDF ಡೌನ್‌ಲೋಡ್")}</span>
-                    </>
+                <div className="space-y-2.5">
+                  {card.pdfFileKey && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setPreviewOpen(true)}
+                      size="lg"
+                      className="w-full gap-2 rounded-xl text-sm font-semibold h-11 border-[#bae6fd] dark:border-[#293548] bg-[#f0f9ff] dark:bg-[#1C2638] text-[#0284c7] dark:text-[#818CF8] hover:bg-[#e0f2fe] dark:hover:bg-[#253248] hover:border-[#7dd3fc] dark:hover:border-[#818CF8]/60 shadow-2xs transition-all"
+                    >
+                      <Eye className="h-4 w-4" />
+                      <span>{t("View PDF", "PDF ವೀಕ್ಷಿಸಿ")}</span>
+                    </Button>
                   )}
-                </Button>
+
+                  <Button 
+                    onClick={handleFreeDownload} 
+                    disabled={downloading}
+                    size="lg" 
+                    className="w-full gap-2 rounded-xl text-sm font-semibold h-11 bg-[#16a34a] hover:bg-[#15803d] text-white shadow-2xs transition-all"
+                  >
+                    {downloading ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        <span>{t("Opening PDF...", "PDF ತೆರೆಯಲಾಗುತ್ತಿದೆ...")}</span>
+                      </>
+                    ) : (
+                      <>
+                        <Download className="h-4 w-4" />
+                        <span>{t("Download Free PDF", "ಉಚಿತ PDF ಡೌನ್‌ಲೋಡ್")}</span>
+                      </>
+                    )}
+                  </Button>
+                </div>
               ) : (
                 <Button onClick={handleBuy} size="lg" className="w-full gap-2 rounded-xl text-sm font-semibold h-11 bg-[#2563eb] hover:bg-[#1d4ed8] dark:bg-[#818CF8] dark:hover:bg-[#6366F1] text-white shadow-2xs transition-all">
                   <span>{t("Buy Now →", "ಈಗಲೇ ಖರೀದಿಸಿ →")}</span>
@@ -445,6 +463,15 @@ export default function CardPage() {
           </div>
         </div>
       </div>
+
+      {card.isFree && card.pdfFileKey && (
+        <FreePdfPreviewDialog
+          card={card}
+          open={previewOpen}
+          onOpenChange={setPreviewOpen}
+          onDownload={handleFreeDownload}
+        />
+      )}
     </div>
   );
 }

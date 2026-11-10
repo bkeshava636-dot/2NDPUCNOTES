@@ -2,7 +2,18 @@ import { Router } from "express";
 import { db } from "@workspace/db";
 import { sectionsTable, cardsTable, ordersTable, pageViewsTable, feedbackTable } from "@workspace/db";
 import { eq, and, ilike, or, sql, asc, inArray, gt } from "drizzle-orm";
+import { supabase, BUCKET_NOTES } from "../supabase.js";
 import { ensureDefaultSections, DEFAULT_CORE_SECTIONS } from "../lib/ensure-sections.js";
+
+function extractDriveFileId(url: string): string | null {
+  const matchFile = url.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
+  if (matchFile?.[1]) return matchFile[1];
+  const matchId = url.match(/drive\.google\.com\/(?:open|uc)\?[^#]*[?&]id=([a-zA-Z0-9_-]+)/);
+  if (matchId?.[1]) return matchId[1];
+  const matchFirstParam = url.match(/drive\.google\.com\/(?:open|uc)\?id=([a-zA-Z0-9_-]+)/);
+  if (matchFirstParam?.[1]) return matchFirstParam[1];
+  return null;
+}
 
 const router = Router();
 
@@ -228,6 +239,71 @@ router.get("/cards/:id", async (req, res) => {
   } catch (err) {
     req.log.error(err);
     res.status(500).json({ error: "Failed to fetch card" });
+  }
+});
+
+router.get("/cards/:id/free-view", async (req, res) => {
+  try {
+    res.setHeader("Cache-Control", "no-store");
+    const id = parseInt(req.params.id, 10);
+    if (isNaN(id)) {
+      res.status(404).json({ error: "Not found" });
+      return;
+    }
+    const [card] = await db
+      .select()
+      .from(cardsTable)
+      .where(and(eq(cardsTable.id, id), eq(cardsTable.isVisible, true), eq(cardsTable.isDeleted, false)));
+
+    if (!card) {
+      res.status(404).json({ error: "Card not found" });
+      return;
+    }
+    if (!card.isFree) {
+      res.status(403).json({ error: "View PDF is only available for free resources" });
+      return;
+    }
+    if (!card.pdfFileKey) {
+      res.status(400).json({ error: "No file available for this resource" });
+      return;
+    }
+
+    if (card.pdfFileKey.startsWith("http://") || card.pdfFileKey.startsWith("https://")) {
+      const driveId = extractDriveFileId(card.pdfFileKey);
+      if (driveId) {
+        res.json({
+          viewUrl: `https://drive.google.com/file/d/${driveId}/preview`,
+          openTabUrl: `https://drive.google.com/file/d/${driveId}/view`,
+          downloadUrl: `https://drive.google.com/uc?export=download&id=${driveId}`,
+        });
+        return;
+      }
+      res.json({
+        viewUrl: card.pdfFileKey,
+        openTabUrl: card.pdfFileKey,
+        downloadUrl: card.pdfFileKey,
+      });
+      return;
+    }
+
+    const { data, error } = await supabase.storage
+      .from(BUCKET_NOTES)
+      .createSignedUrl(card.pdfFileKey, 3600);
+
+    if (error || !data?.signedUrl) {
+      req.log.error(error);
+      res.status(500).json({ error: "Could not generate preview link" });
+      return;
+    }
+
+    res.json({
+      viewUrl: data.signedUrl,
+      openTabUrl: data.signedUrl,
+      downloadUrl: data.signedUrl,
+    });
+  } catch (err) {
+    req.log.error(err);
+    res.status(500).json({ error: "Failed to resolve free PDF preview" });
   }
 });
 

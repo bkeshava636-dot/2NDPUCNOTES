@@ -1,13 +1,15 @@
+import { useState } from "react";
 import { Link } from "wouter";
 import { Card as CardType } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { FileText, Download } from "lucide-react";
+import { FileText, Download, Eye } from "lucide-react";
 import { formatRupees } from "@/lib/utils";
 import { useLanguage } from "@/lib/language-context";
 import { getSubjectDisplayName, getResourceTypeDisplayName } from "@/lib/site-navigation";
+import { FreePdfPreviewDialog } from "@/components/free-pdf-preview-dialog";
 
 function getSubjectBadgeStyle(subject?: string) {
   if (!subject) return "bg-[#f0f4f9] dark:bg-[#1C2638] text-[#475569] dark:text-[#A1AEC2] border-[#e2e8f0] dark:border-[#293548]";
@@ -27,6 +29,7 @@ function getSubjectBadgeStyle(subject?: string) {
 export function CardItem({ card }: { card: CardType }) {
   const queryClient = useQueryClient();
   const { language, t } = useLanguage();
+  const [previewOpen, setPreviewOpen] = useState(false);
   const isKn = language === "kn";
   const hasDiscount = Boolean(
     !card.isFree &&
@@ -39,6 +42,7 @@ export function CardItem({ card }: { card: CardType }) {
   };
 
   return (
+    <>
     <Link 
       href={`/card/${card.id}`} 
       onPointerEnter={prefetchCard}
@@ -179,27 +183,54 @@ export function CardItem({ card }: { card: CardType }) {
             )}
           </div>
 
-          <Button
-            variant={card.isFree ? "outline" : "default"}
-            size="sm"
-            className={`gap-1.5 rounded-lg text-xs font-semibold px-3.5 h-8.5 transition-all ${
-              card.isFree
-                ? "border-[#cbd5e1] dark:border-[#293548] text-[#334155] dark:text-[#F1F5F9] hover:bg-[#f1f5f9] dark:hover:bg-[#1C2638] hover:border-[#94a3b8] dark:hover:border-[#3b4b63] shadow-none"
-                : "bg-[#2563eb] hover:bg-[#1d4ed8] dark:bg-[#818CF8] dark:hover:bg-[#6366F1] text-white dark:text-[#0B0F19] dark:font-bold shadow-2xs"
-            }`}
-          >
-            {card.isFree ? (
-              <>
-                <Download className="h-3.5 w-3.5 text-[#475569] dark:text-[#A1AEC2]" />
-                <span>{t("Get PDF", "PDF ಪಡೆಯಿರಿ")}</span>
-              </>
-            ) : (
-              <span>{t("Buy Now", "ಖರೀದಿಸಿ")}</span>
+          <div className="flex items-center gap-1.5">
+            {card.isFree && card.pdfFileKey && (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setPreviewOpen(true);
+                }}
+                className="gap-1.5 rounded-lg text-xs font-semibold px-2.5 h-8.5 border-[#bae6fd] dark:border-[#293548] bg-[#f0f9ff] dark:bg-[#1C2638] text-[#0284c7] dark:text-[#818CF8] hover:bg-[#e0f2fe] dark:hover:bg-[#253248] hover:border-[#7dd3fc] dark:hover:border-[#818CF8]/60 shadow-none"
+              >
+                <Eye className="h-3.5 w-3.5" />
+                <span>{t("View PDF", "PDF ನೋಡಿ")}</span>
+              </Button>
             )}
-          </Button>
+
+            <Button
+              variant={card.isFree ? "outline" : "default"}
+              size="sm"
+              className={`gap-1.5 rounded-lg text-xs font-semibold px-3 h-8.5 transition-all ${
+                card.isFree
+                  ? "border-[#cbd5e1] dark:border-[#293548] text-[#334155] dark:text-[#F1F5F9] hover:bg-[#f1f5f9] dark:hover:bg-[#1C2638] hover:border-[#94a3b8] dark:hover:border-[#3b4b63] shadow-none"
+                  : "bg-[#2563eb] hover:bg-[#1d4ed8] dark:bg-[#818CF8] dark:hover:bg-[#6366F1] text-white dark:text-[#0B0F19] dark:font-bold shadow-2xs"
+              }`}
+            >
+              {card.isFree ? (
+                <>
+                  <Download className="h-3.5 w-3.5 text-[#475569] dark:text-[#A1AEC2]" />
+                  <span>{t("Get PDF", "PDF ಪಡೆಯಿರಿ")}</span>
+                </>
+              ) : (
+                <span>{t("Buy Now", "ಖರೀದಿಸಿ")}</span>
+              )}
+            </Button>
+          </div>
         </CardFooter>
       </Card>
     </Link>
+    {card.isFree && card.pdfFileKey && (
+      <FreePdfPreviewDialog
+        card={card}
+        open={previewOpen}
+        onOpenChange={setPreviewOpen}
+      />
+    )}
+    </>
   );
 }
 
