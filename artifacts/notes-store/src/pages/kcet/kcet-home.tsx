@@ -1,5 +1,5 @@
-import { useState, useMemo } from "react";
-import { Link } from "wouter";
+import { useState, useMemo, useEffect } from "react";
+import { Link, useSearch } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import {
   fetchKcetStats,
@@ -43,12 +43,28 @@ import {
 import { SeoHead } from "@/components/seo-head";
 
 export default function KcetHome() {
+  const searchStr = useSearch();
   const [selectedSubject, setSelectedSubject] = useState<string>("all");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [selectedChapter, setSelectedChapter] = useState<string>("all");
   const [selectedYear, setSelectedYear] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [previewMaterial, setPreviewMaterial] = useState<KcetMaterial | null>(null);
+
+  useEffect(() => {
+    const params = new URLSearchParams(searchStr);
+    const subParam = params.get("subject");
+    const catParam = params.get("category");
+    if (subParam) {
+      setSelectedSubject(subParam);
+      setSelectedCategory("all");
+      setSelectedChapter("all");
+    } else if (catParam) {
+      setSelectedCategory(catParam);
+      setSelectedSubject("all");
+      setSelectedChapter("all");
+    }
+  }, [searchStr]);
 
   const { data: stats } = useQuery({
     queryKey: ["kcet-stats"],
