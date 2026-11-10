@@ -50,6 +50,37 @@
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://2ndpucnotes.vercel.app/" />
 
+    <!-- Dynamic Self-Canonical & Robots Bootstrap before React hydrates -->
+    <script>
+      (function() {
+        try {
+          var raw = window.location.pathname || '/';
+          var cleanPath = raw === '/' ? '/' : '/' + raw.replace(/^\/+|\/+$/g, '');
+          var fullUrl = 'https://2ndpucnotes.vercel.app' + cleanPath;
+          var canonical = document.querySelector('link[rel="canonical"]');
+          if (!canonical) {
+            canonical = document.createElement('link');
+            canonical.rel = 'canonical';
+            document.head.appendChild(canonical);
+          }
+          canonical.href = fullUrl;
+          var ogUrl = document.querySelector('meta[property="og:url"]');
+          if (ogUrl) ogUrl.setAttribute('content', fullUrl);
+
+          var lp = cleanPath.toLowerCase();
+          var noIndexRoute = lp.indexOf('/admin') === 0 ||
+                             lp.indexOf('/checkout') === 0 ||
+                             lp.indexOf('/payment-success') === 0 ||
+                             lp.indexOf('/my-purchases') === 0 ||
+                             lp === '/404';
+          var robotsMeta = document.querySelector('meta[name="robots"]');
+          if (robotsMeta) {
+            robotsMeta.setAttribute('content', noIndexRoute ? 'noindex, nofollow' : 'index, follow');
+          }
+        } catch (e) {}
+      })();
+    </script>
+
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="2PUC - Karnataka 2nd PUC Science Notes & Study Materials" />

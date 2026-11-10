@@ -1,5 +1,6 @@
 import { GraduationCap, BookOpen, Award, CheckCircle2, ShieldCheck, Users, HelpCircle, HeartHandshake } from "lucide-react";
 import { LegalPage, PolicySection } from "@/components/legal-page";
+import { SeoHead } from "@/components/seo-head";
 import { useLanguage } from "@/lib/language-context";
 
 export default function AboutUs() {
@@ -14,6 +15,11 @@ export default function AboutUs() {
       )}
       icon={GraduationCap}
     >
+      <SeoHead
+        title="About 2PUC — Academic Mission & Study Guidelines | 2PUC"
+        description="Learn about 2PUC (2nd PUC Notes): empowering Karnataka 2nd PUC Science & KCET students with KSEAB syllabus-aligned notes, model papers, blueprints & lab manuals."
+        canonicalPath="/about"
+      />
       <div className="grid gap-4 sm:grid-cols-3 mb-8">
         <div className="rounded-xl border border-blue-100 dark:border-blue-900/40 bg-blue-50/60 dark:bg-blue-950/20 p-4">
           <BookOpen className="h-6 w-6 text-primary mb-2" />

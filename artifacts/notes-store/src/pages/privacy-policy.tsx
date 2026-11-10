@@ -1,5 +1,6 @@
 import { ShieldCheck } from "lucide-react";
 import { LegalPage, PolicySection } from "@/components/legal-page";
+import { SeoHead } from "@/components/seo-head";
 
 export default function PrivacyPolicy() {
   return (
@@ -8,6 +9,11 @@ export default function PrivacyPolicy() {
       description="Learn how 2nd PUC Notes collects, uses, and protects your personal information while you access our notes and study materials."
       icon={ShieldCheck}
     >
+      <SeoHead
+        title="Privacy Policy | 2PUC Notes"
+        description="Privacy Policy for 2nd PUC Notes and KCET Arena explaining data collection, Razorpay payments, and cookie practices."
+        canonicalPath="/privacy-policy"
+      />
       <p className="mb-6 text-sm text-gray-400">
         Last Updated: 18 July 2026
       </p>

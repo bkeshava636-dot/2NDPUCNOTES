@@ -14,22 +14,22 @@ import { KcetLayout } from "@/components/kcet/kcet-layout";
 import { lazy, Suspense } from "react";
 import { Spinner } from "@/components/ui/spinner";
 
-// Core Public Pages
+// Core Public SEO Pages (Eagerly loaded so Googlebot renders full content without Suspense spinner)
 import Home from "@/pages/home";
-const SubjectPage = lazy(() => import("@/pages/subject"));
-const CategoryPage = lazy(() => import("@/pages/category"));
-const CardPage = lazy(() => import("@/pages/card"));
+import SubjectPage from "@/pages/subject";
+import CategoryPage from "@/pages/category";
+import CardPage from "@/pages/card";
+import AboutUs from "@/pages/about";
+import PrivacyPolicy from "@/pages/privacy-policy";
+import TermsAndConditions from "@/pages/terms-and-conditions";
+import RefundPolicy from "@/pages/refund-policy";
+import ContactUs from "@/pages/contact-us";
+import ContributePage from "@/pages/contribute";
+
+// Transactional Pages (Code-split & NoIndex)
 const Checkout = lazy(() => import("@/pages/checkout"));
 const PaymentSuccess = lazy(() => import("@/pages/payment-success"));
 const MyPurchases = lazy(() => import("@/pages/my-purchases"));
-
-// Code-split Legal Pages
-const AboutUs = lazy(() => import("@/pages/about"));
-const PrivacyPolicy = lazy(() => import("@/pages/privacy-policy"));
-const TermsAndConditions = lazy(() => import("@/pages/terms-and-conditions"));
-const RefundPolicy = lazy(() => import("@/pages/refund-policy"));
-const ContactUs = lazy(() => import("@/pages/contact-us"));
-const ContributePage = lazy(() => import("@/pages/contribute"));
 
 // Code-split Admin Pages (keeps admin bundles separate from public store)
 const AdminLogin = lazy(() => import("@/pages/admin/login"));

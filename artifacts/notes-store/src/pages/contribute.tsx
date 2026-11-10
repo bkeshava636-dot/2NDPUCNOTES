@@ -26,6 +26,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/lib/language-context";
+import { SeoHead } from "@/components/seo-head";
 
 // User's Google Apps Script Web App that saves uploads straight to their Google Drive
 const GOOGLE_SCRIPT_WEBAPP_URL =
@@ -313,6 +314,11 @@ export default function ContributePage() {
 
   return (
     <div className="bg-[#f8fafc] dark:bg-[#0B0F19] min-h-[calc(100vh-3.5rem)] py-8 sm:py-12">
+      <SeoHead
+        title="Contribute & Share 2nd PUC Study Materials | 2PUC Notes"
+        description="Upload and share Karnataka 2nd PUC PDF notes, model question papers, and solved question banks with students across Karnataka."
+        canonicalPath="/contribute"
+      />
       <div className="container max-w-4xl mx-auto px-4">
         {/* Header Banner */}
         <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-10">

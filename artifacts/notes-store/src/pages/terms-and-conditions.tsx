@@ -1,5 +1,6 @@
 import { FileText } from "lucide-react";
 import { LegalPage, PolicySection } from "@/components/legal-page";
+import { SeoHead } from "@/components/seo-head";
 
 export default function TermsAndConditions() {
   return (
@@ -8,6 +9,11 @@ export default function TermsAndConditions() {
       description="Please read these terms carefully before using 2nd PUC Notes or purchasing our digital study materials."
       icon={FileText}
     >
+      <SeoHead
+        title="Terms & Conditions | 2PUC Notes"
+        description="Terms & Conditions, educational fair-use policy, and licensing guidelines for 2nd PUC Notes."
+        canonicalPath="/terms"
+      />
       <p className="mb-6 text-sm text-gray-400">
         Last Updated: 18 July 2026
       </p>

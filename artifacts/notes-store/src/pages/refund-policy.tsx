@@ -1,5 +1,6 @@
 import { RotateCcw } from "lucide-react";
 import { LegalPage, PolicySection } from "@/components/legal-page";
+import { SeoHead } from "@/components/seo-head";
 
 export default function RefundPolicy() {
   return (
@@ -8,6 +9,11 @@ export default function RefundPolicy() {
       description="Our refund policy for digital notes and study materials purchased through 2nd PUC Notes."
       icon={RotateCcw}
     >
+      <SeoHead
+        title="Refund Policy | 2PUC Notes"
+        description="Digital product refund and purchase resolution policy for 2nd PUC Notes."
+        canonicalPath="/refund-policy"
+      />
       <p className="mb-6 text-sm text-gray-400">
         Last Updated: 18 July 2026
       </p>
