@@ -31,8 +31,7 @@ export function KcetFooter() {
     setPaneerModalOpen(true);
   };
 
-  const navigateFilter = (key: "subject" | "category", value: string) => {
-    setLocation(`/kcet?${key}=${encodeURIComponent(value)}`);
+  const scrollTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -151,13 +150,13 @@ export function KcetFooter() {
               <ul className="space-y-2 text-sm sm:text-xs">
                 {subjectList.map((s) => (
                   <li key={s.id}>
-                    <button
-                      type="button"
-                      onClick={() => navigateFilter("subject", s.name)}
-                      className="hover:text-sky-600 dark:hover:text-cyan-400 transition-colors text-left cursor-pointer"
+                    <Link
+                      href={`/kcet/subject/${s.slug}`}
+                      onClick={scrollTop}
+                      className="hover:text-sky-600 dark:hover:text-cyan-400 transition-colors inline-block"
                     >
                       {s.name}
-                    </button>
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -171,13 +170,13 @@ export function KcetFooter() {
               <ul className="space-y-2 text-sm sm:text-xs">
                 {categoryList.map((c) => (
                   <li key={c.id}>
-                    <button
-                      type="button"
-                      onClick={() => navigateFilter("category", c.name)}
-                      className="hover:text-sky-600 dark:hover:text-cyan-400 transition-colors text-left cursor-pointer"
+                    <Link
+                      href={`/kcet/category/${c.slug}`}
+                      onClick={scrollTop}
+                      className="hover:text-sky-600 dark:hover:text-cyan-400 transition-colors inline-block"
                     >
                       {c.name}
-                    </button>
+                    </Link>
                   </li>
                 ))}
               </ul>

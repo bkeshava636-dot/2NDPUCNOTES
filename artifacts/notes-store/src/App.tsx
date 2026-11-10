@@ -45,8 +45,12 @@ const AdminAnalytics = lazy(() => import("@/pages/admin/analytics"));
 const AdminFeedback = lazy(() => import("@/pages/admin/feedback"));
 const AdminSettings = lazy(() => import("@/pages/admin/settings"));
 
-// Code-split KCET Arena & KCET Admin Pages (strictly isolated from 2nd PUC)
-const KcetHome = lazy(() => import("@/pages/kcet/kcet-home"));
+// Core KCET SEO Pages (Eagerly loaded so Googlebot renders full content cleanly)
+import KcetHome from "@/pages/kcet/kcet-home";
+import KcetCategoryPage from "@/pages/kcet/kcet-category";
+import KcetSubjectPage from "@/pages/kcet/kcet-subject";
+
+// Code-split KCET Contribute & Admin Pages (strictly isolated from 2nd PUC)
 const KcetContribute = lazy(() => import("@/pages/kcet/kcet-contribute"));
 const KcetAdminDashboard = lazy(() => import("@/pages/admin/kcet/kcet-admin-dashboard"));
 const KcetAdminMaterials = lazy(() => import("@/pages/admin/kcet/kcet-admin-materials"));
@@ -145,6 +149,8 @@ function KcetRoutes() {
       <Suspense fallback={<RouteLoadingFallback />}>
         <Switch>
           <Route path="/kcet" component={KcetHome} />
+          <Route path="/kcet/subject/:slug" component={KcetSubjectPage} />
+          <Route path="/kcet/category/:slug" component={KcetCategoryPage} />
           <Route path="/kcet/contribute" component={KcetContribute} />
           <Route component={KcetHome} />
         </Switch>

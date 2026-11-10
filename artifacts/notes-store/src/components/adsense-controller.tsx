@@ -55,6 +55,8 @@ export function isRouteEligibleForAds(path: string): boolean {
 
   if (/^\/subject\/[a-z0-9-]+$/.test(normalized)) return true;
   if (/^\/category\/[a-z0-9-]+$/.test(normalized)) return true;
+  if (/^\/kcet\/subject\/[a-z0-9-]+$/.test(normalized)) return true;
+  if (/^\/kcet\/category\/[a-z0-9-]+$/.test(normalized)) return true;
   if (/^\/section\/[0-9]+$/.test(normalized)) return true;
   if (/^\/card\/[0-9]+$/.test(normalized)) return true;
 
