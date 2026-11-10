@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Footer } from "@/components/footer";
 import { ShoppingBag, Eye, Send, Search, Languages, Clock, Sparkles, UploadCloud, Home as HomeIcon } from "lucide-react";
 import { BrandLogo } from "@/components/brand-logo";
+import { ModeTogglePill } from "@/components/mode-toggle-pill";
 import { FloatingFeedback } from "@/components/floating-feedback";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { usePageViewTracker } from "@/hooks/use-page-view-tracker";
@@ -58,8 +59,10 @@ export function PublicLayout({ children }: { children: ReactNode }) {
       */}
       <header className="sticky top-0 z-50 w-full border-b border-[#e2e8f0] dark:border-[#293548] bg-white dark:bg-[#0B0F19] shadow-2xs transition-colors">
         <div className="container flex h-14 sm:h-15 items-center justify-between px-3 sm:px-4 max-w-5xl mx-auto">
-          {/* Left Brand & View Count */}
-          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+          {/* Top-Left Mode Toggle, Brand & View Count */}
+          <div className="flex items-center gap-1.5 sm:gap-2.5 min-w-0">
+            <ModeTogglePill />
+
             <Link
               href="/"
               className="flex items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2563eb]/40 rounded-lg p-0.5 transition-opacity hover:opacity-90 shrink-0"
@@ -76,7 +79,7 @@ export function PublicLayout({ children }: { children: ReactNode }) {
                     tabIndex={0}
                     role="status"
                     aria-label={`${viewData.count} total site visits to 2PUC notes`}
-                    className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-0.5 rounded-full bg-[#f8fafc] dark:bg-[#151D2E] border border-[#cbd5e1] dark:border-[#293548] text-[11px] sm:text-xs font-semibold text-[#334155] dark:text-[#94A3B8] shadow-2xs select-none cursor-default focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#2563eb] dark:focus-visible:ring-[#818CF8]"
+                    className="hidden sm:flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-0.5 rounded-full bg-[#f8fafc] dark:bg-[#151D2E] border border-[#cbd5e1] dark:border-[#293548] text-[11px] sm:text-xs font-semibold text-[#334155] dark:text-[#94A3B8] shadow-2xs select-none cursor-default focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#2563eb] dark:focus-visible:ring-[#818CF8]"
                   >
                     <Eye className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-[#2563eb] dark:text-[#818CF8] shrink-0" aria-hidden="true" />
                     <span className="font-mono tracking-tight font-bold">{viewData.count.toLocaleString()}</span>

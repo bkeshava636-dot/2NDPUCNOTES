@@ -9,6 +9,7 @@ import { AdminLayout } from "@/components/layout/admin-layout";
 import { AdminGuard } from "@/components/admin-guard";
 import { AdminErrorBoundary } from "@/components/admin-error-boundary";
 import { ApiWakeUpGate } from "@/components/api-wake-up-gate";
+import { KcetLayout } from "@/components/kcet/kcet-layout";
 
 import { lazy, Suspense } from "react";
 import { Spinner } from "@/components/ui/spinner";
@@ -43,6 +44,16 @@ const AdminDownloads = lazy(() => import("@/pages/admin/downloads"));
 const AdminAnalytics = lazy(() => import("@/pages/admin/analytics"));
 const AdminFeedback = lazy(() => import("@/pages/admin/feedback"));
 const AdminSettings = lazy(() => import("@/pages/admin/settings"));
+
+// Code-split KCET Arena & KCET Admin Pages (strictly isolated from 2nd PUC)
+const KcetHome = lazy(() => import("@/pages/kcet/kcet-home"));
+const KcetContribute = lazy(() => import("@/pages/kcet/kcet-contribute"));
+const KcetAdminDashboard = lazy(() => import("@/pages/admin/kcet/kcet-admin-dashboard"));
+const KcetAdminMaterials = lazy(() => import("@/pages/admin/kcet/kcet-admin-materials"));
+const KcetAdminMaterialForm = lazy(() => import("@/pages/admin/kcet/kcet-admin-material-form"));
+const KcetAdminTaxonomy = lazy(() => import("@/pages/admin/kcet/kcet-admin-taxonomy"));
+const KcetAdminContributions = lazy(() => import("@/pages/admin/kcet/kcet-admin-contributions"));
+const KcetAdminAnalytics = lazy(() => import("@/pages/admin/kcet/kcet-admin-analytics"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -82,6 +93,14 @@ function AdminRoutes() {
               <Route path="/admin/analytics" component={AdminAnalytics} />
               <Route path="/admin/feedback" component={AdminFeedback} />
               <Route path="/admin/settings" component={AdminSettings} />
+              {/* Isolated KCET Admin Routes (Shared Auth) */}
+              <Route path="/admin/kcet" component={KcetAdminDashboard} />
+              <Route path="/admin/kcet/materials" component={KcetAdminMaterials} />
+              <Route path="/admin/kcet/materials/new" component={KcetAdminMaterialForm} />
+              <Route path="/admin/kcet/materials/:id/edit" component={KcetAdminMaterialForm} />
+              <Route path="/admin/kcet/taxonomy" component={KcetAdminTaxonomy} />
+              <Route path="/admin/kcet/contributions" component={KcetAdminContributions} />
+              <Route path="/admin/kcet/analytics" component={KcetAdminAnalytics} />
               <Route component={NotFound} />
             </Switch>
           </Suspense>
@@ -120,6 +139,40 @@ function PublicRoutes() {
   );
 }
 
+function KcetRoutes() {
+  return (
+    <KcetLayout>
+      <Suspense fallback={<RouteLoadingFallback />}>
+        <Switch>
+          <Route path="/kcet" component={KcetHome} />
+          <Route path="/kcet/contribute" component={KcetContribute} />
+          <Route component={KcetHome} />
+        </Switch>
+      </Suspense>
+    </KcetLayout>
+  );
+}
+
+function RootOrPublicRoutes() {
+  const { isKcet } = useAppMode();
+  return (
+    <Switch>
+      <Route path="/">
+        {isKcet ? (
+          <KcetLayout>
+            <Suspense fallback={<RouteLoadingFallback />}>
+              <KcetHome />
+            </Suspense>
+          </KcetLayout>
+        ) : (
+          <PublicRoutes />
+        )}
+      </Route>
+      <Route component={PublicRoutes} />
+    </Switch>
+  );
+}
+
 function Router() {
   return (
     <Switch>
@@ -129,7 +182,9 @@ function Router() {
         </Suspense>
       </Route>
       <Route path="/admin/*" component={AdminRoutes} />
-      <Route path="/*" component={PublicRoutes} />
+      <Route path="/kcet" component={KcetRoutes} />
+      <Route path="/kcet/*" component={KcetRoutes} />
+      <Route path="/*" component={RootOrPublicRoutes} />
     </Switch>
   );
 }
@@ -137,6 +192,8 @@ function Router() {
 import { LanguageProvider } from "@/lib/language-context";
 import { SitePassProvider } from "@/lib/site-pass-context";
 import { ThemeProvider } from "@/lib/theme-context";
+import { AppModeProvider, useAppMode } from "@/lib/app-mode-context";
+import { ModeTransitionOverlay } from "@/components/mode-transition-overlay";
 import { AdSenseController } from "@/components/adsense-controller";
 
 function App() {
@@ -146,13 +203,16 @@ function App() {
         <ThemeProvider>
           <LanguageProvider>
             <SitePassProvider>
-              <ApiWakeUpGate>
-                <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
-                  <AdSenseController />
-                  <Router />
-                </WouterRouter>
-                <Toaster />
-              </ApiWakeUpGate>
+              <AppModeProvider>
+                <ApiWakeUpGate>
+                  <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
+                    <AdSenseController />
+                    <Router />
+                    <ModeTransitionOverlay />
+                  </WouterRouter>
+                  <Toaster />
+                </ApiWakeUpGate>
+              </AppModeProvider>
             </SitePassProvider>
           </LanguageProvider>
         </ThemeProvider>

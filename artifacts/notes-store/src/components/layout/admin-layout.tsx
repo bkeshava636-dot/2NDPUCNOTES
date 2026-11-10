@@ -20,7 +20,9 @@ import {
   ChevronRight,
   BarChart3,
   MessageSquarePlus,
-  Radio
+  Radio,
+  Rocket,
+  UploadCloud
 } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -70,7 +72,31 @@ const NAV_GROUPS: NavGroup[] = [
   },
 ];
 
-const ALL_NAV_ITEMS = NAV_GROUPS.flatMap((g) => g.items);
+const KCET_NAV_GROUPS: NavGroup[] = [
+  {
+    title: "KCET ARENA OVERVIEW",
+    items: [
+      { href: "/admin/kcet", label: "KCET Dashboard", icon: Rocket },
+      { href: "/admin/kcet/analytics", label: "KCET Downloads Audit", icon: BarChart3, badge: "Live" },
+    ],
+  },
+  {
+    title: "KCET MATERIALS & TAXONOMY",
+    items: [
+      { href: "/admin/kcet/materials", label: "KCET Study Materials", icon: Files },
+      { href: "/admin/kcet/materials/new", label: "Add KCET Material", icon: PlusCircle },
+      { href: "/admin/kcet/taxonomy", label: "KCET Subjects & Categories", icon: FolderTree },
+    ],
+  },
+  {
+    title: "KCET COMMUNITY",
+    items: [
+      { href: "/admin/kcet/contributions", label: "Student Contributions", icon: UploadCloud },
+    ],
+  },
+];
+
+const ALL_NAV_ITEMS = [...NAV_GROUPS.flatMap((g) => g.items), ...KCET_NAV_GROUPS.flatMap((g) => g.items)];
 
 function preloadAdminRoute(href: string) {
   if (href === "/admin/dashboard") import("@/pages/admin/dashboard");
@@ -118,9 +144,39 @@ export function AdminLayout({ children }: { children: ReactNode }) {
     });
   };
 
+  const isKcetAdmin = location.startsWith("/admin/kcet");
+  const activeNavGroups = isKcetAdmin ? KCET_NAV_GROUPS : NAV_GROUPS;
+
+  const BoardSwitcher = ({ onSwitch }: { onSwitch?: () => void }) => (
+    <div className="p-1 rounded-xl bg-[#f1f5f9] dark:bg-[#0B0F19] border border-[#e2e8f0] dark:border-[#293548] grid grid-cols-2 gap-1">
+      <Link href="/admin/dashboard" onClick={onSwitch}>
+        <div
+          className={`text-center py-1.5 px-2 rounded-lg text-[11px] font-bold transition-all cursor-pointer ${
+            !isKcetAdmin
+              ? "bg-white dark:bg-[#1C2638] text-[#1856b8] dark:text-[#818CF8] shadow-2xs border border-[#dce8fa] dark:border-[#293548]"
+              : "text-[#64748b] dark:text-[#94A3B8] hover:text-[#0f172a] dark:hover:text-white"
+          }`}
+        >
+          2nd PUC Admin
+        </div>
+      </Link>
+      <Link href="/admin/kcet" onClick={onSwitch}>
+        <div
+          className={`text-center py-1.5 px-2 rounded-lg text-[11px] font-bold transition-all cursor-pointer ${
+            isKcetAdmin
+              ? "bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-sm"
+              : "text-[#64748b] dark:text-[#94A3B8] hover:text-cyan-600 dark:hover:text-cyan-400"
+          }`}
+        >
+          KCET Admin 🚀
+        </div>
+      </Link>
+    </div>
+  );
+
   const NavLinks = ({ onItemClick }: { onItemClick?: () => void }) => (
     <div className="space-y-4">
-      {NAV_GROUPS.map((group) => (
+      {activeNavGroups.map((group) => (
         <div key={group.title} className="space-y-0.5">
           <p className="px-3 pb-1.5 text-[10px] font-bold text-[#94a3b8] dark:text-[#8291A8] uppercase tracking-wider">
             {group.title}
@@ -128,8 +184,16 @@ export function AdminLayout({ children }: { children: ReactNode }) {
           {group.items.map((item) => {
             const Icon = item.icon;
             const isExactMatch = location === item.href;
-            const isPrefixMatch = item.href !== "/admin/dashboard" && location.startsWith(item.href) && location !== "/admin/cards/new";
-            const isActive = item.href === "/admin/cards/new" ? location === "/admin/cards/new" : isExactMatch || isPrefixMatch;
+            const isPrefixMatch =
+              item.href !== "/admin/dashboard" &&
+              item.href !== "/admin/kcet" &&
+              location.startsWith(item.href) &&
+              location !== "/admin/cards/new" &&
+              location !== "/admin/kcet/materials/new";
+            const isActive =
+              item.href === "/admin/cards/new" || item.href === "/admin/kcet/materials/new"
+                ? location === item.href
+                : isExactMatch || isPrefixMatch;
 
             return (
               <Link 
@@ -227,6 +291,9 @@ export function AdminLayout({ children }: { children: ReactNode }) {
                     Live
                   </span>
                 </div>
+                <div className="px-3 pt-3">
+                  <BoardSwitcher onSwitch={() => setMobileOpen(false)} />
+                </div>
                 <nav className="p-3">
                   <NavLinks onItemClick={() => setMobileOpen(false)} />
                 </nav>
@@ -285,10 +352,15 @@ export function AdminLayout({ children }: { children: ReactNode }) {
           </Link>
         </div>
 
+        {/* Admin Board Switcher (2nd PUC <-> KCET) */}
+        <div className="px-3.5 pt-3 shrink-0">
+          <BoardSwitcher />
+        </div>
+
         {/* Live Storefront Quick Pill */}
-        <div className="px-3.5 pt-3 pb-1 shrink-0">
+        <div className="px-3.5 pt-2.5 pb-1 shrink-0">
           <a
-            href="/"
+            href={isKcetAdmin ? "/kcet" : "/"}
             target="_blank"
             rel="noreferrer"
             className="flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium text-[#5a6b82] dark:text-[#A1AEC2] bg-[#f8fafc] dark:bg-[#151D2E] border border-[#e2e8f0] dark:border-[#293548] hover:bg-[#ebf3ff] dark:hover:bg-[#1C2638] hover:text-[#1856b8] dark:hover:text-[#818CF8] hover:border-[#dce8fa] dark:hover:border-[#293548] transition-all group shadow-2xs"
@@ -358,11 +430,15 @@ export function AdminLayout({ children }: { children: ReactNode }) {
               Live Store
             </span>
 
-            {location !== "/admin/cards/new" && (
-              <Link href="/admin/cards/new">
-                <Button size="sm" className="h-8 gap-1.5 text-xs bg-[#1856b8] hover:bg-[#124494] dark:bg-[#818CF8] dark:hover:bg-[#6366F1] text-white dark:text-[#0B0F19] dark:font-bold shadow-2xs">
+            {location !== "/admin/cards/new" && location !== "/admin/kcet/materials/new" && (
+              <Link href={isKcetAdmin ? "/admin/kcet/materials/new" : "/admin/cards/new"}>
+                <Button size="sm" className={`h-8 gap-1.5 text-xs shadow-2xs ${
+                  isKcetAdmin
+                    ? "bg-cyan-600 hover:bg-cyan-500 text-white"
+                    : "bg-[#1856b8] hover:bg-[#124494] dark:bg-[#818CF8] dark:hover:bg-[#6366F1] text-white dark:text-[#0B0F19] dark:font-bold"
+                }`}>
                   <PlusCircle className="h-3.5 w-3.5" />
-                  <span>New Resource</span>
+                  <span>{isKcetAdmin ? "New KCET Material" : "New Resource"}</span>
                 </Button>
               </Link>
             )}

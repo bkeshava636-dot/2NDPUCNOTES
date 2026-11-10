@@ -20,6 +20,7 @@ export const EXCLUDED_AD_ROUTES = [
   "/payment-success",
   "/my-purchases",
   "/contribute",
+  "/kcet/contribute",
   "/contact",
   "/contact-us",
   "/login",
@@ -43,6 +44,7 @@ export function isRouteEligibleForAds(path: string): boolean {
   // 2. Allowlist verification: only bona fide publisher content routes may display ads
   if (
     normalized === "/" ||
+    normalized === "/kcet" ||
     normalized === "/about" ||
     normalized === "/privacy-policy" ||
     normalized === "/terms" ||
