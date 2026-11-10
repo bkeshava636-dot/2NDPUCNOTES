@@ -175,6 +175,8 @@ export default function CardForm({ initialData, cardId }: { initialData?: Partia
     ...prefillData,
   }));
   const [uploading, setUploading] = useState<"pdf" | "image" | null>(null);
+  const [isDraggingPdf, setIsDraggingPdf] = useState(false);
+  const [isDraggingImage, setIsDraggingImage] = useState(false);
   const [uploadMethod, setUploadMethod] = useState<"file" | "drive" | "gov" | "existing">(() => {
     const activeKey = initialData?.pdfFileKey || prefillData?.pdfFileKey || "";
     if (activeKey.includes("gov.in")) return "gov";
@@ -1078,25 +1080,57 @@ export default function CardForm({ initialData, cardId }: { initialData?: Partia
                     className="hidden" 
                     onChange={e => e.target.files?.[0] && uploadFile(e.target.files[0], "pdf")} 
                   />
-                  <Button 
-                    type="button" 
-                    variant="outline" 
-                    className="gap-2 w-full h-10 text-xs font-medium border-dashed border-[#cbd5e1] hover:border-[#1856b8] bg-[#f8fafc] text-[#5a6b82] hover:text-[#1856b8]" 
-                    onClick={() => pdfRef.current?.click()} 
-                    disabled={uploading === "pdf"}
+                  <div
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => uploading !== "pdf" && pdfRef.current?.click()}
+                    onKeyDown={e => {
+                      if ((e.key === "Enter" || e.key === " ") && uploading !== "pdf") {
+                        e.preventDefault();
+                        pdfRef.current?.click();
+                      }
+                    }}
+                    onDragOver={e => {
+                      e.preventDefault();
+                      if (!isDraggingPdf) setIsDraggingPdf(true);
+                    }}
+                    onDragEnter={e => {
+                      e.preventDefault();
+                      setIsDraggingPdf(true);
+                    }}
+                    onDragLeave={e => {
+                      e.preventDefault();
+                      if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+                        setIsDraggingPdf(false);
+                      }
+                    }}
+                    onDrop={e => {
+                      e.preventDefault();
+                      setIsDraggingPdf(false);
+                      const dropped = e.dataTransfer.files?.[0];
+                      if (dropped && uploading !== "pdf") uploadFile(dropped, "pdf");
+                    }}
+                    className={`rounded-xl border-2 border-dashed p-5 text-center transition-all cursor-pointer select-none ${
+                      isDraggingPdf
+                        ? "border-[#1856b8] dark:border-[#818CF8] bg-[#ebf3ff] dark:bg-[#1C2638] scale-[1.01]"
+                        : "border-[#cbd5e1] dark:border-[#293548] hover:border-[#1856b8] dark:hover:border-[#818CF8] bg-[#f8fafc] dark:bg-[#111827]/70 hover:bg-[#f1f5f9] dark:hover:bg-[#1C2638]/50"
+                    }`}
                   >
                     {uploading === "pdf" ? (
-                      <>
-                        <Loader2 className="h-4 w-4 animate-spin text-[#1856b8]" />
+                      <div className="flex flex-col items-center justify-center gap-1.5 text-xs text-[#1856b8] dark:text-[#818CF8] font-medium">
+                        <Loader2 className="h-5 w-5 animate-spin" />
                         <span>Uploading PDF to Storage...</span>
-                      </>
+                      </div>
                     ) : (
-                      <>
-                        <Upload className="h-4 w-4 text-[#1856b8]" />
-                        <span>Click to Select PDF (up to 50MB)</span>
-                      </>
+                      <div className="flex flex-col items-center justify-center gap-1 text-xs">
+                        <Upload className="h-5 w-5 text-[#1856b8] dark:text-[#818CF8]" />
+                        <span className="font-semibold text-[#112542] dark:text-[#F1F5F9]">
+                          {isDraggingPdf ? "Drop your PDF file here" : "Drag & drop PDF here or click to browse"}
+                        </span>
+                        <span className="text-[11px] text-[#64748b] dark:text-[#94A3B8]">PDF files up to 50MB</span>
+                      </div>
                     )}
-                  </Button>
+                  </div>
                 </div>
               )}
             </div>
@@ -1189,25 +1223,56 @@ export default function CardForm({ initialData, cardId }: { initialData?: Partia
                     className="hidden" 
                     onChange={e => e.target.files?.[0] && uploadFile(e.target.files[0], "image")} 
                   />
-                  <Button 
-                    type="button" 
-                    variant="outline" 
-                    className="gap-2 w-full h-10 text-xs font-medium border-dashed border-[#cbd5e1] hover:border-[#1856b8] bg-[#f8fafc] text-[#5a6b82] hover:text-[#1856b8]" 
-                    onClick={() => imageRef.current?.click()} 
-                    disabled={uploading === "image"}
+                  <div
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => uploading !== "image" && imageRef.current?.click()}
+                    onKeyDown={e => {
+                      if ((e.key === "Enter" || e.key === " ") && uploading !== "image") {
+                        e.preventDefault();
+                        imageRef.current?.click();
+                      }
+                    }}
+                    onDragOver={e => {
+                      e.preventDefault();
+                      if (!isDraggingImage) setIsDraggingImage(true);
+                    }}
+                    onDragEnter={e => {
+                      e.preventDefault();
+                      setIsDraggingImage(true);
+                    }}
+                    onDragLeave={e => {
+                      e.preventDefault();
+                      if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+                        setIsDraggingImage(false);
+                      }
+                    }}
+                    onDrop={e => {
+                      e.preventDefault();
+                      setIsDraggingImage(false);
+                      const dropped = e.dataTransfer.files?.[0];
+                      if (dropped && uploading !== "image") uploadFile(dropped, "image");
+                    }}
+                    className={`rounded-xl border-2 border-dashed p-4 text-center transition-all cursor-pointer select-none ${
+                      isDraggingImage
+                        ? "border-[#1856b8] dark:border-[#818CF8] bg-[#ebf3ff] dark:bg-[#1C2638] scale-[1.01]"
+                        : "border-[#cbd5e1] dark:border-[#293548] hover:border-[#1856b8] dark:hover:border-[#818CF8] bg-[#f8fafc] dark:bg-[#111827]/70 hover:bg-[#f1f5f9] dark:hover:bg-[#1C2638]/50"
+                    }`}
                   >
                     {uploading === "image" ? (
-                      <>
-                        <Loader2 className="h-4 w-4 animate-spin text-[#1856b8]" />
+                      <div className="flex items-center justify-center gap-2 text-xs text-[#1856b8] dark:text-[#818CF8] font-medium">
+                        <Loader2 className="h-4 w-4 animate-spin" />
                         <span>Uploading Image...</span>
-                      </>
+                      </div>
                     ) : (
-                      <>
-                        <ImageIcon className="h-4 w-4 text-[#1856b8]" />
-                        <span>Click to Select Cover Image (PNG, JPG)</span>
-                      </>
+                      <div className="flex items-center justify-center gap-2 text-xs">
+                        <ImageIcon className="h-4 w-4 text-[#1856b8] dark:text-[#818CF8]" />
+                        <span className="font-medium text-[#334155] dark:text-[#F1F5F9]">
+                          {isDraggingImage ? "Drop Cover Image here" : "Drag & drop Cover Image or click to browse (PNG, JPG)"}
+                        </span>
+                      </div>
                     )}
-                  </Button>
+                  </div>
                 </div>
               )}
             </div>

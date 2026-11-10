@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, FormEvent, ChangeEvent } from "react";
+import { useState, useEffect, useRef, FormEvent, ChangeEvent, DragEvent } from "react";
 import { Link, useLocation, useParams } from "wouter";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
@@ -55,6 +55,7 @@ export default function KcetAdminMaterialForm() {
   const [isVisible, setIsVisible] = useState(true);
 
   const [uploadingPdf, setUploadingPdf] = useState(false);
+  const [isDraggingPdf, setIsDraggingPdf] = useState(false);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -89,22 +90,44 @@ export default function KcetAdminMaterialForm() {
     }
   }, [editId, allMaterials]);
 
-  const handleFileUpload = async (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+  const processPdfFile = async (file: File) => {
+    if (!file.name.toLowerCase().endsWith(".pdf") && file.type !== "application/pdf") {
+      toast({ title: "Invalid file", description: "Please upload or drop a valid PDF file.", variant: "destructive" });
+      return;
+    }
+    if (file.size > 50 * 1024 * 1024) {
+      toast({ title: "File too large", description: "Max PDF upload size is 50 MB.", variant: "destructive" });
+      return;
+    }
+
     setUploadingPdf(true);
     try {
       const res = await uploadKcetPdf(file);
       setPdfUrl(res.key);
       if (res.sizeKb) setFileSizeKb(String(res.sizeKb));
       if (!title.trim()) {
-        setTitle(file.name.replace(/\.[^/.]+$/, ""));
+        setTitle(file.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " "));
       }
       toast({ title: "PDF Uploaded", description: "Stored in isolated KCET storage bucket." });
     } catch (err: any) {
       toast({ title: "Upload Failed", description: err.message, variant: "destructive" });
     } finally {
       setUploadingPdf(false);
+    }
+  };
+
+  const handleFileUpload = async (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    await processPdfFile(file);
+  };
+
+  const handlePdfDrop = async (e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDraggingPdf(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file && !uploadingPdf) {
+      await processPdfFile(file);
     }
   };
 
@@ -255,40 +278,75 @@ export default function KcetAdminMaterialForm() {
         </div>
 
         {/* File / PDF URL */}
-        <div className="space-y-2.5 p-4 rounded-xl bg-[#f8fafc] dark:bg-[#111827] border border-[#e2e8f0] dark:border-[#293548]">
+        <div className="space-y-3 p-4 rounded-xl bg-[#f8fafc] dark:bg-[#111827] border border-[#e2e8f0] dark:border-[#293548]">
           <Label className="flex items-center gap-1.5 font-bold">
             <FileText className="h-4 w-4 text-cyan-600 dark:text-cyan-400" />
-            <span>PDF File Upload or Cloud/Drive URL *</span>
+            <span>PDF File Upload (Drag &amp; Drop) or Cloud/Drive URL *</span>
           </Label>
 
-          <div className="flex flex-col sm:flex-row gap-2">
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="application/pdf,.pdf"
-              onChange={handleFileUpload}
-              className="hidden"
-            />
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => fileInputRef.current?.click()}
-              disabled={uploadingPdf}
-              className="gap-1.5 shrink-0"
-            >
-              {uploadingPdf ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
-              <span>{uploadingPdf ? "Uploading..." : "Upload PDF File"}</span>
-            </Button>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="application/pdf,.pdf"
+            onChange={handleFileUpload}
+            className="hidden"
+          />
 
-            <div className="relative flex-1 flex items-center">
-              <Link2 className="h-4 w-4 text-slate-400 absolute left-3" />
-              <Input
-                value={pdfUrl}
-                onChange={(e) => setPdfUrl(e.target.value)}
-                placeholder="Or paste Google Drive / Direct PDF URL"
-                className="pl-9"
-              />
-            </div>
+          <div
+            role="button"
+            tabIndex={0}
+            onClick={() => !uploadingPdf && fileInputRef.current?.click()}
+            onKeyDown={(e) => {
+              if ((e.key === "Enter" || e.key === " ") && !uploadingPdf) {
+                e.preventDefault();
+                fileInputRef.current?.click();
+              }
+            }}
+            onDragOver={(e) => {
+              e.preventDefault();
+              if (!isDraggingPdf) setIsDraggingPdf(true);
+            }}
+            onDragEnter={(e) => {
+              e.preventDefault();
+              setIsDraggingPdf(true);
+            }}
+            onDragLeave={(e) => {
+              e.preventDefault();
+              if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+                setIsDraggingPdf(false);
+              }
+            }}
+            onDrop={handlePdfDrop}
+            className={`rounded-xl border-2 border-dashed p-5 text-center transition-all cursor-pointer select-none ${
+              isDraggingPdf
+                ? "border-cyan-500 bg-cyan-50/70 dark:bg-cyan-500/15 scale-[1.01]"
+                : "border-[#cbd5e1] dark:border-[#293548] hover:border-cyan-500 bg-white dark:bg-[#0B0F19]"
+            }`}
+          >
+            {uploadingPdf ? (
+              <div className="flex flex-col items-center gap-1.5 text-xs font-medium text-cyan-600 dark:text-cyan-400">
+                <Loader2 className="h-5 w-5 animate-spin" />
+                <span>Uploading PDF to isolated KCET storage...</span>
+              </div>
+            ) : (
+              <div className="flex flex-col items-center gap-1 text-xs">
+                <Upload className="h-5 w-5 text-cyan-600 dark:text-cyan-400" />
+                <span className="font-semibold text-[#0f172a] dark:text-white">
+                  {isDraggingPdf ? "Drop KCET PDF here" : "Drag & drop PDF here or click to browse"}
+                </span>
+                <span className="text-[11px] text-[#64748b] dark:text-[#94A3B8]">PDF files up to 50 MB</span>
+              </div>
+            )}
+          </div>
+
+          <div className="relative flex items-center">
+            <Link2 className="h-4 w-4 text-slate-400 absolute left-3" />
+            <Input
+              value={pdfUrl}
+              onChange={(e) => setPdfUrl(e.target.value)}
+              placeholder="Or paste Google Drive / Direct PDF URL"
+              className="pl-9"
+            />
           </div>
 
           {pdfUrl && (

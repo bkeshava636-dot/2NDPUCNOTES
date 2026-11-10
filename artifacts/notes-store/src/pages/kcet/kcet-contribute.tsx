@@ -1,4 +1,4 @@
-import { useState, useRef, FormEvent, ChangeEvent } from "react";
+import { useState, useRef, FormEvent, ChangeEvent, DragEvent } from "react";
 import { Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -65,16 +65,14 @@ export default function KcetContributePage() {
 
   const [uploadMode, setUploadMode] = useState<"file" | "link">("file");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
   const [driveUrl, setDriveUrl] = useState("");
   const [fileError, setFileError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const processSelectedFile = (file: File) => {
     setFileError(null);
-    const file = e.target.files?.[0];
-    if (!file) return;
-
     const maxBytes = 25 * 1024 * 1024;
     if (file.size > maxBytes) {
       setFileError(
@@ -86,6 +84,24 @@ export default function KcetContributePage() {
     }
 
     setSelectedFile(file);
+    if (!title.trim()) {
+      setTitle(file.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " "));
+    }
+  };
+
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    processSelectedFile(file);
+  };
+
+  const handleDrop = (e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file) {
+      processSelectedFile(file);
+    }
   };
 
   const handleSubmit = async (e: FormEvent) => {
@@ -325,8 +341,35 @@ export default function KcetContributePage() {
 
             {uploadMode === "file" ? (
               <div
+                role="button"
+                tabIndex={0}
                 onClick={() => fileInputRef.current?.click()}
-                className="rounded-2xl border-2 border-dashed border-[#cbd5e1] dark:border-slate-700 hover:border-sky-400 dark:hover:border-cyan-400/60 bg-[#f8fafc] dark:bg-[#050814]/80 p-6 text-center cursor-pointer transition-colors"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    fileInputRef.current?.click();
+                  }
+                }}
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  if (!isDragging) setIsDragging(true);
+                }}
+                onDragEnter={(e) => {
+                  e.preventDefault();
+                  setIsDragging(true);
+                }}
+                onDragLeave={(e) => {
+                  e.preventDefault();
+                  if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+                    setIsDragging(false);
+                  }
+                }}
+                onDrop={handleDrop}
+                className={`rounded-2xl border-2 border-dashed p-6 sm:p-7 text-center cursor-pointer transition-all select-none ${
+                  isDragging
+                    ? "border-sky-500 dark:border-cyan-400 bg-sky-50/80 dark:bg-cyan-500/15 scale-[1.01]"
+                    : "border-[#cbd5e1] dark:border-slate-700 hover:border-sky-400 dark:hover:border-cyan-400/60 bg-[#f8fafc] dark:bg-[#050814]/80"
+                }`}
               >
                 <input
                   ref={fileInputRef}
@@ -359,9 +402,9 @@ export default function KcetContributePage() {
                   <div className="space-y-1.5">
                     <UploadCloud className="h-7 w-7 text-sky-600 dark:text-cyan-400 mx-auto" />
                     <p className="text-xs font-semibold text-[#334155] dark:text-slate-200">
-                      Click to select a PDF or Word document
+                      {isDragging ? "Drop your file here" : "Drag & drop your file here or click to browse"}
                     </p>
-                    <p className="text-[11px] text-[#64748b] dark:text-slate-500">Stored cleanly in isolated KCET storage</p>
+                    <p className="text-[11px] text-[#64748b] dark:text-slate-500">PDF, DOCX, DOC up to 25 MB • Isolated KCET storage</p>
                   </div>
                 )}
               </div>

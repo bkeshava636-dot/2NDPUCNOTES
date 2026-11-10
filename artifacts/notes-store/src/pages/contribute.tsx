@@ -73,6 +73,7 @@ export default function ContributePage() {
 
   // Direct file upload state
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
   const [fileError, setFileError] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgressText, setUploadProgressText] = useState("");
@@ -136,6 +137,7 @@ export default function ContributePage() {
 
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
+    setIsDragging(false);
     const file = e.dataTransfer.files?.[0];
     if (!file) return;
     processFileSelection(file);
@@ -568,10 +570,35 @@ export default function ContributePage() {
 
                         {!selectedFile ? (
                           <div
+                            role="button"
+                            tabIndex={0}
                             onClick={() => fileInputRef.current?.click()}
-                            onDragOver={(e) => e.preventDefault()}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter" || e.key === " ") {
+                                e.preventDefault();
+                                fileInputRef.current?.click();
+                              }
+                            }}
+                            onDragOver={(e) => {
+                              e.preventDefault();
+                              if (!isDragging) setIsDragging(true);
+                            }}
+                            onDragEnter={(e) => {
+                              e.preventDefault();
+                              setIsDragging(true);
+                            }}
+                            onDragLeave={(e) => {
+                              e.preventDefault();
+                              if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+                                setIsDragging(false);
+                              }
+                            }}
                             onDrop={handleDrop}
-                            className="border-2 border-dashed border-[#93c5fd] dark:border-[#293548] hover:border-[#2563eb] dark:hover:border-[#818CF8] bg-[#eff6ff]/40 dark:bg-[#1C2638]/40 hover:bg-[#eff6ff]/70 dark:hover:bg-[#1C2638]/80 transition-all rounded-xl p-6 sm:p-7 text-center cursor-pointer group"
+                            className={`border-2 border-dashed transition-all rounded-xl p-6 sm:p-7 text-center cursor-pointer group select-none ${
+                              isDragging
+                                ? "border-[#2563eb] dark:border-[#818CF8] bg-[#eff6ff] dark:bg-[#1C2638] scale-[1.01]"
+                                : "border-[#93c5fd] dark:border-[#293548] hover:border-[#2563eb] dark:hover:border-[#818CF8] bg-[#eff6ff]/40 dark:bg-[#1C2638]/40 hover:bg-[#eff6ff]/70 dark:hover:bg-[#1C2638]/80"
+                            }`}
                           >
                             <div className="h-11 w-11 rounded-full bg-white dark:bg-[#151D2E] text-[#2563eb] dark:text-[#818CF8] flex items-center justify-center mx-auto mb-2.5 shadow-2xs group-hover:scale-105 transition-transform">
                               <UploadCloud className="h-5 w-5" />
