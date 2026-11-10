@@ -12,12 +12,10 @@ export function ModeTogglePill({ className = "" }: { className?: string }) {
 
     switchMode(target, e, () => {
       if (target === "kcet") {
-        // Keep user on / or navigate cleanly to KCET home when leaving a PUC subpage
         if (location !== "/" && !location.startsWith("/kcet")) {
           setLocation("/kcet");
         }
       } else {
-        // Returning to 2nd PUC mode: leave /kcet* routes cleanly back to /
         if (location.startsWith("/kcet")) {
           setLocation("/");
         }
@@ -31,7 +29,7 @@ export function ModeTogglePill({ className = "" }: { className?: string }) {
       aria-label="Exam Arena Mode Switcher"
       className={`relative inline-flex items-center p-0.5 rounded-full border transition-all duration-300 select-none shrink-0 ${
         isKcet
-          ? "bg-[#090f24] border-cyan-500/40 shadow-[0_0_14px_rgba(6,182,212,0.22)]"
+          ? "bg-sky-50/90 dark:bg-[#090f24] border-sky-200 dark:border-cyan-500/40 shadow-2xs dark:shadow-[0_0_14px_rgba(6,182,212,0.22)]"
           : "bg-[#f1f5f9] dark:bg-[#151D2E] border-[#cbd5e1] dark:border-[#293548] shadow-2xs"
       } ${className}`}
     >
@@ -43,13 +41,13 @@ export function ModeTogglePill({ className = "" }: { className?: string }) {
         className={`relative z-10 px-2 sm:px-2.5 py-1 rounded-full text-[11px] sm:text-xs font-bold tracking-tight transition-colors duration-200 cursor-pointer flex items-center gap-1 whitespace-nowrap ${
           !isKcet
             ? "text-white"
-            : "text-slate-400 hover:text-white"
+            : "text-[#475569] dark:text-slate-400 hover:text-[#0f172a] dark:hover:text-white"
         }`}
       >
         {!isKcet && (
           <motion.span
             layoutId="mode-toggle-active-bg"
-            transition={{ type: "spring", stiffness: 450, damping: 32 }}
+            transition={{ type: "spring", stiffness: 380, damping: 30 }}
             className="absolute inset-0 rounded-full bg-gradient-to-r from-[#2563eb] to-[#4f46e5] shadow-sm -z-10"
           />
         )}
@@ -60,9 +58,7 @@ export function ModeTogglePill({ className = "" }: { className?: string }) {
       {/* Divider */}
       <span
         aria-hidden="true"
-        className={`text-[10px] font-light mx-0.5 select-none ${
-          isKcet ? "text-slate-600" : "text-slate-400 dark:text-slate-600"
-        }`}
+        className="text-[10px] font-light mx-0.5 select-none text-slate-300 dark:text-slate-600"
       >
         |
       </span>
@@ -81,8 +77,8 @@ export function ModeTogglePill({ className = "" }: { className?: string }) {
         {isKcet && (
           <motion.span
             layoutId="mode-toggle-active-bg"
-            transition={{ type: "spring", stiffness: 450, damping: 32 }}
-            className="absolute inset-0 rounded-full bg-gradient-to-r from-cyan-500 via-blue-600 to-violet-600 shadow-[0_0_16px_rgba(6,182,212,0.55)] -z-10"
+            transition={{ type: "spring", stiffness: 380, damping: 30 }}
+            className="absolute inset-0 rounded-full bg-gradient-to-r from-sky-500 via-blue-600 to-indigo-600 dark:from-cyan-500 dark:via-blue-600 dark:to-violet-600 shadow-sm dark:shadow-[0_0_16px_rgba(6,182,212,0.45)] -z-10"
           />
         )}
         <span>KCET</span>

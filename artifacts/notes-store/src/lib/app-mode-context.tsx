@@ -94,7 +94,7 @@ export function AppModeProvider({ children }: { children: ReactNode }) {
       origin,
     });
 
-    // At peak coverage (~380ms), flip active mode & persist
+    // At peak coverage (~500ms), flip active mode & persist smoothly
     const t1 = window.setTimeout(() => {
       setModeState(target);
       try {
@@ -102,12 +102,12 @@ export function AppModeProvider({ children }: { children: ReactNode }) {
       } catch {}
       onMidpoint?.();
       window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
-    }, 380);
+    }, 500);
 
-    // Reveal completed (~800ms)
+    // Reveal completed smoothly (~1100ms)
     const t2 = window.setTimeout(() => {
       setTransitionState((prev) => ({ ...prev, isTransitioning: false }));
-    }, 800);
+    }, 1100);
 
     timersRef.current.push(t1, t2);
   };
