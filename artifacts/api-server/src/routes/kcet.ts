@@ -63,8 +63,28 @@ function slugify(name: string) {
   return name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 }
 
-async function resolveStorageUrl(fileKeyOrUrl: string, downloadName?: string): Promise<string> {
+function extractGoogleDriveFileId(url: string): string | null {
+  const matchFile = url.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
+  if (matchFile?.[1]) return matchFile[1];
+  const matchId = url.match(/drive\.google\.com\/(?:open|uc)\?[^#]*[?&]id=([a-zA-Z0-9_-]+)/);
+  if (matchId?.[1]) return matchId[1];
+  const matchFirstParam = url.match(/drive\.google\.com\/(?:open|uc)\?id=([a-zA-Z0-9_-]+)/);
+  if (matchFirstParam?.[1]) return matchFirstParam[1];
+  return null;
+}
+
+async function resolveStorageUrl(
+  fileKeyOrUrl: string,
+  downloadName?: string,
+  intent: "view" | "download" = "view"
+): Promise<string> {
   if (fileKeyOrUrl.startsWith("http://") || fileKeyOrUrl.startsWith("https://")) {
+    const driveId = extractGoogleDriveFileId(fileKeyOrUrl);
+    if (driveId) {
+      return intent === "download"
+        ? `https://drive.google.com/uc?export=download&id=${driveId}`
+        : `https://drive.google.com/file/d/${driveId}/preview`;
+    }
     return fileKeyOrUrl;
   }
   // Support isolated kcet bucket first, fallback to notes bucket if needed
@@ -259,7 +279,7 @@ router.get("/kcet/materials/:id/download", async (req, res) => {
     }
 
     const safeFilename = `${material.title.replace(/[^a-zA-Z0-9._-]+/g, "_")}.pdf`;
-    const downloadUrl = await resolveStorageUrl(material.pdfUrl, safeFilename);
+    const downloadUrl = await resolveStorageUrl(material.pdfUrl, safeFilename, "download");
 
     await db
       .update(kcetMaterialsTable)

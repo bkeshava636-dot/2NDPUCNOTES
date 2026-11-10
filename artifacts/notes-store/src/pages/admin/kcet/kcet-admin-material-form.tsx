@@ -7,7 +7,7 @@ import {
   fetchAdminKcetMaterials,
   createKcetMaterial,
   updateKcetMaterial,
-  uploadKcetPdf,
+  uploadKcetFileToGoogleDrive,
 } from "@/lib/kcet-api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -95,22 +95,33 @@ export default function KcetAdminMaterialForm() {
       toast({ title: "Invalid file", description: "Please upload or drop a valid PDF file.", variant: "destructive" });
       return;
     }
-    if (file.size > 50 * 1024 * 1024) {
-      toast({ title: "File too large", description: "Max PDF upload size is 50 MB.", variant: "destructive" });
+    if (file.size > 25 * 1024 * 1024) {
+      toast({
+        title: "File exceeds 25 MB",
+        description: "Direct Google Drive upload supports up to 25 MB. For larger files, paste the Google Drive URL below.",
+        variant: "destructive",
+      });
       return;
     }
 
     setUploadingPdf(true);
     try {
-      const res = await uploadKcetPdf(file);
-      setPdfUrl(res.key);
+      const effectiveTitle = title.trim() || file.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ");
+      const res = await uploadKcetFileToGoogleDrive({
+        file,
+        subject,
+        category,
+        title: effectiveTitle,
+        contributorName: "KCET Admin",
+      });
+      setPdfUrl(res.fileUrl);
       if (res.sizeKb) setFileSizeKb(String(res.sizeKb));
       if (!title.trim()) {
-        setTitle(file.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " "));
+        setTitle(effectiveTitle);
       }
-      toast({ title: "PDF Uploaded", description: "Stored in isolated KCET storage bucket." });
+      toast({ title: "Saved to Google Drive!", description: "Google Drive PDF link has been attached." });
     } catch (err: any) {
-      toast({ title: "Upload Failed", description: err.message, variant: "destructive" });
+      toast({ title: "Google Drive Upload Failed", description: err.message, variant: "destructive" });
     } finally {
       setUploadingPdf(false);
     }
@@ -326,7 +337,7 @@ export default function KcetAdminMaterialForm() {
             {uploadingPdf ? (
               <div className="flex flex-col items-center gap-1.5 text-xs font-medium text-cyan-600 dark:text-cyan-400">
                 <Loader2 className="h-5 w-5 animate-spin" />
-                <span>Uploading PDF to isolated KCET storage...</span>
+                <span>Uploading PDF directly to Google Drive...</span>
               </div>
             ) : (
               <div className="flex flex-col items-center gap-1 text-xs">
@@ -334,7 +345,7 @@ export default function KcetAdminMaterialForm() {
                 <span className="font-semibold text-[#0f172a] dark:text-white">
                   {isDraggingPdf ? "Drop KCET PDF here" : "Drag & drop PDF here or click to browse"}
                 </span>
-                <span className="text-[11px] text-[#64748b] dark:text-[#94A3B8]">PDF files up to 50 MB</span>
+                <span className="text-[11px] text-[#64748b] dark:text-[#94A3B8]">PDF up to 25 MB • Saved straight to Google Drive</span>
               </div>
             )}
           </div>

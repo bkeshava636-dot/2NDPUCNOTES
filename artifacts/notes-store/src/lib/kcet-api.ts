@@ -149,6 +149,61 @@ export function getKcetDownloadUrl(id: number): string {
   return buildApiUrl(`/api/kcet/materials/${id}/download`);
 }
 
+export const KCET_GOOGLE_DRIVE_WEBAPP_URL =
+  "https://script.google.com/macros/s/AKfycbzGHjAW2FQg7elDU4lezR2n4jC54qMX7-WoZtk75Jx2qON9mf5kGJIPNVkSRSxMSIg9fQ/exec";
+
+export async function uploadKcetFileToGoogleDrive(params: {
+  file: File;
+  subject: string;
+  category: string;
+  title: string;
+  contributorName?: string;
+}): Promise<{ fileUrl: string; sizeKb: number }> {
+  const { file, subject, category, title, contributorName } = params;
+  const maxBytes = 25 * 1024 * 1024;
+  if (file.size > maxBytes) {
+    throw new Error(
+      `File is ${(file.size / (1024 * 1024)).toFixed(1)} MB (max 25 MB direct Google Drive upload). Please paste a Google Drive link instead.`
+    );
+  }
+
+  const base64Content = await new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = reader.result as string;
+      resolve(result.split(",")[1]);
+    };
+    reader.onerror = (err) => reject(err);
+    reader.readAsDataURL(file);
+  });
+
+  const payload = {
+    fileBase64: base64Content,
+    fileName: `[KCET] ${file.name}`,
+    mimeType: file.type || "application/pdf",
+    subject: `KCET - ${subject}`,
+    resourceType: `KCET - ${category}`,
+    materialTitle: `[KCET] ${title.trim() || file.name.replace(/\.[^/.]+$/, "")}`,
+    contributorName: contributorName?.trim() || "KCET Upload",
+  };
+
+  const res = await fetch(KCET_GOOGLE_DRIVE_WEBAPP_URL, {
+    method: "POST",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload),
+  });
+
+  const data = await res.json();
+  if (!data || data.status !== "success" || !data.fileUrl) {
+    throw new Error(data?.message || "Failed to save file to Google Drive.");
+  }
+
+  return {
+    fileUrl: data.fileUrl as string,
+    sizeKb: Math.round(file.size / 1024),
+  };
+}
+
 export async function submitKcetContribution(formData: FormData): Promise<KcetContribution> {
   const res = await fetch(buildApiUrl("/api/kcet/contribute"), {
     method: "POST",
