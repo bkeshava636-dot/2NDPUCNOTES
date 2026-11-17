@@ -198,6 +198,14 @@ export function KcetFooter() {
                   </button>
                 </li>
                 <li>
+                  <Link href="/kcet/counselling" className="text-sky-600 dark:text-cyan-400 font-semibold hover:underline flex items-center gap-1 transition-colors">
+                    <span>KCET 2026 Counselling</span>
+                    <span className="text-[10px] bg-indigo-100 dark:bg-violet-500/20 text-indigo-800 dark:text-violet-300 px-1.5 py-0.2 rounded-full font-bold">
+                      Guide
+                    </span>
+                  </Link>
+                </li>
+                <li>
                   <Link href="/kcet/contribute" className="text-sky-600 dark:text-cyan-400 font-semibold hover:underline flex items-center gap-1 transition-colors">
                     <span>Share KCET Material</span>
                     <span className="text-[10px] bg-sky-100 dark:bg-cyan-500/20 text-sky-800 dark:text-cyan-300 px-1.5 py-0.2 rounded-full font-bold">

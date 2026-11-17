@@ -70,13 +70,29 @@ export const kcetDownloadsTable = pgTable("kcet_downloads", {
   downloadedAt: timestamp("downloaded_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
+export const kcetCounsellingTable = pgTable("kcet_counselling", {
+  id: serial("id").primaryKey(),
+  slug: text("slug").notNull().unique().default("2026-kea-counselling-guide"),
+  title: text("title").notNull().default("Official KCET 2026 KEA Counselling Guide"),
+  subtitle: text("subtitle").default("Step-by-step breakdown of seats, verification slip, option entry, mock round, and college admission"),
+  notice: text("notice").default("Pre-Round update: Currently removed by KEA for 2026. Computer Science seat cap (900 seats/college) order is yet to be officially issued."),
+  content: text("content").notNull(),
+  academicYear: text("academic_year").notNull().default("2026"),
+  isPublished: boolean("is_published").notNull().default(true),
+  updatedBy: text("updated_by"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow().$onUpdate(() => new Date()),
+});
+
 export const insertKcetSubjectSchema = createInsertSchema(kcetSubjectsTable).omit({ id: true, createdAt: true, updatedAt: true });
 export const insertKcetCategorySchema = createInsertSchema(kcetCategoriesTable).omit({ id: true, createdAt: true, updatedAt: true });
 export const insertKcetMaterialSchema = createInsertSchema(kcetMaterialsTable).omit({ id: true, createdAt: true, updatedAt: true, downloadCount: true });
 export const insertKcetContributionSchema = createInsertSchema(kcetContributionsTable).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertKcetCounsellingSchema = createInsertSchema(kcetCounsellingTable).omit({ id: true, createdAt: true, updatedAt: true });
 
 export type KcetSubject = typeof kcetSubjectsTable.$inferSelect;
 export type KcetCategory = typeof kcetCategoriesTable.$inferSelect;
 export type KcetMaterial = typeof kcetMaterialsTable.$inferSelect;
 export type KcetContribution = typeof kcetContributionsTable.$inferSelect;
 export type KcetDownload = typeof kcetDownloadsTable.$inferSelect;
+export type KcetCounselling = typeof kcetCounsellingTable.$inferSelect;

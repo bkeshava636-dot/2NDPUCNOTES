@@ -49,6 +49,7 @@ const AdminSettings = lazy(() => import("@/pages/admin/settings"));
 import KcetHome from "@/pages/kcet/kcet-home";
 import KcetCategoryPage from "@/pages/kcet/kcet-category";
 import KcetSubjectPage from "@/pages/kcet/kcet-subject";
+import KcetCounsellingPage from "@/pages/kcet/kcet-counselling";
 
 // Code-split KCET Contribute & Admin Pages (strictly isolated from 2nd PUC)
 const KcetContribute = lazy(() => import("@/pages/kcet/kcet-contribute"));
@@ -58,6 +59,7 @@ const KcetAdminMaterialForm = lazy(() => import("@/pages/admin/kcet/kcet-admin-m
 const KcetAdminTaxonomy = lazy(() => import("@/pages/admin/kcet/kcet-admin-taxonomy"));
 const KcetAdminContributions = lazy(() => import("@/pages/admin/kcet/kcet-admin-contributions"));
 const KcetAdminAnalytics = lazy(() => import("@/pages/admin/kcet/kcet-admin-analytics"));
+const KcetAdminCounselling = lazy(() => import("@/pages/admin/kcet/kcet-admin-counselling"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -105,6 +107,7 @@ function AdminRoutes() {
               <Route path="/admin/kcet/taxonomy" component={KcetAdminTaxonomy} />
               <Route path="/admin/kcet/contributions" component={KcetAdminContributions} />
               <Route path="/admin/kcet/analytics" component={KcetAdminAnalytics} />
+              <Route path="/admin/kcet/counselling" component={KcetAdminCounselling} />
               <Route component={NotFound} />
             </Switch>
           </Suspense>
@@ -149,6 +152,7 @@ function KcetRoutes() {
       <Suspense fallback={<RouteLoadingFallback />}>
         <Switch>
           <Route path="/kcet" component={KcetHome} />
+          <Route path="/kcet/counselling" component={KcetCounsellingPage} />
           <Route path="/kcet/subject/:slug" component={KcetSubjectPage} />
           <Route path="/kcet/category/:slug" component={KcetCategoryPage} />
           <Route path="/kcet/contribute" component={KcetContribute} />

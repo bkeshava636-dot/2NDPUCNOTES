@@ -15,6 +15,7 @@ import {
   ExternalLink,
   ArrowRight,
   Clock,
+  Compass,
 } from "lucide-react";
 
 export default function KcetAdminDashboard() {
@@ -114,7 +115,18 @@ export default function KcetAdminDashboard() {
       )}
 
       {/* Quick Actions */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5 sm:gap-4">
+        <Link href="/admin/kcet/counselling">
+          <div className="group rounded-2xl border border-sky-300 dark:border-cyan-500/40 bg-sky-50/50 dark:bg-[#0d1733] hover:border-sky-500 p-4 transition-all cursor-pointer space-y-2">
+            <div className="flex items-center justify-between">
+              <Compass className="h-5 w-5 text-sky-600 dark:text-cyan-400" />
+              <ArrowRight className="h-4 w-4 text-slate-400 group-hover:translate-x-1 transition-transform" />
+            </div>
+            <h3 className="font-bold text-sm text-[#0f172a] dark:text-white">Counselling Guide</h3>
+            <p className="text-xs text-[#64748b] dark:text-[#A1AEC2]">Edit KEA rules, options &amp; notices</p>
+          </div>
+        </Link>
+
         <Link href="/admin/kcet/materials">
           <div className="group rounded-2xl border border-[#e2e8f0] dark:border-[#293548] bg-white dark:bg-[#151D2E] hover:border-cyan-500 p-4 transition-all cursor-pointer space-y-2">
             <div className="flex items-center justify-between">

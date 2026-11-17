@@ -9,10 +9,11 @@ import {
   kcetMaterialsTable,
   kcetContributionsTable,
   kcetDownloadsTable,
+  kcetCounsellingTable,
 } from "@workspace/db";
 import { eq, and, asc, desc, ilike, or, sql } from "drizzle-orm";
 import { supabase, BUCKET_NOTES } from "../supabase.js";
-import { BUCKET_KCET, ensureKcetBucket, ensureKcetTablesAndDefaults } from "../lib/ensure-kcet.js";
+import { BUCKET_KCET, ensureKcetBucket, ensureKcetTablesAndDefaults, DEFAULT_KCET_COUNSELLING_GUIDE } from "../lib/ensure-kcet.js";
 
 const router = Router();
 
@@ -168,6 +169,34 @@ router.get("/kcet/categories", async (req, res) => {
   } catch (err) {
     req.log?.error?.(err, "Failed to fetch KCET categories");
     res.status(500).json({ error: "Failed to fetch KCET categories" });
+  }
+});
+
+router.get("/kcet/counselling", async (req, res) => {
+  try {
+    await ensureKcetTablesAndDefaults();
+    const [guide] = await db
+      .select()
+      .from(kcetCounsellingTable)
+      .where(eq(kcetCounsellingTable.isPublished, true))
+      .limit(1);
+
+    if (guide) {
+      res.json(guide);
+      return;
+    }
+
+    const [seeded] = await db
+      .insert(kcetCounsellingTable)
+      .values(DEFAULT_KCET_COUNSELLING_GUIDE)
+      .onConflictDoNothing()
+      .returning();
+
+    const fallback = seeded || (await db.select().from(kcetCounsellingTable).limit(1))[0];
+    res.json(fallback || DEFAULT_KCET_COUNSELLING_GUIDE);
+  } catch (err: any) {
+    req.log?.error?.(err, "Failed to fetch KCET counselling guide");
+    res.json(DEFAULT_KCET_COUNSELLING_GUIDE);
   }
 });
 
@@ -916,6 +945,71 @@ router.get("/admin/kcet/downloads", requireAdmin, async (req, res) => {
     );
   } catch (err: any) {
     res.status(500).json({ error: err?.message || "Failed to fetch KCET downloads" });
+  }
+});
+
+router.get("/admin/kcet/counselling", requireAdmin, async (req, res) => {
+  try {
+    await ensureKcetTablesAndDefaults();
+    let [guide] = await db.select().from(kcetCounsellingTable).limit(1);
+    if (!guide) {
+      const [seeded] = await db
+        .insert(kcetCounsellingTable)
+        .values(DEFAULT_KCET_COUNSELLING_GUIDE)
+        .returning();
+      guide = seeded;
+    }
+    res.json(guide || DEFAULT_KCET_COUNSELLING_GUIDE);
+  } catch (err: any) {
+    req.log?.error?.(err, "Failed to get KCET counselling guide for admin");
+    res.status(500).json({ error: err?.message || "Failed to get guide" });
+  }
+});
+
+router.put("/admin/kcet/counselling", requireAdmin, async (req, res) => {
+  try {
+    await ensureKcetTablesAndDefaults();
+    const { title, subtitle, notice, content, academicYear, isPublished } = req.body;
+
+    if (!content || typeof content !== "string" || !content.trim()) {
+      res.status(400).json({ error: "Content is required" });
+      return;
+    }
+
+    const [existing] = await db.select().from(kcetCounsellingTable).limit(1);
+    let updated;
+    if (existing) {
+      [updated] = await db
+        .update(kcetCounsellingTable)
+        .set({
+          title: title?.trim() || existing.title,
+          subtitle: subtitle !== undefined ? subtitle?.trim() : existing.subtitle,
+          notice: notice !== undefined ? notice?.trim() : existing.notice,
+          content: content.trim(),
+          academicYear: academicYear?.trim() || existing.academicYear,
+          isPublished: typeof isPublished === "boolean" ? isPublished : existing.isPublished,
+          updatedAt: new Date(),
+        })
+        .where(eq(kcetCounsellingTable.id, existing.id))
+        .returning();
+    } else {
+      [updated] = await db
+        .insert(kcetCounsellingTable)
+        .values({
+          title: title?.trim() || DEFAULT_KCET_COUNSELLING_GUIDE.title,
+          subtitle: subtitle?.trim() || DEFAULT_KCET_COUNSELLING_GUIDE.subtitle,
+          notice: notice?.trim() || DEFAULT_KCET_COUNSELLING_GUIDE.notice,
+          content: content.trim(),
+          academicYear: academicYear?.trim() || "2026",
+          isPublished: typeof isPublished === "boolean" ? isPublished : true,
+        })
+        .returning();
+    }
+
+    res.json(updated);
+  } catch (err: any) {
+    req.log?.error?.(err, "Failed to update KCET counselling guide");
+    res.status(500).json({ error: err?.message || "Failed to update guide" });
   }
 });
 

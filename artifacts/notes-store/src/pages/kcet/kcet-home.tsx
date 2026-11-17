@@ -31,6 +31,8 @@ import {
   CheckCircle2,
   ArrowRight,
   Layers,
+  Compass,
+  GraduationCap,
 } from "lucide-react";
 import { SeoHead } from "@/components/seo-head";
 
@@ -382,7 +384,67 @@ export default function KcetHome() {
         </>
       )}
 
-      {/* 5. KCET Exam Structure & Competitive Strategy Guide */}
+      {/* 5. KCET Counselling 2026 Process & Option Entry Guide Section */}
+      <section className="rounded-3xl border border-sky-300 dark:border-cyan-500/40 bg-gradient-to-br from-[#eff8ff] via-white to-[#f5f3ff] dark:from-[#0a1128] dark:via-[#080d22] dark:to-[#120a2e] p-6 sm:p-8 space-y-6 shadow-xs dark:shadow-[0_0_40px_rgba(6,182,212,0.1)] relative overflow-hidden">
+        <div className="pointer-events-none absolute -top-24 -right-24 h-56 w-56 rounded-full bg-sky-400/15 dark:bg-cyan-500/15 blur-3xl" />
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#e2e8f0] dark:border-slate-800 pb-5 relative z-10">
+          <div className="space-y-1.5">
+            <div className="inline-flex items-center gap-1.5 text-xs font-mono font-bold text-sky-700 dark:text-cyan-300 uppercase tracking-wider">
+              <Compass className="h-4 w-4" />
+              <span>KEA Official 2026 Process</span>
+            </div>
+            <h2 className="text-xl sm:text-2xl font-black text-[#0f172a] dark:text-white tracking-tight">
+              KCET Counselling &amp; Option Entry Guide
+            </h2>
+            <p className="text-xs sm:text-sm text-[#475569] dark:text-slate-300 max-w-2xl leading-relaxed">
+              Complete breakdown of KEA seat allocation tracks, verification slip, the 6-stage roadmap, option entry shopping strategy (3 buckets), and the 4 choices explained.
+            </p>
+          </div>
+
+          <Link href="/kcet/counselling" className="shrink-0">
+            <Button className="gap-2 h-10 px-5 rounded-xl bg-gradient-to-r from-sky-600 to-indigo-600 dark:from-cyan-500 dark:to-blue-600 hover:opacity-95 text-white font-bold shadow-xs">
+              <span>Read Counselling Guide</span>
+              <ArrowRight className="h-4 w-4" />
+            </Button>
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs relative z-10">
+          <div className="p-3.5 rounded-2xl bg-white/80 dark:bg-[#050814]/80 border border-[#e2e8f0] dark:border-slate-800 space-y-1">
+            <span className="font-mono font-bold text-sky-600 dark:text-cyan-400 text-[11px]">3 ENTRANCE TRACKS</span>
+            <h4 className="font-bold text-[#0f172a] dark:text-white">Merit Matching</h4>
+            <p className="text-[#64748b] dark:text-slate-400 text-[11px] leading-relaxed">
+              NEET for Medical/AYUSH, KCET for Engg/Nursing/Agri/Vet, Class 12 for Allied Health.
+            </p>
+          </div>
+
+          <div className="p-3.5 rounded-2xl bg-white/80 dark:bg-[#050814]/80 border border-[#e2e8f0] dark:border-slate-800 space-y-1">
+            <span className="font-mono font-bold text-indigo-600 dark:text-violet-400 text-[11px]">6-STAGE JOURNEY</span>
+            <h4 className="font-bold text-[#0f172a] dark:text-white">Online Roadmap</h4>
+            <p className="text-[#64748b] dark:text-slate-400 text-[11px] leading-relaxed">
+              Verification slip, ₹750 fee, biometric face login, mock allotment, and binding real rounds.
+            </p>
+          </div>
+
+          <div className="p-3.5 rounded-2xl bg-white/80 dark:bg-[#050814]/80 border border-[#e2e8f0] dark:border-slate-800 space-y-1">
+            <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400 text-[11px]">WISHLIST STRATEGY</span>
+            <h4 className="font-bold text-[#0f172a] dark:text-white">The 3 Buckets</h4>
+            <p className="text-[#64748b] dark:text-slate-400 text-[11px] leading-relaxed">
+              Dream Bucket (20%), Target Real Bucket (30%), and Guaranteed Safety Bucket (30%).
+            </p>
+          </div>
+
+          <div className="p-3.5 rounded-2xl bg-white/80 dark:bg-[#050814]/80 border border-[#e2e8f0] dark:border-slate-800 space-y-1">
+            <span className="font-mono font-bold text-amber-600 dark:text-amber-400 text-[11px]">THE 4 CHOICES</span>
+            <h4 className="font-bold text-[#0f172a] dark:text-white">Result Decision</h4>
+            <p className="text-[#64748b] dark:text-slate-400 text-[11px] leading-relaxed">
+              Choice 1 Freeze, Choice 2 Hold &amp; Upgrade (Safest), Choice 3 Reject, Choice 4 Exit.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* 6. KCET Exam Structure & Competitive Strategy Guide */}
       <section className="rounded-3xl border border-[#e2e8f0] dark:border-slate-800 bg-white dark:bg-[#090f24]/90 p-6 sm:p-8 space-y-5 shadow-2xs">
         <div className="flex items-center gap-3 border-b border-[#f1f5f9] dark:border-slate-800 pb-4">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-50 dark:bg-violet-500/15 border border-indigo-200 dark:border-violet-400/30 text-indigo-600 dark:text-violet-300 shrink-0">

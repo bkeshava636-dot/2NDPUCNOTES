@@ -358,3 +358,48 @@ export async function fetchAdminKcetDownloads(): Promise<KcetDownloadAudit[]> {
   const res = await apiFetch("/api/admin/kcet/downloads");
   return parseJson(res);
 }
+
+// ── KCET Counselling Guide API ──────────────────────────────────────────────
+
+export interface KcetCounsellingGuide {
+  id: number;
+  slug: string;
+  title: string;
+  subtitle: string | null;
+  notice: string | null;
+  content: string;
+  academicYear: string;
+  isPublished: boolean;
+  updatedBy: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface UpdateKcetCounsellingInput {
+  title: string;
+  subtitle?: string | null;
+  notice?: string | null;
+  content: string;
+  academicYear?: string;
+  isPublished?: boolean;
+}
+
+export async function fetchKcetCounsellingGuide(): Promise<KcetCounsellingGuide> {
+  const res = await apiFetch("/api/kcet/counselling");
+  return parseJson(res);
+}
+
+export async function fetchAdminKcetCounsellingGuide(): Promise<KcetCounsellingGuide> {
+  const res = await apiFetch("/api/admin/kcet/counselling");
+  return parseJson(res);
+}
+
+export async function updateKcetCounsellingGuide(
+  input: UpdateKcetCounsellingInput
+): Promise<KcetCounsellingGuide> {
+  const res = await apiFetch("/api/admin/kcet/counselling", {
+    method: "PUT",
+    body: JSON.stringify(input),
+  });
+  return parseJson(res);
+}

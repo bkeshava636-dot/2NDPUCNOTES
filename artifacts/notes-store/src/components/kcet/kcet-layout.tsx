@@ -12,6 +12,7 @@ import {
   Send,
   Home as HomeIcon,
   BookOpen,
+  Compass,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -84,6 +85,21 @@ export function KcetLayout({ children }: { children: ReactNode }) {
               <span>Search KCET</span>
             </Button>
 
+            <Link href="/kcet/counselling" className="hidden sm:inline-flex">
+              <Button
+                variant="ghost"
+                size="sm"
+                className={`h-8.5 px-2.5 sm:px-3 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all ${
+                  location === "/kcet/counselling"
+                    ? "bg-sky-50 dark:bg-cyan-500/15 text-sky-700 dark:text-cyan-300 border border-sky-200 dark:border-cyan-400/40"
+                    : "text-[#334155] dark:text-slate-300 hover:text-[#0f172a] dark:hover:text-white hover:bg-[#f1f5f9] dark:hover:bg-white/5 border border-transparent"
+                }`}
+              >
+                <Compass className="h-3.5 w-3.5 text-indigo-600 dark:text-cyan-400" />
+                <span>Counselling 2026</span>
+              </Button>
+            </Link>
+
             <Link href="/kcet/contribute" className="hidden md:inline-flex">
               <Button
                 variant="ghost"
@@ -137,6 +153,17 @@ export function KcetLayout({ children }: { children: ReactNode }) {
         >
           <HomeIcon className="h-4 w-4 mb-0.5" />
           <span>Arena</span>
+        </Link>
+        <Link
+          href="/kcet/counselling"
+          className={`flex flex-col items-center justify-center flex-1 h-full py-1 text-[10px] font-semibold transition-colors ${
+            location === "/kcet/counselling"
+              ? "text-sky-600 dark:text-cyan-400"
+              : "text-[#64748b] dark:text-slate-400 hover:text-[#0f172a] dark:hover:text-white"
+          }`}
+        >
+          <Compass className="h-4 w-4 mb-0.5" />
+          <span>Counselling</span>
         </Link>
         <button
           type="button"

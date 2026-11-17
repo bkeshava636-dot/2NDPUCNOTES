@@ -22,7 +22,8 @@ import {
   MessageSquarePlus,
   Radio,
   Rocket,
-  UploadCloud
+  UploadCloud,
+  Compass,
 } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -86,6 +87,7 @@ const KCET_NAV_GROUPS: NavGroup[] = [
       { href: "/admin/kcet/materials", label: "KCET Study Materials", icon: Files },
       { href: "/admin/kcet/materials/new", label: "Add KCET Material", icon: PlusCircle },
       { href: "/admin/kcet/taxonomy", label: "KCET Subjects & Categories", icon: FolderTree },
+      { href: "/admin/kcet/counselling", label: "KCET Counselling Guide", icon: Compass },
     ],
   },
   {

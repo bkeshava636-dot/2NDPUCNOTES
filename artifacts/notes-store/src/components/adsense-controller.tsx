@@ -45,6 +45,7 @@ export function isRouteEligibleForAds(path: string): boolean {
   if (
     normalized === "/" ||
     normalized === "/kcet" ||
+    normalized === "/kcet/counselling" ||
     normalized === "/about" ||
     normalized === "/privacy-policy" ||
     normalized === "/terms" ||
