@@ -66,54 +66,6 @@ export function isRouteEligibleForAds(path: string): boolean {
 }
 
 export function AdSenseController() {
-  const [location] = useLocation();
-
-  useEffect(() => {
-    const isEligible = isRouteEligibleForAds(location);
-
-    if (isEligible) {
-      // 1. Resume / enable ad requests for content routes
-      if (typeof window !== "undefined") {
-        try {
-          (window as any).adsbygoogle = (window as any).adsbygoogle || [];
-          (window as any).adsbygoogle.pauseAdRequests = 0;
-        } catch {
-          // Ignore
-        }
-      }
-
-      // 2. Ensure AdSense script is loaded once
-      let script = document.getElementById(SCRIPT_ID) as HTMLScriptElement | null;
-      if (!script) {
-        script = document.createElement("script");
-        script.id = SCRIPT_ID;
-        script.async = true;
-        script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT_ID}`;
-        script.crossOrigin = "anonymous";
-        document.head.appendChild(script);
-      }
-    } else {
-      // 3. Excluded route: Pause all ad requests immediately
-      if (typeof window !== "undefined") {
-        try {
-          (window as any).adsbygoogle = (window as any).adsbygoogle || [];
-          (window as any).adsbygoogle.pauseAdRequests = 1;
-        } catch {
-          // Ignore
-        }
-      }
-
-      // 4. Clean up any auto-injected ad wrappers on prohibited screens
-      const autoPlacedAds = document.querySelectorAll(".google-auto-placed, ins.adsbygoogle");
-      autoPlacedAds.forEach((ad) => {
-        try {
-          ad.remove();
-        } catch {
-          // Ignore
-        }
-      });
-    }
-  }, [location]);
-
+  // Google AdSense removed in favor of Monetag
   return null;
 }
