@@ -66,6 +66,38 @@ export function isRouteEligibleForAds(path: string): boolean {
 }
 
 export function AdSenseController() {
-  // Google AdSense removed in favor of Monetag
+  const [location] = useLocation();
+
+  useEffect(() => {
+    const normalized = (location || "").toLowerCase();
+    const isAdmin = normalized.startsWith("/admin") || normalized.startsWith("/checkout");
+
+    if (isAdmin) {
+      // 1. Clean up any auto-injected ad iframes, overlays, or banners
+      const adElements = document.querySelectorAll(
+        'iframe[src*="quge5"], iframe[src*="3nbf4"], iframe[src*="6opo"], iframe[src*="vaimucuvikuwu"], div[class*="zfg"], div[id*="zfg"], ins.adsbygoogle, .google-auto-placed'
+      );
+      adElements.forEach((el) => {
+        try {
+          el.remove();
+        } catch {
+          // ignore
+        }
+      });
+
+      // 2. Clear out any global popunder arrays
+      try {
+        if (typeof window !== "undefined") {
+          const w = window as any;
+          if (w.zfgformats) {
+            w.zfgformats = [];
+          }
+        }
+      } catch {
+        // ignore
+      }
+    }
+  }, [location]);
+
   return null;
 }
